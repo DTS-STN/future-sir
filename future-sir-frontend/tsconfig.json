@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "include": [
+    "./__mocks__/**/*",
+    "./.react-router/types/**/*",
+    "./.react-router/types/**/.server/**/*",
+    "./app/**/*",
+    "./app/**/.client/**/*",
+    "./app/**/.server/**/*",
+    "./e2e/**/*",
+    "./server/**/*",
+    "./tests/**/*",
+    "./eslint.config.mjs",
+    "./playwright.config.ts",
+    "./postcss.config.mjs",
+    "./prettier.config.mjs",
+    "./react-router.config.ts",
+    "./tailwind.config.ts",
+    "./vite.config.ts",
+    "./vite.server.config.ts"
+  ],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "checkJs": true,
+    "composite": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "noEmit": true,
+    "paths": {
+      "~/*": ["./app/*"]
+    },
+    "resolveJsonModule": true,
+    "rootDirs": ["./", "./.react-router/types"],
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "ES2022",
+    "types": ["@react-router/node", "vite/client"]
+  }
+}
