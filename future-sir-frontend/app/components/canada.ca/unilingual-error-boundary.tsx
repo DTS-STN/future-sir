@@ -1,0 +1,106 @@
+import { Link, Links, Meta, Scripts } from 'react-router';
+
+import { Trans, useTranslation } from 'react-i18next';
+
+import type { Route } from '../../+types/root';
+import { PageTitle } from '~/components/page-title';
+import { isCodedError } from '~/errors/coded-error';
+import { useLanguage } from '~/hooks/use-language';
+
+/**
+ * A unilingual error boundary that renders appropriate error messages in the current language.
+ *
+ * **Important Note:**
+ *
+ * React Router error boundaries should be designed to be as robust as possible.
+ * If an error boundary itself throws an error, there's no subsequent error
+ * boundary to catch and render it, potentially leading to infinite error loops.
+ */
+export function UnilingualErrorBoundary(props: Route.ErrorBoundaryProps) {
+  const { currentLanguage } = useLanguage();
+  const { t } = useTranslation(['gcweb']);
+
+  return (
+    <html lang={currentLanguage}>
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <Meta />
+        <Links />
+      </head>
+      <body vocab="http://schema.org/" typeof="WebPage">
+        <header className="border-b-[3px] border-slate-700 print:hidden">
+          <div id="wb-bnr">
+            <div className="container flex items-center justify-between gap-6 py-2.5 sm:py-3.5">
+              <div property="publisher" typeof="GovernmentOrganization">
+                <Link to="https://canada.ca/" property="url">
+                  <img
+                    className="h-8 w-auto"
+                    src={`https://www.canada.ca/etc/designs/canada/wet-boew/assets/sig-blk-${currentLanguage}.svg`}
+                    alt={t('gcweb:header.govt-of-canada.text')}
+                    property="logo"
+                    width="300"
+                    height="28"
+                    decoding="async"
+                  />
+                </Link>
+                <meta property="name" content={t('gcweb:header.govt-of-canada.text')} />
+                <meta property="areaServed" typeof="Country" content="Canada" />
+                <link property="logo" href="https://www.canada.ca/etc/designs/canada/wet-boew/assets/wmms-blk.svg" />
+              </div>
+            </div>
+          </div>
+        </header>
+        <main className="container" property="mainContentOfPage" resource="#wb-main" typeof="WebPageElement">
+          <PageTitle className="my-8">
+            <span>{t('gcweb:server-error.page-title')}</span>
+            <small className="block text-2xl font-normal text-neutral-500">{t('gcweb:server-error.page-subtitle')}</small>
+          </PageTitle>
+          <p className="mb-8 text-lg text-gray-500">{t('gcweb:server-error.page-message')}</p>
+          {isCodedError(props.error) && (
+            <ul className="list-disc pl-10 text-gray-800">
+              <li>
+                <Trans
+                  i18nKey="gcweb:server-error.error-code"
+                  components={{ span: <span className="font-mono" />, strong: <strong className="font-semibold" /> }}
+                  values={{ errorCode: props.error.code }}
+                />
+              </li>
+              <li>
+                <Trans
+                  i18nKey="gcweb:server-error.correlation-id"
+                  components={{ span: <span className="font-mono" />, strong: <strong className="font-semibold" /> }}
+                  values={{ correlationId: props.error.correlationId }}
+                />
+              </li>
+            </ul>
+          )}
+        </main>
+        <footer id="wb-info" tabIndex={-1} className="mt-8 bg-stone-50 print:hidden">
+          <div className="container flex items-center justify-end gap-6 py-2.5 sm:py-3.5">
+            <div>
+              <h2 className="sr-only">{t('gcweb:footer.about-site')}</h2>
+              <div>
+                <img
+                  src="https://www.canada.ca/etc/designs/canada/wet-boew/assets/wmms-blk.svg"
+                  alt={t('gcweb:footer.gc-symbol')}
+                  width={300}
+                  height={71}
+                  className="h-10 w-auto"
+                />
+              </div>
+            </div>
+          </div>
+        </footer>
+        <Scripts nonce={props.loaderData?.nonce} />
+        <script
+          nonce={props.loaderData?.nonce}
+          suppressHydrationWarning={true}
+          dangerouslySetInnerHTML={{
+            __html: `window.__appEnvironment = ${JSON.stringify(props.loaderData?.clientEnvironment)}`,
+          }}
+        />
+      </body>
+    </html>
+  );
+}

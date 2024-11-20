@@ -1,0 +1,21 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: future-social-insurance-registry
+resources:
+  - ./services.yaml
+  - ./stateful-sets.yaml
+configMapGenerator:
+  - name: redis
+    files:
+      - ./configs/init.sh
+      - ./configs/primary.conf
+      - ./configs/replica.conf
+      - ./configs/sentinel.conf
+secretGenerator:
+  - name: redis
+    options:
+      # disable suffix hash so we can merge
+      # external secrets into this one via overlays
+      disableNameSuffixHash: true
+    envs:
+      - ./configs/secrets.conf
