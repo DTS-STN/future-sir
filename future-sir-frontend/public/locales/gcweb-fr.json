@@ -1,0 +1,64 @@
+{
+  "language": "Français",
+  "nav": {
+    "skip-to-content": "Passer au contenu principal",
+    "skip-to-about": "Passer à « À propos de ce site »"
+  },
+  "header": {
+    "language-selection": "Sélection de la langue",
+    "govt-of-canada.text": "Gouvernement du Canada",
+    "govt-of-canada.href": "https://www.canada.ca/fr.html"
+  },
+  "footer": {
+    "about-site": "À propos de ce site",
+    "gc-corporate": "Organisation du gouvernement du Canada",
+    "terms-conditions": {
+      "text": "Avis",
+      "href": "https://www.canada.ca/fr/transparence/avis.html"
+    },
+    "privacy": {
+      "text": "Confidentialité",
+      "href": "https://www.canada.ca/fr/transparence/confidentialite.html"
+    },
+    "gc-symbol": "Symbole du gouvernement du Canada",
+    "main-band": {
+      "header": "Service Canada",
+      "links": {
+        "contact-us": {
+          "content": "Contactez-nous",
+          "href": "https://www.canada.ca/fr/services/prestations/dentaire/regime-soins-dentaires/contactez.html"
+        }
+      }
+    }
+  },
+  "language-switcher": {
+    "alt-lang": "English",
+    "alt-lang-abbr": "EN",
+    "alt-lang-abbr-prop": "en"
+  },
+  "breadcrumbs": {
+    "you-are-here": "Vous êtes ici\u00a0:",
+    "home": "Mon dossier Service Canada",
+    "canada-ca": "Canada.ca",
+    "canada-ca-url": "https://www.canada.ca/fr.html"
+  },
+  "page-details": {
+    "page-details": "Détails de la page",
+    "date-modfied": "Date de modification\u00a0:",
+    "screen-id": "Identificateur d'écran\u00a0:",
+    "version": "Version\u00a0:"
+  },
+  "not-found": {
+    "document-title": "Page introuvable",
+    "page-title": "Nous ne pouvons trouver cette page",
+    "page-subtitle": "(Erreur 404)",
+    "page-message": "Nous sommes désolés que vous ayez abouti ici. Il arrive parfois qu'une page ait été déplacée ou supprimée. Heureusement, nous pouvons vous aider à trouver ce que vous cherchez."
+  },
+  "server-error": {
+    "document-title": "Erreur interne du serveur",
+    "page-title": "Nous éprouvons des difficultés avec cette page",
+    "page-subtitle": "(Erreur 500)",
+    "page-message": "Nous espérons résoudre le problème sous peu. Il ne s'agit pas d'un problème avec votre ordinateur ou Internet, mais plutôt avec le serveur de notre site Web. Que faire?",
+    "option-01": "Actualisez la page ou réessayez plus tard"
+  }
+}

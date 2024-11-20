@@ -1,0 +1,7 @@
+{
+  "editor.codeActionsOnSave": {
+    // rely on prettier to sort imports
+    "source.sortImports": "never"
+  },
+  "vitest.disableWorkspaceWarning": true
+}

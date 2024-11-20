@@ -1,0 +1,1 @@
+<div class="container flex items-center justify-end gap-6 py-2.5 sm:py-3.5"><div><h2 class="sr-only">About this site</h2><div><img src="https://www.canada.ca/etc/designs/canada/wet-boew/assets/wmms-blk.svg" alt="Symbol of the Government of Canada" width="300" height="71" class="h-10 w-auto"></div></div></div>
