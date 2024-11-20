@@ -1,0 +1,13 @@
+{
+  "language": "Français",
+  "resource": "public/locales/public-fr.json",
+  "index": {
+    "page-title": "Bienvenue sur Future SIR",
+    "goc-symbol": "Symbole du gouvernement du Canada",
+    "government-of-canada": "Gouvernement du Canada",
+    "terms-and-conditions": {
+      "text": "Avis",
+      "href": "https://www.canada.ca/fr/transparence/avis.html"
+    }
+  }
+}

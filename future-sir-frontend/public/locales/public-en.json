@@ -1,0 +1,13 @@
+{
+  "language": "English",
+  "resource": "public/locales/public-en.json",
+  "index": {
+    "page-title": "Welcome to Future SIR",
+    "goc-symbol": "Symbol of the Government of Canada",
+    "government-of-canada": "Government of Canada",
+    "terms-and-conditions": {
+      "text": "Terms & Conditions",
+      "href": "https://www.canada.ca/en/transparency/terms.html"
+    }
+  }
+}

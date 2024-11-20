@@ -1,0 +1,3 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`InlineLink > should render an InlineLink with the correct styles > expected html 1`] = `"<a lang="fr" class="text-slate-700 underline hover:text-blue-700 focus:text-blue-700" href="/fr/public" data-discover="true">This is a test</a>"`;
