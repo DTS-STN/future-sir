@@ -1,0 +1,9 @@
+{
+  "resource": "public/locales/protected-fr.json",
+  "index": {
+    "page-title": "Bienvenue sur Future SIR (protégée)",
+    "resources": "ressources i18n chargées depuis : <mark>{{resource}}</mark>",
+    "navigate": "Accédez à la page « publique »",
+    "home": "Accueil"
+  }
+}
