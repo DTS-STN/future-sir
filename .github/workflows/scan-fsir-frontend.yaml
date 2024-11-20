@@ -1,0 +1,35 @@
+name: Scan Future SIR frontend
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/scan-fsir-frontend.yaml
+      - future-sir-frontend/**
+  pull_request:
+    branches:
+      - main
+    paths:
+      - .github/workflows/scan-fsir-frontend.yaml
+      - future-sir-frontend/**
+  workflow_dispatch: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  scan-future-sir-frontend:
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      packages: read
+    steps:
+    - uses: actions/checkout@v4
+    - uses: github/codeql-action/init@v3
+      with:
+        languages: javascript-typescript
+    - uses: github/codeql-action/analyze@v3
+      with:
+        category: /language:javascript-typescript

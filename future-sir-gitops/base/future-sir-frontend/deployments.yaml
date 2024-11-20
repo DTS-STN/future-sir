@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: future-sir-frontend
+  labels:
+    app.kubernetes.io/name: future-sir-frontend
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: future-sir-frontend
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: future-sir-frontend
+    spec:
+      containers:
+        - name: future-sir-frontend
+          # Note: image tag should be pinned to a specific version in overlays
+          image: dtsrhpdevscedacr.azurecr.io/future-sir/future-sir-frontend:latest
+          envFrom:
+            - configMapRef:
+                name: future-sir-frontend
+            - secretRef:
+                name: future-sir-frontend
+          ports:
+            - name: http
+              containerPort: 3000
+          livenessProbe:
+            tcpSocket:
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /api/readyz
+              port: http
+          resources:
+            requests:
+              cpu: 500m
+              memory: 512Mi
+            limits:
+              cpu: 1000m
+              memory: 1024Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 0%
+      maxSurge: 100%

@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`AppLink > renders a link with a specified language when provided > expected html 1`] = `"<a lang="en" href="/en/public" data-discover="true">This is a test</a>"`;
+
+exports[`AppLink > renders a link with the current language if no specific language is provided > expected html 1`] = `"<a lang="fr" href="/fr/public" data-discover="true">This is a test</a>"`;
+
+exports[`AppLink > throws an error if no language is available > expected html 1`] = `"The \`lang\` parameter was not provided, and the current language could not be determined from the request"`;

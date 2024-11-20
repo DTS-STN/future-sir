@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: future-sir-frontend
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: future-sir-frontend
+  template:
+    spec:
+      containers:
+        - name: future-sir-frontend
+          # since we are using external secrets operator
+          # we must manually attach the generated secret
+          envFrom:
+            - configMapRef:
+                name: future-sir-frontend-dev
+            - secretRef:
+                name: future-sir-frontend-dev
