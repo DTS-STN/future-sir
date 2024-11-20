@@ -1,0 +1,15 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /future-sir-frontend
+    schedule:
+      interval: daily
+    groups:
+      dev-minor-versions:
+        dependency-type: development
+        update-types: [minor, patch]
+        patterns: ['*']
+      prod-minor-versions:
+        dependency-type: production
+        update-types: [minor, patch]
+        patterns: ['*']

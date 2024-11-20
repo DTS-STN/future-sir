@@ -1,0 +1,5 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`InlineLink > should correctly render an InlineLink when the file property is provided > expected html 1`] = `"<a lang="fr" class="text-slate-700 underline hover:text-blue-700 focus:text-blue-700" href="/fr/public" data-discover="true">This is a test</a>"`;
+
+exports[`InlineLink > should correctly render an InlineLink when the to property is provided > expected html 1`] = `"<a class="text-slate-700 underline hover:text-blue-700 focus:text-blue-700" href="https://example.com/">This is a test</a>"`;
