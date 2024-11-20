@@ -1,0 +1,96 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: redis
+  labels:
+    app.kubernetes.io/name: redis
+spec:
+  replicas: 1
+  serviceName: redis-headless
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: redis
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: redis
+    spec:
+      initContainers:
+        - name: init
+          image: docker.io/library/redis:7
+          command: [bash, /etc/init.sh]
+          envFrom:
+            - secretRef:
+                name: redis
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: config
+              mountPath: /etc/init.sh
+              subPath: init.sh
+            - name: config
+              mountPath: /etc/primary.conf
+              subPath: primary.conf
+            - name: config
+              mountPath: /etc/replica.conf
+              subPath: replica.conf
+            - name: config
+              mountPath: /etc/sentinel.conf
+              subPath: sentinel.conf
+      containers:
+        - name: redis
+          # Note: image tag should be pinned to a specific version in overlays
+          #       ex: 7.2 in nonprod; 7.2.3 in prod
+          image: docker.io/library/redis:7
+          args: [/data/redis.conf, --requirepass $(REDIS_PASSWORD), --masterauth $(REDIS_PASSWORD)]
+          envFrom:
+            - secretRef:
+                name: redis
+          ports:
+            - name: redis
+              containerPort: 6379
+          livenessProbe:
+            exec:
+              command: [sh, -c, redis-cli --pass $(REDIS_PASSWORD) ping]
+            initialDelaySeconds: 10
+          readinessProbe:
+            exec:
+              command: [sh, -c, redis-cli --pass $(REDIS_PASSWORD) ping]
+            initialDelaySeconds: 10
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          securityContext:
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+          volumeMounts:
+            - name: data
+              mountPath: /data
+        - name: redis-sentinel
+          # Note: image tag should be pinned to a specific version in overlays
+          #       ex: 7.2 in nonprod; 7.2.3 in prod
+          image: docker.io/library/redis:7
+          args: [/data/sentinel.conf, --sentinel]
+          ports:
+            - name: sentinel
+              containerPort: 26379
+          volumeMounts:
+            - name: data
+              mountPath: /data
+      volumes:
+        - name: config
+          configMap:
+            name: redis
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 2048Mi

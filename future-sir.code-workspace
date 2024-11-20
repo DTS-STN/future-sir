@@ -1,0 +1,13 @@
+{
+  "folders": [
+    {
+      "path": "future-sir-frontend"
+    },
+    {
+      "path": "future-sir-gitops"
+    },
+    {
+      "path": "future-sir-infrastructure"
+    },
+  ],
+}
