@@ -114,12 +114,23 @@ export function securityHeaders() {
  */
 export function session(environment) {
   const sessionMiddleware = createSessionMiddleware(environment);
-  const sessionMiddlewareIgnore = ['**/api/**'];
+  const sessionMiddlewareIgnore = ['/api/**'];
 
   return (request, response, next) => {
     const isBot = isbot(request.headers?.['user-agent']);
     const ignore = sessionMiddlewareIgnore.some((entry) => minimatch(request.path, entry));
-    if (isBot || ignore) log.debug('Skipping session initializing for path [%s]', request.path);
-    return isBot || ignore ? next() : sessionMiddleware(request, response, next);
+
+    if (isBot || ignore) {
+      log.debug(
+        'Skipping session: [%s] (bot: %s, ignored path: %s)',
+        request.path,
+        isBot ? 'yes' : 'no',
+        ignore ? 'yes' : 'no',
+      );
+
+      return next();
+    }
+
+    return sessionMiddleware(request, response, next);
   };
 }
