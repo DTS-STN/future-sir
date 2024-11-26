@@ -11,6 +11,8 @@ import { createSessionMiddleware } from './session.server.mjs';
  * @typedef {import('express').RequestHandler} RequestHandler
  */
 
+const log = getLogger('middleware.server.mjs');
+
 /**
  * Middleware to protect against Cross-Site Request Forgery (CSRF) attacks.
  *
@@ -19,22 +21,38 @@ import { createSessionMiddleware } from './session.server.mjs';
  * @returns {RequestHandler} An Express middleware function.
  */
 export function csrf() {
-  const log = getLogger('middleware.server.mjs');
-
   return (request, response, next) => {
-    if (request.session) {
-      // create a new session csrf token if required
-      request.session.csrfToken ??= randomUUID();
+    if (['GET', 'HEAD', 'OPTIONS'].includes(request.method)) {
+      log.trace('Non-mutative operation detected; skipping CSRF token validation');
+      return next();
+    }
 
-      if (['POST', 'PUT', 'DELETE', 'PATCH'].includes(request.method)) {
-        log.debug('Mutative operation detected; performing CSRF token validation');
-        const csrfToken = request.body['_csrf'] ?? request.query['_csrf'] ?? request.headers['x-csrf-token'];
-        if (!csrfToken || csrfToken !== request.session.csrfToken) {
-          log.audit('Invalid CSRF token detected; responding with a 403 status code');
-          response.status(403).json({ error: 'Invalid CSRF token', message: 'CSRF token validation failed' });
-          return;
-        }
-      }
+    log.debug('Mutative operation detected; performing CSRF token validation');
+
+    if (!request.session) {
+      log.warn('No session detected during CSRF token validation; responding with a 403 status code');
+      response.status(403).json({
+        error: 'Missing or invalid session cookie',
+        message: 'An http session is required to perform CSRF validation',
+      });
+      return;
+    }
+
+    // create a new session csrf token if required
+    request.session.csrfToken ??= randomUUID();
+
+    const csrfToken =
+      request.body['_csrf'] ?? //
+      request.query['_csrf'] ??
+      request.headers['x-csrf-token'];
+
+    if (!csrfToken || csrfToken !== request.session.csrfToken) {
+      log.warn('Invalid CSRF token detected; responding with a 403 status code');
+      response.status(403).json({
+        error: 'Invalid CSRF token',
+        message: 'CSRF token validation failed',
+      });
+      return;
     }
 
     next();
@@ -48,8 +66,6 @@ export function csrf() {
  * @returns {RequestHandler} An Express middleware function.
  */
 export function morgan(environment) {
-  const log = getLogger('middleware.server.mjs');
-
   const format = environment.isProduction ? 'tiny' : 'dev';
   const loggingMidlewareIgnore = ['/api/readyz', '/__manifest'];
 
@@ -65,8 +81,6 @@ export function morgan(environment) {
  * @returns {RequestHandler} An Express middleware function.
  */
 export function securityHeaders() {
-  const log = getLogger('middleware.server.mjs');
-
   const permissionsPolicy = [
     'camera=()',
     'display-capture=()',
@@ -99,8 +113,6 @@ export function securityHeaders() {
  * @returns {RequestHandler} An Express middleware function.
  */
 export function session(environment) {
-  const log = getLogger('middleware.server.mjs');
-
   const sessionMiddleware = createSessionMiddleware(environment);
   const sessionMiddlewareIgnore = ['**/api/**'];
 

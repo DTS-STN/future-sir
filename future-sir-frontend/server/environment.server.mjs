@@ -55,7 +55,7 @@ export function getEnvironment() {
   const log = getLogger('environment.server.mjs');
 
   const environmentSchema = z.object({
-    NODE_ENV: toUndefined(z.enum(['production', 'development']).default('development')),
+    NODE_ENV: toUndefined(z.enum(['production', 'development', 'test']).default('development')),
     LOG_LEVEL: toUndefined(z.string().default('info')).refine((val) => Object.keys(logLevels).includes(val)),
     SERVER_PORT: toUndefined(z.string().default('3000').transform(toNumber)),
 
