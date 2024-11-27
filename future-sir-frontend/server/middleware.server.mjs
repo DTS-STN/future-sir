@@ -1,10 +1,12 @@
+// import { randomUUID } from 'node:crypto';
+import sessionMiddleware, { MemoryStore } from 'express-session';
 import { isbot } from 'isbot';
 import { minimatch } from 'minimatch';
 import morganMiddleware from 'morgan';
 import { randomUUID } from 'node:crypto';
 
 import { getLogger } from './logging.server.mjs';
-import { createSessionMiddleware } from './session.server.mjs';
+import { createRedisStore } from './session.server.mjs';
 
 /**
  * @typedef {ReturnType<import('./environment.server.mjs').getEnvironment>} Environment
@@ -14,6 +16,16 @@ import { createSessionMiddleware } from './session.server.mjs';
 const log = getLogger('middleware.server.mjs');
 
 /**
+ *
+ * @param {string[]} ignorePatterns
+ * @param {string} path
+ * @returns boolean
+ */
+function shouldIgnore(ignorePatterns, path) {
+  return ignorePatterns.some((entry) => minimatch(path, entry));
+}
+
+/**
  * Middleware to protect against Cross-Site Request Forgery (CSRF) attacks.
  *
  * Creates a CSRF token and stores it in the user's session. Validates the token on subsequent requests.
@@ -21,7 +33,14 @@ const log = getLogger('middleware.server.mjs');
  * @returns {RequestHandler} An Express middleware function.
  */
 export function csrf() {
+  const ignorePatterns = ['/api/**'];
+
   return (request, response, next) => {
+    if (shouldIgnore(ignorePatterns, request.path)) {
+      log.trace('Skipping CSRF protection: [%s]', request.path);
+      return next();
+    }
+
     if (['GET', 'HEAD', 'OPTIONS'].includes(request.method)) {
       log.trace('Non-mutative operation detected; skipping CSRF token validation');
       return next();
@@ -66,13 +85,17 @@ export function csrf() {
  * @returns {RequestHandler} An Express middleware function.
  */
 export function morgan(environment) {
-  const format = environment.isProduction ? 'tiny' : 'dev';
-  const loggingMidlewareIgnore = ['/api/readyz', '/__manifest'];
+  const ignorePatterns = ['/api/readyz', '/__manifest'];
+  const logFormat = environment.isProduction ? 'tiny' : 'dev';
 
-  return morganMiddleware(format, {
+  const middleware = morganMiddleware(logFormat, {
     stream: { write: (msg) => log.audit(msg.trim()) },
-    skip: (request) => loggingMidlewareIgnore.some((entry) => minimatch(request.path, entry)),
   });
+
+  return (request, response, next) => {
+    if (shouldIgnore(ignorePatterns, request.path)) return next();
+    return middleware(request, response, next);
+  };
 }
 
 /**
@@ -81,6 +104,9 @@ export function morgan(environment) {
  * @returns {RequestHandler} An Express middleware function.
  */
 export function securityHeaders() {
+  /** @type {string[]} */
+  const ignorePatterns = [];
+
   const permissionsPolicy = [
     'camera=()',
     'display-capture=()',
@@ -93,6 +119,11 @@ export function securityHeaders() {
   ].join(', ');
 
   return (request, response, next) => {
+    if (shouldIgnore(ignorePatterns, request.path)) {
+      log.trace('Skipping adding security headers to response: [%s]', request.path);
+      return next();
+    }
+
     log.trace('Adding security headers to response');
     response.setHeader('Permissions-Policy', permissionsPolicy);
     response.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
@@ -113,24 +144,50 @@ export function securityHeaders() {
  * @returns {RequestHandler} An Express middleware function.
  */
 export function session(environment) {
-  const sessionMiddleware = createSessionMiddleware(environment);
-  const sessionMiddlewareIgnore = ['/api/**'];
+  const ignorePatterns = ['/api/**'];
+
+  const {
+    isProduction,
+    SESSION_COOKIE_DOMAIN,
+    SESSION_COOKIE_NAME,
+    SESSION_COOKIE_PATH,
+    SESSION_COOKIE_SECRET,
+    SESSION_EXPIRES_SECONDS,
+    SESSION_STORAGE_TYPE,
+  } = environment;
+
+  const sessionStore =
+    SESSION_STORAGE_TYPE === 'redis' //
+      ? createRedisStore(environment)
+      : new MemoryStore();
+
+  const middleware = sessionMiddleware({
+    store: sessionStore,
+    name: SESSION_COOKIE_NAME,
+    secret: SESSION_COOKIE_SECRET,
+    genid: () => randomUUID(),
+    proxy: true,
+    resave: false,
+    rolling: true,
+    saveUninitialized: true,
+    cookie: {
+      domain: SESSION_COOKIE_DOMAIN,
+      path: SESSION_COOKIE_PATH,
+      secure: isProduction,
+      httpOnly: true,
+      maxAge: SESSION_EXPIRES_SECONDS * 1000,
+      sameSite: 'lax',
+    },
+  });
 
   return (request, response, next) => {
     const isBot = isbot(request.headers?.['user-agent']);
-    const ignore = sessionMiddlewareIgnore.some((entry) => minimatch(request.path, entry));
 
-    if (isBot || ignore) {
-      log.debug(
-        'Skipping session: [%s] (bot: %s, ignored path: %s)',
-        request.path,
-        isBot ? 'yes' : 'no',
-        ignore ? 'yes' : 'no',
-      );
-
+    if (isBot || shouldIgnore(ignorePatterns, request.path)) {
+      log.trace('Skipping session: [%s] (bot: %s)', request.path, isBot);
       return next();
     }
 
-    return sessionMiddleware(request, response, next);
+    return middleware(request, response, next);
   };
 }

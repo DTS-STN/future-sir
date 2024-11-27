@@ -2,7 +2,7 @@ import type { RenderToPipeableStreamOptions } from 'react-dom/server';
 import { renderToPipeableStream } from 'react-dom/server';
 
 import { createReadableStreamFromReadable } from '@react-router/node';
-import type { ActionFunctionArgs, AppLoadContext, EntryContext, LoaderFunctionArgs } from 'react-router';
+import type { AppLoadContext, EntryContext } from 'react-router';
 import { ServerRouter } from 'react-router';
 
 import { isbot } from 'isbot';
@@ -32,13 +32,16 @@ export default async function handleRequest(
   const i18n = await initI18next(language);
 
   return new Promise((resolve, reject) => {
-    let shellRendered = false;
     const userAgent = request.headers.get('user-agent');
 
     // Ensure requests from bots and SPA Mode renders wait for all content to load before responding
     // https://react.dev/reference/react-dom/server/renderToPipeableStream#waiting-for-all-content-to-load-for-crawlers-and-static-generation
-    // prettier-ignore
-    const readyOption: keyof RenderToPipeableStreamOptions = (userAgent && isbot(userAgent)) || routerContext.isSpaMode ? 'onAllReady' : 'onShellReady';
+    const readyOption: keyof RenderToPipeableStreamOptions =
+      (userAgent && isbot(userAgent)) || routerContext.isSpaMode //
+        ? 'onAllReady'
+        : 'onShellReady';
+
+    let shellRendered = false;
 
     const { pipe, abort } = renderToPipeableStream(
       <I18nextProvider i18n={i18n}>
@@ -51,19 +54,26 @@ export default async function handleRequest(
 
           const body = new PassThrough();
           const stream = createReadableStreamFromReadable(body);
-          resolve(new Response(stream, { headers: responseHeaders, status: responseStatusCode }));
+
+          resolve(
+            new Response(stream, {
+              headers: responseHeaders,
+              status: responseStatusCode,
+            }),
+          );
+
           pipe(body);
         },
-        onShellError(error: unknown) {
+        onShellError(error) {
           reject(error);
         },
-        onError(error: unknown) {
+        onError(error) {
           responseStatusCode = 500;
-          // Log streaming rendering errors from inside the shell.  Don't log
+          // Log streaming rendering errors from inside the shell. Don't log
           // errors encountered during initial shell rendering since they'll
           // reject and get logged in handleDocumentRequest.
           if (shellRendered) {
-            log.error('%o', error);
+            log.error('Error while rendering react element', error);
           }
         },
       },
@@ -71,12 +81,4 @@ export default async function handleRequest(
 
     setTimeout(abort, ABORT_DELAY);
   });
-}
-
-export function handleError(error: unknown, { request, params, context }: LoaderFunctionArgs | ActionFunctionArgs) {
-  const log = LogFactory.getLogger('entry.server.tsx');
-
-  if (!request.signal.aborted) {
-    log.error('An unexpected error occurred', error);
-  }
 }
