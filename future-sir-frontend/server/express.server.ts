@@ -2,16 +2,17 @@ import { createRequestHandler } from '@react-router/express';
 
 import compression from 'compression';
 import express from 'express';
+import type { NextFunction, Request, Response } from 'express';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sourceMapSupport from 'source-map-support';
 
-import { getEnvironment } from './environment.server.mjs';
-import { getLogger, remapConsoleLoggers } from './logging.server.mjs';
-import { csrf, morgan, securityHeaders, session } from './middleware.server.mjs';
-import { createViteDevServer } from './vite.server.mjs';
+import { getEnvironment } from './environment.server';
+import { getLogger, remapConsoleLoggers } from './logging.server';
+import { csrf, morgan, securityHeaders, session } from './middleware.server';
+import { createViteDevServer } from './vite.server';
 
-const log = getLogger('express.server.mjs');
+const log = getLogger('express.server');
 
 // this is defined as a separate const to trick typescript
 // into letting us import a build file of unknown type
@@ -94,35 +95,33 @@ app.all(
   }),
 );
 
-app.use(
-  /**
-   * @type {import('express').ErrorRequestHandler}
-   */
-  (error, request, response, next) => {
-    log.error(error);
+/**
+ * This is the error handler middleware for the express application.
+ * It must be added using `app.use` after all other middleware and
+ * routes have been defined. Otherwise, it will never be called.
+ */
+app.use((error: unknown, request: Request, response: Response, next: NextFunction) => {
+  log.error(error);
 
-    if (response.headersSent) {
-      return next(error);
-    }
+  if (response.headersSent) {
+    return next(error);
+  }
 
-    const status = response.statusCode ?? 500;
+  const status = response.statusCode;
 
-    const filename =
-      status === 403 //
-        ? '../public/errors/403.html'
-        : '../public/errors/500.html';
+  const filename =
+    status === 403 //
+      ? '../public/errors/403.html'
+      : '../public/errors/500.html';
 
-    const __dirname = path.dirname(fileURLToPath(import.meta.url));
-    const filePath = path.join(__dirname, filename);
+  const __dirname = path.dirname(fileURLToPath(import.meta.url));
+  const filePath = path.join(__dirname, filename);
 
-    response.status(status).sendFile(filePath, (dispatchError) => {
-      if (dispatchError) {
-        log.error(dispatchError);
-        response.status(500).send('Internal Server Error');
-      }
-    });
-  },
-);
+  response.status(status).sendFile(filePath, (dispatchError) => {
+    log.error(dispatchError);
+    response.status(500).send('Internal Server Error');
+  });
+});
 
 log.info('Server initialization complete');
 app.listen(environment.SERVER_PORT, () => log.info(`Listening on http://localhost:${environment.SERVER_PORT}/`));

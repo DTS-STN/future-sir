@@ -1,25 +1,16 @@
 import { z } from 'zod';
 
-import { getLogger } from './logging.server.mjs';
-
-/**
- * @typedef {import('zod').ZodTypeAny} ZodTypeAny
- */
-
-/**
- * @template {ZodTypeAny} T
- * @typedef {import('zod').ZodEffects<T>} ZodEffects
- */
+import { getLogger } from './logging.server';
 
 /**
  * Parses a string to a number.
  *
  * This function uses `parseInt` to convert the provided string to a number.
  *
- * @param {string} str The string to be parsed.
- * @returns {number} The parsed number, or NaN if the conversion fails.
+ * @param str The string to be parsed.
+ * @returns The parsed number, or NaN if the conversion fails.
  */
-function toNumber(str) {
+function toNumber(str: string): number {
   return parseInt(str);
 }
 
@@ -29,11 +20,11 @@ function toNumber(str) {
  * This function takes a Zod schema and returns a new schema that preprocesses
  * any empty string value to undefined before applying the original schema validation.
  *
- * @template {ZodTypeAny} T The type of the Zod schema.
- * @param {T} schema The Zod schema to be wrapped.
- * @returns {ZodEffects<T>} A Zod schema that can produce the original output type or undefined.
+ * @template T The type of the Zod schema.
+ * @param schema The Zod schema to be wrapped.
+ * @returns A Zod schema that can produce the original output type or undefined.
  */
-function toUndefined(schema) {
+function toUndefined<T extends z.ZodTypeAny>(schema: T): z.ZodEffects<T> {
   return z.preprocess((value) => (value === '' ? undefined : value), schema);
 }
 
@@ -41,9 +32,8 @@ function toUndefined(schema) {
  * Defines a constant object representing logging levels.
  *
  * This object provides a mapping between string names and their corresponding integer values for logging levels.
- * @type {{error: 0, warn: 1, info: 2, audit: 3, debug: 4, trace: 5}}
  */
-export const logLevels = { error: 0, warn: 1, info: 2, audit: 3, debug: 4, trace: 5 };
+export const logLevels = { error: 0, warn: 1, info: 2, audit: 3, debug: 4, trace: 5 } as const;
 
 /**
  * Reads and validates environment variables.
@@ -77,11 +67,11 @@ export function getEnvironment() {
 
   const environment = environmentSchema.parse(process.env);
 
-  // eslint-disable-next-line no-unused-vars
-  const { REDIS_PASSWORD, SESSION_COOKIE_SECRET, ...sanitizedEnv } = environment;
-  log.info('Successfully validated server runtime environment: %o', sanitizedEnv);
+  log.info('Successfully validated server runtime environment: %o', environment);
 
   const isProduction = environment.NODE_ENV === 'production';
 
   return { ...environment, isProduction };
 }
+
+export type Environment = ReturnType<typeof getEnvironment>;

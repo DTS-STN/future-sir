@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "build": "react-router build",
-    "dev": "nodemon --env-file .env --watch .env --watch './server/*.server.mjs' ./server/express.server.mjs",
-    "preview": "cross-env NODE_ENV=production nodemon --env-file .env --watch .env --watch './server/*.server.mjs' ./server/express.server.mjs",
-    "start": "cross-env NODE_ENV=production node ./server/express.server.mjs",
+    "dev": "nodemon --env-file .env --watch .env --watch './server/*.server.ts' -x tsx ./server/express.server.ts",
+    "preview": "cross-env NODE_ENV=production nodemon --env-file .env --watch .env --watch './server/*.server.ts' -x tsx ./server/express.server.ts",
+    "start": "cross-env NODE_ENV=production tsx ./server/express.server.ts",
     "test": "vitest",
     "test:e2e": "playwright test",
     "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint ./",
@@ -17,6 +17,7 @@
     "@react-router/express": "^7.0.1",
     "@react-router/node": "^7.0.1",
     "@react-router/serve": "^7.0.1",
+    "@types/express": "^5.0.0",
     "clsx": "^2.1.1",
     "compression": "^1.7.5",
     "connect-redis": "^7.1.1",
@@ -36,6 +37,7 @@
     "source-map-support": "^0.5.21",
     "sprintf-js": "^1.1.3",
     "tailwind-merge": "^2.5.5",
+    "tsx": "^4.19.2",
     "winston": "^3.17.0",
     "winston-error-format": "^3.0.1",
     "zod": "^3.23.8"

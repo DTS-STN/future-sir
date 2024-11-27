@@ -4,7 +4,7 @@ import { LEVEL, MESSAGE, SPLAT } from 'triple-beam';
 import winston, { format, transports } from 'winston';
 import { fullFormat } from 'winston-error-format';
 
-import { logLevels } from './environment.server.mjs';
+import { logLevels } from './environment.server';
 
 /**
  * Gets a logger instance for the specified category.
@@ -12,10 +12,10 @@ import { logLevels } from './environment.server.mjs';
  * Creates a new logger instance with a configured format and console transport if it doesn't exist for the provided category.
  * Otherwise, retrieves the existing logger.
  *
- * @param {string} category The category name for the logger.
- * @returns {winston.Logger} The winston logger instance for the category.
+ * @param category The category name for the logger.
+ * @returns The winston logger instance for the category.
  */
-export function getLogger(category) {
+export function getLogger(category: string): winston.Logger {
   return winston.loggers.has(category)
     ? winston.loggers.get(category)
     : winston.loggers.add(category, {
@@ -27,11 +27,7 @@ export function getLogger(category) {
           format.splat(),
           fullFormat(),
           format.printf((info) => {
-            /**
-             * @param {string} label
-             * @param {number} size
-             */
-            const formatLabel = (label, size) => {
+            const formatLabel = (label: string, size: number) => {
               const str = label.padStart(size);
               return str.length <= size ? str : `…${str.slice(-size + 1)}`;
             };
@@ -54,10 +50,8 @@ export function getLogger(category) {
 /**
  * Remaps native console loggers to log through the configured logger for 'console' category.
  * This allows all console output to be captured and formatted by the configured logging system.
- *
- * @returns {void}
  */
-export function remapConsoleLoggers() {
+export function remapConsoleLoggers(): void {
   const log = getLogger('logging.server.mjs');
   const consoleLog = getLogger('console');
 

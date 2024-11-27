@@ -1,27 +1,18 @@
 // import { randomUUID } from 'node:crypto';
+import type { RequestHandler } from 'express';
 import sessionMiddleware, { MemoryStore } from 'express-session';
 import { isbot } from 'isbot';
 import { minimatch } from 'minimatch';
 import morganMiddleware from 'morgan';
 import { randomUUID } from 'node:crypto';
 
-import { getLogger } from './logging.server.mjs';
-import { createRedisStore } from './redis.server.mjs';
+import type { Environment } from './environment.server';
+import { getLogger } from './logging.server';
+import { createRedisStore } from './redis.server';
 
-/**
- * @typedef {ReturnType<import('./environment.server.mjs').getEnvironment>} Environment
- * @typedef {import('express').RequestHandler} RequestHandler
- */
+const log = getLogger('middleware.server');
 
-const log = getLogger('middleware.server.mjs');
-
-/**
- *
- * @param {string[]} ignorePatterns
- * @param {string} path
- * @returns boolean
- */
-function shouldIgnore(ignorePatterns, path) {
+function shouldIgnore(ignorePatterns: string[], path: string): boolean {
   return ignorePatterns.some((entry) => minimatch(path, entry));
 }
 
@@ -30,11 +21,10 @@ function shouldIgnore(ignorePatterns, path) {
  *
  * Creates a CSRF token and stores it in the user's session. Validates the token on subsequent requests.
  *
- * @returns {RequestHandler} An Express middleware function.
+ * @returns An Express middleware function.
  */
-export function csrf() {
-  /** @type string[] */
-  const ignorePatterns = [];
+export function csrf(): RequestHandler {
+  const ignorePatterns: string[] = [];
 
   return (request, response, next) => {
     if (shouldIgnore(ignorePatterns, request.path)) {
@@ -76,12 +66,11 @@ export function csrf() {
 /**
  * Configures Morgan logging middleware with appropriate format and filtering.
  *
- * @param {Environment} environment
- * @returns {RequestHandler} An Express middleware function.
+ * @param environment
+ * @returns An Express middleware function.
  */
-export function morgan(environment) {
-  /** @type string[] */
-  const ignorePatterns = [];
+export function morgan(environment: Environment): RequestHandler {
+  const ignorePatterns: string[] = [];
 
   const logFormat = environment.isProduction ? 'tiny' : 'dev';
 
@@ -98,11 +87,10 @@ export function morgan(environment) {
 /**
  * Sets various security headers to protect the application.
  *
- * @returns {RequestHandler} An Express middleware function.
+ * @returns An Express middleware function.
  */
-export function securityHeaders() {
-  /** @type {string[]} */
-  const ignorePatterns = [];
+export function securityHeaders(): RequestHandler {
+  const ignorePatterns: string[] = [];
 
   const permissionsPolicy = [
     'camera=()',
@@ -137,12 +125,11 @@ export function securityHeaders() {
 /**
  * Configures session middleware, optionally skipping it for bots and specific paths.
  *
- * @param {Environment} environment The environment configuration.
- * @returns {RequestHandler} An Express middleware function.
+ * @param The environment configuration.
+ * @returns An Express middleware function.
  */
-export function session(environment) {
-  /** @type string[] */
-  const ignorePatterns = [];
+export function session(environment: Environment): RequestHandler {
+  const ignorePatterns: string[] = [];
 
   const {
     isProduction,
@@ -179,7 +166,7 @@ export function session(environment) {
   });
 
   return (request, response, next) => {
-    const isBot = isbot(request.headers?.['user-agent']);
+    const isBot = isbot(request.headers['user-agent']);
 
     if (isBot || shouldIgnore(ignorePatterns, request.path)) {
       log.trace('Skipping session: [%s] (bot: %s)', request.path, isBot);
