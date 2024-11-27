@@ -63,7 +63,6 @@ export function getEnvironment() {
     REDIS_HOST: toUndefined(z.string().default('localhost')),
     REDIS_PORT: toUndefined(z.string().default('6379')).transform(toNumber),
     REDIS_PASSWORD: toUndefined(z.string().default('password')),
-    REDIS_CONNECT_MAX_RETRIES: toUndefined(z.string().default('10').transform(toNumber)),
 
     // session config
     SESSION_COOKIE_DOMAIN: toUndefined(z.string().default('localhost')),
