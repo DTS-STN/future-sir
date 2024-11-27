@@ -3,8 +3,7 @@ import { index, layout, route } from '@react-router/dev/routes';
 
 // important: we cannot use aliased imports (~/) here 🤷
 import type { I18nPageRoute, I18nRoute } from './i18n-routes';
-import { i18nRoutes } from './i18n-routes';
-import { isI18nPageRoute } from './utils';
+import { i18nRoutes, isI18nPageRoute } from './i18n-routes';
 
 /**
  * Generates an array of route config entries for different languages

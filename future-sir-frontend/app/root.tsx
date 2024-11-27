@@ -45,6 +45,8 @@ export function links(): Route.LinkDescriptors {
 export default function App(props: Route.ComponentProps) {
   const { currentLanguage } = useLanguage();
 
+  throw new Error('something happenend');
+
   return (
     <html lang={currentLanguage}>
       <head>

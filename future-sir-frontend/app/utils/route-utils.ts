@@ -1,4 +1,5 @@
-import type { I18nLayoutRoute, I18nPageRoute, I18nRoute, I18nRouteFile } from '~/i18n-routes';
+import type { I18nPageRoute, I18nRoute, I18nRouteFile } from '~/i18n-routes';
+import { isI18nLayoutRoute, isI18nPageRoute } from '~/i18n-routes';
 
 /**
  * Recursively searches for a route matching the given file within a structure of I18nRoutes.
@@ -80,18 +81,4 @@ export function getRouteByPath(pathname: string, routes: I18nRoute[]): I18nPageR
   }
 
   return route;
-}
-
-/**
- * Type guard to determine if a route is an I18nLayoutRoute.
- */
-export function isI18nLayoutRoute(obj: unknown): obj is I18nLayoutRoute {
-  return obj !== null && typeof obj === 'object' && 'file' in obj && 'children' in obj;
-}
-
-/**
- * Type guard to determine if a route is an I18nPageRoute.
- */
-export function isI18nPageRoute(obj: unknown): obj is I18nPageRoute {
-  return obj !== null && typeof obj === 'object' && 'file' in obj && 'paths' in obj;
 }

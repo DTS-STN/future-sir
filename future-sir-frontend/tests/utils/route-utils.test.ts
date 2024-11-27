@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
 import type { I18nRouteFile } from '~/i18n-routes';
-import { i18nRoutes } from '~/i18n-routes';
-import { findRouteByFile, findRouteByPath, getRouteByFile, getRouteByPath, isI18nLayoutRoute, isI18nPageRoute } from '~/utils';
+import { i18nRoutes, isI18nLayoutRoute, isI18nPageRoute } from '~/i18n-routes';
+import { findRouteByFile, findRouteByPath, getRouteByFile, getRouteByPath } from '~/utils';
 
 describe('route-utils', () => {
   describe('findRouteByFile', () => {

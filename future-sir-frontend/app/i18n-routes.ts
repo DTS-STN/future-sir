@@ -10,6 +10,20 @@ export type I18nPageRoute = { file: string; paths: I18nPaths };
 export type I18nRouteFile = ExtractI18nRouteFiles<(typeof i18nRoutes)[number]>;
 
 /**
+ * Type guard to determine if a route is an I18nLayoutRoute.
+ */
+export function isI18nLayoutRoute(obj: unknown): obj is I18nLayoutRoute {
+  return obj !== null && typeof obj === 'object' && 'file' in obj && 'children' in obj;
+}
+
+/**
+ * Type guard to determine if a route is an I18nPageRoute.
+ */
+export function isI18nPageRoute(obj: unknown): obj is I18nPageRoute {
+  return obj !== null && typeof obj === 'object' && 'file' in obj && 'paths' in obj;
+}
+
+/**
  * Bilingual routes are declared in an I18nRoute[] object so the
  * filenames can be extracted and strongly typed as I18nPageRouteId
  *
