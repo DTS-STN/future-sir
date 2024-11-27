@@ -28,10 +28,17 @@ export default function Index(props: Route.ComponentProps) {
 
   return (
     <div className="mb-8">
-      <p className="mt-8 text-lg">Resources loaded from: {t('protected:resource')}</p>
-      <p>
-        <InlineLink file="routes/public/index.tsx">Navigate to public page</InlineLink>
+      <p className="mt-8 text-lg">
+        i18n resources loaded from: <mark>{t('protected:resource')}</mark>
       </p>
+      <ul className="ml-8 mt-8 list-disc">
+        <li>
+          <InlineLink file="routes/public/index.tsx">Navigate to public page</InlineLink>
+        </li>
+        <li>
+          <InlineLink to="/">Go home</InlineLink>
+        </li>
+      </ul>
     </div>
   );
 }

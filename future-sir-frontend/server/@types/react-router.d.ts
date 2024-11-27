@@ -9,6 +9,7 @@ declare module 'react-router' {
   interface AppLoadContext {
     environment: ReturnType<typeof getEnvironment>;
     getLogger: typeof getLogger;
+    nonce: string;
     session: Request['session'];
   }
 }

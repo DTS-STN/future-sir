@@ -8,7 +8,7 @@ import sourceMapSupport from 'source-map-support';
 
 import { getEnvironment } from './environment.server.mjs';
 import { getLogger, remapConsoleLoggers } from './logging.server.mjs';
-import { csrf, morgan, securityHeaders, session } from './middleware.server.mjs';
+import { csrf, logging, nonce, securityHeaders, session } from './middleware.server.mjs';
 import { createViteDevServer } from './vite.server.mjs';
 
 const log = getLogger('express.server.mjs');
@@ -39,14 +39,14 @@ app.set('trust proxy', true);
 
 log.info('  ✓ configuring express middlewares...');
 
-log.info('    ✓ compression');
+log.info('    ✓ compression middleware');
 app.use(compression());
 
-log.info('    ✓ morgan');
-app.use(morgan(environment));
+log.info('    ✓ logging middleware');
+app.use(logging(environment));
 
 if (environment.isProduction) {
-  log.info('    ✓ static assets (production)');
+  log.info('    ✓ static assets middleware (production)');
   log.info('      ✓ caching /assets for 1y');
   app.use('/assets', express.static('./build/client/assets', { immutable: true, maxAge: '1y' }));
   log.info('      ✓ caching /locales for 1d');
@@ -54,14 +54,17 @@ if (environment.isProduction) {
   log.info('      ✓ caching remaining static content for 1y');
   app.use(express.static('./build/client', { maxAge: '1y' }));
 } else {
-  log.info('    ✓ static assets (development)');
+  log.info('    ✓ static assets middleware (development)');
   log.info('      ✓ caching /locales for 1m');
   app.use('/locales', express.static('public/locales', { maxAge: '1m' }));
   log.info('      ✓ caching remaining static content for 1h');
   app.use(express.static('./build/client', { maxAge: '1h' }));
 }
 
-log.info('    ✓ security headers');
+log.info('    ✓ nonce middleware');
+app.use(nonce());
+
+log.info('    ✓ security headers middleware');
 app.use(securityHeaders());
 
 log.info('    ✓ express urlencode middleware');
@@ -74,7 +77,7 @@ log.info('    ✓ CSRF token middleware');
 app.use(csrf());
 
 if (viteDevServer) {
-  log.info('    ✓ vite dev server');
+  log.info('    ✓ vite dev server middlewares');
   app.use(viteDevServer.middlewares);
 }
 
@@ -83,9 +86,10 @@ app.all(
   '*',
   createRequestHandler({
     mode: environment.NODE_ENV,
-    getLoadContext: (request) => ({
+    getLoadContext: (request, response) => ({
       environment: environment,
       getLogger: getLogger,
+      nonce: response.locals.nonce,
       session: request.session,
     }),
     build: viteDevServer //
@@ -94,10 +98,9 @@ app.all(
   }),
 );
 
+log.info('  ✓ registering global error handler');
 app.use(
-  /**
-   * @type {import('express').ErrorRequestHandler}
-   */
+  /** @type {import('express').ErrorRequestHandler} */
   (error, request, response, next) => {
     log.error(error);
 
@@ -105,17 +108,17 @@ app.use(
       return next(error);
     }
 
-    const status = response.statusCode ?? 500;
+    const statusCode = response.statusCode ?? 500;
 
     const filename =
-      status === 403 //
+      statusCode === 403 //
         ? '../public/errors/403.html'
         : '../public/errors/500.html';
 
     const __dirname = path.dirname(fileURLToPath(import.meta.url));
     const filePath = path.join(__dirname, filename);
 
-    response.status(status).sendFile(filePath, (dispatchError) => {
+    response.status(statusCode).sendFile(filePath, (dispatchError) => {
       if (dispatchError) {
         log.error(dispatchError);
         response.status(500).send('Internal Server Error');

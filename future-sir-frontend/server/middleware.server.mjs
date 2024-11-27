@@ -16,10 +16,11 @@ import { createRedisStore } from './redis.server.mjs';
 const log = getLogger('middleware.server.mjs');
 
 /**
+ * Checks if a given path should be ignored based on a list of ignore patterns.
  *
- * @param {string[]} ignorePatterns
- * @param {string} path
- * @returns boolean
+ * @param {string[]} ignorePatterns - An array of glob patterns to match against the path.
+ * @param {string} path - The path to check.
+ * @returns {boolean} - True if the path should be ignored, false otherwise.
  */
 function shouldIgnore(ignorePatterns, path) {
   return ignorePatterns.some((entry) => minimatch(path, entry));
@@ -57,6 +58,7 @@ export function csrf() {
 
     // create a new session csrf token if required
     request.session.csrfToken ??= randomUUID();
+    response.locals.csrfToken = request.session.csrfToken;
 
     const csrfToken =
       request.body['_csrf'] ?? //
@@ -74,12 +76,35 @@ export function csrf() {
 }
 
 /**
- * Configures Morgan logging middleware with appropriate format and filtering.
+ *
+ * Adds a nonce to the response. Can be used to help prevent cross-site scripting (XSS) attacks.
+ *
+ * @returns {RequestHandler} An Express middleware function.
+ */
+export function nonce() {
+  /** @type {string[]} */
+  const ignorePatterns = [];
+
+  return (request, response, next) => {
+    if (shouldIgnore(ignorePatterns, request.path)) {
+      log.trace('Skipping adding nonce to response: [%s]', request.path);
+      return next();
+    }
+
+    log.trace('Adding nonce to response');
+    response.locals.nonce = randomUUID();
+
+    next();
+  };
+}
+
+/**
+ * Configures a logging middleware with appropriate format and filtering.
  *
  * @param {Environment} environment
  * @returns {RequestHandler} An Express middleware function.
  */
-export function morgan(environment) {
+export function logging(environment) {
   /** @type string[] */
   const ignorePatterns = [];
 
