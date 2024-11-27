@@ -6,7 +6,7 @@ import morganMiddleware from 'morgan';
 import { randomUUID } from 'node:crypto';
 
 import { getLogger } from './logging.server.mjs';
-import { createRedisStore } from './session.server.mjs';
+import { createRedisStore } from './redis.server.mjs';
 
 /**
  * @typedef {ReturnType<import('./environment.server.mjs').getEnvironment>} Environment
@@ -33,7 +33,8 @@ function shouldIgnore(ignorePatterns, path) {
  * @returns {RequestHandler} An Express middleware function.
  */
 export function csrf() {
-  const ignorePatterns = ['/api/**'];
+  /** @type string[] */
+  const ignorePatterns = [];
 
   return (request, response, next) => {
     if (shouldIgnore(ignorePatterns, request.path)) {
@@ -50,11 +51,8 @@ export function csrf() {
 
     if (!request.session) {
       log.warn('No session detected during CSRF token validation; responding with a 403 status code');
-      response.status(403).json({
-        error: 'Missing or invalid session cookie',
-        message: 'An http session is required to perform CSRF validation',
-      });
-      return;
+      response.status(403);
+      throw new Error('An http session is required to perform CSRF validation');
     }
 
     // create a new session csrf token if required
@@ -67,11 +65,8 @@ export function csrf() {
 
     if (!csrfToken || csrfToken !== request.session.csrfToken) {
       log.warn('Invalid CSRF token detected; responding with a 403 status code');
-      response.status(403).json({
-        error: 'Invalid CSRF token',
-        message: 'CSRF token validation failed',
-      });
-      return;
+      response.status(403);
+      throw new Error('CSRF token validation failed: invalid token');
     }
 
     next();
@@ -85,7 +80,9 @@ export function csrf() {
  * @returns {RequestHandler} An Express middleware function.
  */
 export function morgan(environment) {
-  const ignorePatterns = ['/api/readyz', '/__manifest'];
+  /** @type string[] */
+  const ignorePatterns = [];
+
   const logFormat = environment.isProduction ? 'tiny' : 'dev';
 
   const middleware = morganMiddleware(logFormat, {
@@ -144,7 +141,8 @@ export function securityHeaders() {
  * @returns {RequestHandler} An Express middleware function.
  */
 export function session(environment) {
-  const ignorePatterns = ['/api/**'];
+  /** @type string[] */
+  const ignorePatterns = [];
 
   const {
     isProduction,

@@ -2,6 +2,8 @@ import { createRequestHandler } from '@react-router/express';
 
 import compression from 'compression';
 import express from 'express';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import sourceMapSupport from 'source-map-support';
 
 import { getEnvironment } from './environment.server.mjs';
@@ -90,6 +92,36 @@ app.all(
       ? () => viteDevServer.ssrLoadModule('virtual:react-router/server-build')
       : () => import(buildFile),
   }),
+);
+
+app.use(
+  /**
+   * @type {import('express').ErrorRequestHandler}
+   */
+  (error, request, response, next) => {
+    log.error(error);
+
+    if (response.headersSent) {
+      return next(error);
+    }
+
+    const status = response.statusCode ?? 500;
+
+    const filename =
+      status === 403 //
+        ? '../public/errors/403.html'
+        : '../public/errors/500.html';
+
+    const __dirname = path.dirname(fileURLToPath(import.meta.url));
+    const filePath = path.join(__dirname, filename);
+
+    response.status(status).sendFile(filePath, (dispatchError) => {
+      if (dispatchError) {
+        log.error(dispatchError);
+        response.status(500).send('Internal Server Error');
+      }
+    });
+  },
 );
 
 log.info('Server initialization complete');

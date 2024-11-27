@@ -63,6 +63,8 @@ export function getEnvironment() {
     REDIS_HOST: toUndefined(z.string().default('localhost')),
     REDIS_PORT: toUndefined(z.string().default('6379')).transform(toNumber),
     REDIS_PASSWORD: toUndefined(z.string().default('password')),
+    REDIS_EXPIRES_SECONDS: toUndefined(z.string().default('3600')).transform(toNumber),
+    REDIS_COMMAND_TIMEOUT_SECONDS: toUndefined(z.string().default('1000')).transform(toNumber),
 
     // session config
     SESSION_COOKIE_DOMAIN: toUndefined(z.string().default('localhost')),
@@ -70,7 +72,6 @@ export function getEnvironment() {
     SESSION_COOKIE_PATH: toUndefined(z.string().default('/')),
     SESSION_COOKIE_SECRET: toUndefined(z.string().default('secret')),
     SESSION_EXPIRES_SECONDS: toUndefined(z.string().default('3600')).transform(toNumber),
-    SESSION_MAX_RETRIES_PER_REQUEST: toUndefined(z.string().default('3')).transform(toNumber),
     SESSION_STORAGE_TYPE: toUndefined(z.enum(['memory', 'redis']).default('memory')),
   });
 

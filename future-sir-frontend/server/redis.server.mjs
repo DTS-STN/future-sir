@@ -26,7 +26,7 @@ import { getLogger } from './logging.server.mjs';
 export function createRedisStore(environment) {
   const log = getLogger('session.server.mjs');
 
-  const { REDIS_HOST, REDIS_PASSWORD, REDIS_PORT, SESSION_EXPIRES_SECONDS, SESSION_MAX_RETRIES_PER_REQUEST } = environment;
+  const { REDIS_HOST, REDIS_PASSWORD, REDIS_PORT, REDIS_EXPIRES_SECONDS, REDIS_COMMAND_TIMEOUT_SECONDS } = environment;
 
   /**
    * @param {number} times
@@ -42,7 +42,7 @@ export function createRedisStore(environment) {
     host: REDIS_HOST,
     port: REDIS_PORT,
     password: REDIS_PASSWORD,
-    maxRetriesPerRequest: SESSION_MAX_RETRIES_PER_REQUEST,
+    commandTimeout: REDIS_COMMAND_TIMEOUT_SECONDS,
     retryStrategy,
   });
 
@@ -50,5 +50,5 @@ export function createRedisStore(environment) {
     .on('connect', () => log.info('Connected to Redis server [%s]', `redis://${REDIS_HOST}:${REDIS_PORT}`))
     .on('error', (error) => log.error('Redis client error: %s', error.message));
 
-  return new RedisStore({ client: redisClient, prefix: 'SESSION:', ttl: SESSION_EXPIRES_SECONDS });
+  return new RedisStore({ client: redisClient, prefix: 'SESSION:', ttl: REDIS_EXPIRES_SECONDS });
 }
