@@ -70,6 +70,7 @@ export function getEnvironment() {
     SESSION_COOKIE_PATH: toUndefined(z.string().default('/')),
     SESSION_COOKIE_SECRET: toUndefined(z.string().default('secret')),
     SESSION_EXPIRES_SECONDS: toUndefined(z.string().default('3600')).transform(toNumber),
+    SESSION_MAX_RETRIES_PER_REQUEST: toUndefined(z.string().default('3')).transform(toNumber),
     SESSION_STORAGE_TYPE: toUndefined(z.enum(['memory', 'redis']).default('memory')),
   });
 

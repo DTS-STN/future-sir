@@ -26,14 +26,14 @@ import { getLogger } from './logging.server.mjs';
 export function createRedisStore(environment) {
   const log = getLogger('session.server.mjs');
 
-  const { REDIS_HOST, REDIS_PASSWORD, REDIS_PORT, SESSION_EXPIRES_SECONDS } = environment;
+  const { REDIS_HOST, REDIS_PASSWORD, REDIS_PORT, SESSION_EXPIRES_SECONDS, SESSION_MAX_RETRIES_PER_REQUEST } = environment;
 
   /**
    * @param {number} times
    */
   const retryStrategy = (times) => {
-    // exponential backoff starting at 250ms to a maximum of 10s
-    const retryAfter = Math.min(250 * Math.pow(2, times - 1), 10000);
+    // exponential backoff starting at 250ms to a maximum of 5s
+    const retryAfter = Math.min(250 * Math.pow(2, times - 1), 5000);
     log.error('Could not connect to Redis (attempt #%s); retry in %s ms', times, retryAfter);
     return retryAfter;
   };
@@ -42,6 +42,7 @@ export function createRedisStore(environment) {
     host: REDIS_HOST,
     port: REDIS_PORT,
     password: REDIS_PASSWORD,
+    maxRetriesPerRequest: SESSION_MAX_RETRIES_PER_REQUEST,
     retryStrategy,
   });
 

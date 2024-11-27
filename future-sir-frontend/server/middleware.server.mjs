@@ -164,7 +164,7 @@ export function session(environment) {
   const middleware = sessionMiddleware({
     store: sessionStore,
     name: SESSION_COOKIE_NAME,
-    secret: SESSION_COOKIE_SECRET,
+    secret: [SESSION_COOKIE_SECRET],
     genid: () => randomUUID(),
     proxy: true,
     resave: false,
