@@ -42,7 +42,14 @@ export function links(): Route.LinkDescriptors {
   ];
 }
 
-export default function App(props: Route.ComponentProps) {
+export function loader({ context }: Route.LoaderArgs) {
+  return {
+    environment: context.clientEnvironment,
+    nonce: context.nonce,
+  };
+}
+
+export default function App({ loaderData }: Route.ComponentProps) {
   const { currentLanguage } = useLanguage();
 
   return (
@@ -55,8 +62,14 @@ export default function App(props: Route.ComponentProps) {
       </head>
       <body vocab="http://schema.org/" typeof="WebPage">
         <Outlet />
-        <ScrollRestoration />
-        <Scripts />
+        <ScrollRestoration nonce={loaderData.nonce} />
+        <Scripts nonce={loaderData.nonce} />
+        <script
+          nonce={loaderData.nonce}
+          dangerouslySetInnerHTML={{
+            __html: `window.environment = ${JSON.stringify(loaderData.environment)}`,
+          }}
+        />
       </body>
     </html>
   );

@@ -25,7 +25,8 @@ export default async function handleRequest(
 ) {
   const log = loadContext.getLogger('entry.server.tsx');
 
-  log.trace('Adding LoggerFactory to global scope');
+  log.trace('Adding global variables to globalThis');
+  globalThis.environment = loadContext.serverEnvironment;
   globalThis.LogFactory = { getLogger: loadContext.getLogger };
 
   const language = getLanguage(request);
@@ -76,6 +77,7 @@ export default async function handleRequest(
             log.error('Error while rendering react element', error);
           }
         },
+        nonce: loadContext.nonce,
       },
     );
 

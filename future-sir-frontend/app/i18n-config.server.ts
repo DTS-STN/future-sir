@@ -39,9 +39,13 @@ export async function getFixedT<NS extends Namespace>(
  * Creates and initializes an i18next instance for server-side rendering.
  */
 export async function initI18next(language?: Language): Promise<i18n> {
-  const i18n = createInstance().use(initReactI18next);
+  const { I18NEXT_DEBUG } = globalThis.environment;
+
+  const i18n = createInstance() //
+    .use(initReactI18next);
 
   await i18n.init({
+    debug: I18NEXT_DEBUG,
     lng: language,
     defaultNS: false,
     fallbackLng: 'en',

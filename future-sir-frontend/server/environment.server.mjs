@@ -3,12 +3,12 @@ import { z } from 'zod';
 import { getLogger } from './logging.server.mjs';
 
 /**
- * @typedef {import('zod').ZodTypeAny} ZodTypeAny
+ * @template {ZodTypeAny} T
+ * @typedef {import('zod').ZodEffects<T>} ZodEffects
  */
 
 /**
- * @template {ZodTypeAny} T
- * @typedef {import('zod').ZodEffects<T>} ZodEffects
+ * @typedef {import('zod').ZodTypeAny} ZodTypeAny
  */
 
 /**
@@ -81,7 +81,9 @@ function toUndefined(schema) {
  * Defines a constant object representing logging levels.
  *
  * This object provides a mapping between string names and their corresponding integer values for logging levels.
+ *
  * @type {{error: 0, warn: 1, info: 2, audit: 3, debug: 4, trace: 5}}
+ * @typedef {typeof logLevels} LogLevels
  */
 export const logLevels = { error: 0, warn: 1, info: 2, audit: 3, debug: 4, trace: 5 };
 
@@ -90,12 +92,13 @@ export const logLevels = { error: 0, warn: 1, info: 2, audit: 3, debug: 4, trace
  *
  * This function retrieves environment variables from the `process.env` object and validates them
  * using a Zod schema. The schema ensures type safety and defines default values for some variables.
+ *
+ * @typedef {ReturnType<getClientEnvironment>} ClientEnvironment
  */
 export function getClientEnvironment() {
   const log = getLogger('environment.server.mjs');
 
   const environment = clientEnvironmentSchema.parse(process.env);
-
   log.info('Successfully validated client runtime environment: %o', environment);
 
   return environment;
@@ -106,6 +109,8 @@ export function getClientEnvironment() {
  *
  * This function retrieves environment variables from the `process.env` object and validates them
  * using a Zod schema. The schema ensures type safety and defines default values for some variables.
+ *
+ * @typedef {ReturnType<getServerEnvironment>} ServerEnvironment
  */
 export function getServerEnvironment() {
   const log = getLogger('environment.server.mjs');

@@ -1,11 +1,7 @@
-import 'winston';
-
-import type { logLevels } from '../server/environment.server.mjs';
-
-type LogLevels = keyof typeof logLevels;
+import type { LogLevels } from '../server/environment.server.mjs';
 
 declare module 'winston' {
-  interface Logger extends Record<LogLevels, winston.LeveledLogMethod> {}
+  interface Logger extends Record<keyof LogLevels, LeveledLogMethod> {}
 }
 
 export {};

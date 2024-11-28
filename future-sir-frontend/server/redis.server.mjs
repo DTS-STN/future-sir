@@ -4,7 +4,7 @@ import Redis from 'ioredis';
 import { getLogger } from './logging.server.mjs';
 
 /**
- * @typedef {ReturnType<import('./environment.server.mjs').getServerEnvironment>} ServerEnvironment
+ * @typedef {import('./environment.server.mjs').ServerEnvironment} ServerEnvironment
  * @typedef {import('express').RequestHandler} RequestHandler
  */
 

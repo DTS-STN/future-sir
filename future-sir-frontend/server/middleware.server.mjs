@@ -9,7 +9,7 @@ import { getLogger } from './logging.server.mjs';
 import { createRedisStore } from './redis.server.mjs';
 
 /**
- * @typedef {ReturnType<import('./environment.server.mjs').getServerEnvironment>} ServerEnvironment
+ * @typedef {import('./environment.server.mjs').ServerEnvironment} ServerEnvironment
  * @typedef {import('express').RequestHandler} RequestHandler
  */
 
@@ -101,7 +101,7 @@ export function nonce() {
 /**
  * Configures a logging middleware with appropriate format and filtering.
  *
- * @param {ServerEnvironment} serverEnvironment
+ * @param {import('./environment.server.mjs').ServerEnvironment} serverEnvironment
  * @returns {RequestHandler} An Express middleware function.
  */
 export function logging(serverEnvironment) {

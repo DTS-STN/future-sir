@@ -1,10 +1,9 @@
 import type { RouteModules } from 'react-router';
 
+import type { ClientEnvironment, ServerEnvironment } from '~/../server/environment.server.mjs';
+
 /* eslint-disable no-var */
 
-/**
- * Augment the `global` namespace with our custom global type definitions.
- */
 declare global {
   /**
    * The application's supported languages: English and French.
@@ -14,18 +13,19 @@ declare global {
   /**
    * A simple logger interface.
    */
-  type Logger = {
+  interface Logger {
     info: (message: string, ...args: unknown[]) => void;
     error: (message: string, ...args: unknown[]) => void;
     warn: (message: string, ...args: unknown[]) => void;
     debug: (message: string, ...args: unknown[]) => void;
-  };
+  }
 
   /**
-   * React Router adds the route modules to global
-   * scope, but doesn't declare them anywhere.
+   * Add the client-side environment to the window global namespace.
    */
-  var __reactRouterRouteModules: RouteModules;
+  interface Window {
+    environment: ClientEnvironment;
+  }
 
   /**
    * LogFactory global class is initialized in:
@@ -36,6 +36,17 @@ declare global {
   var LogFactory: {
     getLogger: (category: string) => Logger;
   };
+
+  /**
+   * Add the server-side environment to globalThis.
+   */
+  var environment: ServerEnvironment;
+
+  /**
+   * React Router adds the route modules to global
+   * scope, but doesn't declare them anywhere.
+   */
+  var __reactRouterRouteModules: RouteModules;
 }
 
 export {};
