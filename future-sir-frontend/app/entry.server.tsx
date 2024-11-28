@@ -25,10 +25,6 @@ export default async function handleRequest(
 ) {
   const log = loadContext.getLogger('entry.server.tsx');
 
-  log.trace('Adding global variables to globalThis');
-  globalThis.environment = loadContext.serverEnvironment;
-  globalThis.LogFactory = { getLogger: loadContext.getLogger };
-
   const language = getLanguage(request);
   const i18n = await initI18next(language);
 

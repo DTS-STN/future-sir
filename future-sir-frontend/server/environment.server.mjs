@@ -16,6 +16,7 @@ import { getLogger } from './logging.server.mjs';
  * ⚠️ IMPORTANT: DO NOT PUT SENSITIVE CONFIGURATIONS HERE ⚠️
  */
 const clientEnvironmentSchema = z.object({
+  // TODO :: GjB :: currently unused.. just here for demonstration purposes
   I18NEXT_DEBUG: toUndefined(z.string().default('false')).transform(toBoolean),
 });
 
