@@ -6,7 +6,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sourceMapSupport from 'source-map-support';
 
-import { getEnvironment } from './environment.server.mjs';
+import { getClientEnvironment, getServerEnvironment } from './environment.server.mjs';
 import { getLogger, remapConsoleLoggers } from './logging.server.mjs';
 import { csrf, logging, nonce, securityHeaders, session } from './middleware.server.mjs';
 import { createViteDevServer } from './vite.server.mjs';
@@ -24,11 +24,12 @@ log.info('Installing source map support');
 sourceMapSupport.install();
 
 log.info('Validating runtime environment...');
-const environment = getEnvironment();
+const serverEnvironment = getServerEnvironment();
+const clientEnvironment = getClientEnvironment();
 
 log.info('Starting express server...');
-log.info(`Initializing %s mode express server...`, environment.NODE_ENV);
-const viteDevServer = await createViteDevServer(environment);
+log.info(`Initializing %s mode express server...`, serverEnvironment.NODE_ENV);
+const viteDevServer = await createViteDevServer(serverEnvironment);
 const app = express();
 
 log.info('  ✓ disabling X-Powered-By response header');
@@ -43,9 +44,9 @@ log.info('    ✓ compression middleware');
 app.use(compression());
 
 log.info('    ✓ logging middleware');
-app.use(logging(environment));
+app.use(logging(serverEnvironment));
 
-if (environment.isProduction) {
+if (serverEnvironment.isProduction) {
   log.info('    ✓ static assets middleware (production)');
   log.info('      ✓ caching /assets for 1y');
   app.use('/assets', express.static('./build/client/assets', { immutable: true, maxAge: '1y' }));
@@ -70,8 +71,8 @@ app.use(securityHeaders());
 log.info('    ✓ express urlencode middleware');
 app.use(express.urlencoded({ extended: true }));
 
-log.info('    ✓ session middleware (%s)', environment.SESSION_STORAGE_TYPE);
-app.use(session(environment));
+log.info('    ✓ session middleware (%s)', serverEnvironment.SESSION_STORAGE_TYPE);
+app.use(session(serverEnvironment));
 
 log.info('    ✓ CSRF token middleware');
 app.use(csrf());
@@ -85,9 +86,10 @@ log.info('  ✓ registering react-router request handler');
 app.all(
   '*',
   createRequestHandler({
-    mode: environment.NODE_ENV,
+    mode: serverEnvironment.NODE_ENV,
     getLoadContext: (request, response) => ({
-      environment: environment,
+      clientEnvironment: clientEnvironment,
+      serverEnvironment: serverEnvironment,
       getLogger: getLogger,
       nonce: response.locals.nonce,
       session: request.session,
@@ -128,4 +130,4 @@ app.use(
 );
 
 log.info('Server initialization complete');
-app.listen(environment.SERVER_PORT, () => log.info(`Listening on http://localhost:${environment.SERVER_PORT}/`));
+app.listen(serverEnvironment.SERVER_PORT, () => log.info(`Listening on http://localhost:${serverEnvironment.SERVER_PORT}/`));

@@ -4,7 +4,7 @@ import Redis from 'ioredis';
 import { getLogger } from './logging.server.mjs';
 
 /**
- * @typedef {ReturnType<import('./environment.server.mjs').getEnvironment>} Environment
+ * @typedef {ReturnType<import('./environment.server.mjs').getServerEnvironment>} ServerEnvironment
  * @typedef {import('express').RequestHandler} RequestHandler
  */
 
@@ -14,19 +14,19 @@ import { getLogger } from './logging.server.mjs';
  * This function attempts to connect to a Redis server using the provided environment variables.
  * It implements a retry strategy with exponential backoff in case of connection failures.
  *
- * @param {Environment} environment - The environment object containing configuration values.
- *                                  - `env.REDIS_HOST` (string): The hostname or IP address of the Redis server.
- *                                  - `env.REDIS_PORT` (number): The port number of the Redis server.
- *                                  - `env.REDIS_PASSWORD` (string): The password for the Redis server (optional).
- *                                  - `env.SESSION_EXPIRES_SECONDS` (number): The session expiration time in seconds.
+ * @param {ServerEnvironment} serverEnvironment - The environment object containing configuration values.
+ *                                              - `env.REDIS_HOST` (string): The hostname or IP address of the Redis server.
+ *                                              - `env.REDIS_PORT` (number): The port number of the Redis server.
+ *                                              - `env.REDIS_PASSWORD` (string): The password for the Redis server (optional).
+ *                                              - `env.SESSION_EXPIRES_SECONDS` (number): The session expiration time in seconds.
  *
  * @returns {RedisStore} A Redis store for Express sessions.
  * @throws {Error} If failed to connect to Redis after the maximum retries.
  */
-export function createRedisStore(environment) {
+export function createRedisStore(serverEnvironment) {
   const log = getLogger('session.server.mjs');
 
-  const { REDIS_HOST, REDIS_PASSWORD, REDIS_PORT, REDIS_EXPIRES_SECONDS, REDIS_COMMAND_TIMEOUT_SECONDS } = environment;
+  const { REDIS_HOST, REDIS_PASSWORD, REDIS_PORT, REDIS_EXPIRES_SECONDS, REDIS_COMMAND_TIMEOUT_SECONDS } = serverEnvironment;
 
   /**
    * @param {number} times

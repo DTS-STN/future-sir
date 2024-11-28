@@ -9,7 +9,7 @@ import { getLogger } from './logging.server.mjs';
 import { createRedisStore } from './redis.server.mjs';
 
 /**
- * @typedef {ReturnType<import('./environment.server.mjs').getEnvironment>} Environment
+ * @typedef {ReturnType<import('./environment.server.mjs').getServerEnvironment>} ServerEnvironment
  * @typedef {import('express').RequestHandler} RequestHandler
  */
 
@@ -101,14 +101,14 @@ export function nonce() {
 /**
  * Configures a logging middleware with appropriate format and filtering.
  *
- * @param {Environment} environment
+ * @param {ServerEnvironment} serverEnvironment
  * @returns {RequestHandler} An Express middleware function.
  */
-export function logging(environment) {
+export function logging(serverEnvironment) {
   /** @type string[] */
   const ignorePatterns = [];
 
-  const logFormat = environment.isProduction ? 'tiny' : 'dev';
+  const logFormat = serverEnvironment.isProduction ? 'tiny' : 'dev';
 
   const middleware = morganMiddleware(logFormat, {
     stream: { write: (msg) => log.audit(msg.trim()) },
@@ -162,10 +162,10 @@ export function securityHeaders() {
 /**
  * Configures session middleware, optionally skipping it for bots and specific paths.
  *
- * @param {Environment} environment The environment configuration.
+ * @param {ServerEnvironment} serverEnvironment The environment configuration.
  * @returns {RequestHandler} An Express middleware function.
  */
-export function session(environment) {
+export function session(serverEnvironment) {
   /** @type string[] */
   const ignorePatterns = [];
 
@@ -177,11 +177,11 @@ export function session(environment) {
     SESSION_COOKIE_SECRET,
     SESSION_EXPIRES_SECONDS,
     SESSION_STORAGE_TYPE,
-  } = environment;
+  } = serverEnvironment;
 
   const sessionStore =
     SESSION_STORAGE_TYPE === 'redis' //
-      ? createRedisStore(environment)
+      ? createRedisStore(serverEnvironment)
       : new MemoryStore();
 
   const middleware = sessionMiddleware({
