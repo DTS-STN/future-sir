@@ -60,7 +60,6 @@ export async function initI18next(language?: Language): Promise<i18n> {
         public: publicFr,
       },
     },
-    react: { useSuspense: false },
     interpolation: { escapeValue: false },
   });
 

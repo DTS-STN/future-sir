@@ -21,13 +21,12 @@ export async function initI18next(namespace: Namespace): Promise<i18n> {
     .use(initReactI18next)
     .use(I18NextHttpBackend)
     .init({
-      ns: namespace, // TODO :: GjB :: is this needed?
+      ns: namespace,
       fallbackLng: 'en',
       defaultNS: false,
       preload: ['en', 'fr'],
       supportedLngs: ['en', 'fr'],
       backend: { loadPath: '/locales/{{ns}}-{{lng}}.json' },
-      react: { useSuspense: false },
       interpolation: { escapeValue: false },
     });
 

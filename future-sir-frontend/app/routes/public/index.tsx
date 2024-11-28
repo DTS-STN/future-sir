@@ -1,6 +1,6 @@
 import type { RouteHandle } from 'react-router';
 
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 
 import type { Route } from './+types/index';
 import { InlineLink } from '~/components';
@@ -29,14 +29,14 @@ export default function Index(props: Route.ComponentProps) {
   return (
     <div className="mb-8">
       <p className="mt-8 text-lg">
-        i18n resources loaded from: <mark>{t('public:resource')}</mark>
+        <Trans i18nKey="public:index.resources" components={{ mark: <mark /> }} values={{ resource: t('public:resource') }} />
       </p>
       <ul className="ml-8 mt-8 list-disc">
         <li>
-          <InlineLink file="routes/protected/index.tsx">Navigate to protected page</InlineLink>
+          <InlineLink file="routes/protected/index.tsx">{t('public:index.navigate')}</InlineLink>
         </li>
         <li>
-          <InlineLink to="/">Go home</InlineLink>
+          <InlineLink to="/">{t('public:index.home')}</InlineLink>
         </li>
       </ul>
     </div>
