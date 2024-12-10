@@ -1,11 +1,11 @@
 import type { AppLoadContext } from 'react-router';
 
 import { SpanStatusCode, trace } from '@opentelemetry/api';
+import { Effect } from 'effect';
 
 import type { Route } from './+types/callback';
-import type { AuthenticationStrategy } from '~/utils/auth/authentication-strategy';
-import { AzureADAuthenticationStrategy } from '~/utils/auth/azuread-authentication-strategy';
-import { LocalAuthenticationStrategy } from '~/utils/auth/local-authentication-strategy';
+import type { AuthStrategy } from '~/utils/auth/auth-effect';
+import { createAzureAuthStrategy, createLocalAuthStrategy } from '~/utils/auth/auth-effect';
 
 const tracer = trace.getTracer('routes.auth.callback');
 
@@ -33,7 +33,7 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
         throw new Error('The Azure OIDC settings are misconfigured');
       }
 
-      const authStrategy = new AzureADAuthenticationStrategy(
+      const authStrategy = createAzureAuthStrategy(
         new URL(AZUREAD_ISSUER_URL),
         new URL(`/auth/callback/${provider}`, currentUrl.origin),
         AZUREAD_CLIENT_ID,
@@ -50,7 +50,7 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
         throw Response.json(null, { status: 404 });
       }
 
-      const authStrategy = new LocalAuthenticationStrategy(
+      const authStrategy = createLocalAuthStrategy(
         new URL(`http://localhost:${PORT}/auth/oidc`),
         new URL(`/auth/callback/${provider}`, currentUrl.origin),
         '00000000-0000-0000-0000-000000000000',
@@ -70,7 +70,7 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
  * Handles the callback request for a given authentication strategy.
  * Exchanges the authorization code for an access token and ID token.
  */
-async function handleCallback(authStrategy: AuthenticationStrategy, currentUrl: URL, session: AppLoadContext['session']) {
+async function handleCallback(authStrategy: AuthStrategy, currentUrl: URL, session: AppLoadContext['session']) {
   return await tracer.startActiveSpan('routes.auth.callback.handle_callback', async (span) => {
     span.setAttribute('request_url', currentUrl.toString());
     span.setAttribute('strategy', authStrategy.constructor.name);
@@ -84,7 +84,9 @@ async function handleCallback(authStrategy: AuthenticationStrategy, currentUrl: 
       const { codeVerifier, nonce, state } = session.loginState;
 
       span.addEvent('token_exchange.start');
-      const tokenSet = await authStrategy.exchangeAuthCode(currentUrl.searchParams, nonce, state, codeVerifier);
+      const tokenSet = await authStrategy
+        .exchangeAuthcode(currentUrl.searchParams, nonce, state, codeVerifier)
+        .pipe(Effect.runPromise);
       span.addEvent('token_exchange.success');
 
       const returnUrl = new URL(session.loginState.returnUrl ?? '/', currentUrl.origin);

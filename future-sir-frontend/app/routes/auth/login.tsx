@@ -1,11 +1,11 @@
 import type { AppLoadContext } from 'react-router';
 
 import { SpanStatusCode, trace } from '@opentelemetry/api';
+import { Effect } from 'effect';
 
 import type { Route } from './+types/login';
-import type { AuthenticationStrategy } from '~/utils/auth/authentication-strategy';
-import { AzureADAuthenticationStrategy } from '~/utils/auth/azuread-authentication-strategy';
-import { LocalAuthenticationStrategy } from '~/utils/auth/local-authentication-strategy';
+import type { AuthStrategy } from '~/utils/auth/auth-effect';
+import { createAzureAuthStrategy, createLocalAuthStrategy } from '~/utils/auth/auth-effect';
 
 const tracer = trace.getTracer('routes.auth.login');
 
@@ -40,7 +40,7 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
         throw new Error('The Azure OIDC settings are misconfigured');
       }
 
-      const authStrategy = new AzureADAuthenticationStrategy(
+      const authStrategy = createAzureAuthStrategy(
         new URL(AZUREAD_ISSUER_URL),
         new URL(`/auth/callback/${provider}`, currentUrl.origin),
         AZUREAD_CLIENT_ID,
@@ -57,7 +57,7 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
         throw Response.json(null, { status: 404 });
       }
 
-      const authStrategy = new LocalAuthenticationStrategy(
+      const authStrategy = createLocalAuthStrategy(
         new URL(`http://localhost:${PORT}/auth/oidc`),
         new URL(`/auth/callback/${provider}`, currentUrl.origin),
         '00000000-0000-0000-0000-000000000000',
@@ -77,7 +77,7 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
  * Handles the login request for a given authentication strategy.
  * Generates a sign-in request and redirects the user to the authorization endpoint.
  */
-async function handleLogin(authStrategy: AuthenticationStrategy, currentUrl: URL, session: AppLoadContext['session']) {
+async function handleLogin(authStrategy: AuthStrategy, currentUrl: URL, session: AppLoadContext['session']) {
   return await tracer.startActiveSpan('routes.auth.login.handle_login', async (span) => {
     try {
       const returnTo = currentUrl.searchParams.get('returnto');
@@ -87,7 +87,7 @@ async function handleLogin(authStrategy: AuthenticationStrategy, currentUrl: URL
       span.setAttribute('strategy', authStrategy.constructor.name);
 
       span.addEvent('signin_request.start');
-      const signinRequest = await authStrategy.generateSigninRequest(['openid', 'profile', 'email']);
+      const signinRequest = await authStrategy.generateSigninRequest(['openid', 'profile', 'email']).pipe(Effect.runPromise);
       span.addEvent('signin_request.success');
 
       if (returnTo && !returnTo.startsWith('/')) {
