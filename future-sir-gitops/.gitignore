@@ -1,0 +1,2 @@
+# ignore all overlay secrets files
+overlays/**/*secrets.conf
