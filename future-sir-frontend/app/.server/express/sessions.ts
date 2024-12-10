@@ -1,4 +1,5 @@
 import { RedisStore } from 'connect-redis';
+import { Redacted } from 'effect';
 import { MemoryStore } from 'express-session';
 import Redis from 'ioredis';
 import { setInterval } from 'node:timers';
@@ -71,7 +72,7 @@ function getRedisConfig(environment: ServerEnvironment) {
         host: environment.REDIS_HOST,
         port: environment.REDIS_PORT,
         username: environment.REDIS_USERNAME,
-        password: environment.REDIS_PASSWORD,
+        password: Redacted.value(environment.REDIS_PASSWORD),
         commandTimeout: environment.REDIS_COMMAND_TIMEOUT_SECONDS * 1000,
         retryStrategy,
       };
@@ -89,7 +90,7 @@ function getRedisConfig(environment: ServerEnvironment) {
           },
         ],
         username: environment.REDIS_USERNAME,
-        password: environment.REDIS_PASSWORD,
+        password: Redacted.value(environment.REDIS_PASSWORD),
         commandTimeout: environment.REDIS_COMMAND_TIMEOUT_SECONDS * 1000,
         retryStrategy,
       };

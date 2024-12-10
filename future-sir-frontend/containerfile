@@ -5,14 +5,14 @@
 #
 # Build arguments with default values for build metadata:
 #   - BUILD_DATE: The date the build was created (default: "1970-01-01T00:00:00.000Z").
-#   - BUILD_ID: The unique identifier for the build (default: "0000").
+#   - BUILD_ID: The unique identifier for the build (default: "000000").
 #   - BUILD_REVISION: The source control revision hash (default: "00000000").
 #   - BUILD_VERSION: The version of the application being built (default: "0.0.0").
 
 # Example build and run commands:
 #   $ docker build . --tag future-sir --file containerfile \
 #         --build-arg BUILD_DATE="$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-#         --build-arg BUILD_ID="0001" \
+#         --build-arg BUILD_ID="000001" \
 #         --build-arg BUILD_REVISION="$(git rev-parse --short=8 HEAD)" \
 #         --build-arg BUILD_VERSION="1.0.0"
 #
@@ -82,7 +82,7 @@ RUN npm run build
 
 # collect build metadata for traceability
 ARG BUILD_DATE="1970-01-01T00:00:00.000Z"
-ARG BUILD_ID="0000"
+ARG BUILD_ID="000000"
 ARG BUILD_REVISION="00000000"
 ARG BUILD_VERSION="0.0.0"
 
@@ -105,7 +105,7 @@ COPY --from=build --chown=node:node /home/node/build-info.json ./
 # Add labels for OCI compliance, describing the build details and image metadata
 # see: https://github.com/opencontainers/image-spec/blob/main/annotations.md
 ARG BUILD_DATE="1970-01-01T00:00:00.000Z"
-ARG BUILD_ID="0000"
+ARG BUILD_ID="000000"
 ARG BUILD_REVISION="00000000"
 ARG BUILD_VERSION="0.0.0"
 
@@ -125,8 +125,13 @@ LABEL org.opencontainers.image.title=${IMAGE_TITLE}
 LABEL org.opencontainers.image.url=${IMAGE_URL}
 LABEL org.opencontainers.image.vendor=${IMAGE_VENDOR}
 
-ENV APPLICATION_NAME=${IMAGE_TITLE}
-ENV APPLICATION_VERSION=${BUILD_VERSION}
+ENV BUILD_DATE=${BUILD_DATE}
+ENV BUILD_ID=${BUILD_ID}
+ENV BUILD_REVISION=${BUILD_REVISION}
+ENV BUILD_VERSION=${BUILD_VERSION}
+
+ENV OTEL_SERVICE_NAME=${IMAGE_TITLE}
+ENV OTEL_SERVICE_VERSION=${BUILD_VERSION}
 
 USER node
 CMD ["node", "--import", "./build/server/opentelemetry.js", "./build/server/server.js"]

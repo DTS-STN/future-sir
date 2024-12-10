@@ -1,3 +1,4 @@
+import { Redacted } from 'effect';
 import type { RequestHandler } from 'express';
 import sessionMiddleware from 'express-session';
 import { isbot } from 'isbot';
@@ -120,7 +121,7 @@ export function session(environment: ServerEnvironment): RequestHandler {
   const middleware = sessionMiddleware({
     store: sessionStore,
     name: SESSION_COOKIE_NAME,
-    secret: [SESSION_COOKIE_SECRET],
+    secret: [Redacted.value(SESSION_COOKIE_SECRET)],
     genid: () => randomUUID(),
     proxy: true,
     resave: false,

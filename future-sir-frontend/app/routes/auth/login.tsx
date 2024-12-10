@@ -1,6 +1,7 @@
 import type { AppLoadContext } from 'react-router';
 
 import { SpanStatusCode, trace } from '@opentelemetry/api';
+import { Redacted } from 'effect';
 
 import type { Route } from './+types/login';
 import type { AuthenticationStrategy } from '~/utils/auth/authentication-strategy';
@@ -34,7 +35,8 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
     }
 
     case 'azuread': {
-      const { AZUREAD_ISSUER_URL, AZUREAD_CLIENT_ID, AZUREAD_CLIENT_SECRET } = environment.server;
+      const { AZUREAD_ISSUER_URL, AZUREAD_CLIENT_ID } = environment.server;
+      const AZUREAD_CLIENT_SECRET = Redacted.value(environment.server.AZUREAD_CLIENT_SECRET);
 
       if (!AZUREAD_ISSUER_URL || !AZUREAD_CLIENT_ID || !AZUREAD_CLIENT_SECRET) {
         throw new Error('The Azure OIDC settings are misconfigured');

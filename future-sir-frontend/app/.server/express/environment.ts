@@ -1,3 +1,4 @@
+import { Redacted } from 'effect';
 import { z } from 'zod';
 
 import { getLogger, logLevels } from '~/.server/express/logging';
@@ -15,6 +16,12 @@ const log = getLogger('environment');
 const clientEnvironmentSchema = z.object({
   I18NEXT_DEBUG: z.string().default('false').transform(toBoolean),
 
+  // build settings
+  BUILD_DATE: z.string().default('1970-01-01T00:00:00.000Z'),
+  BUILD_ID: z.string().default('000000'),
+  BUILD_REVISION: z.string().default('00000000'),
+  BUILD_VERSION: z.string().default('0.0.0'),
+
   // properties derived in preprocess()
   isProduction: z.boolean(),
 });
@@ -24,9 +31,6 @@ const clientEnvironmentSchema = z.object({
  */
 const serverEnvironmentSchema = clientEnvironmentSchema
   .extend({
-    APPLICATION_NAME: z.string().default('Future SIR frontend'),
-    APPLICATION_VERSION: z.string().default('0.0.0'),
-
     NODE_ENV: z.enum(['production', 'development', 'test']).default('development'),
     PORT: z.string().default('3000').transform(toNumber).pipe(z.number().min(0)),
     LOG_LEVEL: z
@@ -34,7 +38,7 @@ const serverEnvironmentSchema = clientEnvironmentSchema
       .default(isProduction ? 'info' : 'debug')
       .refine(isIn(logLevels)),
 
-    // Feature flags
+    // feature flags
     ENABLE_DEVMODE_OIDC: z
       .string()
       .default(isProduction ? 'false' : 'true')
@@ -46,14 +50,14 @@ const serverEnvironmentSchema = clientEnvironmentSchema
     // Azure AD config
     AZUREAD_ISSUER_URL: z.string().optional(),
     AZUREAD_CLIENT_ID: z.string().optional(),
-    AZUREAD_CLIENT_SECRET: z.string().optional(),
+    AZUREAD_CLIENT_SECRET: z.string().optional().transform(toRedacted),
 
     // redis config
     REDIS_CONNECTION_TYPE: z.enum(['sentinel', 'standalone']).default('standalone'),
     REDIS_HOST: z.string().default('localhost'),
     REDIS_PORT: z.string().default('6379').transform(toNumber).pipe(z.number().min(0)),
     REDIS_USERNAME: z.string().optional(),
-    REDIS_PASSWORD: z.string().optional(),
+    REDIS_PASSWORD: z.string().optional().transform(toRedacted),
     REDIS_SENTINEL_MASTER_NAME: z.string().optional(/* when REDIS_CONNECTION_TYPE === standalone */),
     REDIS_COMMAND_TIMEOUT_SECONDS: z.string().default('1').transform(toNumber).pipe(z.number().min(0)),
 
@@ -63,9 +67,21 @@ const serverEnvironmentSchema = clientEnvironmentSchema
     SESSION_COOKIE_NAME: z.string().default('__FSIR||session'),
     SESSION_COOKIE_PATH: z.string().default('/'),
     SESSION_COOKIE_SAMESITE: z.enum(['lax', 'strict', 'none']).default('strict'),
-    SESSION_COOKIE_SECRET: z.string().default('00000000-0000-0000-0000-000000000000').pipe(z.string().min(32)),
+    SESSION_COOKIE_SECRET: z
+      .string()
+      .default('00000000-0000-0000-0000-000000000000')
+      .pipe(z.string().min(32))
+      .transform(toRedacted),
     SESSION_COOKIE_SECURE: z.string().default('true').transform(toBoolean),
     SESSION_EXPIRES_SECONDS: z.string().default('3600').transform(toNumber).pipe(z.number().min(0)),
+
+    // telemetry settings
+    OTEL_SERVICE_NAME: z.string().default('Future SIR frontend'),
+    OTEL_SERVICE_VERSION: z.string().default('0.0.0'),
+    OTEL_ENVIRONMENT_NAME: z.string().default('localhost'),
+    OTEL_AUTH_HEADER: z.string().default('Authorization 00000000-0000-0000-0000-000000000000').transform(toRedacted),
+    OTEL_METRICS_ENDPOINT: z.string().default('http://localhost:4318/v1/metrics'),
+    OTEL_TRACES_ENDPOINT: z.string().default('http://localhost:4318/v1/traces'),
   })
   .refine(({ NODE_ENV, ENABLE_DEVMODE_OIDC }) =>
     warn(
@@ -100,14 +116,18 @@ export function getClientEnvironment(): ClientEnvironment {
 export function getServerEnvironment(): ServerEnvironment {
   const processed = preprocess(process.env);
   const environment = serverEnvironmentSchema.parse({ ...processed, isProduction });
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { AZUREAD_CLIENT_SECRET, REDIS_PASSWORD, SESSION_COOKIE_SECRET, ...sanitizedEnv } = environment;
-  log.info('Successfully validated server runtime environment: %o', sanitizedEnv);
+  log.info('Successfully validated server runtime environment: %o', environment);
 
   return environment;
 }
 
+/**
+ * Checks if a value is in a record.
+ *
+ * @param record - The record to check against.
+ * @param val - The value to check.
+ * @returns True if the value is in the record, false otherwise.
+ */
 function isIn(record: Record<string, unknown>) {
   return (val: string) => Object.keys(record).includes(val);
 }
@@ -128,6 +148,7 @@ function preprocess(env: NodeJS.ProcessEnv): Record<string, string | undefined> 
 
   return Object.fromEntries(processedEntries);
 }
+
 /**
  * Parses a string to a boolean.
  */
@@ -140,6 +161,13 @@ function toBoolean(str: string): boolean {
  */
 function toNumber(str: string): number {
   return parseInt(str);
+}
+
+/**
+ * Wraps a value in a Redacted instance to protected secrets.
+ */
+function toRedacted<T>(value: T): Redacted.Redacted<T> {
+  return Redacted.make(value);
 }
 
 /**
