@@ -46,7 +46,7 @@ export default [
   route('/auth/logout', 'routes/auth/logout.tsx'),
   route('/auth/callback/*', 'routes/auth/callback.tsx'),
 
-  // mock OIDC implementation
+  // dev-only, mock OIDC implementation
   route('/auth/oidc/*', '.server/routes/dev/oidc-provider.tsx'),
 
   // i18n routes
