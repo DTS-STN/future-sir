@@ -40,6 +40,7 @@ export default [
   // API routes
   route('/api/readyz', '.server/routes/api/readyz.ts'),
   route('/api/buildinfo', '.server/routes/api/buildinfo.ts'),
+  route('/api/translations', '.server/routes/api/translations.ts'),
 
   // auth routes
   route('/auth/login/*', 'routes/auth/login.tsx'),

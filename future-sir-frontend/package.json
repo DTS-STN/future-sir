@@ -38,7 +38,7 @@
     "express": "^4.21.2",
     "express-session": "^1.18.1",
     "i18next": "^24.1.0",
-    "i18next-http-backend": "^3.0.1",
+    "i18next-fetch-backend": "^6.0.0",
     "ioredis": "^5.4.1",
     "isbot": "^5.1.17",
     "jose": "^5.9.6",
