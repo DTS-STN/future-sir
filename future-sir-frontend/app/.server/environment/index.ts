@@ -1,12 +1,12 @@
 import { z, ZodIssueCode } from 'zod';
 
-import { authentication } from '~/.server/environment/authentication';
-import { buildinfo } from '~/.server/environment/buildinfo';
-import { features } from '~/.server/environment/features';
-import { logging } from '~/.server/environment/logging';
-import { redis } from '~/.server/environment/redis';
-import { session } from '~/.server/environment/session';
-import { telemetry } from '~/.server/environment/telemetry';
+import { authentication, defaults as authenticationDefaults } from '~/.server/environment/authentication';
+import { buildinfo, defaults as buildinfoDefaults } from '~/.server/environment/buildinfo';
+import { features, defaults as featuresDefaults } from '~/.server/environment/features';
+import { logging, defaults as loggingDefaults } from '~/.server/environment/logging';
+import { redis, defaults as redisDefaults } from '~/.server/environment/redis';
+import { session, defaults as sessionDefaults } from '~/.server/environment/session';
+import { telemetry, defaults as telemetryDefaults } from '~/.server/environment/telemetry';
 import { getLogger } from '~/.server/logging';
 import { asBoolean, asNumber, preprocess } from '~/utils/validation-utils';
 
@@ -15,13 +15,30 @@ const log = getLogger('environment');
 export type ClientEnvironment = Readonly<z.infer<typeof client>>;
 export type ServerEnvironment = Readonly<z.infer<typeof server>>;
 
+export const clientDefaults = {
+  I18NEXT_DEBUG: 'false',
+  ...buildinfoDefaults,
+} as const;
+
+export const serverDefaults = {
+  NODE_ENV: 'development',
+  PORT: '3000',
+  ...authenticationDefaults,
+  ...clientDefaults,
+  ...featuresDefaults,
+  ...loggingDefaults,
+  ...redisDefaults,
+  ...sessionDefaults,
+  ...telemetryDefaults,
+} as const;
+
 /**
  * Environment variables that are safe to expose publicly to the client.
  * ⚠️ IMPORTANT: DO NOT PUT SENSITIVE CONFIGURATIONS HERE ⚠️
  */
 const client = z
   .object({
-    I18NEXT_DEBUG: asBoolean(z.string().default('false')),
+    I18NEXT_DEBUG: asBoolean(z.string().default(clientDefaults.I18NEXT_DEBUG)),
     isProduction: z.boolean(),
   })
   .merge(buildinfo);
@@ -32,8 +49,8 @@ const client = z
  */
 const server = z
   .object({
-    NODE_ENV: z.enum(['production', 'development', 'test']).default('development'),
-    PORT: asNumber(z.string().default('3000')).pipe(z.number().min(0)),
+    NODE_ENV: z.enum(['production', 'development', 'test']).default(serverDefaults.NODE_ENV),
+    PORT: asNumber(z.string().default(serverDefaults.PORT)).pipe(z.number().min(0)),
   })
   .merge(authentication)
   .merge(client)
