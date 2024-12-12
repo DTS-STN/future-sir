@@ -28,10 +28,6 @@ export default defineConfig({
       // This is the TypeScript file that Vite will start buildin from.
       input: ['./app/.server/opentelemetry.ts', './app/.server/express/server.ts'],
 
-      // // Sets the name of the generated server runtime entry file. This ensures consistency
-      // // when referencing the file in deployment scripts or server configurations.
-      // output: { entryFileNames: 'server.js' },
-
       // Integrates TypeScript path aliasing using the `vite-tsconfig-paths` plugin,
       // which resolves paths defined in `tsconfig.json` for cleaner imports.
       plugins: [tsconfigPaths()],
