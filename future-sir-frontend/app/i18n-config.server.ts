@@ -31,14 +31,14 @@ export async function getFixedT<NS extends Namespace>(
     throw new Error('No language found in request');
   }
 
-  const i18n = await initI18next(language);
+  const i18n = await initI18next();
   return i18n.getFixedT(language, namespace);
 }
 
 /**
  * Creates and initializes an i18next instance for server-side rendering.
  */
-export async function initI18next(language?: Language): Promise<i18n> {
+export async function initI18next(): Promise<i18n> {
   const { I18NEXT_DEBUG: debug } = globalThis.__appEnvironment;
 
   const i18n = createInstance() //
@@ -46,7 +46,6 @@ export async function initI18next(language?: Language): Promise<i18n> {
 
   await i18n.init({
     debug: debug,
-    lng: language,
     defaultNS: false,
     fallbackLng: 'en',
     preload: ['en', 'fr'],

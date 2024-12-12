@@ -10,7 +10,6 @@ import { PassThrough } from 'node:stream';
 import { I18nextProvider } from 'react-i18next';
 
 import { initI18next } from '~/i18n-config.server';
-import { getLanguage } from '~/utils/i18n-utils';
 
 /* eslint-disable no-param-reassign */
 
@@ -26,8 +25,7 @@ export default async function handleRequest(
   const { logFactory } = loadContext;
   const log = logFactory.getLogger('entry.server.tsx');
 
-  const language = getLanguage(request);
-  const i18n = await initI18next(language);
+  const i18n = await initI18next();
 
   return new Promise((resolve, reject) => {
     const userAgent = request.headers.get('user-agent');
