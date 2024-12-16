@@ -40,7 +40,7 @@
     "i18next": "^24.1.0",
     "i18next-fetch-backend": "^6.0.0",
     "ioredis": "^5.4.1",
-    "isbot": "^5.1.17",
+    "isbot": "^5.1.18",
     "jose": "^5.9.6",
     "minimatch": "^10.0.1",
     "morgan": "^1.10.0",
