@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: redis
+  annotations:
+    secret.reloader.stakater.com/auto: 'true'
 spec:
   serviceName: redis-headless
   selector:

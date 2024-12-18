@@ -19,6 +19,7 @@ labels:
       app.kubernetes.io/tier: nonprod
 resources:
   - ../../base/redis/
+  - ../../base/reloader/
   - ./external-secrets.yaml
 patches:
   - path: ./patches/stateful-sets.yaml
