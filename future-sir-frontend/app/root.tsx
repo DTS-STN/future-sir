@@ -2,8 +2,8 @@ import type { RouteHandle } from 'react-router';
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
 
 import type { Route } from './+types/root';
-import { BilingualErrorBoundary } from './components/canada.ca/bilingual-error-boundary';
-import { UnilingualErrorBoundary } from './components/canada.ca/unilingual-error-boundary';
+import { BilingualErrorBoundary } from '~/components/canada.ca/bilingual-error-boundary';
+import { UnilingualErrorBoundary } from '~/components/canada.ca/unilingual-error-boundary';
 import { useLanguage } from '~/hooks/use-language';
 import tailwindStyleSheet from '~/tailwind.css?url';
 
