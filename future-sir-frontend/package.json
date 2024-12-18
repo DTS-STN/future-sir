@@ -83,7 +83,7 @@
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-react": "^7.37.2",
     "eslint-plugin-react-hooks": "^5.1.0",
-    "globals": "^15.13.0",
+    "globals": "^15.14.0",
     "jsdom": "^25.0.1",
     "nodemon": "^3.1.9",
     "postcss": "^8.4.49",
