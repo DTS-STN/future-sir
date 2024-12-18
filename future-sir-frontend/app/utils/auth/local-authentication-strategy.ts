@@ -8,6 +8,6 @@ import { BaseAuthenticationStrategy } from '~/utils/auth/authentication-strategy
  */
 export class LocalAuthenticationStrategy extends BaseAuthenticationStrategy {
   public constructor(issuerUrl: URL, callbackUrl: URL, clientId: string, clientSecret: string) {
-    super(issuerUrl, callbackUrl, { client_id: clientId }, ClientSecretPost(clientSecret), true);
+    super('local', issuerUrl, callbackUrl, { client_id: clientId }, ClientSecretPost(clientSecret), true);
   }
 }

@@ -85,7 +85,7 @@ async function handleLogin(authStrategy: AuthenticationStrategy, currentUrl: URL
 
   span?.setAttribute('request_url', currentUrl.toString());
   span?.setAttribute('returnto', returnTo ?? 'not_provided');
-  span?.setAttribute('strategy', authStrategy.constructor.name);
+  span?.setAttribute('strategy', authStrategy.name);
 
   span?.addEvent('signin_request.start');
   const signinRequest = await authStrategy.generateSigninRequest(['openid', 'profile', 'email']);

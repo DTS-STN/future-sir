@@ -9,6 +9,7 @@ describe('BaseAuthenticationStrategy', () => {
   class TestAuthStrategy extends BaseAuthenticationStrategy {
     constructor() {
       super(
+        'test',
         new URL('https://auth.example.com/issuer'),
         new URL('https://auth.example.com/callback'),
         { client_id: 'test_client_id' },

@@ -57,12 +57,19 @@ export interface AuthenticationStrategy {
     expectedState: string,
     codeVerifier: string,
   ): Promise<TokenSet>;
+
+  /**
+   * The name of the implementation strategy.
+   */
+  name: string;
 }
 
 /**
  * Abstract base class for OAuth authentication strategies.
  */
 export abstract class BaseAuthenticationStrategy implements AuthenticationStrategy {
+  public readonly name: string;
+
   protected readonly allowInsecure: boolean;
   protected readonly authorizationServer: Promise<AuthServer>;
   protected readonly callbackUrl: URL;
@@ -71,18 +78,26 @@ export abstract class BaseAuthenticationStrategy implements AuthenticationStrate
 
   protected readonly tracer = trace.getTracer('future-sir');
 
-  protected constructor(issuerUrl: URL, callbackUrl: URL, client: Client, clientAuth: ClientAuth, allowInsecure = false) {
+  protected constructor(
+    name: string,
+    issuerUrl: URL,
+    callbackUrl: URL,
+    client: Client,
+    clientAuth: ClientAuth,
+    allowInsecure = false,
+  ) {
     this.allowInsecure = allowInsecure;
     this.callbackUrl = callbackUrl;
     this.client = client;
     this.clientAuth = clientAuth;
+    this.name = name;
 
     // eslint-disable-next-line no-async-promise-executor
     this.authorizationServer = new Promise(async (resolve, reject) =>
       withSpan('auth.strategy.disovery', async (span) => {
         span.setAttributes({
           issuer_url: issuerUrl.toString(),
-          strategy: this.constructor.name,
+          strategy: this.name,
         });
 
         const response = await oauth.discoveryRequest(issuerUrl, { [oauth.allowInsecureRequests]: this.allowInsecure });
@@ -108,7 +123,7 @@ export abstract class BaseAuthenticationStrategy implements AuthenticationStrate
     withSpan('auth.strategy.generate_signin_request', async (span) => {
       span.setAttributes({
         scopes: scopes.join(' '),
-        strategy: this.constructor.name,
+        strategy: this.name,
       });
 
       const authorizationServer = await this.authorizationServer;
@@ -145,7 +160,7 @@ export abstract class BaseAuthenticationStrategy implements AuthenticationStrate
   ): Promise<TokenSet> =>
     withSpan('auth.strategy.exchange_auth_code', async (span) => {
       span.setAttributes({
-        strategy: this.constructor.name,
+        strategy: this.name,
       });
 
       const authorizationServer = await this.authorizationServer;
