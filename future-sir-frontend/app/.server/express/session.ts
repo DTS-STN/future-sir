@@ -127,7 +127,7 @@ function purgeExpiredSessions(memoryStore: MemoryStore): void {
         const expiresAt = sessionData.cookie.expires;
 
         log.trace('Checking session %s (expires at %s)', sessionId, expiresAt);
-        if (expiresAt && isPast(expiresAt)) {
+        if (expiresAt && isPast(new Date(expiresAt))) {
           log.trace('Purging expired session %s', sessionId);
           memoryStore.destroy(sessionId);
         }
