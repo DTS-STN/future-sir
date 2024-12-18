@@ -2,7 +2,8 @@ import { SpanStatusCode, trace } from '@opentelemetry/api';
 import type { AuthorizationServer, Client, ClientAuth, IDToken } from 'oauth4webapi';
 import * as oauth from 'oauth4webapi';
 
-import { withSpan } from '../instrumentation-utils';
+import { LogFactory } from '~/.server/logging';
+import { withSpan } from '~/utils/instrumentation-utils';
 
 /**
  * Like {@link AuthorizationServer}, but with a required `authorization_endpoint` property.
@@ -76,6 +77,7 @@ export abstract class BaseAuthenticationStrategy implements AuthenticationStrate
   protected readonly client: Client;
   protected readonly clientAuth: ClientAuth;
 
+  protected readonly log = LogFactory.getLogger(import.meta.url);
   protected readonly tracer = trace.getTracer('future-sir');
 
   protected constructor(
@@ -95,6 +97,8 @@ export abstract class BaseAuthenticationStrategy implements AuthenticationStrate
     // eslint-disable-next-line no-async-promise-executor
     this.authorizationServer = new Promise(async (resolve, reject) =>
       withSpan('auth.strategy.disovery', async (span) => {
+        this.log.debug('Fetching authorization server metadata');
+
         span.setAttributes({
           issuer_url: issuerUrl.toString(),
           strategy: this.name,
@@ -102,6 +106,8 @@ export abstract class BaseAuthenticationStrategy implements AuthenticationStrate
 
         const response = await oauth.discoveryRequest(issuerUrl, { [oauth.allowInsecureRequests]: this.allowInsecure });
         const authorizationServer = await oauth.processDiscoveryResponse(issuerUrl, response);
+        this.log.trace('Fetched authorization server details', { authorizationServer });
+
         const { authorization_endpoint } = authorizationServer;
 
         if (!authorization_endpoint) {
@@ -121,6 +127,8 @@ export abstract class BaseAuthenticationStrategy implements AuthenticationStrate
 
   public generateSigninRequest = async (scopes: string[] = ['openid']): Promise<SignInRequest> =>
     withSpan('auth.strategy.generate_signin_request', async (span) => {
+      this.log.debug('Generating sign-in request', { strategy: this.name, scopes });
+
       span.setAttributes({
         scopes: scopes.join(' '),
         strategy: this.name,
@@ -133,6 +141,7 @@ export abstract class BaseAuthenticationStrategy implements AuthenticationStrate
       const state = oauth.generateRandomState();
 
       const codeChallenge = await oauth.calculatePKCECodeChallenge(codeVerifier);
+      this.log.trace('Calculated code challenge', { codeChallenge });
 
       const authorizationEndpointUrl = new URL(authorizationServer.authorization_endpoint);
       authorizationEndpointUrl.searchParams.set('client_id', this.client.client_id);
@@ -143,6 +152,9 @@ export abstract class BaseAuthenticationStrategy implements AuthenticationStrate
       authorizationEndpointUrl.searchParams.set('response_type', 'code');
       authorizationEndpointUrl.searchParams.set('scope', scopes.join(' '));
       authorizationEndpointUrl.searchParams.set('state', state);
+      this.log.trace('Constructed authorization endpoint URL', {
+        authorizationEndpointUrl: authorizationEndpointUrl.toString(),
+      });
 
       return {
         authorizationEndpointUrl,
@@ -159,6 +171,8 @@ export abstract class BaseAuthenticationStrategy implements AuthenticationStrate
     codeVerifier: string,
   ): Promise<TokenSet> =>
     withSpan('auth.strategy.exchange_auth_code', async (span) => {
+      this.log.debug('Exchanging authorization code for tokens');
+
       span.setAttributes({
         strategy: this.name,
       });
@@ -177,9 +191,14 @@ export abstract class BaseAuthenticationStrategy implements AuthenticationStrate
         { [oauth.allowInsecureRequests]: this.allowInsecure },
       );
 
-      const tokenEndpointResponse = await oauth.processAuthorizationCodeResponse(authorizationServer, this.client, response, {
-        expectedNonce,
-      });
+      const tokenEndpointResponse = await oauth.processAuthorizationCodeResponse(
+        authorizationServer, //
+        this.client,
+        response,
+        { expectedNonce },
+      );
+
+      this.log.trace('Received token response', { tokenEndpointResponse });
 
       const idTokenClaims = oauth.getValidatedIdTokenClaims(tokenEndpointResponse);
 

@@ -2,7 +2,7 @@ import type { i18n, Namespace, TFunction } from 'i18next';
 import { createInstance } from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
-import { i18nResources } from './.server/locales';
+import { i18nResources } from '~/.server/locales';
 import { getLanguage } from '~/utils/i18n-utils';
 
 /**
