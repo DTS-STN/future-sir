@@ -7,6 +7,6 @@ import { BaseAuthenticationStrategy } from '~/utils/auth/authentication-strategy
  */
 export class AzureADAuthenticationStrategy extends BaseAuthenticationStrategy {
   public constructor(issuerUrl: URL, callbackUrl: URL, clientId: string, clientSecret: string) {
-    super(issuerUrl, callbackUrl, { client_id: clientId }, ClientSecretPost(clientSecret));
+    super('azuread', issuerUrl, callbackUrl, { client_id: clientId }, ClientSecretPost(clientSecret));
   }
 }

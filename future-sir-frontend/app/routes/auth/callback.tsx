@@ -73,7 +73,7 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
 async function handleCallback(authStrategy: AuthenticationStrategy, currentUrl: URL, session: AppLoadContext['session']) {
   return withSpan('routes.auth.callback.handle_callback', async (span) => {
     span.setAttribute('request_url', currentUrl.toString());
-    span.setAttribute('strategy', authStrategy.constructor.name);
+    span.setAttribute('strategy', authStrategy.name);
 
     if (session.loginState === undefined) {
       span.addEvent('login_state.invalid');
