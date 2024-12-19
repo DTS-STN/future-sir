@@ -2,6 +2,7 @@ import type { i18n, Namespace, TFunction } from 'i18next';
 import { createInstance } from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
+import { serverEnvironment } from '~/.server/environment';
 import { i18nResources } from '~/.server/locales';
 import { getLanguage } from '~/utils/i18n-utils';
 
@@ -34,7 +35,7 @@ export async function getFixedT<NS extends Namespace>(
  * Creates and initializes an i18next instance for server-side rendering.
  */
 export async function initI18next(language?: Language): Promise<i18n> {
-  const { I18NEXT_DEBUG: debug } = globalThis.__appEnvironment;
+  const { I18NEXT_DEBUG: debug } = serverEnvironment;
 
   const i18n = createInstance() //
     .use(initReactI18next);
