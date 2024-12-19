@@ -8,12 +8,13 @@ import { fullFormat } from 'winston-error-format';
  * This object provides a mapping between string names and their corresponding integer values for logging levels.
  */
 export const logLevels = {
-  error: 0,
-  warn: 1,
-  info: 2,
-  audit: 3,
-  debug: 4,
-  trace: 5,
+  none: 0,
+  error: 1,
+  warn: 2,
+  info: 3,
+  audit: 4,
+  debug: 5,
+  trace: 6,
 } as const;
 
 const consoleTransport = new transports.Console();

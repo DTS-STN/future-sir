@@ -1,9 +1,15 @@
-import { cleanup } from '@testing-library/react';
-import { afterEach, vi } from 'vitest';
+import * as TestingLibrary from '@testing-library/react';
+import { afterEach, beforeEach, vi } from 'vitest';
+
+beforeEach(() => {
+  // disable logging so we don't pollute the output
+  vi.stubEnv('LOG_LEVEL', 'none');
+});
 
 afterEach(() => {
   vi.resetAllMocks();
   vi.useRealTimers();
+  vi.unstubAllEnvs();
   vi.unstubAllGlobals();
 
   vi.spyOn(console, 'debug').mockRestore();
@@ -12,5 +18,5 @@ afterEach(() => {
   vi.spyOn(console, 'log').mockRestore();
   vi.spyOn(console, 'warn').mockRestore();
 
-  cleanup();
+  TestingLibrary.cleanup();
 });
