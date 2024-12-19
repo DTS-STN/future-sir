@@ -28,30 +28,24 @@ export function UnilingualErrorBoundary(props: Route.ErrorBoundaryProps) {
         <Meta />
         <Links />
       </head>
-      <body vocab="http://schema.org/" typeof="WebPage">
+      <body>
         <header className="border-b-[3px] border-slate-700 print:hidden">
           <div id="wb-bnr">
             <div className="container flex items-center justify-between gap-6 py-2.5 sm:py-3.5">
-              <div property="publisher" typeof="GovernmentOrganization">
-                <Link to="https://canada.ca/" property="url">
-                  <img
-                    className="h-8 w-auto"
-                    src={`https://www.canada.ca/etc/designs/canada/wet-boew/assets/sig-blk-${currentLanguage}.svg`}
-                    alt={t('gcweb:header.govt-of-canada.text')}
-                    property="logo"
-                    width="300"
-                    height="28"
-                    decoding="async"
-                  />
-                </Link>
-                <meta property="name" content={t('gcweb:header.govt-of-canada.text')} />
-                <meta property="areaServed" typeof="Country" content="Canada" />
-                <link property="logo" href="https://www.canada.ca/etc/designs/canada/wet-boew/assets/wmms-blk.svg" />
-              </div>
+              <Link to="https://canada.ca/">
+                <img
+                  className="h-8 w-auto"
+                  src={`https://www.canada.ca/etc/designs/canada/wet-boew/assets/sig-blk-${currentLanguage}.svg`}
+                  alt={t('gcweb:header.govt-of-canada.text')}
+                  width="300"
+                  height="28"
+                  decoding="async"
+                />
+              </Link>
             </div>
           </div>
         </header>
-        <main className="container" property="mainContentOfPage" resource="#wb-main" typeof="WebPageElement">
+        <main className="container">
           <PageTitle className="my-8">
             <span>{t('gcweb:server-error.page-title')}</span>
             <small className="block text-2xl font-normal text-neutral-500">{t('gcweb:server-error.page-subtitle')}</small>

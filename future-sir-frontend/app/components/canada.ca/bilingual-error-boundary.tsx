@@ -28,33 +28,24 @@ export function BilingualErrorBoundary(props: Route.ErrorBoundaryProps) {
         <Meta />
         <Links />
       </head>
-      <body vocab="http://schema.org/" typeof="WebPage">
+      <body>
         <header className="border-b-[3px] border-slate-700 print:hidden">
           <div id="wb-bnr">
             <div className="container flex items-center justify-between gap-6 py-2.5 sm:py-3.5">
-              <div property="publisher" typeof="GovernmentOrganization">
-                <Link to="https://canada.ca/" property="url">
-                  <img
-                    className="h-8 w-auto"
-                    src="https://www.canada.ca/etc/designs/canada/wet-boew/assets/sig-blk-en.svg"
-                    alt={`${en('gcweb:header.govt-of-canada.text')} / ${fr('gcweb:header.govt-of-canada.text')}`}
-                    property="logo"
-                    width="300"
-                    height="28"
-                    decoding="async"
-                  />
-                </Link>
-                <meta
-                  property="name"
-                  content={`${en('gcweb:header.govt-of-canada.text')} / ${fr('gcweb:header.govt-of-canada.text')}`}
+              <Link to="https://canada.ca/">
+                <img
+                  className="h-8 w-auto"
+                  src="https://www.canada.ca/etc/designs/canada/wet-boew/assets/sig-blk-en.svg"
+                  alt={`${en('gcweb:header.govt-of-canada.text')} / ${fr('gcweb:header.govt-of-canada.text')}`}
+                  width="300"
+                  height="28"
+                  decoding="async"
                 />
-                <meta property="areaServed" typeof="Country" content="Canada" />
-                <link property="logo" href="https://www.canada.ca/etc/designs/canada/wet-boew/assets/wmms-blk.svg" />
-              </div>
+              </Link>
             </div>
           </div>
         </header>
-        <main className="container" property="mainContentOfPage" resource="#wb-main" typeof="WebPageElement">
+        <main className="container">
           <div className="grid grid-cols-1 gap-6 py-2.5 sm:grid-cols-2 sm:py-3.5">
             <div id="english" lang="en">
               <PageTitle className="my-8">
