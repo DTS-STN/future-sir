@@ -14,21 +14,17 @@ export function PageDetails() {
       <dl id="wb-dtmd" className="space-y-1">
         <div className="flex gap-2">
           <dt>{t('gcweb:page-details.screen-id')}</dt>
-          <dd>
-            <span property="identifier">{route.id}</span>
-          </dd>
+          <dd>{route.id}</dd>
         </div>
         <div className="flex gap-2">
           <dt>{t('gcweb:page-details.date-modfied')}</dt>
           <dd>
-            <time property="dateModified">{BUILD_DATE.slice(0, 10)}</time>
+            <time>{BUILD_DATE.slice(0, 10)}</time>
           </dd>
         </div>
         <div className="flex gap-2">
           <dt>{t('gcweb:page-details.version')}</dt>
-          <dd>
-            <span property="version">{BUILD_VERSION}</span>
-          </dd>
+          <dd>{BUILD_VERSION}</dd>
         </div>
       </dl>
     </section>

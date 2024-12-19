@@ -30,7 +30,7 @@ export default function Index(props: Route.ComponentProps) {
   const fr = i18n.getFixedT('fr');
 
   return (
-    <main role="main" className="flex h-svh bg-splash-page bg-cover bg-center" property="mainContentOfPage">
+    <main role="main" className="flex h-svh bg-splash-page bg-cover bg-center">
       <div className="m-auto w-[300px] bg-white md:w-[400px] lg:w-[500px]">
         <div className="p-8">
           <h1 className="sr-only">
@@ -38,12 +38,11 @@ export default function Index(props: Route.ComponentProps) {
             <span lang="fr">{fr('gcweb:header.language-selection')}</span>
           </h1>
           <div className="w-11/12 lg:w-8/12">
-            <Link to="https://www.canada.ca/en.html" property="url">
+            <Link to="https://www.canada.ca/en.html">
               <img
                 className="h-8 w-auto"
                 src="https://www.canada.ca/etc/designs/canada/wet-boew/assets/sig-blk-en.svg"
                 alt={`${en('gcweb:footer.gc-symbol')} / ${fr('gcweb:footer.gc-symbol')}`}
-                property="logo"
                 width="300"
                 height="28"
                 decoding="async"
