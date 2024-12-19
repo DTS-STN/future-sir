@@ -1,3 +1,5 @@
+import { createHash } from 'node:crypto';
+
 import type { Client } from '~/.server/environment/client';
 import { client } from '~/.server/environment/client';
 import type { Server } from '~/.server/environment/server';
@@ -15,3 +17,6 @@ const isProduction = processed.NODE_ENV === 'production';
 
 export const clientEnvironment = client.parse({ ...processed, isProduction });
 export const serverEnvironment = server.parse({ ...processed, isProduction });
+
+export const clientEnvironmentRevision = createHash('md5').update(JSON.stringify(clientEnvironment)).digest('hex');
+export const serverEnvironmentRevision = createHash('md5').update(JSON.stringify(serverEnvironment)).digest('hex');

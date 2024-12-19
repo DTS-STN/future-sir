@@ -2,7 +2,7 @@ import type { RouteHandle } from 'react-router';
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
 
 import type { Route } from './+types/root';
-import { serverEnvironment } from './.server/environment';
+import { clientEnvironmentRevision } from './.server/environment';
 import { BilingualErrorBoundary } from '~/components/canada.ca/bilingual-error-boundary';
 import { UnilingualErrorBoundary } from '~/components/canada.ca/unilingual-error-boundary';
 import { useLanguage } from '~/hooks/use-language';
@@ -45,7 +45,7 @@ export function links(): Route.LinkDescriptors {
 export function loader({ context }: Route.LoaderArgs) {
   return {
     nonce: context.nonce,
-    revision: serverEnvironment.BUILD_REVISION,
+    clientEnvRevision: clientEnvironmentRevision,
   };
 }
 
@@ -66,7 +66,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
         <Scripts nonce={loaderData.nonce} />
         <script //
           nonce={loaderData.nonce}
-          src={`/api/client-env?v=${loaderData.revision}`}
+          src={`/api/client-env?v=${loaderData.clientEnvRevision}`}
           suppressHydrationWarning={true}
         />
       </body>

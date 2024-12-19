@@ -133,7 +133,7 @@ export function BilingualErrorBoundary(props: Route.ErrorBoundaryProps) {
         <Scripts nonce={props.loaderData?.nonce} />
         <script //
           nonce={props.loaderData?.nonce}
-          src={`/api/client-env?v=${props.loaderData?.revision}`}
+          src={`/api/client-env?v=${props.loaderData?.clientEnvRevision}`}
           suppressHydrationWarning={true}
         />
       </body>
