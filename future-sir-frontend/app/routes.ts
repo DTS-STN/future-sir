@@ -41,6 +41,7 @@ export default [
   // API routes
   route('/api/readyz', 'routes/api/readyz.ts'),
   route('/api/buildinfo', 'routes/api/buildinfo.ts'),
+  route('/api/client-env', 'routes/api/client-env.ts'),
   route('/api/translations', 'routes/api/translations.ts'),
 
   // auth routes

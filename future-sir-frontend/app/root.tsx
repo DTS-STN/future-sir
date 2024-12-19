@@ -2,7 +2,7 @@ import type { RouteHandle } from 'react-router';
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
 
 import type { Route } from './+types/root';
-import { clientEnvironment } from '~/.server/environment';
+import { serverEnvironment } from './.server/environment';
 import { BilingualErrorBoundary } from '~/components/canada.ca/bilingual-error-boundary';
 import { UnilingualErrorBoundary } from '~/components/canada.ca/unilingual-error-boundary';
 import { useLanguage } from '~/hooks/use-language';
@@ -44,8 +44,8 @@ export function links(): Route.LinkDescriptors {
 
 export function loader({ context }: Route.LoaderArgs) {
   return {
-    clientEnvironment: clientEnvironment,
     nonce: context.nonce,
+    revision: serverEnvironment.BUILD_REVISION,
   };
 }
 
@@ -64,12 +64,10 @@ export default function App({ loaderData }: Route.ComponentProps) {
         <Outlet />
         <ScrollRestoration nonce={loaderData.nonce} />
         <Scripts nonce={loaderData.nonce} />
-        <script
+        <script //
           nonce={loaderData.nonce}
+          src={`/api/client-env?v=${loaderData.revision}`}
           suppressHydrationWarning={true}
-          dangerouslySetInnerHTML={{
-            __html: `window.__appEnvironment = ${JSON.stringify(loaderData.clientEnvironment)}`,
-          }}
         />
       </body>
     </html>

@@ -6,7 +6,7 @@ export const defaults = {
   DEFAULT_BUILD_DATE: '1970-01-01T00:00:00.000Z',
   DEFAULT_BUILD_ID: '000000',
   DEFAULT_BUILD_REVISION: '00000000',
-  DEFAULT_BUILD_VERSION: '0.0.0',
+  DEFAULT_BUILD_VERSION: '0.0.0-000000-00000000',
 } as const;
 
 export const buildinfo = z.object({
