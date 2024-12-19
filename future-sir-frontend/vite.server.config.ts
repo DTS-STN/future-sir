@@ -56,7 +56,7 @@ export default defineConfig({
  * Creates a Vite plugin that replaces `getLogger(import.meta.url)` calls
  * with project-relative paths to ensure correct logging in bundled server code.
  */
-function preserveImportMetaUrl(): Plugin {
+export function preserveImportMetaUrl(): Plugin {
   return {
     name: 'preserve-import-meta-url',
     transform(code, id) {

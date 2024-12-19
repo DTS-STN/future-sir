@@ -6,6 +6,8 @@ import tailwindcss from 'tailwindcss';
 import { defineConfig } from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
+import { preserveImportMetaUrl } from './vite.server.config';
+
 /**
  * This file is used to build the application.
  */
@@ -21,12 +23,7 @@ export default defineConfig({
   optimizeDeps: {
     entries: ['./app/entry.client.tsx', './app/root.tsx', './app/routes/**/*.tsx'],
   },
-  plugins: [
-    // Integrates TypeScript path aliasing using the `vite-tsconfig-paths` plugin,
-    // which resolves paths defined in `tsconfig.json` for cleaner imports.
-    tsconfigPaths(),
-    framework(),
-  ],
+  plugins: [preserveImportMetaUrl(), tsconfigPaths(), framework()],
   server: {
     hmr: {
       // Configures the Hot Module Replacement (HMR) port.
