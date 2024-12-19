@@ -10,7 +10,7 @@ import { initReactI18next } from 'react-i18next';
  * @returns The initialized i18n instance.
  */
 export async function initI18next(namespace: Namespace): Promise<i18n> {
-  const { BUILD_REVISION, I18NEXT_DEBUG } = window.__appEnvironment;
+  const { BUILD_REVISION, I18NEXT_DEBUG } = globalThis.__appEnvironment;
 
   // a languge detector that inspects the <html> tag
   const languageDetector = {

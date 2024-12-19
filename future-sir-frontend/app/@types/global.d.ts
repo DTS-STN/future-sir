@@ -1,6 +1,6 @@
 import type { RouteModules } from 'react-router';
 
-import type { ClientEnvironment, ServerEnvironment } from '~/.server/environment';
+import type { ClientEnvironment } from '~/.server/environment';
 
 /* eslint-disable no-var */
 
@@ -11,16 +11,9 @@ declare global {
   type Language = 'en' | 'fr';
 
   /**
-   * Add the client-side environment to the window global namespace.
+   * Add the client-side environment to the global namespace.
    */
-  interface Window {
-    __appEnvironment: ClientEnvironment;
-  }
-
-  /**
-   * Add the server-side environment to the global namespace.
-   */
-  var __appEnvironment: ServerEnvironment;
+  var __appEnvironment: ClientEnvironment;
 
   /**
    * React Router adds the route modules to global

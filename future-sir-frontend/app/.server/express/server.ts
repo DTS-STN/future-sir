@@ -3,7 +3,7 @@ import express from 'express';
 import type { AddressInfo } from 'node:net';
 import sourceMapSupport from 'source-map-support';
 
-import { serverEnvironment } from '~/.server/environment';
+import { clientEnvironment, serverEnvironment } from '~/.server/environment';
 import { globalErrorHandler, rrRequestHandler } from '~/.server/express/handlers';
 import { logging, security, session, tracing } from '~/.server/express/middleware';
 import { createViteDevServer } from '~/.server/express/vite';
@@ -14,8 +14,8 @@ const log = LogFactory.getLogger(import.meta.url);
 log.info('Installing source map support');
 sourceMapSupport.install();
 
-log.info('Runtime environment validation passed; adding environment to globalThis.__appEnvironment');
-globalThis.__appEnvironment = serverEnvironment;
+log.info('Runtime environment validation passed; adding client environment to globalThis.__appEnvironment');
+globalThis.__appEnvironment = clientEnvironment;
 
 log.info('Starting express server...');
 log.info(`Initializing %s mode express server...`, serverEnvironment.NODE_ENV);

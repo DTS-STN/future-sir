@@ -3,7 +3,7 @@ import { clientEnvironment, serverDefaults } from '~/.server/environment';
 
 /**
  * An endpoint that effectively generates a javascript file to be loaded by the client.
- * It sets the `window.__appEnvironment` variable with the client environment,
+ * It sets the `globalThis.__appEnvironment` variable with the client environment,
  * handling caching headers based on the build revision.
  */
 export function loader({ context, params, request }: Route.LoaderArgs) {
@@ -16,7 +16,7 @@ export function loader({ context, params, request }: Route.LoaderArgs) {
       ? { 'Cache-Control': 'max-age=31536000, immutable' }
       : undefined;
 
-  return new Response(`window.__appEnvironment = ${JSON.stringify(clientEnvironment)}`, {
+  return new Response(`globalThis.__appEnvironment = ${JSON.stringify(clientEnvironment)}`, {
     headers: { ...headers, 'Content-Type': 'application/javascript' },
   });
 }

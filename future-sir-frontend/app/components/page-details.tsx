@@ -6,7 +6,7 @@ export function PageDetails() {
   const route = useRoute();
   const { t } = useTranslation(['gcweb']);
 
-  const { BUILD_DATE, BUILD_VERSION } = __appEnvironment;
+  const { BUILD_DATE, BUILD_VERSION } = globalThis.__appEnvironment;
 
   return (
     <section className="mb-8 mt-16">
