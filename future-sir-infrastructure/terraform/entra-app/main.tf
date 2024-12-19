@@ -190,8 +190,8 @@ resource "azuread_group" "main" {
   description      = "Group for users with [${each.key}] role in [${var.app_name}]"
   security_enabled = true
 
-  # inherit the same owners as the app
-  owners = azuread_application.main.owners
+  # inherit the same owners as the app, plus set the service principal as an owner
+  owners = concat(tolist(azuread_application.main.owners), [azuread_service_principal.main.object_id])
 }
 
 
