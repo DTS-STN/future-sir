@@ -18,7 +18,7 @@ describe('UnilingualErrorBoundary', () => {
       },
     ]);
 
-    const { container } = render(<RoutesStub initialEntries={['/en/public']} />);
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    render(<RoutesStub initialEntries={['/en/public']} />);
+    expect(document.documentElement.outerHTML).toMatchSnapshot('expected html');
   });
 });
