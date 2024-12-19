@@ -16,7 +16,7 @@ locals {
 }
 
 inputs = {
-  app_name            = "Future SIR: Service Principal (nonprod)"
+  app_name            = "Future SIR: Frontend Service Principal (nonprod)"
   app_identifier_uris = ["api://nonprod.future-sir.esdc-edsc.gc.ca/frontend"]
   app_passwords       = ["Default secret"]
   app_web_redirect_uris = [
