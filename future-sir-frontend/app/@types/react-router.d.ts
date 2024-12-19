@@ -3,16 +3,10 @@ import 'react-router';
 import type { Request } from 'express';
 import type { Namespace } from 'i18next';
 
-import type { ClientEnvironment, ServerEnvironment } from '~/.server/environment';
-import type { LogFactory } from '~/.server/logging';
-
 declare module 'react-router' {
   interface AppLoadContext {
-    clientEnvironment: ClientEnvironment;
-    LogFactory: typeof LogFactory;
     nonce: string;
     session: Request['session'];
-    serverEnvironment: ServerEnvironment;
   }
 
   /**

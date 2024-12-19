@@ -4,7 +4,7 @@ import type { ErrorRequestHandler, NextFunction, Request, Response } from 'expre
 import path from 'node:path';
 import type { ViteDevServer } from 'vite';
 
-import type { ClientEnvironment, ServerEnvironment } from '~/.server/environment';
+import { serverEnvironment } from '~/.server/environment';
 import { LogFactory } from '~/.server/logging';
 
 const log = LogFactory.getLogger(import.meta.url);
@@ -39,22 +39,16 @@ export function globalErrorHandler(): ErrorRequestHandler {
   };
 }
 
-export function rrRequestHandler(
-  clientEnvironment: ClientEnvironment,
-  serverEnvironment: ServerEnvironment,
-  viteDevServer?: ViteDevServer,
-) {
+export function rrRequestHandler(viteDevServer?: ViteDevServer) {
   // dynamically declare the path to avoid static analysis errors 💩
   const rrServerBuild = './app.js';
 
   return createRequestHandler({
     mode: serverEnvironment.NODE_ENV,
     getLoadContext: (request, response) => ({
-      clientEnvironment,
       LogFactory: LogFactory,
       nonce: response.locals.nonce,
       session: request.session,
-      serverEnvironment,
     }),
     build: viteDevServer //
       ? () => viteDevServer.ssrLoadModule('virtual:react-router/server-build')

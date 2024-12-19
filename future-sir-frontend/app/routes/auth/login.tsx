@@ -4,6 +4,7 @@ import { trace } from '@opentelemetry/api';
 import { Redacted } from 'effect';
 
 import type { Route } from './+types/login';
+import { serverEnvironment } from '~/.server/environment';
 import type { AuthenticationStrategy } from '~/utils/auth/authentication-strategy';
 import { AzureADAuthenticationStrategy } from '~/utils/auth/azuread-authentication-strategy';
 import { LocalAuthenticationStrategy } from '~/utils/auth/local-authentication-strategy';
@@ -23,7 +24,7 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
   const provider = params['*'];
 
   const currentUrl = new URL(request.url);
-  const { serverEnvironment, session } = context;
+  const { session } = context;
 
   switch (provider) {
     case '': {

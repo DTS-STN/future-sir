@@ -6,6 +6,7 @@ import { randomUUID } from 'node:crypto';
 import { setTimeout } from 'node:timers';
 
 import type { Route } from './+types/oidc-provider';
+import { serverEnvironment } from '~/.server/environment';
 import type { TokenSet } from '~/utils/auth/authentication-strategy';
 
 type AuthCode = string;
@@ -29,7 +30,7 @@ const tokenCache = new Map<AuthCode, TokenSet>();
  * Handle OIDC actions, such as token exchange.
  */
 export async function action({ context, params, request }: Route.ActionArgs) {
-  const { ENABLE_DEVMODE_OIDC } = context.serverEnvironment;
+  const { ENABLE_DEVMODE_OIDC } = serverEnvironment;
 
   if (!ENABLE_DEVMODE_OIDC) {
     // return a 404 if devmode OIDC is not enabled
@@ -53,9 +54,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
  * Handle OIDC loader requests, such as discovery, user info, etc.
  */
 export async function loader({ context, params, request }: Route.LoaderArgs) {
-  const environment = context.serverEnvironment;
-
-  if (!environment.ENABLE_DEVMODE_OIDC) {
+  if (!serverEnvironment.ENABLE_DEVMODE_OIDC) {
     // return a 404 if devmode OIDC is not enabled
     throw Response.json(null, { status: 404 });
   }

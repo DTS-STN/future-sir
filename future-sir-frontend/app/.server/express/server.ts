@@ -3,7 +3,7 @@ import express from 'express';
 import type { AddressInfo } from 'node:net';
 import sourceMapSupport from 'source-map-support';
 
-import { getClientEnvironment, getServerEnvironment } from '~/.server/environment';
+import { serverEnvironment } from '~/.server/environment';
 import { globalErrorHandler, rrRequestHandler } from '~/.server/express/handlers';
 import { logging, security, session, tracing } from '~/.server/express/middleware';
 import { createViteDevServer } from '~/.server/express/vite';
@@ -13,10 +13,6 @@ const log = LogFactory.getLogger(import.meta.url);
 
 log.info('Installing source map support');
 sourceMapSupport.install();
-
-log.info('Validating runtime environment...');
-const clientEnvironment = getClientEnvironment();
-const serverEnvironment = getServerEnvironment();
 
 log.info('Runtime environment validation passed; adding environment to globalThis.__appEnvironment');
 globalThis.__appEnvironment = serverEnvironment;
@@ -71,7 +67,7 @@ if (viteDevServer) {
 }
 
 log.info('  ✓ registering react-router request handler');
-app.all('*', rrRequestHandler(clientEnvironment, serverEnvironment, viteDevServer));
+app.all('*', rrRequestHandler(viteDevServer));
 
 log.info('  ✓ registering global error handler');
 app.use(globalErrorHandler());

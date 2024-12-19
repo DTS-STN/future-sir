@@ -10,6 +10,7 @@ import { isbot } from 'isbot';
 import { PassThrough } from 'node:stream';
 import { I18nextProvider } from 'react-i18next';
 
+import { LogFactory } from '~/.server/logging';
 import { initI18next } from '~/i18n-config.server';
 import { getLanguage } from '~/utils/i18n-utils';
 import { handleSpanException } from '~/utils/instrumentation-utils';
@@ -25,7 +26,6 @@ export default async function handleRequest(
   routerContext: EntryContext,
   loadContext: AppLoadContext,
 ) {
-  const { LogFactory } = loadContext;
   const log = LogFactory.getLogger(import.meta.url);
 
   const language = getLanguage(request);

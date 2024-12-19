@@ -2,6 +2,7 @@ import type { RouteHandle } from 'react-router';
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
 
 import type { Route } from './+types/root';
+import { clientEnvironment } from '~/.server/environment';
 import { BilingualErrorBoundary } from '~/components/canada.ca/bilingual-error-boundary';
 import { UnilingualErrorBoundary } from '~/components/canada.ca/unilingual-error-boundary';
 import { useLanguage } from '~/hooks/use-language';
@@ -43,7 +44,7 @@ export function links(): Route.LinkDescriptors {
 
 export function loader({ context }: Route.LoaderArgs) {
   return {
-    clientEnvironment: context.clientEnvironment,
+    clientEnvironment: clientEnvironment,
     nonce: context.nonce,
   };
 }

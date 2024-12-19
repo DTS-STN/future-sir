@@ -9,19 +9,18 @@ import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic
 import { ATTR_DEPLOYMENT_ENVIRONMENT_NAME } from '@opentelemetry/semantic-conventions/incubating';
 import { Redacted } from 'effect';
 
-import { getServerEnvironment } from '~/.server/environment';
+import { serverEnvironment } from '~/.server/environment';
 import { LogFactory } from '~/.server/logging';
 
 const log = LogFactory.getLogger(import.meta.url);
-const environment = getServerEnvironment();
 
 log.info('Initializing OpenTelemetry SDK...');
 
 const nodeSdk = new NodeSDK({
   resource: new Resource({
-    [ATTR_SERVICE_NAME]: environment.OTEL_SERVICE_NAME,
-    [ATTR_SERVICE_VERSION]: environment.OTEL_SERVICE_VERSION,
-    [ATTR_DEPLOYMENT_ENVIRONMENT_NAME]: environment.OTEL_ENVIRONMENT_NAME,
+    [ATTR_SERVICE_NAME]: serverEnvironment.OTEL_SERVICE_NAME,
+    [ATTR_SERVICE_VERSION]: serverEnvironment.OTEL_SERVICE_VERSION,
+    [ATTR_DEPLOYMENT_ENVIRONMENT_NAME]: serverEnvironment.OTEL_ENVIRONMENT_NAME,
   }),
 
   instrumentations: [
@@ -33,16 +32,16 @@ const nodeSdk = new NodeSDK({
 
   metricReader: new PeriodicExportingMetricReader({
     exporter: new OTLPMetricExporter({
-      url: environment.OTEL_METRICS_ENDPOINT,
+      url: serverEnvironment.OTEL_METRICS_ENDPOINT,
       compression: CompressionAlgorithm.GZIP,
-      headers: { authorization: Redacted.value(environment.OTEL_AUTH_HEADER) },
+      headers: { authorization: Redacted.value(serverEnvironment.OTEL_AUTH_HEADER) },
     }),
   }),
 
   traceExporter: new OTLPTraceExporter({
-    url: environment.OTEL_TRACES_ENDPOINT,
+    url: serverEnvironment.OTEL_TRACES_ENDPOINT,
     compression: CompressionAlgorithm.GZIP,
-    headers: { authorization: Redacted.value(environment.OTEL_AUTH_HEADER) },
+    headers: { authorization: Redacted.value(serverEnvironment.OTEL_AUTH_HEADER) },
   }),
 });
 
