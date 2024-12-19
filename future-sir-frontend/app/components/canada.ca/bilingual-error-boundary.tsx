@@ -131,12 +131,10 @@ export function BilingualErrorBoundary(props: Route.ErrorBoundaryProps) {
           </div>
         </footer>
         <Scripts nonce={props.loaderData?.nonce} />
-        <script
+        <script //
           nonce={props.loaderData?.nonce}
+          src={`/api/client-env?v=${props.loaderData?.revision}`}
           suppressHydrationWarning={true}
-          dangerouslySetInnerHTML={{
-            __html: `window.__appEnvironment = ${JSON.stringify(props.loaderData?.clientEnvironment)}`,
-          }}
         />
       </body>
     </html>
