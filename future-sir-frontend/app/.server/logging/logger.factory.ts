@@ -1,21 +1,10 @@
 import util from 'node:util';
-import type { Logform, Logger } from 'winston';
+import type { Logform } from 'winston';
 import winston, { format, transports } from 'winston';
 import { fullFormat } from 'winston-error-format';
 
-/**
- * Defines a constant object representing logging levels.
- * This object provides a mapping between string names and their corresponding integer values for logging levels.
- */
-export const logLevels = {
-  none: 0,
-  error: 1,
-  warn: 2,
-  info: 3,
-  audit: 4,
-  debug: 5,
-  trace: 6,
-} as const;
+import type { Logger } from '~/.server/logging/logger';
+import { logLevels } from '~/.server/logging/logger';
 
 const consoleTransport = new transports.Console();
 
@@ -26,11 +15,7 @@ export const LogFactory = {
    * Creates a new logger instance with a configured format and console transport if it doesn't exist for the provided category.
    * Otherwise, retrieves the existing logger.
    */
-  getLogger: (category: string): Logger => {
-    if (winston.loggers.has(category)) {
-      return winston.loggers.get(category);
-    }
-
+  getLogger(category: string): Logger {
     return winston.loggers.add(category, {
       level: getLogLevel(),
       levels: logLevels,

@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { logLevels } from '~/.server/logging';
-import * as ValidationUtils from '~/utils/validation-utils';
+import { isIn } from '~/utils/validation-utils';
 
 export type Logging = Readonly<z.infer<typeof logging>>;
 
@@ -13,5 +13,5 @@ export const defaults = {
 } as const;
 
 export const logging = z.object({
-  LOG_LEVEL: z.string().default(defaults.DEFAULT_LOG_LEVEL).refine(ValidationUtils.isIn(logLevels)),
+  LOG_LEVEL: z.string().default(defaults.DEFAULT_LOG_LEVEL).refine(isIn(logLevels)),
 });
