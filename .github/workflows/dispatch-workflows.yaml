@@ -1,0 +1,38 @@
+name: Dispatch Workflows
+
+on:
+  pull_request:
+    paths:
+      - '**'
+
+jobs:
+  dispatch-frontend:
+    if: contains(github.event.pull_request.changed_files, 'future-sir-frontend/')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger frontend build
+        uses: actions/github-script@v6
+        with:
+          script: |
+            await github.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'build-fsir-frontend.yaml',
+              ref: context.ref,
+            });
+      - name: Trigger frontend code scan
+        uses: actions/github-script@v6
+        with:
+          script: |
+            await github.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'scan-fsir-frontend.yaml',
+              ref: context.ref,
+            });
+  build-summary:
+    needs: [dispatch-frontend]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Report Workflow Success
+        run: echo "All relevant dispatch jobs completed successfully!"
