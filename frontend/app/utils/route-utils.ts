@@ -1,3 +1,5 @@
+import { CodedError } from '~/errors/coded-error';
+import { ErrorCodes } from '~/errors/error-codes';
 import type { I18nPageRoute, I18nRoute, I18nRouteFile } from '~/i18n-routes';
 import { isI18nLayoutRoute, isI18nPageRoute } from '~/i18n-routes';
 
@@ -59,7 +61,7 @@ export function getRouteByFile(i18nRouteFile: I18nRouteFile, routes: I18nRoute[]
   const route = findRouteByFile(i18nRouteFile, routes);
 
   if (route === undefined) {
-    throw new Error(`No route found for ${i18nRouteFile} (this should never happen)`);
+    throw new CodedError(`No route found for ${i18nRouteFile} (this should never happen)`, ErrorCodes.ROUTE_NOT_FOUND);
   }
 
   return route;
@@ -77,7 +79,7 @@ export function getRouteByPath(pathname: string, routes: I18nRoute[]): I18nPageR
   const route = findRouteByPath(pathname, routes);
 
   if (route === undefined) {
-    throw new Error(`No route found for ${pathname} (this should never happen)`);
+    throw new CodedError(`No route found for ${pathname} (this should never happen)`, ErrorCodes.ROUTE_NOT_FOUND);
   }
 
   return route;

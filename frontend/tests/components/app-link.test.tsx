@@ -4,6 +4,7 @@ import { render } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { AppLink } from '~/components/app-link';
+import type { CodedError } from '~/errors/coded-error';
 
 describe('AppLink', () => {
   beforeEach(() => {
@@ -45,7 +46,7 @@ describe('AppLink', () => {
       {
         path: '/',
         Component: () => <AppLink file="routes/public/index.tsx">This is a test</AppLink>,
-        ErrorBoundary: () => <>{(useRouteError() as Error).message}</>,
+        ErrorBoundary: () => <>{(useRouteError() as CodedError).msg}</>,
       },
     ]);
 
