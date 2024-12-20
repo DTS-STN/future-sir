@@ -37,8 +37,3 @@ jobs:
     needs: check-changes
     if: ${{ needs.check-changes.outputs.frontend == 'true' }}
     uses: ./.github/workflows/build-fsir-frontend.yaml
-
-  scan-frontend:
-    needs: check-changes
-    if: ${{ needs.check-changes.outputs.frontend == 'true' }}
-    uses: ./.github/workflows/scan-fsir-frontend.yaml
