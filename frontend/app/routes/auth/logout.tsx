@@ -1,3 +1,5 @@
+import { redirect } from 'react-router';
+
 import { trace } from '@opentelemetry/api';
 
 import type { Route } from './+types/logout';
@@ -31,9 +33,9 @@ function handleLogout({ context, params, request }: Route.LoaderArgs) {
 
   if (returnTo && !returnTo.startsWith('/')) {
     span?.addEvent('returnto.invalid');
-    throw Response.json('Invalid returnto path', { status: 400 });
+    return Response.json('Invalid returnto path', { status: 400 });
   }
 
   const returnUrl = new URL(returnTo ?? '/', currentUrl.origin);
-  throw Response.redirect(returnUrl.toString());
+  return redirect(returnUrl.toString());
 }

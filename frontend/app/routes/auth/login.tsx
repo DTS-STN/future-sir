@@ -1,4 +1,5 @@
 import type { AppLoadContext } from 'react-router';
+import { redirect } from 'react-router';
 
 import { trace } from '@opentelemetry/api';
 import { Redacted } from 'effect';
@@ -30,7 +31,7 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
     case '': {
       const { AUTH_DEFAULT_PROVIDER } = serverEnvironment;
       const redirectTo = `/auth/login/${AUTH_DEFAULT_PROVIDER}${currentUrl.search}`;
-      throw Response.redirect(new URL(redirectTo, currentUrl).toString());
+      return redirect(new URL(redirectTo, currentUrl).toString());
     }
 
     case 'azuread': {
@@ -55,7 +56,7 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
       const { ENABLE_DEVMODE_OIDC } = serverEnvironment;
 
       if (!ENABLE_DEVMODE_OIDC) {
-        throw Response.json(null, { status: 404 });
+        return Response.json(null, { status: 404 });
       }
 
       const authStrategy = new LocalAuthenticationStrategy(
@@ -69,7 +70,7 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
     }
 
     default: {
-      throw Response.json({ message: 'Authentication provider not found' }, { status: 404 });
+      return Response.json({ message: 'Authentication provider not found' }, { status: 404 });
     }
   }
 }
@@ -94,7 +95,7 @@ async function handleLogin(authStrategy: AuthenticationStrategy, currentUrl: URL
 
   if (returnTo && !returnTo.startsWith('/')) {
     span?.addEvent('returnto.invalid');
-    throw Response.json('Invalid returnto path', { status: 400 });
+    return Response.json('Invalid returnto path', { status: 400 });
   }
 
   const returnUrl = returnTo ? new URL(returnTo, currentUrl.origin) : undefined;
@@ -107,5 +108,5 @@ async function handleLogin(authStrategy: AuthenticationStrategy, currentUrl: URL
     state: signinRequest.state,
   };
 
-  throw Response.redirect(signinRequest.authorizationEndpointUrl.toString(), 302);
+  return redirect(signinRequest.authorizationEndpointUrl.toString(), 302);
 }
