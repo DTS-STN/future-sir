@@ -9,7 +9,7 @@
     "build:application": "react-router build",
     "build:server": "vite build --config ./vite.server.config.ts",
     "dev": "nodemon --config nodemon.json",
-    "preview": "npm run build && cross-env NODE_ENV=production SESSION_COOKIE_SECURE=false node --env-file ./.env --import ./build/server/opentelemetry.js ./build/server/server.js",
+    "preview": "npm run build && cross-env NODE_ENV=production SESSION_COOKIE_SECURE=false node --env-file-if-exists=.env --import ./build/server/opentelemetry.js ./build/server/server.js",
     "start": "cross-env NODE_ENV=production node --import ./build/server/opentelemetry.js ./build/server/server.js",
     "test": "vitest",
     "test:e2e": "playwright test",
