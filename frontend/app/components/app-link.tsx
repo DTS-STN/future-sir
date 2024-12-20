@@ -4,6 +4,8 @@ import { forwardRef } from 'react';
 import type { Params, Path } from 'react-router';
 import { generatePath, Link } from 'react-router';
 
+import { CodedError } from '~/errors/coded-error';
+import { ErrorCodes } from '~/errors/error-codes';
 import { useLanguage } from '~/hooks/use-language';
 import type { I18nRouteFile } from '~/i18n-routes';
 import { i18nRoutes } from '~/i18n-routes';
@@ -27,8 +29,9 @@ export const AppLink = forwardRef<ElementRef<typeof Link>, AppLinkProps>(
     const targetLanguage = lang ?? currentLanguage;
 
     if (targetLanguage === undefined) {
-      throw new Error(
+      throw new CodedError(
         'The `lang` parameter was not provided, and the current language could not be determined from the request',
+        ErrorCodes.MISSING_LANG_PARAM,
       );
     }
 

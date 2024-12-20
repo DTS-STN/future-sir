@@ -1,3 +1,5 @@
+import type { ErrorCode } from '~/errors/error-codes';
+import { ErrorCodes } from '~/errors/error-codes';
 import { randomString } from '~/utils/string-utils';
 
 export type CodedErrorProps = {
@@ -13,7 +15,7 @@ export type CodedErrorProps = {
 export class CodedError {
   public readonly name = 'CodedError';
 
-  public readonly code: string;
+  public readonly code: ErrorCode;
   public readonly correlationId: string;
   public readonly stack?: string;
 
@@ -23,7 +25,7 @@ export class CodedError {
   // message is supplied to `log.error(message, error)`
   public readonly msg?: string;
 
-  public constructor(msg?: string, code = 'UNC-0000', correlationId = generateCorrelationId()) {
+  public constructor(msg?: string, code: ErrorCode = ErrorCodes.UNCAUGHT_ERROR, correlationId = generateCorrelationId()) {
     this.code = code;
     this.correlationId = correlationId;
     this.msg = msg;

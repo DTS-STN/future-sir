@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
+import { CodedError } from '~/errors/coded-error';
+import { ErrorCodes } from '~/errors/error-codes';
 import type { I18nRouteFile } from '~/i18n-routes';
 import { i18nRoutes, isI18nLayoutRoute, isI18nPageRoute } from '~/i18n-routes';
 import { findRouteByFile, findRouteByPath, getRouteByFile, getRouteByPath } from '~/utils/route-utils';
@@ -43,9 +45,15 @@ describe('route-utils', () => {
     });
 
     it('should throw an error if the route is not found', () => {
-      expect(() => getRouteByFile('routes/💩.tsx' as I18nRouteFile, i18nRoutes)).toThrowError(
-        'No route found for routes/💩.tsx (this should never happen)',
-      );
+      try {
+        getRouteByFile('routes/💩.tsx' as I18nRouteFile, i18nRoutes);
+      } catch (error) {
+        expect(error).toBeInstanceOf(CodedError);
+
+        const codedError = error as CodedError;
+        expect(codedError.msg).toEqual('No route found for routes/💩.tsx (this should never happen)');
+        expect(codedError.code).toEqual(ErrorCodes.ROUTE_NOT_FOUND);
+      }
     });
   });
 
@@ -59,9 +67,15 @@ describe('route-utils', () => {
     });
 
     it('should throw an error if the route is not found', () => {
-      expect(() => getRouteByPath('/en/foobar', i18nRoutes)).toThrowError(
-        'No route found for /en/foobar (this should never happen)',
-      );
+      try {
+        getRouteByPath('/en/foobar', i18nRoutes);
+      } catch (error) {
+        expect(error).toBeInstanceOf(CodedError);
+
+        const codedError = error as CodedError;
+        expect(codedError.msg).toEqual('No route found for /en/foobar (this should never happen)');
+        expect(codedError.code).toEqual(ErrorCodes.ROUTE_NOT_FOUND);
+      }
     });
   });
 
