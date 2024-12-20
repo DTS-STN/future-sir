@@ -1,23 +1,11 @@
 name: Build Future SIR frontend
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - .github/workflows/build-fsir-frontend.yaml
-      - future-sir-frontend/**
-  pull_request:
-    branches:
-      - main
-    paths:
-      - .github/workflows/build-fsir-frontend.yaml
-      - future-sir-frontend/**
+  workflow_call: {}
   workflow_dispatch: {}
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+env:
+  CI: true
 
 jobs:
   build-future-sir-frontend:
