@@ -1,14 +1,14 @@
 # Future Social Insurance Registry
 
-This repository houses the source code for the Future Social Insurance Registry (FSIR) project. 
+This repository houses the source code for the Future Social Insurance Registry (FSIR) project.
 
 **Projects:**
 
-* **[Frontend](future-sir-frontend):**
+* **[Frontend](frontend):**
     * Contains the frontend application for the FSIR, built with [React Router](https://reactrouter.com/).
-* **[GitOps](future-sir-gitops):**
+* **[GitOps](gitops):**
     * Implements GitOps principles for deploying and managing the FSIR infrastructure and applications.
-* **[Infrastructure](future-sir-infrastructure):**
+* **[Infrastructure](infrastructure):**
     * Defines the infrastructure for the FSIR.
 
 **Contributing:**

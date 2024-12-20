@@ -25,9 +25,9 @@ jobs:
             });
 
             const files = response.data.map(file => file.filename);
-            const hasFrontendChanges = files.some(file => file.startsWith('future-sir-frontend/'));
-            const hasGitopsChanges = files.some(file => file.startsWith('future-sir-gitops/'));
-            const hasInfrastructureChanges = files.some(file => file.startsWith('future-sir-infrastructure/'));
+            const hasFrontendChanges = files.some(file => file.startsWith('frontend/'));
+            const hasGitopsChanges = files.some(file => file.startsWith('gitops/'));
+            const hasInfrastructureChanges = files.some(file => file.startsWith('infrastructure/'));
 
             core.setOutput('frontend', hasFrontendChanges);
             core.setOutput('gitops', hasGitopsChanges);
@@ -36,4 +36,4 @@ jobs:
   build-frontend:
     needs: check-changes
     if: ${{ needs.check-changes.outputs.frontend == 'true' }}
-    uses: ./.github/workflows/build-fsir-frontend.yaml
+    uses: ./.github/workflows/build-frontend.yaml

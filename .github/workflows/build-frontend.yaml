@@ -8,7 +8,7 @@ env:
   CI: true
 
 jobs:
-  build-future-sir-frontend:
+  build-frontend:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -16,12 +16,12 @@ jobs:
         with:
           node-version: 22.x
       - run: npm clean-install
-        working-directory: future-sir-frontend
+        working-directory: frontend
       - run: npm run test -- --coverage
-        working-directory: future-sir-frontend
+        working-directory: frontend
       - run: npx playwright install --with-deps
-        working-directory: future-sir-frontend
+        working-directory: frontend
       - run: npm run test:e2e
-        working-directory: future-sir-frontend
-      - run: podman build --tag future-sir-frontend --file containerfile .
-        working-directory: future-sir-frontend
+        working-directory: frontend
+      - run: podman build --file containerfile .
+        working-directory: frontend

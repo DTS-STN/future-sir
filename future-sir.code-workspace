@@ -1,13 +1,13 @@
 {
   "folders": [
     {
-      "path": "future-sir-frontend"
+      "path": "frontend"
     },
     {
-      "path": "future-sir-gitops"
+      "path": "gitops"
     },
     {
-      "path": "future-sir-infrastructure"
+      "path": "infrastructure"
     },
   ],
 }
