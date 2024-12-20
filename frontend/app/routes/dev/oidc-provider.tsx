@@ -34,7 +34,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
 
   if (!ENABLE_DEVMODE_OIDC) {
     // return a 404 if devmode OIDC is not enabled
-    throw Response.json(null, { status: 404 });
+    return Response.json(null, { status: 404 });
   }
 
   const endpoint = params['*'];
@@ -45,7 +45,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     }
 
     default: {
-      throw Response.json('OIDC endpoint not found', { status: 404 });
+      return Response.json('OIDC endpoint not found', { status: 404 });
     }
   }
 }
@@ -56,7 +56,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
 export async function loader({ context, params, request }: Route.LoaderArgs) {
   if (!serverEnvironment.ENABLE_DEVMODE_OIDC) {
     // return a 404 if devmode OIDC is not enabled
-    throw Response.json(null, { status: 404 });
+    return Response.json(null, { status: 404 });
   }
 
   const endpoint = params['*'];
@@ -79,7 +79,7 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
     }
 
     default: {
-      throw Response.json('OIDC endpoint not found', { status: 404 });
+      return Response.json('OIDC endpoint not found', { status: 404 });
     }
   }
 }
@@ -87,7 +87,7 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
 /**
  * see: https://openid.net/specs/openid-connect-core-1_0.html#AuthorizationEndpoint
  */
-async function handleAuthorizeRequest({ request }: Route.LoaderArgs): Promise<void> {
+async function handleAuthorizeRequest({ request }: Route.LoaderArgs): Promise<Response> {
   const config = getConfig(new URL(request.url));
 
   const searchParams = new URL(request.url).searchParams;
@@ -99,23 +99,23 @@ async function handleAuthorizeRequest({ request }: Route.LoaderArgs): Promise<vo
   const state = searchParams.get('state');
 
   if (clientId !== config.clientId) {
-    throw Response.json({ error: 'invalid_client_id' }, { status: 400 });
+    return Response.json({ error: 'invalid_client_id' }, { status: 400 });
   }
 
   if (!nonce) {
-    throw Response.json({ error: 'invalid_nonce' }, { status: 400 });
+    return Response.json({ error: 'invalid_nonce' }, { status: 400 });
   }
 
   if (redirectUri && !config.allowedRedirectUris.includes(redirectUri)) {
-    throw Response.json({ error: 'invalid_redirect_uri' }, { status: 400 });
+    return Response.json({ error: 'invalid_redirect_uri' }, { status: 400 });
   }
 
   if (!scope) {
-    throw Response.json({ error: 'invalid_scope' }, { status: 400 });
+    return Response.json({ error: 'invalid_scope' }, { status: 400 });
   }
 
   if (!state) {
-    throw Response.json({ error: 'invalid_state' }, { status: 400 });
+    return Response.json({ error: 'invalid_state' }, { status: 400 });
   }
 
   //
@@ -154,7 +154,7 @@ async function handleAuthorizeRequest({ request }: Route.LoaderArgs): Promise<vo
   tokenCache.set(code, { accessToken, idToken });
   setTimeout(() => tokenCache.delete(code), 30_000);
 
-  throw redirect(`${redirectUri}?code=${code}&state=${state}`);
+  return redirect(`${redirectUri}?code=${code}&state=${state}`);
 }
 
 /**
@@ -202,23 +202,23 @@ async function handleTokenRequest({ request }: Route.LoaderArgs): Promise<Respon
   const redirectUri = formData.get('redirect_uri')?.toString();
 
   if (clientId !== config.clientId) {
-    throw Response.json({ error: 'invalid_client' }, { status: 400 });
+    return Response.json({ error: 'invalid_client' }, { status: 400 });
   }
 
   if (clientSecret !== config.clientSecret) {
-    throw Response.json({ error: 'invalid_client' }, { status: 400 });
+    return Response.json({ error: 'invalid_client' }, { status: 400 });
   }
 
   if (!code) {
-    throw Response.json({ error: 'invalid_code' }, { status: 400 });
+    return Response.json({ error: 'invalid_code' }, { status: 400 });
   }
 
   if (grantType !== 'authorization_code') {
-    throw Response.json({ error: 'invalid_grant_type' }, { status: 400 });
+    return Response.json({ error: 'invalid_grant_type' }, { status: 400 });
   }
 
   if (redirectUri && !config.allowedRedirectUris.includes(redirectUri)) {
-    throw Response.json({ error: 'invalid_redirect_uri' }, { status: 400 });
+    return Response.json({ error: 'invalid_redirect_uri' }, { status: 400 });
   }
 
   //
@@ -229,7 +229,7 @@ async function handleTokenRequest({ request }: Route.LoaderArgs): Promise<Respon
   tokenCache.delete(code);
 
   if (!tokenSet) {
-    throw Response.json({ error: 'invalid_code' }, { status: 400 });
+    return Response.json({ error: 'invalid_code' }, { status: 400 });
   }
 
   //

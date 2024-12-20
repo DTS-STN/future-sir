@@ -10,14 +10,14 @@ export async function loader({ request }: Route.LoaderArgs) {
   const buildRevision = url.searchParams.get('v');
 
   if (!lng || !ns) {
-    throw Response.json({ message: 'You must provide a language (lng) and namespace (ns)' }, { status: 400 });
+    return Response.json({ message: 'You must provide a language (lng) and namespace (ns)' }, { status: 400 });
   }
 
   const i18next = await initI18next();
   const resourceBundle = i18next.getResourceBundle(lng, ns);
 
   if (!resourceBundle) {
-    throw Response.json({ message: 'No resource bundle found for this language and namespace' }, { status: 404 });
+    return Response.json({ message: 'No resource bundle found for this language and namespace' }, { status: 404 });
   }
 
   const headers =

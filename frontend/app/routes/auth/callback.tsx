@@ -1,4 +1,5 @@
 import type { AppLoadContext } from 'react-router';
+import { redirect } from 'react-router';
 
 import { Redacted } from 'effect';
 
@@ -48,7 +49,7 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
       const { ENABLE_DEVMODE_OIDC } = serverEnvironment;
 
       if (!ENABLE_DEVMODE_OIDC) {
-        throw Response.json(null, { status: 404 });
+        return Response.json(null, { status: 404 });
       }
 
       const authStrategy = new LocalAuthenticationStrategy(
@@ -62,7 +63,7 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
     }
 
     default: {
-      throw Response.json('Authentication provider not found', { status: 404 });
+      return Response.json('Authentication provider not found', { status: 404 });
     }
   }
 }
@@ -78,7 +79,7 @@ async function handleCallback(authStrategy: AuthenticationStrategy, currentUrl: 
 
     if (session.loginState === undefined) {
       span.addEvent('login_state.invalid');
-      throw Response.json({ message: 'Invalid login state' }, { status: 400 });
+      return Response.json({ message: 'Invalid login state' }, { status: 400 });
     }
 
     const { codeVerifier, nonce, state } = session.loginState;
@@ -98,6 +99,6 @@ async function handleCallback(authStrategy: AuthenticationStrategy, currentUrl: 
       idTokenClaims: tokenSet.idTokenClaims,
     };
 
-    throw Response.redirect(returnUrl.toString());
+    return redirect(returnUrl.toString());
   });
 }
