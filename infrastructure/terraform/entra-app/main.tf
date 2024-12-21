@@ -60,13 +60,6 @@ data "azuread_user" "users" {
 
 
 
-# Generates unique identifiers for app roles
-resource "random_uuid" "app_role" {
-  for_each = { for app_role in var.app_roles : app_role.display_name => app_role }
-}
-
-
-
 # Creates the main Entra ID app registration
 resource "azuread_application" "main" {
   # basic application properties
@@ -107,11 +100,10 @@ resource "azuread_application" "main" {
     for_each = var.app_roles
 
     content {
-      id = random_uuid.app_role[app_role.value.display_name].result
-
       allowed_member_types = app_role.value.allowed_member_types
       description          = app_role.value.description
       display_name         = app_role.value.display_name
+      id                   = app_role.value.id
       value                = app_role.value.value
     }
   }

@@ -56,6 +56,7 @@ variable "app_roles" {
   description = "Defines app roles for role-based access control (RBAC)."
   type = list(object({
     allowed_member_types = optional(set(string), ["Application", "User"])
+    id                   = string
     description          = string
     display_name         = string
     group_name           = string

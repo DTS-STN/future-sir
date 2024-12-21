@@ -34,19 +34,49 @@ inputs = {
     resource_app_id = local.msgraph_api.id
 
     resource_accesses = [
-      { type = "Role", id = local.msgraph_api.roles["User.Read.All"] },
+      {
+        id   = local.msgraph_api.roles["User.Read.All"]
+        type = "Role",
+      },
     ]
   }]
 
-  app_roles = [{
-    display_name = "Administrator"
-    description  = "Administrator"
-    group_name   = "Future SIR Administrators (nonprod)"
-    value        = "admin"
-  }]
+  app_roles = [
+    {
+      display_name = "Administrator"
+      description  = "Administrator"
+      group_name   = "Future SIR Administrators (nonprod)"
+      id           = "e3aee262-c099-d315-0457-f7857d318dbf"
+      value        = "admin"
+    },
+    {
+      display_name = "Tester"
+      description  = "Tester"
+      group_name   = "Future SIR Tester (nonprod)"
+      id           = "cb95be59-f560-4f87-881e-fe0355d9afd8"
+      value        = "tester"
+    },
+    {
+      display_name = "User"
+      description  = "User"
+      group_name   = "Future SIR Users (nonprod)"
+      id           = "53ef4c5d-c933-89b1-bfa6-73cd4a497d0a"
+      value        = "user"
+    }
+  ]
 
   role_assignments = {
     admin = [
+      "gregory.j.baker@hrsdc-rhdcc.gc.ca",
+      "guillaume.liddle@hrsdc-rhdcc.gc.ca",
+      "sebastien.comeau@hrsdc-rhdcc.gc.ca",
+    ]
+    tester = [
+      /* placeholder */
+    ]
+    user = [
+      "dario.au@hrsdc-rhdcc.gc.ca",
+      "faiza.jahanzeb@hrsdc-rhdcc.gc.ca",
       "gregory.j.baker@hrsdc-rhdcc.gc.ca",
       "guillaume.liddle@hrsdc-rhdcc.gc.ca",
       "sebastien.comeau@hrsdc-rhdcc.gc.ca",
