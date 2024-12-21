@@ -1,10 +1,10 @@
 import type { RouteHandle } from 'react-router';
-import { Link } from 'react-router';
 
 import { useTranslation } from 'react-i18next';
 
 import type { Route } from './+types/index';
 
+import { AppLink } from '~/components/app-link';
 import { ButtonLink } from '~/components/button-link';
 import { getFixedT } from '~/i18n-config.server';
 
@@ -36,7 +36,7 @@ export default function Index() {
             <span lang="fr">{fr('gcweb:header.language-selection')}</span>
           </h1>
           <div className="w-11/12 lg:w-8/12">
-            <Link to="https://www.canada.ca/en.html">
+            <AppLink to="https://www.canada.ca/en.html">
               <img
                 className="h-8 w-auto"
                 src="https://www.canada.ca/etc/designs/canada/wet-boew/assets/sig-blk-en.svg"
@@ -45,7 +45,7 @@ export default function Index() {
                 height="28"
                 decoding="async"
               />
-            </Link>
+            </AppLink>
           </div>
           <div className="mb-2 mt-9 grid grid-cols-2 gap-8 md:mx-4 lg:mx-8">
             <section lang="en" className="text-center">
@@ -64,21 +64,21 @@ export default function Index() {
         </div>
         <div className="flex items-center justify-between gap-6 bg-gray-200 p-8">
           <div className="w-7/12 md:w-8/12">
-            <Link
+            <AppLink
               className="text-slate-700 hover:text-blue-700 hover:underline focus:text-blue-700"
               to={en('gcweb:footer.terms-conditions.href')}
               lang="en"
             >
               {en('gcweb:footer.terms-conditions.text')}
-            </Link>
+            </AppLink>
             <span className="text-gray-400"> • </span>
-            <Link
+            <AppLink
               className="text-slate-700 hover:text-blue-700 hover:underline focus:text-blue-700"
               to={fr('gcweb:footer.terms-conditions.href')}
               lang="fr"
             >
               {fr('gcweb:footer.terms-conditions.text')}
-            </Link>
+            </AppLink>
           </div>
           <div className="w-5/12 md:w-4/12">
             <img

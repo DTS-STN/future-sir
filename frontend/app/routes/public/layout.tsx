@@ -1,8 +1,9 @@
 import type { RouteHandle } from 'react-router';
-import { Link, Outlet } from 'react-router';
+import { Outlet } from 'react-router';
 
 import { useTranslation } from 'react-i18next';
 
+import { AppLink } from '~/components/app-link';
 import { LanguageSwitcher } from '~/components/language-switcher';
 import { PageDetails } from '~/components/page-details';
 import { useLanguage } from '~/hooks/use-language';
@@ -20,7 +21,7 @@ export default function Layout() {
       <header className="border-b-[3px] border-slate-700 print:hidden">
         <div id="wb-bnr">
           <div className="container flex items-center justify-between gap-6 py-2.5 sm:py-3.5">
-            <Link to="https://canada.ca/">
+            <AppLink to="https://canada.ca/">
               <img
                 className="h-8 w-auto"
                 src={`https://www.canada.ca/etc/designs/canada/wet-boew/assets/sig-blk-${currentLanguage}.svg`}
@@ -29,7 +30,7 @@ export default function Layout() {
                 height="28"
                 decoding="async"
               />
-            </Link>
+            </AppLink>
             <LanguageSwitcher>{t('gcweb:language-switcher.alt-lang')}</LanguageSwitcher>
           </div>
         </div>

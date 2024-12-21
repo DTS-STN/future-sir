@@ -1,7 +1,6 @@
-import { Link } from 'react-router';
-
 import { useTranslation } from 'react-i18next';
 
+import { AppLink } from '~/components/app-link';
 import { PageTitle } from '~/components/page-title';
 import { useLanguage } from '~/hooks/use-language';
 
@@ -24,7 +23,7 @@ function BilingualNotFound() {
       <header className="border-b-[3px] border-slate-700 print:hidden">
         <div id="wb-bnr">
           <div className="container flex items-center justify-between gap-6 py-2.5 sm:py-3.5">
-            <Link to="https://canada.ca/">
+            <AppLink to="https://canada.ca/">
               <img
                 className="h-8 w-auto"
                 src="https://www.canada.ca/etc/designs/canada/wet-boew/assets/sig-blk-en.svg"
@@ -36,7 +35,7 @@ function BilingualNotFound() {
               <span className="sr-only">
                 / <span lang="fr">{fr('gcweb:header.govt-of-canada.text')}</span>
               </span>
-            </Link>
+            </AppLink>
           </div>
         </div>
       </header>
@@ -88,7 +87,7 @@ function UnilingualNotFound() {
       <header className="border-b-[3px] border-slate-700 print:hidden">
         <div id="wb-bnr">
           <div className="container flex items-center justify-between gap-6 py-2.5 sm:py-3.5">
-            <Link to="https://canada.ca/">
+            <AppLink to="https://canada.ca/">
               <img
                 className="h-8 w-auto"
                 src="https://www.canada.ca/etc/designs/canada/wet-boew/assets/sig-blk-en.svg"
@@ -97,7 +96,7 @@ function UnilingualNotFound() {
                 height="28"
                 decoding="async"
               />
-            </Link>
+            </AppLink>
           </div>
         </div>
       </header>

@@ -1,9 +1,10 @@
-import { Link, Links, Meta, Scripts } from 'react-router';
+import { Links, Meta, Scripts } from 'react-router';
 
 import { Trans, useTranslation } from 'react-i18next';
 
 import type { Route } from '../../+types/root';
 
+import { AppLink } from '~/components/app-link';
 import { PageTitle } from '~/components/page-title';
 import { isCodedError } from '~/errors/coded-error';
 
@@ -33,7 +34,7 @@ export function BilingualErrorBoundary({ actionData, error, loaderData, params }
         <header className="border-b-[3px] border-slate-700 print:hidden">
           <div id="wb-bnr">
             <div className="container flex items-center justify-between gap-6 py-2.5 sm:py-3.5">
-              <Link to="https://canada.ca/">
+              <AppLink to="https://canada.ca/">
                 <img
                   className="h-8 w-auto"
                   src="https://www.canada.ca/etc/designs/canada/wet-boew/assets/sig-blk-en.svg"
@@ -42,7 +43,7 @@ export function BilingualErrorBoundary({ actionData, error, loaderData, params }
                   height="28"
                   decoding="async"
                 />
-              </Link>
+              </AppLink>
             </div>
           </div>
         </header>

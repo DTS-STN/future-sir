@@ -11,20 +11,39 @@ import type { I18nRouteFile } from '~/i18n-routes';
 import { i18nRoutes } from '~/i18n-routes';
 import { getRouteByFile } from '~/utils/route-utils';
 
-type AppLinkProps = Omit<ComponentProps<typeof Link>, 'to'> & {
+type BilingualLinkProps = Omit<ComponentProps<typeof Link>, 'to'> & {
   file: I18nRouteFile;
   hash?: Path['hash'];
   lang?: Language;
   params?: Params;
   search?: Path['search'];
+  to?: never;
 };
+
+type UnilingualLinkProps = Omit<ComponentProps<typeof Link>, 'lang'> & {
+  file?: never;
+  hash?: never;
+  lang?: Language;
+  params?: never;
+  search?: never;
+};
+
+type AppLinkProps = BilingualLinkProps | UnilingualLinkProps;
 
 /**
  * A custom link component that handles rendering application hrefs in the correct language.
  */
 export const AppLink = forwardRef<ElementRef<typeof Link>, AppLinkProps>(
-  ({ children, hash, lang, params, file, search, ...props }, ref) => {
+  ({ children, hash, lang, params, file, search, to, ...props }, ref) => {
     const { currentLanguage } = useLanguage();
+
+    if (to !== undefined) {
+      return (
+        <Link ref={ref} lang={lang} to={to} {...props}>
+          {children}
+        </Link>
+      );
+    }
 
     const targetLanguage = lang ?? currentLanguage;
 
@@ -37,10 +56,12 @@ export const AppLink = forwardRef<ElementRef<typeof Link>, AppLinkProps>(
 
     const route = getRouteByFile(file, i18nRoutes);
     const pathname = generatePath(route.paths[targetLanguage], params);
-    const reloadDocument = props.reloadDocument ?? lang !== undefined;
+
+    const langProp = targetLanguage !== currentLanguage ? targetLanguage : undefined;
+    const reloadDocumentProp = props.reloadDocument ?? lang !== undefined;
 
     return (
-      <Link ref={ref} lang={targetLanguage} to={{ hash, pathname, search }} reloadDocument={reloadDocument} {...props}>
+      <Link ref={ref} lang={langProp} to={{ hash, pathname, search }} reloadDocument={reloadDocumentProp} {...props}>
         {children}
       </Link>
     );

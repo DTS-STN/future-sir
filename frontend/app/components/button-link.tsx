@@ -12,9 +12,9 @@ const sizes = {
   xl: 'px-6 py-3.5 text-base',
 } as const;
 
+// prettier-ignore
 const variants = {
-  alternative:
-    'border-gray-200 bg-white text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:bg-gray-100 focus:text-blue-700',
+  alternative: 'border-gray-200 bg-white text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:bg-gray-100 focus:text-blue-700',
   default: 'border-gray-300 bg-gray-200 text-slate-700 hover:bg-neutral-300 focus:bg-neutral-300',
   dark: 'border-gray-800 bg-gray-800 text-white hover:bg-gray-900 focus:bg-gray-900',
   green: 'border-green-700 bg-green-700 text-white hover:bg-green-800 focus:bg-green-800',
@@ -22,36 +22,36 @@ const variants = {
   red: 'border-red-700 bg-red-700 text-white hover:bg-red-800 focus:bg-red-800',
 } as const;
 
-type ButtonLinkProps = ComponentProps<typeof AppLink> & {
-  disabled?: boolean;
+type ButtonLinkStyleProps = {
+  className?: string;
   pill?: boolean;
   size?: keyof typeof sizes;
   variant?: keyof typeof variants;
 };
 
-/**
- * Tailwind CSS Buttons from Flowbite
- * @see https://flowbite.com/docs/components/buttons/
- *
- * Disabling a link
- * @see https://www.scottohara.me/blog/2021/05/28/disabled-links.html
- */
+type ButtonLinkProps = ComponentProps<typeof AppLink> &
+  ButtonLinkStyleProps & {
+    disabled?: boolean;
+  };
+
 export const ButtonLink = forwardRef<HTMLAnchorElement | ElementRef<typeof AppLink>, ButtonLinkProps>(
-  ({ children, className, disabled, file, pill, size = 'base', variant = 'default', ...props }, ref) => {
+  (
+    { children, className, disabled, file, hash, params, pill, search, to, size = 'base', variant = 'default', ...props },
+    ref,
+  ) => {
+    const baseClassName = cn(
+      'inline-flex items-center justify-center rounded border align-middle font-lato no-underline outline-offset-4',
+      sizes[size],
+      variants[variant],
+      pill && 'rounded-full',
+      className,
+    );
+
     if (disabled) {
       return (
         <a
           ref={ref}
-          className={cn(
-            cn(
-              'inline-flex items-center justify-center rounded border align-middle font-lato no-underline outline-offset-4',
-              sizes[size],
-              variants[variant],
-              pill && 'rounded-full',
-              className,
-            ),
-            'pointer-events-none cursor-not-allowed opacity-70',
-          )}
+          className={cn(baseClassName, 'pointer-events-none cursor-not-allowed opacity-70')}
           role="link"
           aria-disabled="true"
           {...props}
@@ -61,19 +61,21 @@ export const ButtonLink = forwardRef<HTMLAnchorElement | ElementRef<typeof AppLi
       );
     }
 
+    if (to !== undefined) {
+      return (
+        <AppLink //
+          ref={ref}
+          className={baseClassName}
+          to={to}
+          {...props}
+        >
+          {children}
+        </AppLink>
+      );
+    }
+
     return (
-      <AppLink
-        ref={ref}
-        className={cn(
-          'inline-flex items-center justify-center rounded border align-middle font-lato no-underline outline-offset-4',
-          sizes[size],
-          variants[variant],
-          pill && 'rounded-full',
-          className,
-        )}
-        file={file}
-        {...props}
-      >
+      <AppLink ref={ref} className={baseClassName} file={file} hash={hash} params={params} search={search} {...props}>
         {children}
       </AppLink>
     );
