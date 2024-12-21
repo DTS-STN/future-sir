@@ -1,5 +1,8 @@
 {
   "resource": "public/locales/protected-en.json",
+  "admin": {
+    "page-title": "Admin dashboard"
+  },
   "index": {
     "admin-dashboard": "Admin dashboard",
     "home": "Home",

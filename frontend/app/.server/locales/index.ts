@@ -1,9 +1,9 @@
-import gcwebEn from './gcweb-en.json';
-import gcwebFr from './gcweb-fr.json';
-import protectedEn from './protected-en.json';
-import protectedFr from './protected-fr.json';
-import publicEn from './public-en.json';
-import publicFr from './public-fr.json';
+import gcwebEn from '~/.server/locales/gcweb-en.json';
+import gcwebFr from '~/.server/locales/gcweb-fr.json';
+import protectedEn from '~/.server/locales/protected-en.json';
+import protectedFr from '~/.server/locales/protected-fr.json';
+import publicEn from '~/.server/locales/public-en.json';
+import publicFr from '~/.server/locales/public-fr.json';
 
 export const enI18nResources = {
   gcweb: gcwebEn,

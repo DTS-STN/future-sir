@@ -1,5 +1,8 @@
 {
   "resource": "public/locales/protected-fr.json",
+  "admin": {
+    "page-title": "Interface d'administration"
+  },
   "index": {
     "admin-dashboard": "Interface d'administration",
     "home": "Accueil",

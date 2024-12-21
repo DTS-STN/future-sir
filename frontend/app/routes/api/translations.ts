@@ -1,4 +1,5 @@
 import type { Route } from './+types/translations';
+
 import { serverDefaults } from '~/.server/environment';
 import { initI18next } from '~/i18n-config.server';
 

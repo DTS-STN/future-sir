@@ -2,20 +2,19 @@ import { Link } from 'react-router';
 
 import { useTranslation } from 'react-i18next';
 
-import type { Route } from './+types/not-found';
 import { PageTitle } from '~/components/page-title';
 import { useLanguage } from '~/hooks/use-language';
 
-export default function NotFound(props: Route.ComponentProps) {
+export default function NotFound() {
   const { currentLanguage } = useLanguage();
 
   // prettier-ignore
   return currentLanguage
-    ? <UnilingualNotFound {...props} />
-    : <BilingualNotFound {...props} />;
+    ? <UnilingualNotFound />
+    : <BilingualNotFound />;
 }
 
-function BilingualNotFound(props: Route.ComponentProps) {
+function BilingualNotFound() {
   const { i18n, t } = useTranslation(['gcweb']);
   const en = i18n.getFixedT('en');
   const fr = i18n.getFixedT('fr');
@@ -81,7 +80,7 @@ function BilingualNotFound(props: Route.ComponentProps) {
   );
 }
 
-function UnilingualNotFound(props: Route.ComponentProps) {
+function UnilingualNotFound() {
   const { t } = useTranslation(['gcweb']);
 
   return (

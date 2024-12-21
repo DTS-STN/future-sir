@@ -1,12 +1,12 @@
 import 'react-router';
 
-import type { Request } from 'express';
+import type { SessionData } from 'express-session';
 import type { Namespace } from 'i18next';
 
 declare module 'react-router' {
   interface AppLoadContext {
     nonce: string;
-    session: Request['session'];
+    session: SessionData;
   }
 
   /**

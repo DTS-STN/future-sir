@@ -3,7 +3,7 @@ import type { AuthorizationServer, Client, ClientAuth, IDToken } from 'oauth4web
 import * as oauth from 'oauth4webapi';
 
 import { LogFactory } from '~/.server/logging';
-import { withSpan } from '~/utils/instrumentation-utils';
+import { withSpan } from '~/.server/utils/instrumentation-utils';
 
 /**
  * Like {@link AuthorizationServer}, but with a required `authorization_endpoint` property.
@@ -215,4 +215,23 @@ export abstract class BaseAuthenticationStrategy implements AuthenticationStrate
         idTokenClaims: idTokenClaims,
       };
     });
+}
+
+/**
+ * Authentication strategy for Azure AD (Microsoft Entra).
+ */
+export class AzureADAuthenticationStrategy extends BaseAuthenticationStrategy {
+  public constructor(issuerUrl: URL, callbackUrl: URL, clientId: string, clientSecret: string) {
+    super('azuread', issuerUrl, callbackUrl, { client_id: clientId }, oauth.ClientSecretPost(clientSecret));
+  }
+}
+
+/**
+ * Authentication strategy for a dev-only localhost provider.
+ * This is a pretty typical authentication strategy, except all requests are allowed to be insecure.
+ */
+export class LocalAuthenticationStrategy extends BaseAuthenticationStrategy {
+  public constructor(issuerUrl: URL, callbackUrl: URL, clientId: string, clientSecret: string) {
+    super('local', issuerUrl, callbackUrl, { client_id: clientId }, oauth.ClientSecretPost(clientSecret), true);
+  }
 }

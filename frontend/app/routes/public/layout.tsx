@@ -3,7 +3,6 @@ import { Link, Outlet } from 'react-router';
 
 import { useTranslation } from 'react-i18next';
 
-import type { Route } from './+types/layout';
 import { LanguageSwitcher } from '~/components/language-switcher';
 import { PageDetails } from '~/components/page-details';
 import { useLanguage } from '~/hooks/use-language';
@@ -12,7 +11,7 @@ export const handle = {
   i18nNamespace: ['gcweb', 'public'],
 } as const satisfies RouteHandle;
 
-export default function Layout(props: Route.ComponentProps) {
+export default function Layout() {
   const { currentLanguage } = useLanguage();
   const { t } = useTranslation(['gcweb']);
 

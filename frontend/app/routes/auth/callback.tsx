@@ -4,13 +4,13 @@ import { redirect } from 'react-router';
 import { Redacted } from 'effect';
 
 import type { Route } from './+types/callback';
+
+import type { AuthenticationStrategy } from '~/.server/auth/auth-strategies';
+import { AzureADAuthenticationStrategy, LocalAuthenticationStrategy } from '~/.server/auth/auth-strategies';
 import { serverEnvironment } from '~/.server/environment';
+import { withSpan } from '~/.server/utils/instrumentation-utils';
 import { CodedError } from '~/errors/coded-error';
 import { ErrorCodes } from '~/errors/error-codes';
-import type { AuthenticationStrategy } from '~/utils/auth/authentication-strategy';
-import { AzureADAuthenticationStrategy } from '~/utils/auth/azuread-authentication-strategy';
-import { LocalAuthenticationStrategy } from '~/utils/auth/local-authentication-strategy';
-import { withSpan } from '~/utils/instrumentation-utils';
 
 /**
  * Allows errors to be handled by root.tsx

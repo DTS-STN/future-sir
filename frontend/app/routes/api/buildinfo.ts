@@ -1,4 +1,5 @@
 import type { Route } from './+types/buildinfo';
+
 import { serverEnvironment } from '~/.server/environment';
 
 /**

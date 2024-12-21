@@ -3,6 +3,7 @@ import { Link, Links, Meta, Scripts } from 'react-router';
 import { Trans, useTranslation } from 'react-i18next';
 
 import type { Route } from '../../+types/root';
+
 import { PageTitle } from '~/components/page-title';
 import { isCodedError } from '~/errors/coded-error';
 

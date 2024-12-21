@@ -3,9 +3,9 @@ import { SpanStatusCode, trace } from '@opentelemetry/api';
 import { describe, expect, it, vi } from 'vitest';
 import { mock } from 'vitest-mock-extended';
 
+import * as InstrumentationUtils from '~/.server/utils/instrumentation-utils';
 import { CodedError } from '~/errors/coded-error';
 import { ErrorCodes } from '~/errors/error-codes';
-import * as InstrumentationUtils from '~/utils/instrumentation-utils';
 
 vi.mock('@opentelemetry/api');
 

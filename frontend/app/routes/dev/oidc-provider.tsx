@@ -6,8 +6,9 @@ import { randomUUID } from 'node:crypto';
 import { setTimeout } from 'node:timers';
 
 import type { Route } from './+types/oidc-provider';
+
+import type { TokenSet } from '~/.server/auth/auth-strategies';
 import { serverEnvironment } from '~/.server/environment';
-import type { TokenSet } from '~/utils/auth/authentication-strategy';
 
 type AuthCode = string;
 

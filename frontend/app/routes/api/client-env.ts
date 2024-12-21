@@ -1,4 +1,5 @@
 import type { Route } from './+types/client-env';
+
 import { clientEnvironment, serverDefaults } from '~/.server/environment';
 
 /**

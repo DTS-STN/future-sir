@@ -1,6 +1,6 @@
 import 'express-session';
 
-import type { IDTokenClaims } from '~/utils/auth/authentication-strategy';
+import type { IDTokenClaims } from '~/.server/auth/auth-strategies';
 
 declare module 'express-session' {
   interface SessionData extends Record<string, unknown> {

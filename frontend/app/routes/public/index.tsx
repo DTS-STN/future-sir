@@ -3,6 +3,7 @@ import type { RouteHandle } from 'react-router';
 import { Trans, useTranslation } from 'react-i18next';
 
 import type { Route } from './+types/index';
+
 import { InlineLink } from '~/components/inline-link';
 import { getFixedT } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/public/layout';
@@ -13,17 +14,14 @@ export const handle = {
 
 export async function loader({ request }: Route.LoaderArgs) {
   const t = await getFixedT(request, handle.i18nNamespace);
-
-  return {
-    meta: { documentTitle: t('public:index.page-title') },
-  };
+  return { documentTitle: t('public:index.page-title') };
 }
 
-export function meta({ data }: Route.MetaArgs): Route.MetaDescriptors {
-  return [{ title: data.meta.documentTitle }];
+export function meta({ data }: Route.MetaArgs) {
+  return [{ title: data.documentTitle }];
 }
 
-export default function Index(props: Route.ComponentProps) {
+export default function Index() {
   const { t } = useTranslation(handle.i18nNamespace);
 
   return (

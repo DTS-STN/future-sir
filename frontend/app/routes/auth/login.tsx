@@ -5,12 +5,12 @@ import { trace } from '@opentelemetry/api';
 import { Redacted } from 'effect';
 
 import type { Route } from './+types/login';
+
+import type { AuthenticationStrategy } from '~/.server/auth/auth-strategies';
+import { AzureADAuthenticationStrategy, LocalAuthenticationStrategy } from '~/.server/auth/auth-strategies';
 import { serverEnvironment } from '~/.server/environment';
 import { CodedError } from '~/errors/coded-error';
 import { ErrorCodes } from '~/errors/error-codes';
-import type { AuthenticationStrategy } from '~/utils/auth/authentication-strategy';
-import { AzureADAuthenticationStrategy } from '~/utils/auth/azuread-authentication-strategy';
-import { LocalAuthenticationStrategy } from '~/utils/auth/local-authentication-strategy';
 
 /**
  * Allows errors to be handled by root.tsx

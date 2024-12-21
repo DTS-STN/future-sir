@@ -1,7 +1,7 @@
 import * as oauth from 'oauth4webapi';
 import { describe, expect, it, vi } from 'vitest';
 
-import { BaseAuthenticationStrategy } from '~/utils/auth/authentication-strategy';
+import { BaseAuthenticationStrategy } from '~/.server/auth/auth-strategies';
 
 vi.mock('oauth4webapi');
 

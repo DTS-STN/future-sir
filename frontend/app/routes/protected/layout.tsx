@@ -1,9 +1,11 @@
 import type { RouteHandle } from 'react-router';
-import { Link, Outlet, redirect } from 'react-router';
+import { Link, Outlet } from 'react-router';
 
 import { useTranslation } from 'react-i18next';
 
 import type { Route } from './+types/layout';
+
+import { requireAuth } from '~/.server/utils/auth-utils';
 import { InlineLink } from '~/components/inline-link';
 import { LanguageSwitcher } from '~/components/language-switcher';
 import { PageDetails } from '~/components/page-details';
@@ -13,18 +15,9 @@ export const handle = {
   i18nNamespace: ['gcweb', 'protected'],
 } as const satisfies RouteHandle;
 
-export function loader({ context, params, request }: Route.LoaderArgs) {
-  //
-  // Simple forced-login PoC...
-  //
-  if (!context.session.authState) {
-    const { pathname, search } = new URL(request.url);
-    throw redirect(`/auth/login?returnto=${pathname}${search}`);
-  }
-
-  return {
-    name: context.session.authState.idTokenClaims?.name,
-  };
+export function loader({ context, request }: Route.LoaderArgs) {
+  requireAuth(context.session, new URL(request.url), ['user']);
+  return { name: context.session.authState.idTokenClaims?.name };
 }
 
 export default function Layout({ loaderData }: Route.ComponentProps) {

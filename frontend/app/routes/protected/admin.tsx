@@ -1,30 +1,29 @@
-import { redirect } from 'react-router';
+import type { RouteHandle } from 'react-router';
+
+import { useTranslation } from 'react-i18next';
 
 import type { Route } from './+types/admin';
-import { LogFactory } from '~/.server/logging';
+
+import { requireAuth } from '~/.server/utils/auth-utils';
 import { PageTitle } from '~/components/page-title';
-import { CodedError } from '~/errors/coded-error';
-import { ErrorCodes } from '~/errors/error-codes';
-import { hasRole } from '~/utils/auth-utils';
+import { getFixedT } from '~/i18n-config.server';
+import { handle as parentHandle } from '~/routes/protected/layout';
 
-export function loader({ context, params, request }: Route.LoaderArgs) {
-  const log = LogFactory.getLogger(import.meta.url);
+export const handle = {
+  i18nNamespace: [...parentHandle.i18nNamespace, 'protected'],
+} as const satisfies RouteHandle;
 
-  if (!context.session.authState) {
-    log.debug('User is not authenticated, redirecting to login page');
-
-    const { pathname, search } = new URL(request.url);
-    throw redirect(`/auth/login?returnto=${pathname}${search}`);
-  }
-
-  if (!hasRole(context.session.authState, 'admin')) {
-    log.debug('User is not authorized to access this page; missing role admin');
-    throw new CodedError('User is not authorized to access this page', ErrorCodes.ACCESS_FORBIDDEN, { statusCode: 403 });
-  }
-
-  return {};
+export async function loader({ context, request }: Route.LoaderArgs) {
+  requireAuth(context.session, new URL(request.url), ['admin']);
+  const t = await getFixedT(request, handle.i18nNamespace);
+  return { documentTitle: t('protected:index.page-title') };
 }
 
-export default function AdminDashboard({ actionData, loaderData, matches, params }: Route.ComponentProps) {
-  return <PageTitle>Admin dashboard</PageTitle>;
+export function meta({ data }: Route.MetaArgs) {
+  return [{ title: data.documentTitle }];
+}
+
+export default function AdminDashboard() {
+  const { t } = useTranslation(handle.i18nNamespace);
+  return <PageTitle>{t('protected:admin.page-title')}</PageTitle>;
 }

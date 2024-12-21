@@ -4,6 +4,7 @@ import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 
 import type { Route } from './+types/index';
+
 import { ButtonLink } from '~/components/button-link';
 import { getFixedT } from '~/i18n-config.server';
 
@@ -11,20 +12,17 @@ export const handle = {
   i18nNamespace: ['gcweb'],
 } as const satisfies RouteHandle;
 
-export async function loader({ request }: Route.LoaderArgs) {
+export async function loader() {
   const en = await getFixedT('en', handle.i18nNamespace);
   const fr = await getFixedT('fr', handle.i18nNamespace);
-
-  return {
-    meta: { documentTitle: `${en('header.govt-of-canada.text')} / ${fr('header.govt-of-canada.text')}` },
-  };
+  return { documentTitle: `${en('header.govt-of-canada.text')} / ${fr('header.govt-of-canada.text')}` };
 }
 
-export function meta({ data }: Route.MetaArgs): Route.MetaDescriptors {
-  return [{ title: data.meta.documentTitle }];
+export function meta({ data }: Route.MetaArgs) {
+  return [{ title: data.documentTitle }];
 }
 
-export default function Index(props: Route.ComponentProps) {
+export default function Index() {
   const { i18n } = useTranslation(handle.i18nNamespace);
   const en = i18n.getFixedT('en');
   const fr = i18n.getFixedT('fr');
