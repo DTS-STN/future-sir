@@ -1,10 +1,11 @@
 import type { RouteHandle } from 'react-router';
 
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import type { Route } from './+types/index';
 
 import { InlineLink } from '~/components/inline-link';
+import { PageTitle } from '~/components/page-title';
 import { getFixedT } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/public/layout';
 
@@ -25,18 +26,14 @@ export default function Index() {
   const { t } = useTranslation(handle.i18nNamespace);
 
   return (
-    <div className="mb-8">
-      <p className="mt-8 text-lg">
-        <Trans i18nKey="public:index.resources" components={{ mark: <mark /> }} values={{ resource: t('public:resource') }} />
-      </p>
+    <>
+      <PageTitle>{t('public:index.page-title')}</PageTitle>
+      <p className="mt-8">{t('public:index.about')}</p>
       <ul className="ml-8 mt-8 list-disc">
         <li>
           <InlineLink file="routes/protected/index.tsx">{t('public:index.navigate')}</InlineLink>
         </li>
-        <li>
-          <InlineLink to="/">{t('public:index.home')}</InlineLink>
-        </li>
       </ul>
-    </div>
+    </>
   );
 }

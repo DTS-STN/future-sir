@@ -1,9 +1,8 @@
 {
   "resource": "public/locales/public-en.json",
   "index": {
-    "page-title": "Welcome to Future SIR (public)",
-    "resources": "i18n resources loaded from: <mark>{{resource}}</mark>",
-    "navigate": "Navigate to 'private' page",
-    "home": "Home"
+    "page-title": "Welcome to Future SIR",
+    "about": "The Future SIR initiative aims to modernize and streamline the existing SIR system by implementing a more advanced and efficient solution.",
+    "navigate": "Go to the employee portal"
   }
 }

@@ -11,7 +11,7 @@ export const PageTitle = forwardRef<HTMLHeadingElement, PageTitleProps>(({ child
       ref={ref}
       id="wb-cont"
       tabIndex={-1}
-      className={cn('font-lato text-3xl font-bold focus-visible:ring', className)}
+      className={cn('mt-10 font-lato text-3xl font-bold focus-visible:ring', className)}
       {...props}
     >
       {children}
