@@ -16,7 +16,7 @@ import { useLanguage } from '~/hooks/use-language';
  * If an error boundary itself throws an error, there's no subsequent error
  * boundary to catch and render it, potentially leading to infinite error loops.
  */
-export function UnilingualErrorBoundary(props: Route.ErrorBoundaryProps) {
+export function UnilingualErrorBoundary({ actionData, error, loaderData, params }: Route.ErrorBoundaryProps) {
   const { currentLanguage } = useLanguage();
   const { t } = useTranslation(['gcweb']);
 
@@ -48,23 +48,25 @@ export function UnilingualErrorBoundary(props: Route.ErrorBoundaryProps) {
         <main className="container">
           <PageTitle className="my-8">
             <span>{t('gcweb:server-error.page-title')}</span>
-            <small className="block text-2xl font-normal text-neutral-500">{t('gcweb:server-error.page-subtitle')}</small>
+            <small className="block text-2xl font-normal text-neutral-500">
+              {t('gcweb:server-error.page-subtitle', { statusCode: isCodedError(error) ? error.statusCode : 500 })}
+            </small>
           </PageTitle>
           <p className="mb-8 text-lg text-gray-500">{t('gcweb:server-error.page-message')}</p>
-          {isCodedError(props.error) && (
+          {isCodedError(error) && (
             <ul className="list-disc pl-10 text-gray-800">
               <li>
                 <Trans
                   i18nKey="gcweb:server-error.error-code"
                   components={{ span: <span className="font-mono" />, strong: <strong className="font-semibold" /> }}
-                  values={{ errorCode: props.error.code }}
+                  values={{ errorCode: error.errorCode }}
                 />
               </li>
               <li>
                 <Trans
                   i18nKey="gcweb:server-error.correlation-id"
                   components={{ span: <span className="font-mono" />, strong: <strong className="font-semibold" /> }}
-                  values={{ correlationId: props.error.correlationId }}
+                  values={{ correlationId: error.correlationId }}
                 />
               </li>
             </ul>
@@ -86,10 +88,10 @@ export function UnilingualErrorBoundary(props: Route.ErrorBoundaryProps) {
             </div>
           </div>
         </footer>
-        <Scripts nonce={props.loaderData?.nonce} />
+        <Scripts nonce={loaderData?.nonce} />
         <script //
-          nonce={props.loaderData?.nonce}
-          src={`/api/client-env?v=${props.loaderData?.clientEnvRevision}`}
+          nonce={loaderData?.nonce}
+          src={`/api/client-env?v=${loaderData?.clientEnvRevision}`}
           suppressHydrationWarning={true}
         />
       </body>

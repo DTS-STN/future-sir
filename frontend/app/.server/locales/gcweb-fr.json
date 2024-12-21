@@ -57,7 +57,7 @@
   "server-error": {
     "document-title": "Erreur interne du serveur",
     "page-title": "Nous éprouvons des difficultés avec cette page",
-    "page-subtitle": "(Erreur 500)",
+    "page-subtitle": "(Erreur {{statusCode}})",
     "page-message": "Nous espérons résoudre le problème sous peu. Il ne s'agit pas d'un problème avec votre ordinateur ou Internet, mais plutôt avec le serveur de notre site Web.",
     "correlation-id": "<strong>ID de corrélation\u00a0:</strong> <span>{{correlationId}}</span>",
     "error-code": "<strong>Code d'erreur\u00a0:</strong> <span>{{errorCode}}</span>"

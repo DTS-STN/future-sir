@@ -13,6 +13,13 @@ export interface AuthServer extends Readonly<AuthorizationServer> {
 }
 
 /**
+ * Like {@link IDToken}, but with an optional `roles` property.
+ */
+export interface IDTokenClaims extends IDToken {
+  roles?: string[];
+}
+
+/**
  * Represents a sign-in request object containing the authorization URL, code verifier, nonce, and state.
  */
 export interface SignInRequest {
@@ -28,7 +35,7 @@ export interface SignInRequest {
 export interface TokenSet {
   readonly accessToken: string;
   readonly idToken?: string;
-  readonly idTokenClaims?: IDToken;
+  readonly idTokenClaims?: IDTokenClaims;
 }
 
 /**

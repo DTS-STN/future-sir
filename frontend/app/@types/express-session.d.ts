@@ -1,12 +1,13 @@
 import 'express-session';
-import type { IDToken } from 'oauth4webapi';
+
+import type { IDTokenClaims } from '~/utils/auth/authentication-strategy';
 
 declare module 'express-session' {
   interface SessionData extends Record<string, unknown> {
     authState?: {
       accessToken: string;
       idToken?: string;
-      idTokenClaims?: IDToken;
+      idTokenClaims?: IDTokenClaims;
     };
     loginState?: {
       codeVerifier: string;

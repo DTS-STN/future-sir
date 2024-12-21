@@ -140,7 +140,7 @@ async function handleAuthorizeRequest({ request }: Route.LoaderArgs): Promise<Re
   const idToken = await new SignJWT({
     name: 'Application Developer',
     nonce: nonce,
-    roles: ['admin'],
+    roles: ['user'],
   })
     .setProtectedHeader({ alg: 'RS256' })
     .setAudience(config.clientId)

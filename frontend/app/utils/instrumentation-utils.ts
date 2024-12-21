@@ -18,7 +18,7 @@ export function handleSpanException(error: unknown, span?: Span) {
     span?.recordException({
       name: getName(error),
       message: getMessage(error),
-      code: getCode(error),
+      code: getErrorCode(error),
       stack: getStack(error),
     });
 
@@ -53,9 +53,9 @@ export async function withSpan<T>(
   }
 }
 
-function getCode(error: unknown): string | undefined {
+function getErrorCode(error: unknown): string | undefined {
   if (isCodedError(error)) {
-    return error.code;
+    return error.errorCode;
   }
 }
 

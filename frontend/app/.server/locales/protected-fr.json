@@ -1,9 +1,10 @@
 {
   "resource": "public/locales/protected-fr.json",
   "index": {
+    "admin-dashboard": "Interface d'administration",
+    "home": "Accueil",
     "page-title": "Bienvenue sur Future SIR (protégée)",
-    "resources": "ressources i18n chargées depuis : <mark>{{resource}}</mark>",
-    "navigate": "Accédez à la page « publique »",
-    "home": "Accueil"
+    "public": "Accédez à la page « publique »",
+    "resources": "ressources i18n chargées depuis : <mark>{{resource}}</mark>"
   }
 }

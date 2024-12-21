@@ -88,7 +88,7 @@ export default async function handleRequest(
 export function handleError(error: unknown, { context, request }: LoaderFunctionArgs | ActionFunctionArgs) {
   if (!request.signal.aborted) {
     const log = context.LogFactory.getLogger(import.meta.url);
-    log.error('Uncaught error while handling request', error);
+    log.error('Uncaught error while handling request:', error);
     handleSpanException(error, trace.getActiveSpan());
   }
 }

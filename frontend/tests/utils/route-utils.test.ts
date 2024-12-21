@@ -52,7 +52,7 @@ describe('route-utils', () => {
 
         const codedError = error as CodedError;
         expect(codedError.msg).toEqual('No route found for routes/💩.tsx (this should never happen)');
-        expect(codedError.code).toEqual(ErrorCodes.ROUTE_NOT_FOUND);
+        expect(codedError.errorCode).toEqual(ErrorCodes.ROUTE_NOT_FOUND);
       }
     });
   });
@@ -74,7 +74,7 @@ describe('route-utils', () => {
 
         const codedError = error as CodedError;
         expect(codedError.msg).toEqual('No route found for /en/foobar (this should never happen)');
-        expect(codedError.code).toEqual(ErrorCodes.ROUTE_NOT_FOUND);
+        expect(codedError.errorCode).toEqual(ErrorCodes.ROUTE_NOT_FOUND);
       }
     });
   });

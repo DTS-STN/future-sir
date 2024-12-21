@@ -2,10 +2,17 @@ import type { ErrorCode } from '~/errors/error-codes';
 import { ErrorCodes } from '~/errors/error-codes';
 import { randomString } from '~/utils/string-utils';
 
-export type CodedErrorProps = {
-  readonly code: string;
-  readonly correlationId: string;
-  readonly message?: string;
+// prettier-ignore
+export type HttpStatusCode =
+  | 100 | 101 | 102 | 103
+  | 200 | 201 | 202 | 203 | 204 | 205 | 206 | 207 | 208 | 226
+  | 300 | 301 | 302 | 303 | 304 | 305 | 306 | 307 | 308
+  | 400 | 401 | 402 | 403 | 404 | 405 | 406 | 407 | 408 | 409 | 410 | 411 | 412 | 413 | 414 | 415 | 416 | 417 | 418 | 421 | 422 | 423 | 424 | 425 | 426 | 428 | 429 | 431 | 451
+  | 500 | 501 | 502 | 503 | 504 | 505 | 506 | 507 | 508 | 510 | 511;
+
+export type CodedErrorOpts = {
+  correlationId?: string;
+  statusCode?: HttpStatusCode;
 };
 
 /**
@@ -15,20 +22,23 @@ export type CodedErrorProps = {
 export class CodedError {
   public readonly name = 'CodedError';
 
-  public readonly code: ErrorCode;
+  public readonly errorCode: ErrorCode;
   public readonly correlationId: string;
   public readonly stack?: string;
+  public readonly statusCode: HttpStatusCode;
 
   // note: this is intentionally named `msg` instead
   // of `message` to workaround an issue with winston
   // always logging this as the log message when a
   // message is supplied to `log.error(message, error)`
-  public readonly msg?: string;
+  public readonly msg: string;
 
-  public constructor(msg?: string, code: ErrorCode = ErrorCodes.UNCAUGHT_ERROR, correlationId = generateCorrelationId()) {
-    this.code = code;
-    this.correlationId = correlationId;
+  public constructor(msg: string, errorCode: ErrorCode = ErrorCodes.UNCAUGHT_ERROR, opts?: CodedErrorOpts) {
+    this.errorCode = errorCode;
     this.msg = msg;
+
+    this.correlationId = opts?.correlationId ?? generateCorrelationId();
+    this.statusCode = opts?.statusCode ?? 500;
 
     Error.captureStackTrace(this, this.constructor);
   }

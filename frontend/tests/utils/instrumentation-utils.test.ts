@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { mock } from 'vitest-mock-extended';
 
 import { CodedError } from '~/errors/coded-error';
+import { ErrorCodes } from '~/errors/error-codes';
 import * as InstrumentationUtils from '~/utils/instrumentation-utils';
 
 vi.mock('@opentelemetry/api');
@@ -12,14 +13,14 @@ describe('InstrumentationUtils', () => {
   describe('handleSpanException', () => {
     it('should record a CodedError in the span', () => {
       const mockSpan = mock<Span>();
-      const error = new CodedError('test error message', 'TEST-0001');
+      const error = new CodedError('test error message', ErrorCodes.TEST_ERROR_CODE);
 
       InstrumentationUtils.handleSpanException(error, mockSpan);
 
       expect(mockSpan.recordException).toHaveBeenCalledWith({
         name: error.name,
         message: error.msg,
-        code: error.code,
+        code: error.errorCode,
         stack: error.stack,
       });
 
@@ -60,7 +61,7 @@ describe('InstrumentationUtils', () => {
 
     it('should return the original error', () => {
       const mockSpan = mock<Span>();
-      const error = new CodedError();
+      const error = new CodedError('Something went wrong');
 
       const returnedError = InstrumentationUtils.handleSpanException(error, mockSpan);
 

@@ -1,9 +1,10 @@
 {
   "resource": "public/locales/protected-en.json",
   "index": {
+    "admin-dashboard": "Admin dashboard",
+    "home": "Home",
     "page-title": "Welcome to Future SIR (protected)",
-    "resources": "i18n resources loaded from: <mark>{{resource}}</mark>",
-    "navigate": "Navigate to 'public' page",
-    "home": "Home"
+    "public": "Navigate to 'public' page",
+    "resources": "i18n resources loaded from: <mark>{{resource}}</mark>"
   }
 }

@@ -13,7 +13,7 @@ export const handle = {
   i18nNamespace: ['gcweb', 'protected'],
 } as const satisfies RouteHandle;
 
-export function loader({ context, request }: Route.LoaderArgs) {
+export function loader({ context, params, request }: Route.LoaderArgs) {
   //
   // Simple forced-login PoC...
   //

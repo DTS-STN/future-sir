@@ -37,7 +37,12 @@ export const i18nRoutes = [
       {
         id: 'PROT-0001',
         file: 'routes/protected/index.tsx',
-        paths: { en: '/en/protected', fr: '/fr/protected' },
+        paths: { en: '/en/protected', fr: '/fr/protege' },
+      },
+      {
+        id: 'PROT-0002',
+        file: 'routes/protected/admin.tsx',
+        paths: { en: '/en/protected/admin', fr: '/fr/protege/admin' },
       },
     ],
   },
