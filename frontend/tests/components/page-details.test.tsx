@@ -9,15 +9,10 @@ vi.mock('react-i18next');
 
 describe('PageDetails', () => {
   it('should render the pageid, app version, and date modified', () => {
-    vi.stubGlobal('__appEnvironment', {
-      BUILD_DATE: '2000-01-01T00:00:00Z',
-      BUILD_VERSION: '0.0.0',
-    });
-
     const RoutesStub = createRoutesStub([
       {
         path: '/fr/public',
-        Component: () => <PageDetails />,
+        Component: () => <PageDetails buildDate="2000-01-01T00:00:00Z" buildVersion="0.0.0" pageId="PUBL-0001" />,
       },
     ]);
 

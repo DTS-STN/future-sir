@@ -1,5 +1,4 @@
-import type { ComponentProps, ElementRef } from 'react';
-import { forwardRef } from 'react';
+import type { ComponentProps } from 'react';
 
 import type { Params, Path } from 'react-router';
 import { generatePath, Link } from 'react-router';
@@ -30,42 +29,35 @@ type UnilingualLinkProps = Omit<ComponentProps<typeof Link>, 'lang'> & {
 
 type AppLinkProps = BilingualLinkProps | UnilingualLinkProps;
 
-/**
- * A custom link component that handles rendering application hrefs in the correct language.
- */
-export const AppLink = forwardRef<ElementRef<typeof Link>, AppLinkProps>(
-  ({ children, hash, lang, params, file, search, to, ...props }, ref) => {
-    const { currentLanguage } = useLanguage();
+export function AppLink({ children, hash, lang, params, file, search, to, ...props }: AppLinkProps) {
+  const { currentLanguage } = useLanguage();
 
-    if (to !== undefined) {
-      return (
-        <Link ref={ref} lang={lang} to={to} {...props}>
-          {children}
-        </Link>
-      );
-    }
-
-    const targetLanguage = lang ?? currentLanguage;
-
-    if (targetLanguage === undefined) {
-      throw new CodedError(
-        'The `lang` parameter was not provided, and the current language could not be determined from the request',
-        ErrorCodes.MISSING_LANG_PARAM,
-      );
-    }
-
-    const route = getRouteByFile(file, i18nRoutes);
-    const pathname = generatePath(route.paths[targetLanguage], params);
-
-    const langProp = targetLanguage !== currentLanguage ? targetLanguage : undefined;
-    const reloadDocumentProp = props.reloadDocument ?? lang !== undefined;
-
+  if (to !== undefined) {
     return (
-      <Link ref={ref} lang={langProp} to={{ hash, pathname, search }} reloadDocument={reloadDocumentProp} {...props}>
+      <Link lang={lang} to={to} {...props}>
         {children}
       </Link>
     );
-  },
-);
+  }
 
-AppLink.displayName = 'AppLink';
+  const targetLanguage = lang ?? currentLanguage;
+
+  if (targetLanguage === undefined) {
+    throw new CodedError(
+      'The `lang` parameter was not provided, and the current language could not be determined from the request',
+      ErrorCodes.MISSING_LANG_PARAM,
+    );
+  }
+
+  const route = getRouteByFile(file, i18nRoutes);
+  const pathname = generatePath(route.paths[targetLanguage], params);
+
+  const langProp = targetLanguage !== currentLanguage ? targetLanguage : undefined;
+  const reloadDocumentProp = props.reloadDocument ?? lang !== undefined;
+
+  return (
+    <Link lang={langProp} to={{ hash, pathname, search }} reloadDocument={reloadDocumentProp} {...props}>
+      {children}
+    </Link>
+  );
+}

@@ -1,41 +1,24 @@
-import type { ComponentProps, ElementRef } from 'react';
-import { forwardRef } from 'react';
-
-import { Link } from 'react-router';
+import type { ComponentProps } from 'react';
 
 import { AppLink } from '~/components/app-link';
 import { cn } from '~/utils/tailwind-utils';
 
-type AppLinkProps = {
-  file: ComponentProps<typeof AppLink>['file'];
-  to?: never;
-} & ComponentProps<typeof AppLink>;
+type InlineLinkProps = ComponentProps<typeof AppLink>;
 
-type LinkProps = {
-  to: ComponentProps<typeof Link>['to'];
-  file?: never;
-} & ComponentProps<typeof Link>;
+export function InlineLink({ className, children, file, hash, params, search, to, ...props }: InlineLinkProps) {
+  const baseClassName = cn('text-slate-700 underline hover:text-blue-700 focus:text-blue-700');
 
-type InlineLinkProps = AppLinkProps | LinkProps;
-
-export const InlineLink = forwardRef<ElementRef<typeof AppLink> | ElementRef<typeof Link>, InlineLinkProps>(
-  ({ className, children, ...props }, ref) => {
-    const baseClassName = 'text-slate-700 underline hover:text-blue-700 focus:text-blue-700';
-
-    if (props.file) {
-      return (
-        <AppLink ref={ref} className={cn(baseClassName, className)} {...props}>
-          {children}
-        </AppLink>
-      );
-    }
-
+  if (file) {
     return (
-      <Link ref={ref} className={cn(baseClassName, className)} {...props}>
+      <AppLink className={cn(baseClassName, className)} file={file} hash={hash} params={params} search={search} {...props}>
         {children}
-      </Link>
+      </AppLink>
     );
-  },
-);
+  }
 
-InlineLink.displayName = 'InlineLink';
+  return (
+    <AppLink className={cn(baseClassName, className)} to={to} {...props}>
+      {children}
+    </AppLink>
+  );
+}

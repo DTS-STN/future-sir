@@ -1,5 +1,4 @@
-import type { ComponentProps, ElementRef } from 'react';
-import { forwardRef } from 'react';
+import type { ComponentProps } from 'react';
 
 import { AppLink } from '~/components/app-link';
 import { cn } from '~/utils/tailwind-utils';
@@ -34,52 +33,51 @@ type ButtonLinkProps = ComponentProps<typeof AppLink> &
     disabled?: boolean;
   };
 
-export const ButtonLink = forwardRef<HTMLAnchorElement | ElementRef<typeof AppLink>, ButtonLinkProps>(
-  (
-    { children, className, disabled, file, hash, params, pill, search, to, size = 'base', variant = 'default', ...props },
-    ref,
-  ) => {
-    const baseClassName = cn(
-      'inline-flex items-center justify-center rounded border align-middle font-lato no-underline outline-offset-4',
-      sizes[size],
-      variants[variant],
-      pill && 'rounded-full',
-      className,
-    );
+export function ButtonLink({
+  children,
+  className,
+  disabled,
+  file,
+  hash,
+  params,
+  pill,
+  search,
+  to,
+  size = 'base',
+  variant = 'default',
+  ...props
+}: ButtonLinkProps) {
+  const baseClassName = cn(
+    'inline-flex items-center justify-center rounded border align-middle font-lato no-underline outline-offset-4',
+    sizes[size],
+    variants[variant],
+    pill && 'rounded-full',
+  );
 
-    if (disabled) {
-      return (
-        <a
-          ref={ref}
-          className={cn(baseClassName, 'pointer-events-none cursor-not-allowed opacity-70')}
-          role="link"
-          aria-disabled="true"
-          {...props}
-        >
-          {children}
-        </a>
-      );
-    }
-
-    if (to !== undefined) {
-      return (
-        <AppLink //
-          ref={ref}
-          className={baseClassName}
-          to={to}
-          {...props}
-        >
-          {children}
-        </AppLink>
-      );
-    }
-
+  if (disabled) {
     return (
-      <AppLink ref={ref} className={baseClassName} file={file} hash={hash} params={params} search={search} {...props}>
+      <a
+        className={cn(baseClassName, 'pointer-events-none cursor-not-allowed opacity-70', className)}
+        role="link"
+        aria-disabled="true"
+        {...props}
+      >
+        {children}
+      </a>
+    );
+  }
+
+  if (file) {
+    return (
+      <AppLink className={cn(baseClassName, className)} file={file} hash={hash} params={params} search={search} {...props}>
         {children}
       </AppLink>
     );
-  },
-);
+  }
 
-ButtonLink.displayName = 'ButtonLink';
+  return (
+    <AppLink className={cn(baseClassName, className)} to={to} {...props}>
+      {children}
+    </AppLink>
+  );
+}

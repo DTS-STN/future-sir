@@ -11,6 +11,7 @@ import { InlineLink } from '~/components/inline-link';
 import { LanguageSwitcher } from '~/components/language-switcher';
 import { PageDetails } from '~/components/page-details';
 import { useLanguage } from '~/hooks/use-language';
+import { useRoute } from '~/hooks/use-route';
 
 export const handle = {
   i18nNamespace: ['gcweb', 'protected'],
@@ -24,6 +25,9 @@ export function loader({ context, request }: Route.LoaderArgs) {
 export default function Layout({ loaderData }: Route.ComponentProps) {
   const { currentLanguage } = useLanguage();
   const { t } = useTranslation(['gcweb']);
+  const { id: pageId } = useRoute();
+
+  const { BUILD_DATE, BUILD_VERSION } = globalThis.__appEnvironment;
 
   return (
     <>
@@ -54,7 +58,7 @@ export default function Layout({ loaderData }: Route.ComponentProps) {
           </div>
         )}
         <Outlet />
-        <PageDetails />
+        <PageDetails buildDate={BUILD_DATE} buildVersion={BUILD_VERSION} pageId={pageId} />
       </main>
       <footer id="wb-info" tabIndex={-1} className="bg-stone-50 print:hidden">
         <div className="container flex items-center justify-end gap-6 py-2.5 sm:py-3.5">

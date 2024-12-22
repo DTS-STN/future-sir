@@ -1,5 +1,4 @@
 import type { ComponentProps } from 'react';
-import { forwardRef } from 'react';
 
 import { cn } from '~/utils/tailwind-utils';
 
@@ -11,9 +10,9 @@ const sizes = {
   xl: 'px-6 py-3.5 text-base',
 } as const;
 
+// prettier-ignore
 const variants = {
-  alternative:
-    'border-gray-200 bg-white text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:bg-gray-100 focus:text-blue-700',
+  alternative: 'border-gray-200 bg-white text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:bg-gray-100 focus:text-blue-700',
   default: 'border-gray-300 bg-gray-200 text-slate-700 hover:bg-neutral-300 focus:bg-neutral-300',
   dark: 'border-gray-800 bg-gray-800 text-white hover:bg-gray-900 focus:bg-gray-900',
   green: 'border-green-700 bg-green-700 text-white hover:bg-green-800 focus:bg-green-800',
@@ -31,25 +30,18 @@ type ButtonProps = ComponentProps<'button'> & {
  * Tailwind CSS Buttons from Flowbite
  * @see https://flowbite.com/docs/components/buttons/
  */
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ children, className, disabled, pill, size = 'base', variant = 'default', ...props }, ref) => {
-    return (
-      <button
-        ref={ref}
-        className={cn(
-          'inline-flex items-center justify-center rounded border align-middle font-lato no-underline outline-offset-4',
-          sizes[size],
-          variants[variant],
-          disabled && 'disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-70',
-          pill && 'rounded-full',
-          className,
-        )}
-        {...props}
-      >
-        {children}
-      </button>
-    );
-  },
-);
+export function Button({ children, className, disabled, pill, size = 'base', variant = 'default', ...props }: ButtonProps) {
+  const baseClassName = cn(
+    'inline-flex items-center justify-center rounded border align-middle font-lato no-underline outline-offset-4',
+    sizes[size],
+    variants[variant],
+    disabled && 'disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-70',
+    pill && 'rounded-full',
+  );
 
-Button.displayName = 'Button';
+  return (
+    <button className={cn(baseClassName, className)} {...props}>
+      {children}
+    </button>
+  );
+}
