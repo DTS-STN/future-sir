@@ -6,7 +6,7 @@ import type { Route } from '../+types/root';
 
 import { AppLink } from '~/components/app-link';
 import { PageTitle } from '~/components/page-title';
-import { isCodedError } from '~/errors/coded-error';
+import { isAppError } from '~/errors/app-error';
 import { useLanguage } from '~/hooks/use-language';
 
 /**
@@ -51,11 +51,11 @@ export function UnilingualErrorBoundary({ actionData, error, loaderData, params 
           <PageTitle className="my-8">
             <span>{t('gcweb:server-error.page-title')}</span>
             <small className="block text-2xl font-normal text-neutral-500">
-              {t('gcweb:server-error.page-subtitle', { statusCode: isCodedError(error) ? error.statusCode : 500 })}
+              {t('gcweb:server-error.page-subtitle', { statusCode: isAppError(error) ? error.httpStatusCode : 500 })}
             </small>
           </PageTitle>
           <p className="mb-8 text-lg text-gray-500">{t('gcweb:server-error.page-message')}</p>
-          {isCodedError(error) && (
+          {isAppError(error) && (
             <ul className="list-disc pl-10 text-gray-800">
               <li>
                 <Trans

@@ -9,7 +9,7 @@ import type { Route } from './+types/login';
 import type { AuthenticationStrategy } from '~/.server/auth/auth-strategies';
 import { AzureADAuthenticationStrategy, LocalAuthenticationStrategy } from '~/.server/auth/auth-strategies';
 import { serverEnvironment } from '~/.server/environment';
-import { CodedError } from '~/errors/coded-error';
+import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 
 /**
@@ -41,7 +41,7 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
       const AZUREAD_CLIENT_SECRET = Redacted.value(serverEnvironment.AZUREAD_CLIENT_SECRET);
 
       if (!AZUREAD_ISSUER_URL || !AZUREAD_CLIENT_ID || !AZUREAD_CLIENT_SECRET) {
-        throw new CodedError('The Azure OIDC settings are misconfigured', ErrorCodes.MISCONFIGURED_PROVIDER);
+        throw new AppError('The Azure OIDC settings are misconfigured', ErrorCodes.MISCONFIGURED_PROVIDER);
       }
 
       const authStrategy = new AzureADAuthenticationStrategy(

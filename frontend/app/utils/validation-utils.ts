@@ -1,7 +1,7 @@
 import { Redacted } from 'effect';
 import type { z, ZodEffects, ZodTypeAny } from 'zod';
 
-import { CodedError } from '~/errors/coded-error';
+import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 
 /**
@@ -19,7 +19,7 @@ export function asNumber<T extends ZodTypeAny>(schema: T): ZodEffects<T, number>
     const number = Number(val);
 
     if (Number.isNaN(number)) {
-      throw new CodedError(`Invalid number ${val}`, ErrorCodes.INVALID_NUMBER);
+      throw new AppError(`Invalid number ${val}`, ErrorCodes.INVALID_NUMBER);
     }
 
     return number;

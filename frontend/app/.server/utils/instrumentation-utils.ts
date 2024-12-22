@@ -1,7 +1,7 @@
 import type { Span } from '@opentelemetry/api';
 import { SpanStatusCode, trace } from '@opentelemetry/api';
 
-import { isCodedError } from '~/errors/coded-error';
+import { isAppError } from '~/errors/app-error';
 
 export const DEFAULT_TRACER_NAME = 'future-sir';
 
@@ -54,13 +54,13 @@ export async function withSpan<T>(
 }
 
 function getErrorCode(error: unknown): string | undefined {
-  if (isCodedError(error)) {
+  if (isAppError(error)) {
     return error.errorCode;
   }
 }
 
 function getCorrelationId(error: unknown): string | undefined {
-  if (isCodedError(error)) {
+  if (isAppError(error)) {
     return error.correlationId;
   }
 }
@@ -70,13 +70,13 @@ function getMessage(error: unknown): string | undefined {
     return error.message;
   }
 
-  if (isCodedError(error)) {
+  if (isAppError(error)) {
     return error.msg;
   }
 }
 
 function getName(error: unknown): string {
-  if (isError(error) || isCodedError(error)) {
+  if (isError(error) || isAppError(error)) {
     return error.name;
   }
 
@@ -84,7 +84,7 @@ function getName(error: unknown): string {
 }
 
 function getStack(error: unknown): string | undefined {
-  if (isError(error) || isCodedError(error)) {
+  if (isError(error) || isAppError(error)) {
     return error.stack;
   }
 }

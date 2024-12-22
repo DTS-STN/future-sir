@@ -4,7 +4,7 @@ import { initReactI18next } from 'react-i18next';
 
 import { serverEnvironment } from '~/.server/environment';
 import { i18nResources } from '~/.server/locales';
-import { CodedError } from '~/errors/coded-error';
+import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { getLanguage } from '~/utils/i18n-utils';
 
@@ -26,7 +26,7 @@ export async function getFixedT<NS extends Namespace>(
     : languageOrRequest;
 
   if (language === undefined) {
-    throw new CodedError('No language found in request', ErrorCodes.NO_LANGUAGE_FOUND);
+    throw new AppError('No language found in request', ErrorCodes.NO_LANGUAGE_FOUND);
   }
 
   const i18n = await initI18next(language);

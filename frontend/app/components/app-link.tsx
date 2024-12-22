@@ -3,7 +3,7 @@ import type { ComponentProps } from 'react';
 import type { Params, Path } from 'react-router';
 import { generatePath, Link } from 'react-router';
 
-import { CodedError } from '~/errors/coded-error';
+import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { useLanguage } from '~/hooks/use-language';
 import type { I18nRouteFile } from '~/i18n-routes';
@@ -43,7 +43,7 @@ export function AppLink({ children, hash, lang, params, file, search, to, ...pro
   const targetLanguage = lang ?? currentLanguage;
 
   if (targetLanguage === undefined) {
-    throw new CodedError(
+    throw new AppError(
       'The `lang` parameter was not provided, and the current language could not be determined from the request',
       ErrorCodes.MISSING_LANG_PARAM,
     );
