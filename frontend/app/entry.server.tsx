@@ -17,8 +17,6 @@ import { getLanguage } from '~/utils/i18n-utils';
 
 /* eslint-disable no-param-reassign */
 
-const ABORT_DELAY = 5_000;
-
 export default async function handleRequest(
   request: Request,
   responseStatusCode: number,
@@ -45,7 +43,7 @@ export default async function handleRequest(
 
     const { pipe, abort } = renderToPipeableStream(
       <I18nextProvider i18n={i18n}>
-        <ServerRouter context={routerContext} url={request.url} abortDelay={ABORT_DELAY} nonce={loadContext.nonce} />
+        <ServerRouter context={routerContext} url={request.url} nonce={loadContext.nonce} />
       </I18nextProvider>,
       {
         [readyOption]() {
@@ -80,7 +78,10 @@ export default async function handleRequest(
       },
     );
 
-    setTimeout(abort, ABORT_DELAY);
+    // Abort the streaming render pass after 11 seconds
+    // to allow the rejected boundaries to be flushed
+    // see: https://reactrouter.com/explanation/special-files#streamtimeout
+    setTimeout(abort, 10_000);
   });
 }
 
