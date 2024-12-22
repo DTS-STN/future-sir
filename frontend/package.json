@@ -13,8 +13,8 @@
     "start": "cross-env NODE_ENV=production node --import ./build/server/opentelemetry.js ./build/server/server.js",
     "test": "vitest",
     "test:e2e": "playwright test",
-    "format:check": "prettier --cache --cache-location ./node_modules/.cache/prettier --check ./app/** ./e2e/** ./tests/** ./*.{json,mjs,ts}",
-    "lint:check": "eslint --cache --cache-location ./node_modules/.cache/eslint ./",
+    "format:check": "prettier --cache --check ./app/** ./e2e/** ./tests/** ./*.{json,mjs,ts}",
+    "lint:check": "eslint --cache ./",
     "typecheck": "react-router typegen && tsc"
   },
   "dependencies": {

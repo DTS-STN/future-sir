@@ -2,7 +2,7 @@ import { Links, Meta, Scripts } from 'react-router';
 
 import { Trans, useTranslation } from 'react-i18next';
 
-import type { Route } from '../../+types/root';
+import type { Route } from '../+types/root';
 
 import { AppLink } from '~/components/app-link';
 import { PageTitle } from '~/components/page-title';

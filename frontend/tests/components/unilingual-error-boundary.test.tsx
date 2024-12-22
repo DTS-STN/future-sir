@@ -3,18 +3,18 @@ import { createRoutesStub } from 'react-router';
 import { render } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
-import { BilingualErrorBoundary } from '~/components/canada.ca/bilingual-error-boundary';
+import { UnilingualErrorBoundary } from '~/components/unilingual-error-boundary';
 
 vi.mock('react-i18next');
 
-describe('BilingualErrorBoundary', () => {
-  it('should render the bilingual error boundary', () => {
+describe('UnilingualErrorBoundary', () => {
+  it('should render the unilingual error boundary', () => {
     vi.spyOn(console, 'error').mockImplementation(() => {});
 
     const RoutesStub = createRoutesStub([
       {
         path: '/en/public',
-        Component: () => <BilingualErrorBoundary params={{}} error={new Error('Something went wrong')} />,
+        Component: () => <UnilingualErrorBoundary params={{}} error={new Error('Something went wrong')} />,
       },
     ]);
 
