@@ -46,7 +46,6 @@ export function rrRequestHandler(viteDevServer?: ViteDevServer) {
   return createRequestHandler({
     mode: serverEnvironment.NODE_ENV,
     getLoadContext: (request, response) => ({
-      LogFactory: LogFactory,
       nonce: response.locals.nonce,
       session: request.session,
     }),

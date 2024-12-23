@@ -17,6 +17,8 @@ import { getLanguage } from '~/utils/i18n-utils';
 
 /* eslint-disable no-param-reassign */
 
+const log = LogFactory.getLogger(import.meta.url);
+
 export default async function handleRequest(
   request: Request,
   responseStatusCode: number,
@@ -24,8 +26,6 @@ export default async function handleRequest(
   routerContext: EntryContext,
   loadContext: AppLoadContext,
 ) {
-  const log = LogFactory.getLogger(import.meta.url);
-
   const language = getLanguage(request);
   const i18n = await initI18next(language);
 
@@ -86,7 +86,7 @@ export default async function handleRequest(
 }
 
 // https://reactrouter.com/explanation/special-files#handleerror
-export function handleError(error: unknown, { context, request }: LoaderFunctionArgs | ActionFunctionArgs) {
+export function handleError(error: unknown, { context, params, request }: LoaderFunctionArgs | ActionFunctionArgs) {
   if (!request.signal.aborted) {
     const log = context.LogFactory.getLogger(import.meta.url);
     log.error('Uncaught error while handling request:', error);
