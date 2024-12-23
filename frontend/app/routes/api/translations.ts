@@ -3,29 +3,33 @@ import type { Route } from './+types/translations';
 import { serverDefaults } from '~/.server/environment';
 import { initI18next } from '~/i18n-config.server';
 
-export async function loader({ request }: Route.LoaderArgs) {
+// we will aggressively cache the requested resource bundle for 1y
+const CACHE_DURATION_SECS = 365 * 24 * 60 * 60;
+
+export async function loader({ context, params, request }: Route.LoaderArgs) {
   const url = new URL(request.url);
 
-  const lng = url.searchParams.get('lng');
-  const ns = url.searchParams.get('ns');
+  const language = url.searchParams.get('lng');
+  const namespace = url.searchParams.get('ns');
   const buildRevision = url.searchParams.get('v');
 
-  if (!lng || !ns) {
+  if (!language || !namespace) {
     return Response.json({ message: 'You must provide a language (lng) and namespace (ns)' }, { status: 400 });
   }
 
   const i18next = await initI18next();
-  const resourceBundle = i18next.getResourceBundle(lng, ns);
+  const resourceBundle = i18next.getResourceBundle(language, namespace);
 
   if (!resourceBundle) {
     return Response.json({ message: 'No resource bundle found for this language and namespace' }, { status: 404 });
   }
 
-  const headers =
-    // tell the browser to aggressively cache the bundle for 1y (or don't)
-    buildRevision && buildRevision !== serverDefaults.DEFAULT_BUILD_REVISION //
-      ? { 'Cache-Control': 'max-age=31536000, immutable' }
-      : undefined;
+  // cache if the build revision is anything other than the default value
+  const shouldCache = buildRevision !== serverDefaults.DEFAULT_BUILD_REVISION;
 
-  return Response.json(resourceBundle, { headers });
+  return Response.json(resourceBundle, {
+    headers: shouldCache //
+      ? { 'Cache-Control': `max-age=${CACHE_DURATION_SECS}, immutable` }
+      : { 'Cache-Control': 'no-cache' },
+  });
 }
