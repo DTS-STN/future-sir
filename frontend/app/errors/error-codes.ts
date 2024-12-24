@@ -13,6 +13,9 @@ export const ErrorCodes = {
   // i18n error codes
   NO_LANGUAGE_FOUND: 'I18N-0001',
 
+  // instance error codes
+  NO_FACTORY_PROVIDED: 'INST-0001',
+
   // route error codes
   ROUTE_NOT_FOUND: 'RTE-0001',
 

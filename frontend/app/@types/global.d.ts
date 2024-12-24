@@ -1,6 +1,7 @@
 import type { RouteModules } from 'react-router';
 
 import type { ClientEnvironment } from '~/.server/environment';
+import type { InstanceName } from '~/.server/utils/instance-registry';
 
 /* eslint-disable no-var */
 
@@ -19,6 +20,11 @@ declare global {
    * Add the client-side environment to the global namespace.
    */
   var __appEnvironment: ClientEnvironment;
+
+  /**
+   * A holder for any application-scoped singletons.
+   */
+  var __instanceRegistry: Map<InstanceName, unknown>;
 
   /**
    * React Router adds the route modules to global
