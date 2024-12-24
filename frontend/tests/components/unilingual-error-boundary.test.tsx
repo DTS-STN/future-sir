@@ -5,8 +5,6 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { UnilingualErrorBoundary } from '~/components/unilingual-error-boundary';
 
-vi.mock('react-i18next');
-
 describe('UnilingualErrorBoundary', () => {
   it('should render the unilingual error boundary', () => {
     vi.spyOn(console, 'error').mockImplementation(() => {});

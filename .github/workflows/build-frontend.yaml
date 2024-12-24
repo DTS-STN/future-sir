@@ -23,6 +23,10 @@ jobs:
           node-version: 22.x
       - run: npm clean-install
         working-directory: frontend
+      - run: npm run format:check
+        working-directory: frontend
+      - run: npm run lint:check
+        working-directory: frontend
       - run: npm run test -- --coverage
         working-directory: frontend
       - run: npx playwright install --with-deps

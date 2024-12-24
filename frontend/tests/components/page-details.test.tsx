@@ -1,11 +1,9 @@
 import { createRoutesStub } from 'react-router';
 
 import { render } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import { PageDetails } from '~/components/page-details';
-
-vi.mock('react-i18next');
 
 describe('PageDetails', () => {
   it('should render the pageid, app version, and date modified', () => {

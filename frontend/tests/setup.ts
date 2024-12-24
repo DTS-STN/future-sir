@@ -4,10 +4,11 @@ import { afterEach, beforeEach, vi } from 'vitest';
 beforeEach(() => {
   // disable logging so we don't pollute the output
   vi.stubEnv('LOG_LEVEL', 'none');
+  vi.mock('react-i18next');
 });
 
 afterEach(() => {
-  vi.resetAllMocks();
+  vi.clearAllMocks();
   vi.useRealTimers();
   vi.unstubAllEnvs();
   vi.unstubAllGlobals();

@@ -7,7 +7,7 @@
     "admin-dashboard": "Interface d'administration",
     "home": "Accueil",
     "page-title": "Bienvenue sur Future SIR (protégée)",
-    "public": "Accédez à la page « publique »",
+    "public": "Accédez à la page «\u00a0publique\u00a0»",
     "resources": "ressources i18n chargées depuis : <mark>{{resource}}</mark>"
   }
 }

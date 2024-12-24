@@ -5,9 +5,9 @@ import { Trans, useTranslation } from 'react-i18next';
 import type { Route } from './+types/index';
 
 import { requireAuth } from '~/.server/utils/auth-utils';
+import { Menu, MenuItem } from '~/components/menu';
 import { getFixedT } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/layout';
-import { Menu, MenuItem } from '~/components/menu';
 
 export const handle = {
   i18nNamespace: [...parentHandle.i18nNamespace, 'protected'],

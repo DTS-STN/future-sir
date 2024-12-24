@@ -4,10 +4,10 @@ import { useTranslation } from 'react-i18next';
 
 import type { Route } from './+types/index';
 
+import { Menu, MenuItem } from '~/components/menu';
 import { PageTitle } from '~/components/page-title';
 import { getFixedT } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/public/layout';
-import { Menu, MenuItem } from '~/components/menu';
 
 export const handle = {
   i18nNamespace: [...parentHandle.i18nNamespace, 'public'],
