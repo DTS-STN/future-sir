@@ -44,19 +44,21 @@ export default function Layout({ loaderData }: Route.ComponentProps) {
                 decoding="async"
               />
             </AppLink>
-            <LanguageSwitcher>{t('gcweb:language-switcher.alt-lang')}</LanguageSwitcher>
+            <div className="text-right">
+              <LanguageSwitcher>{t('gcweb:language-switcher.alt-lang')}</LanguageSwitcher>
+              {!!loaderData.name && (
+                <div className="mt-4 text-right">
+                  <p className="font-bold">{loaderData.name.toString()}</p>
+                  <p>
+                    <InlineLink to="/auth/logout">Logout</InlineLink>
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </header>
       <main className="container">
-        {!!loaderData.name && (
-          <div className="mt-4 text-right">
-            <p>{loaderData.name.toString()}</p>
-            <p>
-              <InlineLink to="/auth/logout">Logout</InlineLink>
-            </p>
-          </div>
-        )}
         <Outlet />
         <PageDetails buildDate={BUILD_DATE} buildVersion={BUILD_VERSION} pageId={pageId} />
       </main>

@@ -4,10 +4,10 @@ import { useTranslation } from 'react-i18next';
 
 import type { Route } from './+types/index';
 
-import { InlineLink } from '~/components/inline-link';
 import { PageTitle } from '~/components/page-title';
 import { getFixedT } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/public/layout';
+import { Menu, MenuItem } from '~/components/menu';
 
 export const handle = {
   i18nNamespace: [...parentHandle.i18nNamespace, 'public'],
@@ -27,13 +27,11 @@ export default function Index() {
 
   return (
     <>
+      <Menu>
+        <MenuItem file="routes/protected/index.tsx">{t('public:index.navigate')}</MenuItem>
+      </Menu>
       <PageTitle>{t('public:index.page-title')}</PageTitle>
       <p className="mt-8">{t('public:index.about')}</p>
-      <ul className="ml-8 mt-8 list-disc">
-        <li>
-          <InlineLink file="routes/protected/index.tsx">{t('public:index.navigate')}</InlineLink>
-        </li>
-      </ul>
     </>
   );
 }

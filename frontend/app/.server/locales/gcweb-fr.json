@@ -1,5 +1,8 @@
 {
   "language": "Français",
+  "app": {
+    "menu": "Menu"
+  },
   "nav": {
     "skip-to-content": "Passer au contenu principal",
     "skip-to-about": "Passer à « À propos de ce site »"
