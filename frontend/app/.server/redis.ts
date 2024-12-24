@@ -1,41 +1,33 @@
 import { Duration, Redacted } from 'effect';
+import type { RedisOptions } from 'ioredis';
 import Redis from 'ioredis';
 
 import { serverEnvironment } from '~/.server/environment';
 import { LogFactory } from '~/.server/logging';
+import { singleton } from '~/.server/utils/instance-registry';
 
 const log = LogFactory.getLogger(import.meta.url);
-
-/**
- * A holder for our singleton redis client instance.
- */
-const clientHolder: { client?: Redis } = {};
 
 /**
  * Retrieves the application's redis client instance.
  * If the client does not exist, it initializes a new one.
  */
-export function getRedisClient() {
-  return (clientHolder.client ??= createRedisClient());
-}
+export function getRedisClient(): Redis {
+  return singleton('redisClient', () => {
+    log.info('Creating new redis client');
 
-/**
- * Creates a new Redis client and sets up logging for connection and error events.
- */
-function createRedisClient(): Redis {
-  log.info('Creating new redis client');
+    const { REDIS_CONNECTION_TYPE, REDIS_HOST, REDIS_PORT } = serverEnvironment;
 
-  const { REDIS_CONNECTION_TYPE, REDIS_HOST, REDIS_PORT } = serverEnvironment;
-
-  return new Redis(getRedisConfig())
-    .on('connect', () => log.info('Connected to %s://%s:%s/', REDIS_CONNECTION_TYPE, REDIS_HOST, REDIS_PORT))
-    .on('error', (error) => log.error('Redis client error: %s', error.message));
+    return new Redis(getRedisConfig())
+      .on('connect', () => log.info('Connected to %s://%s:%s/', REDIS_CONNECTION_TYPE, REDIS_HOST, REDIS_PORT))
+      .on('error', (error) => log.error('Redis client error: %s', error.message));
+  });
 }
 
 /**
  * Constructs the configuration object for the Redis client based on the server environment.
  */
-function getRedisConfig() {
+function getRedisConfig(): RedisOptions {
   const {
     REDIS_COMMAND_TIMEOUT_SECONDS, //
     REDIS_HOST,
