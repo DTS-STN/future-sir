@@ -92,9 +92,7 @@ export default tseslint.config(
     files: ['**/*.tsx'],
     extends: [
       ...compat.config(jsxA11yPlugin.configs.recommended),
-      // @ts-expect-error reactPlugin uses old-style rules
       ...fixupConfigRules(compat.config(reactPlugin.configs.recommended)),
-      // @ts-expect-error reactPlugin uses old-style rules
       ...fixupConfigRules(compat.config(reactPlugin.configs['jsx-runtime'])),
       ...fixupConfigRules(compat.config(reactHooksPlugin.configs.recommended)),
     ],

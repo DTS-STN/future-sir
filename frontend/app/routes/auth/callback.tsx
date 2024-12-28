@@ -39,12 +39,12 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
 
       const authStrategy = new AzureADAuthenticationStrategy(
         new URL(AZUREAD_ISSUER_URL),
-        new URL(`/auth/callback/${provider}`, currentUrl.origin),
         AZUREAD_CLIENT_ID,
         AZUREAD_CLIENT_SECRET,
       );
 
-      return await handleCallback(authStrategy, currentUrl, session);
+      const callbackUrl = new URL(`/auth/callback/${provider}`, currentUrl.origin);
+      return await handleCallback(authStrategy, callbackUrl, currentUrl, session);
     }
 
     case 'local': {
@@ -56,12 +56,12 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
 
       const authStrategy = new LocalAuthenticationStrategy(
         new URL('/auth/oidc', currentUrl.origin),
-        new URL(`/auth/callback/${provider}`, currentUrl.origin),
         '00000000-0000-0000-0000-000000000000',
         '00000000-0000-0000-0000-000000000000',
       );
 
-      return await handleCallback(authStrategy, currentUrl, session);
+      const callbackUrl = new URL(`/auth/callback/${provider}`, currentUrl.origin);
+      return await handleCallback(authStrategy, callbackUrl, currentUrl, session);
     }
 
     default: {
@@ -74,7 +74,12 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
  * Handles the callback request for a given authentication strategy.
  * Exchanges the authorization code for an access token and ID token.
  */
-async function handleCallback(authStrategy: AuthenticationStrategy, currentUrl: URL, session: AppLoadContext['session']) {
+async function handleCallback(
+  authStrategy: AuthenticationStrategy,
+  callbackUrl: URL,
+  currentUrl: URL,
+  session: AppLoadContext['session'],
+) {
   return withSpan('routes.auth.callback.handle_callback', async (span) => {
     span.setAttribute('request_url', currentUrl.toString());
     span.setAttribute('strategy', authStrategy.name);
@@ -87,7 +92,7 @@ async function handleCallback(authStrategy: AuthenticationStrategy, currentUrl: 
     const { codeVerifier, nonce, state } = session.loginState;
 
     span.addEvent('token_exchange.start');
-    const tokenSet = await authStrategy.exchangeAuthCode(currentUrl.searchParams, nonce, state, codeVerifier);
+    const tokenSet = await authStrategy.exchangeAuthCode(callbackUrl, currentUrl.searchParams, nonce, state, codeVerifier);
     span.addEvent('token_exchange.success');
 
     const returnUrl = new URL(session.loginState.returnUrl ?? '/', currentUrl.origin);

@@ -11,7 +11,6 @@ describe('BaseAuthenticationStrategy', () => {
       super(
         'test',
         new URL('https://auth.example.com/issuer'),
-        new URL('https://auth.example.com/callback'),
         { client_id: 'test_client_id' },
         oauth.ClientSecretPost('test_client_secret'),
       );
@@ -28,6 +27,7 @@ describe('BaseAuthenticationStrategy', () => {
       vi.mocked(oauth.processDiscoveryResponse).mockResolvedValue({
         issuer: 'https://auth.example.com/issuer',
         authorization_endpoint: 'https://auth.example.com/authorize',
+        jwks_uri: 'https://auth.example.com/jwks',
       });
 
       const authServer = await new TestAuthStrategy().getAuthorizationServer();
@@ -35,6 +35,7 @@ describe('BaseAuthenticationStrategy', () => {
       expect(authServer).toEqual({
         issuer: 'https://auth.example.com/issuer',
         authorization_endpoint: 'https://auth.example.com/authorize',
+        jwks_uri: 'https://auth.example.com/jwks',
       });
     });
 
@@ -55,6 +56,7 @@ describe('BaseAuthenticationStrategy', () => {
       vi.mocked(oauth.processDiscoveryResponse).mockResolvedValue({
         issuer: 'https://auth.example.com/issuer',
         authorization_endpoint: 'https://auth.example.com/authorize',
+        jwks_uri: 'https://auth.example.com/jwks',
       });
 
       vi.mocked(oauth.generateRandomCodeVerifier).mockReturnValue('mock_code_verifier');
@@ -62,7 +64,8 @@ describe('BaseAuthenticationStrategy', () => {
       vi.mocked(oauth.generateRandomState).mockReturnValue('mock_state');
       vi.mocked(oauth.calculatePKCECodeChallenge).mockResolvedValue('mock_code_challenge');
 
-      const signinRequest = await new TestAuthStrategy().generateSigninRequest();
+      const callbackUrl = new URL('https://auth.example.com/callback');
+      const signinRequest = await new TestAuthStrategy().generateSigninRequest(callbackUrl);
 
       expect(signinRequest).toEqual({
         // prettier-ignore
@@ -88,6 +91,7 @@ describe('BaseAuthenticationStrategy', () => {
       vi.mocked(oauth.processDiscoveryResponse).mockResolvedValue({
         issuer: 'https://auth.example.com/issuer',
         authorization_endpoint: 'https://auth.example.com/authorize',
+        jwks_uri: 'https://auth.example.com/jwks',
       });
 
       vi.mocked(oauth.processAuthorizationCodeResponse).mockResolvedValue({
@@ -106,7 +110,9 @@ describe('BaseAuthenticationStrategy', () => {
 
       const strategy = new TestAuthStrategy();
 
+      const callbackUrl = new URL('https://auth.example.com/callback');
       const tokenSet = await strategy.exchangeAuthCode(
+        callbackUrl,
         new URLSearchParams({
           code: 'test_code',
           state: 'mock_state',

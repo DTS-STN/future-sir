@@ -46,12 +46,12 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
 
       const authStrategy = new AzureADAuthenticationStrategy(
         new URL(AZUREAD_ISSUER_URL),
-        new URL(`/auth/callback/${provider}`, currentUrl.origin),
         AZUREAD_CLIENT_ID,
         AZUREAD_CLIENT_SECRET,
       );
 
-      return await handleLogin(authStrategy, currentUrl, session);
+      const callbackUrl = new URL(`/auth/callback/${provider}`, currentUrl.origin);
+      return await handleLogin(authStrategy, callbackUrl, currentUrl, session);
     }
 
     case 'local': {
@@ -63,12 +63,12 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
 
       const authStrategy = new LocalAuthenticationStrategy(
         new URL('/auth/oidc', currentUrl.origin),
-        new URL(`/auth/callback/${provider}`, currentUrl.origin),
         '00000000-0000-0000-0000-000000000000',
         '00000000-0000-0000-0000-000000000000',
       );
 
-      return await handleLogin(authStrategy, currentUrl, session);
+      const callbackUrl = new URL(`/auth/callback/${provider}`, currentUrl.origin);
+      return await handleLogin(authStrategy, callbackUrl, currentUrl, session);
     }
 
     default: {
@@ -81,7 +81,12 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
  * Handles the login request for a given authentication strategy.
  * Generates a sign-in request and redirects the user to the authorization endpoint.
  */
-async function handleLogin(authStrategy: AuthenticationStrategy, currentUrl: URL, session: AppLoadContext['session']) {
+async function handleLogin(
+  authStrategy: AuthenticationStrategy,
+  callbackUrl: URL,
+  currentUrl: URL,
+  session: AppLoadContext['session'],
+) {
   const span = trace.getActiveSpan();
   span?.updateName('routes.auth.login.handle_login');
 
@@ -92,7 +97,7 @@ async function handleLogin(authStrategy: AuthenticationStrategy, currentUrl: URL
   span?.setAttribute('strategy', authStrategy.name);
 
   span?.addEvent('signin_request.start');
-  const signinRequest = await authStrategy.generateSigninRequest(['openid', 'profile', 'email']);
+  const signinRequest = await authStrategy.generateSigninRequest(callbackUrl, ['openid', 'profile', 'email']);
   span?.addEvent('signin_request.success');
 
   if (returnTo && !returnTo.startsWith('/')) {

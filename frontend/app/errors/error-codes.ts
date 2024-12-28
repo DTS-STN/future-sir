@@ -6,6 +6,7 @@ export const ErrorCodes = {
   // auth error codes
   MISCONFIGURED_PROVIDER: 'AUTH-0001',
   ACCESS_FORBIDDEN: 'AUTH-0002',
+  MISSING_AUTH_HEADER: 'AUTH-0003',
 
   // component error codes
   MISSING_LANG_PARAM: 'CMP-0001',

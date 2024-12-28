@@ -1,4 +1,5 @@
 import { SpanStatusCode, trace } from '@opentelemetry/api';
+import * as jose from 'jose';
 import type { AuthorizationServer, Client, ClientAuth, IDToken } from 'oauth4webapi';
 import * as oauth from 'oauth4webapi';
 
@@ -6,10 +7,12 @@ import { LogFactory } from '~/.server/logging';
 import { withSpan } from '~/.server/utils/instrumentation-utils';
 
 /**
- * Like {@link AuthorizationServer}, but with a required `authorization_endpoint` property.
+ * Like {@link AuthorizationServer}, but with a required
+ * `authorization_endpoint` property and a required `jwks_uri` property.
  */
 export interface AuthServer extends Readonly<AuthorizationServer> {
   readonly authorization_endpoint: string;
+  readonly jwks_uri: string;
 }
 
 /**
@@ -43,12 +46,21 @@ export interface TokenSet {
  */
 export interface AuthenticationStrategy {
   /**
+   * Decodes and verifies a JWT access token from the request.
+   *
+   * @param request - The incoming request containing the JWT access token.
+   * @param expectedAudience - The expected audience of the JWT access token.
+   * @returns A promise resolving to the decoded and verified JWT access token claims.
+   */
+  decodeAndVerifyJwt(jwt: string, expectedAudience: string): Promise<jose.JWTPayload & { roles?: string[] }>;
+
+  /**
    * Generates a sign-in request with the specified scopes.
    *
    * @param scopes - The requested scopes (defaults to `['openid']`).
    * @returns A promise resolving to a `SignInRequest` object.
    */
-  generateSigninRequest(scopes?: string[]): Promise<SignInRequest>;
+  generateSigninRequest(callbackUrl: URL, scopes?: string[]): Promise<SignInRequest>;
 
   /**
    * Exchanges an authorization code for tokens.
@@ -60,6 +72,7 @@ export interface AuthenticationStrategy {
    * @returns A promise resolving to the token endpoint response.
    */
   exchangeAuthCode(
+    callbackUrl: URL,
     parameters: URLSearchParams,
     expectedNonce: string,
     expectedState: string,
@@ -80,23 +93,14 @@ export abstract class BaseAuthenticationStrategy implements AuthenticationStrate
 
   protected readonly allowInsecure: boolean;
   protected readonly authorizationServer: Promise<AuthServer>;
-  protected readonly callbackUrl: URL;
   protected readonly client: Client;
   protected readonly clientAuth: ClientAuth;
 
   protected readonly log = LogFactory.getLogger(import.meta.url);
   protected readonly tracer = trace.getTracer('future-sir');
 
-  protected constructor(
-    name: string,
-    issuerUrl: URL,
-    callbackUrl: URL,
-    client: Client,
-    clientAuth: ClientAuth,
-    allowInsecure = false,
-  ) {
+  protected constructor(name: string, issuerUrl: URL, client: Client, clientAuth: ClientAuth, allowInsecure = false) {
     this.allowInsecure = allowInsecure;
-    this.callbackUrl = callbackUrl;
     this.client = client;
     this.clientAuth = clientAuth;
     this.name = name;
@@ -115,7 +119,7 @@ export abstract class BaseAuthenticationStrategy implements AuthenticationStrate
         const authorizationServer = await oauth.processDiscoveryResponse(issuerUrl, response);
         this.log.trace('Fetched authorization server details', { authorizationServer });
 
-        const { authorization_endpoint } = authorizationServer;
+        const { authorization_endpoint, jwks_uri } = authorizationServer;
 
         if (!authorization_endpoint) {
           // this should never happen, but oauth4webapi allows for it so 🤷
@@ -124,15 +128,23 @@ export abstract class BaseAuthenticationStrategy implements AuthenticationStrate
           return reject(new Error(errorMessage));
         }
 
+        if (!jwks_uri) {
+          // this should never happen, but oauth4webapi allows for it so 🤷
+          const errorMessage = 'JWKs endpoint not found in the discovery document';
+          span.setStatus({ code: SpanStatusCode.ERROR, message: errorMessage });
+          return reject(new Error(errorMessage));
+        }
+
         return resolve({
           ...authorizationServer,
           authorization_endpoint,
+          jwks_uri,
         });
       }),
     );
   }
 
-  public generateSigninRequest = async (scopes: string[] = ['openid']): Promise<SignInRequest> =>
+  public generateSigninRequest = async (callbackUrl: URL, scopes: string[] = ['openid']): Promise<SignInRequest> =>
     withSpan('auth.strategy.generate_signin_request', async (span) => {
       this.log.debug('Generating sign-in request', { strategy: this.name, scopes });
 
@@ -155,7 +167,7 @@ export abstract class BaseAuthenticationStrategy implements AuthenticationStrate
       authorizationEndpointUrl.searchParams.set('code_challenge_method', 'S256');
       authorizationEndpointUrl.searchParams.set('code_challenge', codeChallenge);
       authorizationEndpointUrl.searchParams.set('nonce', nonce);
-      authorizationEndpointUrl.searchParams.set('redirect_uri', this.callbackUrl.toString());
+      authorizationEndpointUrl.searchParams.set('redirect_uri', callbackUrl.toString());
       authorizationEndpointUrl.searchParams.set('response_type', 'code');
       authorizationEndpointUrl.searchParams.set('scope', scopes.join(' '));
       authorizationEndpointUrl.searchParams.set('state', state);
@@ -172,6 +184,7 @@ export abstract class BaseAuthenticationStrategy implements AuthenticationStrate
     });
 
   public exchangeAuthCode = async (
+    callbackUrl: URL,
     parameters: URLSearchParams,
     expectedNonce: string,
     expectedState: string,
@@ -193,7 +206,7 @@ export abstract class BaseAuthenticationStrategy implements AuthenticationStrate
         this.client,
         this.clientAuth,
         callbackParameters,
-        this.callbackUrl.toString(),
+        callbackUrl.toString(),
         codeVerifier,
         { [oauth.allowInsecureRequests]: this.allowInsecure },
       );
@@ -215,14 +228,26 @@ export abstract class BaseAuthenticationStrategy implements AuthenticationStrate
         idTokenClaims: idTokenClaims,
       };
     });
+
+  public async decodeAndVerifyJwt(jwt: string, expectedAudience: string): Promise<jose.JWTPayload & { roles?: string[] }> {
+    this.log.debug('Performing JWT verification');
+
+    const authorizationServer = await this.authorizationServer;
+
+    const getKey = jose.createRemoteJWKSet(new URL(authorizationServer.jwks_uri));
+    const options = { audience: expectedAudience, issuer: authorizationServer.issuer };
+
+    const { payload } = await jose.jwtVerify<{ roles?: string[] }>(jwt, getKey, options);
+    return payload;
+  }
 }
 
 /**
  * Authentication strategy for Azure AD (Microsoft Entra).
  */
 export class AzureADAuthenticationStrategy extends BaseAuthenticationStrategy {
-  public constructor(issuerUrl: URL, callbackUrl: URL, clientId: string, clientSecret: string) {
-    super('azuread', issuerUrl, callbackUrl, { client_id: clientId }, oauth.ClientSecretPost(clientSecret));
+  public constructor(issuerUrl: URL, clientId: string, clientSecret: string) {
+    super('azuread', issuerUrl, { client_id: clientId }, oauth.ClientSecretPost(clientSecret));
   }
 }
 
@@ -231,7 +256,7 @@ export class AzureADAuthenticationStrategy extends BaseAuthenticationStrategy {
  * This is a pretty typical authentication strategy, except all requests are allowed to be insecure.
  */
 export class LocalAuthenticationStrategy extends BaseAuthenticationStrategy {
-  public constructor(issuerUrl: URL, callbackUrl: URL, clientId: string, clientSecret: string) {
-    super('local', issuerUrl, callbackUrl, { client_id: clientId }, oauth.ClientSecretPost(clientSecret), true);
+  public constructor(issuerUrl: URL, clientId: string, clientSecret: string) {
+    super('local', issuerUrl, { client_id: clientId }, oauth.ClientSecretPost(clientSecret), true);
   }
 }
