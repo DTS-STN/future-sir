@@ -5,6 +5,11 @@ on:
     branches: [main]
     types: [opened, synchronize, reopened]
 
+env:
+  CI: true
+
+permissions: read-all
+
 jobs:
   check-changes:
     runs-on: ubuntu-latest
