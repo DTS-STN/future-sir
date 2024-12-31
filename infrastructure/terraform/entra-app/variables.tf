@@ -64,11 +64,6 @@ variable "app_roles" {
   }))
 }
 
-variable "role_assignments" {
-  description = "Map of role values to lists of user email addresses to be assigned to those roles."
-  type        = map(list(string))
-}
-
 variable "app_web_redirect_uris" {
   description = "OAuth 2.0 redirect URIs for authentication response handling (e.g., authorization codes, access tokens)."
   type        = set(string)
@@ -85,4 +80,15 @@ variable "app_web_implicit_grants_id_token_issuance_enabled" {
   description = "Enable ID token issuance using OAuth 2.0 implicit flow. Recommended only for specific authentication scenarios."
   type        = bool
   default     = false
+}
+
+variable "role_assignments" {
+  description = "Map of role values to lists of user email addresses to be assigned to those roles."
+  type        = map(list(string))
+}
+
+variable "service_principal_group_memberships" {
+  description = "List of group values (roles) that the service principal should be added to"
+  type        = list(string)
+  default     = []
 }

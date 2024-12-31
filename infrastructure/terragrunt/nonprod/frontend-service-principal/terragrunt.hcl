@@ -82,4 +82,6 @@ inputs = {
       "sebastien.comeau@hrsdc-rhdcc.gc.ca",
     ]
   }
+
+  service_principal_group_memberships = ["admin"]
 }

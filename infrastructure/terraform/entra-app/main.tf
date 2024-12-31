@@ -204,6 +204,16 @@ resource "azuread_group_member" "main" {
 
 
 
+# Assign service principal to the appropriate security groups.
+resource "azuread_group_member" "service_principal" {
+  for_each = toset(var.service_principal_group_memberships)
+
+  group_object_id  = azuread_group.main[each.value].object_id
+  member_object_id = azuread_service_principal.main.object_id
+}
+
+
+
 # Assign security groups to corresponding app roles
 resource "azuread_app_role_assignment" "main" {
   for_each = {
