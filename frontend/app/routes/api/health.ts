@@ -17,7 +17,7 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
   log.info('Handling health check request');
 
   const { include, exclude, timeout } = Object.fromEntries(new URL(request.url).searchParams);
-  const redisHealthCheck = { name: 'redis', check: () => void getRedisClient().ping() };
+  const redisHealthCheck = { name: 'redis', check: async () => void (await getRedisClient().ping()) };
 
   const healthCheckOptions: HealthCheckOptions = {
     excludeComponents: toArray(exclude),
