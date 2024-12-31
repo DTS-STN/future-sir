@@ -217,10 +217,10 @@ resource "azuread_group_member" "service_principal" {
 # Assign security groups to corresponding app roles
 resource "azuread_app_role_assignment" "main" {
   for_each = {
-    for role in var.app_roles : role.value => role
+    for role in var.app_roles : role.value => role.id
   }
 
-  app_role_id         = azuread_application.main.app_role_ids[each.key]
+  app_role_id         = each.value
   principal_object_id = azuread_group.main[each.key].object_id
   resource_object_id  = azuread_service_principal.main.object_id
 }
