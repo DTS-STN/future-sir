@@ -9,9 +9,9 @@ import { requireAuth } from '~/.server/utils/auth-utils';
 import { AppLink } from '~/components/app-link';
 import { LanguageSwitcher } from '~/components/language-switcher';
 import { PageDetails } from '~/components/page-details';
+import { UserButton } from '~/components/user-button';
 import { useLanguage } from '~/hooks/use-language';
 import { useRoute } from '~/hooks/use-route';
-import { UserButton } from '~/components/user-button';
 
 export const handle = {
   i18nNamespace: ['gcweb', 'protected'],
@@ -44,7 +44,7 @@ export default function Layout({ loaderData }: Route.ComponentProps) {
                 decoding="async"
               />
             </AppLink>
-            <div className="text-right flex items-center space-x-4">
+            <div className="flex items-center space-x-4 text-right">
               <LanguageSwitcher>{t('gcweb:language-switcher.alt-lang')}</LanguageSwitcher>
               <UserButton name={loaderData.name?.toString()} />
             </div>

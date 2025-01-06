@@ -41,7 +41,13 @@ export function Menu({ className, children }: MenuProps) {
 
   return (
     <div className="relative inline-block text-left">
-      <button type="button" onClick={onClick} className={cn(baseClassName, className)} aria-haspopup={true} aria-expanded={open}>
+      <button
+        type="button"
+        onClick={onClick}
+        className={cn(baseClassName, className)}
+        aria-haspopup={true}
+        aria-expanded={open}
+      >
         <span id="menu-label">{t('gcweb:app.menu')}</span>
         {open ? <UpChevron /> : <DownChevron />}
       </button>

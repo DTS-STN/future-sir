@@ -8,7 +8,7 @@ import { UserButton } from '~/components/user-button';
 
 describe('UserButton', () => {
   it('should correctly render a UserButton with no MenuItems provided', () => {
-    const { container } = render(<UserButton name='Test Name' />);
+    const { container } = render(<UserButton name="Test Name" />);
     expect(container.innerHTML).toMatchSnapshot('expected html');
   });
 
@@ -17,7 +17,7 @@ describe('UserButton', () => {
       {
         path: '/fr/public',
         Component: () => (
-          <UserButton name='Test Name'>
+          <UserButton name="Test Name">
             <MenuItem file="routes/public/index.tsx">This is a test</MenuItem>
           </UserButton>
         ),
@@ -34,7 +34,7 @@ describe('UserButton', () => {
       {
         path: '/fr/public',
         Component: () => (
-          <UserButton name='Test Name'>
+          <UserButton name="Test Name">
             <MenuItem to="https://example.com/">This is a test</MenuItem>
           </UserButton>
         ),
