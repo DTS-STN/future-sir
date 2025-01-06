@@ -1,7 +1,9 @@
 {
   "language": "Français",
   "app": {
-    "menu": "Menu"
+    "logout": "Déconnexion",
+    "menu": "Menu",
+    "profile": "Profil"
   },
   "nav": {
     "skip-to-content": "Passer au contenu principal",
