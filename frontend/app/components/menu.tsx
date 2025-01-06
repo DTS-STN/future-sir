@@ -14,7 +14,7 @@ export function MenuItem({ children, ...props }: MenuItemProps) {
     <InlineLink
       role="menuitem"
       id="menu-item"
-      className="text-md text-md text-md block px-4 py-2 text-white hover:bg-slate-300 hover:text-blue-950 focus:bg-slate-600 focus:text-blue-400 active:bg-slate-800 active:text-white"
+      className="text-md block px-4 py-2 text-white hover:bg-slate-300 hover:text-blue-950 focus:bg-slate-600 focus:text-blue-400 active:bg-slate-800 active:text-white"
       {...props}
     >
       {children}
@@ -41,16 +41,16 @@ export function Menu({ className, children }: MenuProps) {
 
   return (
     <div className="relative inline-block text-left">
-      <button onClick={onClick} className={cn(baseClassName, className)} aria-haspopup={true} aria-expanded={open}>
-        <span>{t('gcweb:app.menu')}</span>
+      <button type="button" onClick={onClick} className={cn(baseClassName, className)} aria-haspopup={true} aria-expanded={open}>
+        <span id="menu-label">{t('gcweb:app.menu')}</span>
         {open ? <UpChevron /> : <DownChevron />}
       </button>
       {open && (
         <div
-          className="absolute left-0 mt-2 w-64 origin-top-left rounded-md bg-slate-700 shadow-lg ring-1 ring-black ring-opacity-5"
+          className="absolute left-0 mt-2 w-64 rounded-md bg-slate-700 shadow-lg ring-1 ring-black ring-opacity-5"
           role="menu"
           aria-orientation="vertical"
-          aria-labelledby="menu-button"
+          aria-labelledby="menu-label"
           tabIndex={-1}
         >
           <div className="py-1" role="none">
