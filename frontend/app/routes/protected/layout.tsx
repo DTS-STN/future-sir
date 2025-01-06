@@ -7,11 +7,11 @@ import type { Route } from './+types/layout';
 
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { AppLink } from '~/components/app-link';
-import { InlineLink } from '~/components/inline-link';
 import { LanguageSwitcher } from '~/components/language-switcher';
 import { PageDetails } from '~/components/page-details';
 import { useLanguage } from '~/hooks/use-language';
 import { useRoute } from '~/hooks/use-route';
+import { UserButton } from '~/components/user-button';
 
 export const handle = {
   i18nNamespace: ['gcweb', 'protected'],
@@ -44,16 +44,9 @@ export default function Layout({ loaderData }: Route.ComponentProps) {
                 decoding="async"
               />
             </AppLink>
-            <div className="text-right">
+            <div className="text-right flex items-center space-x-4">
               <LanguageSwitcher>{t('gcweb:language-switcher.alt-lang')}</LanguageSwitcher>
-              {!!loaderData.name && (
-                <div className="mt-4 text-right">
-                  <p className="font-bold">{loaderData.name.toString()}</p>
-                  <p>
-                    <InlineLink to="/auth/logout">Logout</InlineLink>
-                  </p>
-                </div>
-              )}
+              <UserButton name={loaderData.name?.toString()} />
             </div>
           </div>
         </div>
