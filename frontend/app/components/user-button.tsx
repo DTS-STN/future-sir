@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
+import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuTrigger } from './dropdown-menu';
 import { MenuItem } from './menu';
 
 import { cn } from '~/utils/tailwind-utils';
@@ -16,53 +17,38 @@ export function UserButton({ className, children, name }: UserButtonProps) {
   const [open, setOpen] = useState(false);
   const { t } = useTranslation(['gcweb']);
   const baseClassName = cn(
-    'w-12 h-12 text-white rounded-full flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-slate-300',
+    'w-10 h-10 my-0 text-white rounded-full flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-slate-300',
     open ? 'bg-slate-900 hover:bg-slate-800' : 'bg-slate-700 hover:bg-slate-600',
   );
 
-  const onClick = () => {
-    setOpen((value) => !value);
-  };
-
   return (
-    <div className="relative inline-block text-right">
-      <button
+    <DropdownMenu onOpenChange={(open) => setOpen(open)}>
+      <DropdownMenuTrigger
+        asChild
         title={t('gcweb:app.profile')}
         aria-label={t('gcweb:app.profile')}
-        type="button"
-        onClick={onClick}
         className={cn(baseClassName, className)}
         aria-haspopup={true}
         aria-expanded={open}
       >
-        <UserCircle />
-      </button>
-      {open && (
-        <div
-          className="absolute right-0 mt-2 w-64 rounded-md bg-slate-700 bg-gradient-to-b text-left shadow-lg ring-1 ring-black ring-opacity-5"
-          role="menu"
-          aria-orientation="vertical"
-          tabIndex={-1}
-        >
-          <div className="py-1" role="none">
-            <UserName name={name} />
-            {children}
-            <MenuItem to="/auth/logout">{t('gcweb:app.logout')}</MenuItem>
-          </div>
-        </div>
-      )}
-    </div>
+        <button>
+          <UserCircleIcon />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-64 !bg-slate-700">
+        <UserName name={name} />
+        {children}
+        <MenuItem to="/auth/logout">{t('gcweb:app.logout')}</MenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
 
-function UserCircle() {
+function UserCircleIcon() {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-12">
-      <path
-        fillRule="evenodd"
-        d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"
-        clipRule="evenodd"
-      />
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="currentColor" className="size-6">
+      {/*!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.*/}
+      <path d="M304 128a80 80 0 1 0 -160 0 80 80 0 1 0 160 0zM96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM49.3 464l349.5 0c-8.9-63.3-63.3-112-129-112l-91.4 0c-65.7 0-120.1 48.7-129 112zM0 482.3C0 383.8 79.8 304 178.3 304l91.4 0C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7L29.7 512C13.3 512 0 498.7 0 482.3z" />
     </svg>
   );
 }
@@ -71,10 +57,10 @@ function UserName({ name }: { name?: string }) {
   return (
     <>
       {name !== undefined && (
-        <div className="text-md flex border-b-2 border-slate-600 px-4 py-2 text-gray-300">
+        <DropdownMenuLabel className="text-md flex items-center border-b-2 border-slate-600 px-3 py-2 text-gray-300">
           <UserIcon />
           {name}
-        </div>
+        </DropdownMenuLabel>
       )}
     </>
   );
@@ -82,12 +68,9 @@ function UserName({ name }: { name?: string }) {
 
 function UserIcon() {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="mr-2 size-6">
-      <path
-        fillRule="evenodd"
-        d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z"
-        clipRule="evenodd"
-      />
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="currentColor" className="mr-2 size-4">
+      {/*!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.*/}
+      <path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512l388.6 0c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304l-91.4 0z" />
     </svg>
   );
 }
