@@ -25,7 +25,7 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
   }
 
   // cache if the build revision is anything other than the default value
-  const shouldCache = buildRevision !== serverDefaults.DEFAULT_BUILD_REVISION;
+  const shouldCache = buildRevision !== serverDefaults.BUILD_REVISION;
 
   return Response.json(resourceBundle, {
     headers: shouldCache //

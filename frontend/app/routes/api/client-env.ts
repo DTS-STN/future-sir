@@ -15,7 +15,7 @@ export function loader({ context, params, request }: Route.LoaderArgs) {
   const buildRevision = url.searchParams.get('v');
 
   // cache if the build revision is anything other than the default value
-  const shouldCache = buildRevision !== serverDefaults.DEFAULT_BUILD_REVISION;
+  const shouldCache = buildRevision !== serverDefaults.BUILD_REVISION;
 
   return new Response(`globalThis.__appEnvironment = ${JSON.stringify(clientEnvironment)}`, {
     headers: {

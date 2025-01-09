@@ -23,8 +23,8 @@ export const session = z.object({
   SESSION_COOKIE_SAMESITE: z.enum(['lax', 'strict', 'none']).default(defaults.SESSION_COOKIE_SAMESITE),
   SESSION_COOKIE_SECRET: ValidationUtils.redact(z.string().default(defaults.SESSION_COOKIE_SECRET).pipe(z.string().min(32))),
   SESSION_COOKIE_SECURE: ValidationUtils.asBoolean(z.string().default(defaults.SESSION_COOKIE_SECURE)),
-  SESSION_EXPIRES_SECONDS: ValidationUtils.asNumber(z.string().default(defaults.SESSION_EXPIRES_SECONDS)).pipe(
-    z.number().min(0),
-  ),
+  SESSION_EXPIRES_SECONDS: ValidationUtils.asNumber(
+    z.string().default(defaults.SESSION_EXPIRES_SECONDS), //
+  ).pipe(z.number().min(0)),
   SESSION_KEY_PREFIX: z.string().default(defaults.SESSION_KEY_PREFIX),
 });
