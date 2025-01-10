@@ -6,12 +6,13 @@ import tailwindcss from 'tailwindcss';
 import { defineConfig } from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
+// important: this must be a non-aliased (ie: not ~/) import
 import { preserveImportMetaUrl } from './vite.server.config';
 
 /**
  * This file is used to build the application.
+ * See vite.server.config.ts for the server build config.
  */
-
 export default defineConfig({
   css: {
     postcss: {
@@ -33,23 +34,16 @@ export default defineConfig({
       port: 3001,
     },
   },
+
+  //
+  // Vitest config. For more test configuration, see vitest.workspace.ts
+  // see: https://vitest.dev/config/
+  //
   test: {
     coverage: {
       // Includes only files within the `app` directory for test coverage reporting.
       include: ['**/app/**'],
     },
-    environmentMatchGlobs: [
-      // Maps specific test paths to test environments.
-      // Example: Components, hooks, and routes tests run in a `jsdom` environment to simulate a browser-like context.
-      ['**/tests/components/**', 'jsdom'],
-      ['**/tests/hooks/**', 'jsdom'],
-      ['**/tests/routes/**', 'jsdom'],
-    ],
-
-    // Specifies the file patterns to include as tests.
-    include: ['**/tests/**/*.test.(ts|tsx)'],
-
-    // Setup files to initialize the testing environment (global setup, mocks, etc).
     setupFiles: ['./tests/setup.ts'],
   },
 });

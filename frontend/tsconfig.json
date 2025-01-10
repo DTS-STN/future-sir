@@ -17,7 +17,8 @@
     "./react-router.config.ts",
     "./tailwind.config.ts",
     "./vite.config.ts",
-    "./vite.server.config.ts"
+    "./vite.server.config.ts",
+    "./vitest.workspace.ts"
   ],
   "compilerOptions": {
     "baseUrl": ".",
