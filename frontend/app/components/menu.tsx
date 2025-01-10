@@ -3,9 +3,8 @@ import { useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './dropdown-menu';
-import { InlineLink } from './inline-link';
-
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '~/components/dropdown-menu';
+import { InlineLink } from '~/components/inline-link';
 import { cn } from '~/utils/tailwind-utils';
 
 type MenuItemProps = ComponentProps<typeof InlineLink>;

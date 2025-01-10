@@ -37,7 +37,6 @@
     "connect-redis": "^8.0.1",
     "cross-env": "^7.0.3",
     "effect": "^3.12.1",
-    "effect": "^3.12.1",
     "express": "^4.21.2",
     "express-session": "^1.18.1",
     "i18next": "^24.2.1",

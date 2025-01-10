@@ -2,9 +2,8 @@ import { useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuTrigger } from './dropdown-menu';
-import { MenuItem } from './menu';
-
+import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuTrigger } from '~/components/dropdown-menu';
+import { MenuItem } from '~/components/menu';
 import { cn } from '~/utils/tailwind-utils';
 
 interface UserButtonProps {
