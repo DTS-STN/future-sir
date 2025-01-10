@@ -8,9 +8,15 @@ import { cn } from '~/utils/tailwind-utils';
 
 type MenuItemProps = ComponentProps<typeof AppLink>;
 
-export function MenuItem({ children, ...props }: MenuItemProps) {
+export function MenuItem({ children, className, ...props }: MenuItemProps) {
   return (
-    <DropdownMenuItem asChild className="cursor-pointer">
+    <DropdownMenuItem
+      asChild
+      className={cn(
+        'text-md cursor-pointer px-3 py-2 text-white hover:bg-slate-300 hover:text-white focus:bg-slate-600 active:bg-slate-800',
+        className,
+      )}
+    >
       <AppLink data-testid="menu-item" {...props}>
         {children}
       </AppLink>
@@ -37,7 +43,7 @@ export function Menu({ className, children }: MenuProps) {
         <span id="menu-label">{t('gcweb:app.menu')}</span>
         <DownChevron />
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="w-64">
+      <DropdownMenuContent align="start" className="w-64 bg-slate-700">
         {children}
       </DropdownMenuContent>
     </DropdownMenu>
