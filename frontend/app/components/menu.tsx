@@ -10,8 +10,12 @@ type MenuItemProps = ComponentProps<typeof AppLink>;
 
 export function MenuItem({ children, ...props }: MenuItemProps) {
   return (
-    <DropdownMenuItem asChild className="cursor-pointer">
-      <AppLink data-testid="menu-item" {...props}>
+    <DropdownMenuItem asChild className="text-md m-0 cursor-pointer p-0">
+      <AppLink
+        data-testid="menu-item"
+        {...props}
+        className="w-full px-3 py-2 text-white hover:bg-slate-300 hover:text-blue-950 focus:bg-slate-600 focus:text-white active:bg-slate-800 active:text-white"
+      >
         {children}
       </AppLink>
     </DropdownMenuItem>
@@ -37,7 +41,7 @@ export function Menu({ className, children }: MenuProps) {
         <span id="menu-label">{t('gcweb:app.menu')}</span>
         <DownChevron />
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="w-64">
+      <DropdownMenuContent align="start" className="w-64 !bg-slate-700">
         {children}
       </DropdownMenuContent>
     </DropdownMenu>
