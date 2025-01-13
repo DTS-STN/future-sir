@@ -1,5 +1,12 @@
 {
+  "[javascript][json][jsonc][typescript][typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2
+  },
   "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.removeUnusedImports": "explicit",
     // rely on prettier to sort imports
     "source.sortImports": "never"
   },
