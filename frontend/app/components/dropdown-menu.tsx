@@ -2,40 +2,11 @@
 
 import * as React from 'react';
 
+import { faChevronRight, faCircle, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 
 import { cn } from '~/utils/tailwind-utils';
-
-interface IconProps {
-  className?: string;
-}
-
-function Check({ className }: IconProps) {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className={className}>
-      {/*!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.*/}
-      <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" />
-    </svg>
-  );
-}
-
-function ChevronRight({ className }: IconProps) {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" className={className}>
-      {/*!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.*/}
-      <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
-    </svg>
-  );
-}
-
-function Circle({ className }: IconProps) {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className={className}>
-      {/*!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.*/}
-      <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z" />
-    </svg>
-  );
-}
 
 const DropdownMenu = DropdownMenuPrimitive.Root;
 
@@ -65,7 +36,7 @@ const DropdownMenuSubTrigger = React.forwardRef<
     {...props}
   >
     {children}
-    <ChevronRight className="ml-auto" />
+    <FontAwesomeIcon icon={faChevronRight} />
   </DropdownMenuPrimitive.SubTrigger>
 ));
 DropdownMenuSubTrigger.displayName = DropdownMenuPrimitive.SubTrigger.displayName;
@@ -137,7 +108,7 @@ const DropdownMenuCheckboxItem = React.forwardRef<
   >
     <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
       <DropdownMenuPrimitive.ItemIndicator>
-        <Check className="h-4 w-4" />
+        <FontAwesomeIcon icon={faCheck} />
       </DropdownMenuPrimitive.ItemIndicator>
     </span>
     {children}
@@ -159,7 +130,7 @@ const DropdownMenuRadioItem = React.forwardRef<
   >
     <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
       <DropdownMenuPrimitive.ItemIndicator>
-        <Circle className="h-2 w-2 fill-current" />
+        <FontAwesomeIcon icon={faCircle} />
       </DropdownMenuPrimitive.ItemIndicator>
     </span>
     {children}
