@@ -10,4 +10,5 @@ export default {
   semi: true,
   singleQuote: true,
   tabWidth: 2,
+  tailwindFunctions: ['clsx', 'cn'],
 };
