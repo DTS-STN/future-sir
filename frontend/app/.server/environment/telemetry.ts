@@ -5,7 +5,7 @@ import * as ValidationUtils from '~/utils/validation-utils';
 export type Telemetry = Readonly<z.infer<typeof telemetry>>;
 
 export const defaults = {
-  OTEL_SERVICE_NAME: 'Future SIR frontend',
+  OTEL_SERVICE_NAME: 'future-sir-frontend',
   OTEL_SERVICE_VERSION: '0.0.0',
   OTEL_ENVIRONMENT_NAME: 'localhost',
   OTEL_AUTH_HEADER: 'Authorization 00000000-0000-0000-0000-000000000000',
