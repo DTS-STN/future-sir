@@ -16,7 +16,7 @@ export function UserButton({ className, children, name }: UserButtonProps) {
   const [open, setOpen] = useState(false);
   const { t } = useTranslation(['gcweb']);
   const baseClassName = cn(
-    'w-10 h-10 my-0 text-white rounded-full flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-slate-300',
+    'my-0 flex h-10 w-10 items-center justify-center rounded-full text-white focus:outline-none focus:ring-2 focus:ring-slate-300',
     open ? 'bg-slate-900 hover:bg-slate-800' : 'bg-slate-700 hover:bg-slate-600',
   );
 
