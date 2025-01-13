@@ -3,5 +3,18 @@
     // rely on prettier to sort imports
     "source.sortImports": "never"
   },
+  // Tailwind Regex List
+  // see: https://github.com/paolotiu/tailwind-intellisense-regex-list?tab=readme-ov-file#classnames
+  "tailwindCSS.experimental.classRegex": [
+    // clsx and cn
+    ["clsx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
+    ["cn\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
+    // Plain Javascript Object
+    ":\\s*?[\"'`]([^\"'`]*).*?,",
+    // JavaScript string variable with keywords
+    [
+      "(?:\\b(?:const|let|var)\\s+)?[\\w$_]*(?:[Ss]tyles|[Cc]lasses|[Cc]lassnames)[\\w\\d]*\\s*(?:=|\\+=)\\s*['\"]([^'\"]*)['\"]"
+    ]
+  ],
   "vitest.disableWorkspaceWarning": true
 }
