@@ -17,7 +17,11 @@ export const logLevels = {
   trace: 6,
 } as const;
 
-const consoleTransport = new transports.Console();
+const consoleTransport = new transports.Console({
+  handleExceptions: true,
+  handleRejections: true,
+  level: getLogLevel(),
+});
 
 export const LogFactory = {
   /**
@@ -32,7 +36,6 @@ export const LogFactory = {
     }
 
     return winston.loggers.add(category, {
-      level: getLogLevel(),
       levels: logLevels,
       format: format.combine(
         format.label({ label: category }),
@@ -41,8 +44,6 @@ export const LogFactory = {
         fullFormat({ stack: true }),
         format.printf(asFormattedInfo),
       ),
-      exceptionHandlers: [consoleTransport],
-      rejectionHandlers: [consoleTransport],
       transports: [consoleTransport],
     });
   },
