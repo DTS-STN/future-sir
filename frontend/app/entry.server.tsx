@@ -88,7 +88,6 @@ export default async function handleRequest(
 // https://reactrouter.com/explanation/special-files#handleerror
 export function handleError(error: unknown, { context, params, request }: LoaderFunctionArgs | ActionFunctionArgs) {
   if (!request.signal.aborted) {
-    const log = context.LogFactory.getLogger(import.meta.url);
     log.error('Uncaught error while handling request:', error);
     handleSpanException(error, trace.getActiveSpan());
   }
