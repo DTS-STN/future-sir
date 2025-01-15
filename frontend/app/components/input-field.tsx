@@ -17,6 +17,7 @@ const inputErrorClassName = 'border-red-500 focus:border-red-500 focus:ring-red-
 export interface InputFieldProps {
   ariaDescribedby?: string;
   className?: string;
+  defaultValue?: string;
   errorMessage?: string;
   helpMessagePrimary?: React.ReactNode;
   helpMessagePrimaryClassName?: string;
@@ -34,6 +35,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>((props, ref) =>
     ariaDescribedby,
     errorMessage,
     className,
+    defaultValue,
     helpMessagePrimary,
     helpMessagePrimaryClassName,
     helpMessageSecondary,
@@ -93,6 +95,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>((props, ref) =>
           className,
         )}
         data-testid="input-field"
+        defaultValue={defaultValue}
         id={id}
         required={required}
         type={type}
