@@ -72,14 +72,14 @@ export function security(environment: ServerEnvironment): RequestHandler {
       `base-uri 'none'`,
       `default-src 'none'`,
       `connect-src 'self'` + (environment.isProduction ? '' : ' ws://localhost:3001'),
-      `font-src 'self' fonts.gstatic.com`,
+      `font-src 'self' fonts.gstatic.com use.fontawesome.com www.canada.ca`,
       `form-action 'self'`,
       `frame-ancestors 'self'`,
       `frame-src 'self'`,
-      `img-src 'self' https://www.canada.ca`,
+      `img-src 'self' www.canada.ca`,
       `object-src data:`,
       `script-src 'self' 'nonce-${response.locals.nonce}'`,
-      `style-src 'self' fonts.googleapis.com`,
+      `style-src 'self' fonts.googleapis.com use.fontawesome.com www.canada.ca`,
     ].join('; ');
 
     const permissionsPolicy = [
