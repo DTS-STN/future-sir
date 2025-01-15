@@ -1,0 +1,3 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`InputLabel > should render input label component > expected html 1`] = `"<label class="inline-block font-semibold" data-testid="input-label" id="id"><span>input test</span></label>"`;

@@ -1,0 +1,3 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`InputHelp > should render input help component > expected html 1`] = `"<span class="block max-w-prose text-gray-500" data-testid="input-help" id="id">input help</span>"`;
