@@ -34,6 +34,8 @@ export function findRouteByFile(file: string, routes: I18nRoute[]): I18nPageRout
  * @returns The I18nPageRoute that matches the given pathname, or undefined if no route is found.
  */
 export function findRouteByPath(pathname: string, routes: I18nRoute[]): I18nPageRoute | undefined {
+  const normalizedPathname = normalizePath(pathname);
+
   for (const route of routes) {
     if (isI18nLayoutRoute(route)) {
       const matchingChildRoute = findRouteByPath(pathname, route.children);
@@ -43,8 +45,13 @@ export function findRouteByPath(pathname: string, routes: I18nRoute[]): I18nPage
       }
     }
 
-    if (isI18nPageRoute(route) && (route.paths.en === pathname || route.paths.fr == pathname)) {
-      return route;
+    if (isI18nPageRoute(route)) {
+      const enMatches = normalizedPathname === normalizePath(route.paths.en);
+      const frMatches = normalizedPathname === normalizePath(route.paths.fr);
+
+      if (enMatches || frMatches) {
+        return route;
+      }
     }
   }
 }
@@ -83,4 +90,13 @@ export function getRouteByPath(pathname: string, routes: I18nRoute[]): I18nPageR
   }
 
   return route;
+}
+
+/**
+ * Normalize a pathname by removing any trailing slashes.
+ * @param pathname - The pathname to normalize.
+ * @returns The normalized pathname.
+ */
+function normalizePath(pathname: string): string {
+  return pathname.replace(/\/+$/, '');
 }
