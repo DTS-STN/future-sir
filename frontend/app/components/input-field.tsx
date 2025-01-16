@@ -7,7 +7,7 @@ import { InputLabel } from '~/components/input-label';
 import { cn } from '~/utils/tailwind-utils';
 
 const inputBaseClassName =
-  'block rounded-lg border-gray-500 focus:border-blue-500 focus:outline-none focus:ring focus:ring-blue-500';
+  'block border-solid border-2 border-gray-500 focus:border-blue-500 focus:outline-none focus:ring focus:ring-blue-500';
 const inputDisabledClassName =
   'disabled:bg-gray-100 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-70';
 const inputReadOnlyClassName =

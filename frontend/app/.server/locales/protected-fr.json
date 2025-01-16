@@ -6,8 +6,15 @@
   "index": {
     "admin-dashboard": "Interface d'administration",
     "home": "Accueil",
+    "in-person": "Accédez à la page «\u00a0Cas en personne\u00a0»",
     "page-title": "Bienvenue sur Future SIR (protégée)",
+    "protected": "Accédez au portail des employés",
     "public": "Accédez à la page «\u00a0publique\u00a0»",
     "resources": "ressources i18n chargées depuis : <mark>{{resource}}</mark>"
+  },
+  "person-case": {
+    "page-title": "Cas en personne",
+    "first-name": "Entrez le prénom",
+    "add-button": "Ajouter un prénom"
   }
 }

@@ -44,6 +44,11 @@ export const i18nRoutes = [
         file: 'routes/protected/admin.tsx',
         paths: { en: '/en/protected/admin', fr: '/fr/protege/admin' },
       },
+      {
+        id: 'PROT-0003',
+        file: 'routes/protected/person-case/first-name.tsx',
+        paths: { en: '/en/protected/person-case/first-name', fr: '/fr/protege/person-case/first-name' },
+      },
     ],
   },
   {
