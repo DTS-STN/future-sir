@@ -20,3 +20,4 @@ updates:
     directory: /frontend
     schedule:
       interval: daily
+    file: "containerfile"
