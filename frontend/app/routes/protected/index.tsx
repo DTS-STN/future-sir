@@ -32,6 +32,7 @@ export default function Index() {
         <MenuItem to="/">{t('protected:index.home')}</MenuItem>
         <MenuItem file="routes/protected/admin.tsx">{t('protected:index.admin-dashboard')}</MenuItem>
         <MenuItem file="routes/public/index.tsx">{t('protected:index.public')}</MenuItem>
+        <MenuItem file="routes/protected/person-case/first-name.tsx">{t('protected:index.in-person')}</MenuItem>
       </Menu>
       <p className="mt-8 text-lg">
         <Trans

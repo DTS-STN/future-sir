@@ -6,8 +6,15 @@
   "index": {
     "admin-dashboard": "Admin dashboard",
     "home": "Home",
+    "in-person": "Navigate to 'In person case' page",
     "page-title": "Welcome to Future SIR (protected)",
+    "protected": "Go to the employee portal",
     "public": "Navigate to 'public' page",
     "resources": "i18n resources loaded from: <mark>{{resource}}</mark>"
+  },
+  "person-case": {
+    "page-title": "In person case",
+    "first-name": "Enter first name",
+    "add-button": "Add first name"
   }
 }
