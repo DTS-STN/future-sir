@@ -1,5 +1,6 @@
 version: 2
 updates:
+  # Enable version updates for npm
   - package-ecosystem: npm
     directory: /frontend
     schedule:
@@ -13,3 +14,9 @@ updates:
         dependency-type: production
         update-types: [minor, patch]
         patterns: ['*']
+
+  # Enable version updates for Docker
+  - package-ecosystem: "docker"
+    directory: /frontend
+    schedule:
+      interval: daily
