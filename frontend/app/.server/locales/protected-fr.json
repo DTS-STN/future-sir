@@ -3,8 +3,20 @@
   "admin": {
     "page-title": "Interface d'administration"
   },
+  "dashboard": {
+    "sin": "SIN",
+    "sin-system": "<span>SIN</span> Interface Système",
+    "system": "Système",
+    "assigned-cases": "Affaires Attribuées",
+    "get-started": "Commencer Ici"
+  },
+  "in-person": {
+    "title": "Demande SIN en personne",
+    "description": "Traiter une demande ou une modification"
+  },
   "index": {
     "admin-dashboard": "Interface d'administration",
+    "dashboard": "Interface",
     "home": "Accueil",
     "in-person": "Accédez à la page «\u00a0Cas en personne\u00a0»",
     "page-title": "Bienvenue sur Future SIR (protégée)",

@@ -3,8 +3,9 @@ import { Outlet } from 'react-router';
 
 import { useTranslation } from 'react-i18next';
 
+import { AppBar } from '~/components/app-bar';
 import { AppLink } from '~/components/app-link';
-import { LanguageSwitcher } from '~/components/language-switcher';
+import { MenuItem } from '~/components/menu';
 import { PageDetails } from '~/components/page-details';
 import { useLanguage } from '~/hooks/use-language';
 import { useRoute } from '~/hooks/use-route';
@@ -15,14 +16,14 @@ export const handle = {
 
 export default function Layout() {
   const { currentLanguage } = useLanguage();
-  const { t } = useTranslation(['gcweb']);
+  const { t } = useTranslation(['gcweb', 'public']);
   const { id: pageId } = useRoute();
 
   const { BUILD_DATE, BUILD_VERSION } = globalThis.__appEnvironment;
 
   return (
     <>
-      <header className="border-b-[3px] border-slate-700 print:hidden">
+      <header className="print:hidden">
         <div id="wb-bnr">
           <div className="container flex items-center justify-between gap-6 py-2.5 sm:py-3.5">
             <AppLink to="https://canada.ca/">
@@ -35,9 +36,11 @@ export default function Layout() {
                 decoding="async"
               />
             </AppLink>
-            <LanguageSwitcher>{t('gcweb:language-switcher.alt-lang')}</LanguageSwitcher>
           </div>
         </div>
+        <AppBar>
+          <MenuItem file="routes/protected/index.tsx">{t('public:index.navigate')}</MenuItem>
+        </AppBar>
       </header>
       <main className="container">
         <Outlet />

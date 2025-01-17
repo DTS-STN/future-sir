@@ -38,12 +38,14 @@ export function Menu({ className, children }: MenuProps) {
     <DropdownMenu>
       <DropdownMenuTrigger
         className={cn(
-          'flex flex-nowrap space-x-2 rounded-b-md border-x border-b border-slate-700 bg-slate-700 px-4 py-2 text-lg text-white hover:bg-slate-800 hover:underline focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 aria-expanded:bg-slate-900 aria-expanded:text-white',
+          'flex h-full flex-nowrap space-x-2 bg-slate-700 px-2 text-white hover:bg-slate-600 hover:underline focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 aria-expanded:bg-slate-900 aria-expanded:text-white sm:space-x-3 sm:px-4',
           className,
         )}
       >
-        <span id="menu-label">{t('gcweb:app.menu')}</span>
-        <FontAwesomeIcon icon={faChevronDown} className="my-auto size-5 fill-current" />
+        <span id="menu-label" className="my-auto py-2 sm:text-2xl">
+          {t('gcweb:app.title')}
+        </span>
+        <FontAwesomeIcon icon={faChevronDown} className="my-auto size-4" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-64 bg-slate-700">
         {children}

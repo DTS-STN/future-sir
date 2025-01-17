@@ -1,9 +1,12 @@
 {
   "language": "Français",
   "app": {
+    "account": "Compte",
+    "form": "Forme",
     "logout": "Déconnexion",
     "menu": "Menu",
-    "profile": "Profil"
+    "profile": "Profil",
+    "title": "Future SIR"
   },
   "nav": {
     "skip-to-content": "Passer au contenu principal",
