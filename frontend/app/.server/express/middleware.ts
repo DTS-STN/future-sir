@@ -1,5 +1,5 @@
 import { trace } from '@opentelemetry/api';
-import { Duration, Redacted } from 'effect';
+import { Redacted } from 'effect';
 import type { RequestHandler } from 'express';
 import sessionMiddleware from 'express-session';
 import { minimatch } from 'minimatch';
@@ -122,7 +122,6 @@ export function session(environment: ServerEnvironment): RequestHandler {
     SESSION_COOKIE_SAMESITE,
     SESSION_COOKIE_SECRET,
     SESSION_COOKIE_SECURE,
-    SESSION_EXPIRES_SECONDS,
   } = environment;
 
   const sessionStore =
@@ -144,7 +143,6 @@ export function session(environment: ServerEnvironment): RequestHandler {
       path: SESSION_COOKIE_PATH,
       secure: SESSION_COOKIE_SECURE ? isProduction : false,
       httpOnly: true,
-      maxAge: Duration.toMillis(Duration.seconds(SESSION_EXPIRES_SECONDS)),
       sameSite: SESSION_COOKIE_SAMESITE,
     },
   });
