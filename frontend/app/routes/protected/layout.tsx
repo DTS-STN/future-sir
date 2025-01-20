@@ -53,6 +53,7 @@ export default function Layout({ loaderData }: Route.ComponentProps) {
           <MenuItem to="/">{t('protected:index.home')}</MenuItem>
           <MenuItem file="routes/protected/admin.tsx">{t('protected:index.admin-dashboard')}</MenuItem>
           <MenuItem file="routes/public/index.tsx">{t('protected:index.public')}</MenuItem>
+          <MenuItem file="routes/protected/person-case/first-name.tsx">{t('protected:index.in-person')}</MenuItem>
         </AppBar>
       </header>
       <main className="container">

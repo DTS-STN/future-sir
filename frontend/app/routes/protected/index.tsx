@@ -41,7 +41,10 @@ export default function Index() {
         {t('gcweb:app.form')}
       </ButtonLink>
       <h2 className="mb-2 mt-10 text-2xl font-bold text-slate-700">{t('protected:dashboard.get-started')}</h2>
-      <ButtonLink className="flex w-80 items-center justify-between rounded-none" file="routes/protected/request.tsx">
+      <ButtonLink
+        className="flex w-80 items-center justify-between rounded-none"
+        file="routes/protected/person-case/first-name.tsx"
+      >
         <span className="text-bold flex flex-col text-slate-700">
           <span className="text-xl">{t('protected:in-person.title')}</span>
           <span>{t('protected:in-person.description')}</span>

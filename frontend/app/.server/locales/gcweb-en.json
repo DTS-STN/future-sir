@@ -69,5 +69,9 @@
     "page-message": "We expect the problem to be fixed shortly. It's not your computer or Internet connection but a problem with our website's server.",
     "correlation-id": "<strong>Correlation ID:</strong> <span>{{correlationId}}</span>",
     "error-code": "<strong>Error code:</strong> <span>{{errorCode}}</span>"
+  },
+  "error-summary": {
+    "header_one": "The following error was found in the form:",
+    "header_other": "The following {{count}} errors were found in the form:"
   }
 }
