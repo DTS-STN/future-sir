@@ -3,6 +3,7 @@ import { createInstance } from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
 import { serverEnvironment } from '~/.server/environment';
+import type { I18nResources } from '~/.server/locales';
 import { i18nResources } from '~/.server/locales';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
@@ -42,6 +43,8 @@ export async function initI18next(language?: Language): Promise<i18n> {
   const i18n = createInstance() //
     .use(initReactI18next);
 
+  const namespaces = getNamespaces(i18nResources);
+
   await i18n.init({
     debug: debug,
     defaultNS: false,
@@ -49,10 +52,14 @@ export async function initI18next(language?: Language): Promise<i18n> {
     lng: language,
     preload: ['en', 'fr'],
     supportedLngs: ['en', 'fr'],
-    ns: ['gcweb', 'protected', 'public'],
+    ns: namespaces,
     resources: i18nResources,
     interpolation: { escapeValue: false },
   });
 
   return i18n;
+}
+
+function getNamespaces<T extends I18nResources, U extends keyof T['en']>(resources: T): U[] {
+  return Object.keys(resources.en) as U[];
 }
