@@ -1,7 +1,9 @@
 import * as oauth from 'oauth4webapi';
 import { describe, expect, it, vi } from 'vitest';
+import { mock } from 'vitest-mock-extended';
 
 import { BaseAuthenticationStrategy } from '~/.server/auth/auth-strategies';
+import { ErrorCodes } from '~/errors/error-codes';
 
 vi.mock('oauth4webapi');
 
@@ -17,13 +19,15 @@ describe('BaseAuthenticationStrategy', () => {
     }
 
     // expose protected authorizationServer (for testing)
-    public async getAuthorizationServer() {
+    public getAuthorizationServer() {
       return this.authorizationServer;
     }
   }
 
   describe('constructor', () => {
     it('should initialize AuthorizationServer correctly', async () => {
+      vi.mocked(oauth.discoveryRequest).mockResolvedValue(mock());
+
       vi.mocked(oauth.processDiscoveryResponse).mockResolvedValue({
         issuer: 'https://auth.example.com/issuer',
         authorization_endpoint: 'https://auth.example.com/authorize',
@@ -39,20 +43,25 @@ describe('BaseAuthenticationStrategy', () => {
       });
     });
 
-    it('should throw error if no authorization endpoint is found', async () => {
+    it('should reject if no authorization endpoint is found', async () => {
+      vi.mocked(oauth.discoveryRequest).mockResolvedValue(mock());
+
       vi.mocked(oauth.processDiscoveryResponse).mockResolvedValue({
         issuer: 'https://auth.example.com/issuer',
         authorization_endpoint: undefined,
       } as oauth.AuthorizationServer);
 
-      await expect(async () => await new TestAuthStrategy().getAuthorizationServer()).rejects.toThrow(
-        'Authorization endpoint not found in the discovery document',
-      );
+      await expect(async () => await new TestAuthStrategy().getAuthorizationServer()).rejects.contains({
+        msg: 'Authorization endpoint not found in the discovery document',
+        errorCode: ErrorCodes.DISCOVERY_ENDPOINT_MISSING,
+      });
     });
   });
 
   describe('generateSigninRequest', () => {
     it('should generate signin request with default openid scope', async () => {
+      vi.mocked(oauth.discoveryRequest).mockResolvedValue(mock());
+
       vi.mocked(oauth.processDiscoveryResponse).mockResolvedValue({
         issuer: 'https://auth.example.com/issuer',
         authorization_endpoint: 'https://auth.example.com/authorize',
@@ -88,6 +97,8 @@ describe('BaseAuthenticationStrategy', () => {
 
   describe('exchangeAuthCode', () => {
     it('should exchange authorization code for tokens', async () => {
+      vi.mocked(oauth.discoveryRequest).mockResolvedValue(mock());
+
       vi.mocked(oauth.processDiscoveryResponse).mockResolvedValue({
         issuer: 'https://auth.example.com/issuer',
         authorization_endpoint: 'https://auth.example.com/authorize',
