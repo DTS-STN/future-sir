@@ -10,10 +10,29 @@ updates:
         dependency-type: development
         update-types: [minor, patch]
         patterns: ['*']
+        exclude-patterns:
+          - 'react-router'
+          - '@react-router/*'
+          - '@opentelemetry/*'
       prod-minor-versions:
         dependency-type: production
         update-types: [minor, patch]
         patterns: ['*']
+        exclude-patterns:
+          - 'react-router'
+          - '@react-router/*'
+          - '@opentelemetry/*'
+      # OpenTelemetry needs all of its dependencies (prod+dev updated together)
+      opentelemetry-versions:
+        update-types: [minor, patch]
+        patterns:
+          - '@opentelemetry/*'
+      # React Router needs all of its dependencies (prod+dev updated together)
+      react-router-versions:
+        update-types: [minor, patch]
+        patterns:
+          - 'react-router'
+          - '@react-router/*'
 
   # Enable version updates for Docker
   - package-ecosystem: "docker"
