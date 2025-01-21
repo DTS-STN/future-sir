@@ -1,44 +1,45 @@
 import { assert, describe, expect, it } from 'vitest';
+import { z } from 'zod';
 
 import { lastNameSchema } from '~/.server/validation/last-name-schema';
 
 describe('lastNameSchema', () => {
   it('should create a basic last name schema', () => {
-    const schema = lastNameSchema();
+    const schema = z.object({ lastName: lastNameSchema() });
 
-    let result = schema.safeParse('Smith');
+    let result = schema.safeParse({ lastName: 'Smith' });
     assert(result.success);
-    expect(result.data).toBe('Smith');
+    expect(result.data.lastName).toBe('Smith');
 
-    result = schema.safeParse(123);
+    result = schema.safeParse({ lastName: 123 });
     assert(!result.success);
     expect(result.error.errors).toStrictEqual([
       {
         code: 'invalid_type',
         expected: 'string',
         message: 'Last name must be a string.',
-        path: [],
+        path: ['lastName'],
         received: 'number',
       },
     ]);
   });
 
   it('should trim whitespace by default', () => {
-    const schema = lastNameSchema();
+    const schema = z.object({ lastName: lastNameSchema() });
 
-    const result = schema.safeParse('  Smith  ');
+    const result = schema.safeParse({ lastName: '  Smith  ' });
     assert(result.success);
-    expect(result.data).toBe('Smith');
+    expect(result.data.lastName).toBe('Smith');
   });
 
   it('should validate maxLength', () => {
-    const schema = lastNameSchema({ maxLength: 3 });
+    const schema = z.object({ lastName: lastNameSchema({ maxLength: 3 }) });
 
-    let result = schema.safeParse('Doe');
+    let result = schema.safeParse({ lastName: 'Doe' });
     assert(result.success);
-    expect(result.data).toBe('Doe');
+    expect(result.data.lastName).toBe('Doe');
 
-    result = schema.safeParse('Smith');
+    result = schema.safeParse({ lastName: 'Smith' });
     assert(!result.success);
     expect(result.error.errors).toStrictEqual([
       {
@@ -47,55 +48,57 @@ describe('lastNameSchema', () => {
         inclusive: true,
         maximum: 3,
         message: 'Last name must contain at most 3 characters.',
-        path: [],
+        path: ['lastName'],
         type: 'string',
       },
     ]);
   });
 
   it('should validate format (non-digit)', () => {
-    const schema = lastNameSchema();
+    const schema = z.object({ lastName: lastNameSchema() });
 
-    let result = schema.safeParse('Smith');
+    let result = schema.safeParse({ lastName: 'Smith' });
     assert(result.success);
-    expect(result.data).toBe('Smith');
+    expect(result.data.lastName).toBe('Smith');
 
-    result = schema.safeParse('Smith1');
+    result = schema.safeParse({ lastName: 'Smith1' });
     assert(!result.success);
     expect(result.error.errors).toStrictEqual([
       {
         code: 'invalid_string',
         message: 'Last name must not contain any digits.',
-        path: [],
+        path: ['lastName'],
         validation: 'regex',
       },
     ]);
   });
 
   it('should use custom error messages', () => {
-    const schema = lastNameSchema({
-      errorMessages: {
-        required_error: 'Custom required message',
-        invalid_type_error: 'Custom type message',
-        max_length_error: 'Custom max length message',
-        format_error: 'Custom format message',
-      },
-      maxLength: 3,
+    const schema = z.object({
+      lastName: lastNameSchema({
+        errorMessages: {
+          required_error: 'Custom required message',
+          invalid_type_error: 'Custom type message',
+          max_length_error: 'Custom max length message',
+          format_error: 'Custom format message',
+        },
+        maxLength: 3,
+      }),
     });
 
-    let result = schema.safeParse(undefined);
+    let result = schema.safeParse({ lastName: undefined });
     assert(!result.success);
     expect(result.error.errors).toStrictEqual([
       {
         code: 'invalid_type',
         expected: 'string',
         message: 'Custom required message',
-        path: [],
+        path: ['lastName'],
         received: 'undefined',
       },
     ]);
 
-    result = schema.safeParse('');
+    result = schema.safeParse({ lastName: '' });
     assert(!result.success);
     expect(result.error.errors).toStrictEqual([
       {
@@ -104,42 +107,42 @@ describe('lastNameSchema', () => {
         inclusive: true,
         message: 'Custom required message',
         minimum: 1,
-        path: [],
+        path: ['lastName'],
         type: 'string',
       },
       {
         code: 'invalid_string',
         message: 'Custom format message',
-        path: [],
+        path: ['lastName'],
         validation: 'regex',
       },
     ]);
 
-    result = schema.safeParse(null);
+    result = schema.safeParse({ lastName: null });
     assert(!result.success);
     expect(result.error.errors).toStrictEqual([
       {
         code: 'invalid_type',
         expected: 'string',
         message: 'Custom type message',
-        path: [],
+        path: ['lastName'],
         received: 'null',
       },
     ]);
 
-    result = schema.safeParse(123);
+    result = schema.safeParse({ lastName: 123 });
     assert(!result.success);
     expect(result.error.errors).toStrictEqual([
       {
         code: 'invalid_type',
         expected: 'string',
         message: 'Custom type message',
-        path: [],
+        path: ['lastName'],
         received: 'number',
       },
     ]);
 
-    result = schema.safeParse('Smith');
+    result = schema.safeParse({ lastName: 'Smith' });
     assert(!result.success);
     expect(result.error.errors).toStrictEqual([
       {
@@ -148,18 +151,18 @@ describe('lastNameSchema', () => {
         inclusive: true,
         maximum: 3,
         message: 'Custom max length message',
-        path: [],
+        path: ['lastName'],
         type: 'string',
       },
     ]);
 
-    result = schema.safeParse('Do3');
+    result = schema.safeParse({ lastName: 'Do3' });
     assert(!result.success);
     expect(result.error.errors).toStrictEqual([
       {
         code: 'invalid_string',
         message: 'Custom format message',
-        path: [],
+        path: ['lastName'],
         validation: 'regex',
       },
     ]);
@@ -167,9 +170,9 @@ describe('lastNameSchema', () => {
 
   it('should correctly replace {{length}} in error messages', () => {
     const maxLength = 3;
-    const schema = lastNameSchema({ maxLength });
+    const schema = z.object({ lastName: lastNameSchema({ maxLength }) });
 
-    const result = schema.safeParse('Smith');
+    const result = schema.safeParse({ lastName: 'Smith' });
     assert(!result.success);
     expect(result.error.errors).toStrictEqual([
       {
@@ -178,9 +181,33 @@ describe('lastNameSchema', () => {
         inclusive: true,
         maximum: maxLength,
         message: `Last name must contain at most ${maxLength} characters.`,
-        path: [],
+        path: ['lastName'],
         type: 'string',
       },
     ]);
+  });
+
+  it('should allow the lastName field to be optional', () => {
+    const schema = z.object({ lastName: lastNameSchema().optional() });
+
+    let result = schema.safeParse({});
+    assert(result.success);
+    expect(result.data.lastName).toBeUndefined();
+
+    result = schema.safeParse({ lastName: 'Smith' });
+    assert(result.success);
+    expect(result.data.lastName).toBe('Smith');
+  });
+
+  it('should allow the lastName field to be nullable', () => {
+    const schema = z.object({ lastName: lastNameSchema().nullable() });
+
+    let result = schema.safeParse({ lastName: null });
+    assert(result.success);
+    expect(result.data.lastName).toBeNull();
+
+    result = schema.safeParse({ lastName: 'Smith' });
+    assert(result.success);
+    expect(result.data.lastName).toBe('Smith');
   });
 });

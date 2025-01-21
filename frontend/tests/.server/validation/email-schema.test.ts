@@ -1,54 +1,55 @@
 import { assert, describe, expect, it } from 'vitest';
+import { z } from 'zod';
 
 import { emailAddressSchema } from '~/.server/validation/email-address-schema';
 
 describe('emailAddressSchema', () => {
   it('should create a basic email address schema', () => {
-    const schema = emailAddressSchema();
+    const schema = z.object({ emailAddress: emailAddressSchema() });
 
-    let result = schema.safeParse('test@example.com');
+    let result = schema.safeParse({ emailAddress: 'test@example.com' });
     assert(result.success);
-    expect(result.data).toBe('test@example.com');
+    expect(result.data).toStrictEqual({ emailAddress: 'test@example.com' });
 
-    result = schema.safeParse('test');
+    result = schema.safeParse({ emailAddress: 'test' });
     assert(!result.success);
     expect(result.error.errors).toStrictEqual([
       {
         code: 'custom',
         fatal: true,
         message: 'Email address format is invalid.',
-        path: [],
+        path: ['emailAddress'],
       },
     ]);
 
-    result = schema.safeParse('123');
+    result = schema.safeParse({ emailAddress: '123' });
     assert(!result.success);
     expect(result.error.errors).toStrictEqual([
       {
         code: 'custom',
         fatal: true,
         message: 'Email address format is invalid.',
-        path: [],
+        path: ['emailAddress'],
       },
     ]);
   });
 
   it('should trim whitespace by default', () => {
-    const schema = emailAddressSchema();
+    const schema = z.object({ emailAddress: emailAddressSchema() });
 
-    const result = schema.safeParse('  test@example.com  ');
+    const result = schema.safeParse({ emailAddress: '  test@example.com  ' });
     assert(result.success);
-    expect(result.data).toBe('test@example.com');
+    expect(result.data).toStrictEqual({ emailAddress: 'test@example.com' });
   });
 
   it('should validate maxLength', () => {
-    const schema = emailAddressSchema({ maxLength: 14 });
+    const schema = z.object({ emailAddress: emailAddressSchema({ maxLength: 14 }) });
 
-    let result = schema.safeParse('test@test.com'); // Short, valid email
+    let result = schema.safeParse({ emailAddress: 'test@test.com' }); // Short, valid email
     assert(result.success);
-    expect(result.data).toBe('test@test.com');
+    expect(result.data).toStrictEqual({ emailAddress: 'test@test.com' });
 
-    result = schema.safeParse('test@example.com'); // Normal length, will be trimmed and fail
+    result = schema.safeParse({ emailAddress: 'test@example.com' }); // Normal length, will be trimmed and fail
     assert(!result.success);
     expect(result.error.errors).toStrictEqual([
       {
@@ -57,27 +58,27 @@ describe('emailAddressSchema', () => {
         inclusive: true,
         maximum: 14,
         message: 'Email address must be less than or equal to 14 characters.',
-        path: [],
+        path: ['emailAddress'],
         type: 'string',
       },
     ]);
   });
 
   it('should validate format (valid email)', () => {
-    const schema = emailAddressSchema();
+    const schema = z.object({ emailAddress: emailAddressSchema() });
 
-    let result = schema.safeParse('test@example.com');
+    let result = schema.safeParse({ emailAddress: 'test@example.com' });
     assert(result.success);
-    expect(result.data).toBe('test@example.com');
+    expect(result.data).toStrictEqual({ emailAddress: 'test@example.com' });
 
-    result = schema.safeParse('test');
+    result = schema.safeParse({ emailAddress: 'test' });
     assert(!result.success);
     expect(result.error.errors).toStrictEqual([
       {
         code: 'custom',
         fatal: true,
         message: 'Email address format is invalid.',
-        path: [],
+        path: ['emailAddress'],
       },
     ]);
   });
@@ -86,13 +87,13 @@ describe('emailAddressSchema', () => {
     const longEmail = 'a'.repeat(64) + '@' + generateDomainName(189); // 254 characters
     const tooLongEmail = 'b'.repeat(64) + '@' + generateDomainName(190); // 255 characters
 
-    const schema = emailAddressSchema({ maxLength: 300 });
+    const schema = z.object({ emailAddress: emailAddressSchema({ maxLength: 300 }) });
 
-    let result = schema.safeParse(longEmail);
+    let result = schema.safeParse({ emailAddress: longEmail });
     assert(result.success);
-    expect(result.data).toBe(longEmail);
+    expect(result.data).toStrictEqual({ emailAddress: longEmail });
 
-    result = schema.safeParse(tooLongEmail);
+    result = schema.safeParse({ emailAddress: tooLongEmail });
     assert(!result.success);
     expect(result.error.errors).toStrictEqual([
       {
@@ -101,42 +102,44 @@ describe('emailAddressSchema', () => {
         inclusive: true,
         maximum: 254,
         message: 'Email address must be less than or equal to 254 characters.',
-        path: [],
+        path: ['emailAddress'],
         type: 'string',
       },
       {
         code: 'custom',
         fatal: true,
         message: 'Email address format is invalid.',
-        path: [],
+        path: ['emailAddress'],
       },
     ]);
   });
 
   it('should use custom error messages', () => {
-    const schema = emailAddressSchema({
-      errorMessages: {
-        required_error: 'Custom required message',
-        invalid_type_error: 'Custom type message',
-        max_length_error: 'Custom max length message',
-        format_error: 'Custom format message',
-      },
-      maxLength: 10,
+    const schema = z.object({
+      emailAddress: emailAddressSchema({
+        errorMessages: {
+          required_error: 'Custom required message',
+          invalid_type_error: 'Custom type message',
+          max_length_error: 'Custom max length message',
+          format_error: 'Custom format message',
+        },
+        maxLength: 10,
+      }),
     });
 
-    let result = schema.safeParse(undefined);
+    let result = schema.safeParse({});
     assert(!result.success);
     expect(result.error.errors).toStrictEqual([
       {
         code: 'invalid_type',
         expected: 'string',
         message: 'Custom required message',
-        path: [],
+        path: ['emailAddress'],
         received: 'undefined',
       },
     ]);
 
-    result = schema.safeParse('');
+    result = schema.safeParse({ emailAddress: '' });
     assert(!result.success);
     expect(result.error.errors).toStrictEqual([
       {
@@ -145,36 +148,36 @@ describe('emailAddressSchema', () => {
         inclusive: true,
         message: 'Custom required message',
         minimum: 1,
-        path: [],
+        path: ['emailAddress'],
         type: 'string',
       },
     ]);
 
-    result = schema.safeParse(null);
+    result = schema.safeParse({ emailAddress: null });
     assert(!result.success);
     expect(result.error.errors).toStrictEqual([
       {
         code: 'invalid_type',
         expected: 'string',
         message: 'Custom type message',
-        path: [],
+        path: ['emailAddress'],
         received: 'null',
       },
     ]);
 
-    result = schema.safeParse(123);
+    result = schema.safeParse({ emailAddress: 123 });
     assert(!result.success);
     expect(result.error.errors).toStrictEqual([
       {
         code: 'invalid_type',
         expected: 'string',
         message: 'Custom type message',
-        path: [],
+        path: ['emailAddress'],
         received: 'number',
       },
     ]);
 
-    result = schema.safeParse('test@example.com');
+    result = schema.safeParse({ emailAddress: 'test@example.com' });
     assert(!result.success);
     expect(result.error.errors).toStrictEqual([
       {
@@ -183,28 +186,28 @@ describe('emailAddressSchema', () => {
         inclusive: true,
         maximum: 10,
         message: 'Custom max length message',
-        path: [],
+        path: ['emailAddress'],
         type: 'string',
       },
     ]);
 
-    result = schema.safeParse('test');
+    result = schema.safeParse({ emailAddress: 'test' });
     assert(!result.success);
     expect(result.error.errors).toStrictEqual([
       {
         code: 'custom',
         fatal: true,
         message: 'Custom format message',
-        path: [],
+        path: ['emailAddress'],
       },
     ]);
   });
 
   it('should correctly replace {{length}} in error messages', () => {
     const maxLength = 10;
-    const schema = emailAddressSchema({ maxLength });
+    const schema = z.object({ emailAddress: emailAddressSchema({ maxLength }) });
 
-    const result = schema.safeParse('test@example.com');
+    const result = schema.safeParse({ emailAddress: 'test@example.com' });
     assert(!result.success);
     expect(result.error.errors).toStrictEqual([
       {
@@ -213,7 +216,7 @@ describe('emailAddressSchema', () => {
         inclusive: true,
         maximum: maxLength,
         message: `Email address must be less than or equal to ${maxLength} characters.`,
-        path: [],
+        path: ['emailAddress'],
         type: 'string',
       },
     ]);
