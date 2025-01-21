@@ -5,19 +5,21 @@ import protectedFr from '~/.server/locales/protected-fr.json';
 import publicEn from '~/.server/locales/public-en.json';
 import publicFr from '~/.server/locales/public-fr.json';
 
-export const enI18nResources = {
+export const i18nResourcesEn = {
   gcweb: gcwebEn,
   protected: protectedEn,
   public: publicEn,
 } as const;
 
-export const frI18nResources = {
+export const i18nResourcesFr = {
   gcweb: gcwebFr,
   protected: protectedFr,
   public: publicFr,
 } as const;
 
 export const i18nResources = {
-  en: enI18nResources,
-  fr: frI18nResources,
-} as const;
+  en: i18nResourcesEn,
+  fr: i18nResourcesFr,
+} as const satisfies Record<Language, typeof i18nResourcesEn>;
+
+export type I18nResources = typeof i18nResources;
