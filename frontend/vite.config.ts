@@ -5,6 +5,7 @@ import autoprefixer from 'autoprefixer';
 import tailwindcss from 'tailwindcss';
 import { defineConfig } from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
+import { coverageConfigDefaults } from 'vitest/config';
 
 // important: this must be a non-aliased (ie: not ~/) import
 import { preserveImportMetaUrl } from './vite.server.config';
@@ -43,6 +44,11 @@ export default defineConfig({
     coverage: {
       // Includes only files within the `app` directory for test coverage reporting.
       include: ['**/app/**'],
+      exclude: [
+        '!**/app/[.]client/**', //
+        '!**/app/[.]server/**',
+        ...coverageConfigDefaults.exclude,
+      ],
     },
     setupFiles: ['./tests/setup.ts'],
   },

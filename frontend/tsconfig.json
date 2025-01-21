@@ -10,6 +10,8 @@
     "./e2e/**/*",
     "./server/**/*",
     "./tests/**/*",
+    "./tests/**/.client/**/*",
+    "./tests/**/.server/**/*",
     "./eslint.config.mjs",
     "./playwright.config.ts",
     "./postcss.config.mjs",
