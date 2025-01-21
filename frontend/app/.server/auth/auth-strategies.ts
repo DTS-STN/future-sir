@@ -5,6 +5,8 @@ import * as oauth from 'oauth4webapi';
 
 import { LogFactory } from '~/.server/logging';
 import { withSpan } from '~/.server/utils/instrumentation-utils';
+import { AppError } from '~/errors/app-error';
+import { ErrorCodes } from '~/errors/error-codes';
 
 /**
  * Like {@link AuthorizationServer}, but with a required
@@ -105,9 +107,8 @@ export abstract class BaseAuthenticationStrategy implements AuthenticationStrate
     this.clientAuth = clientAuth;
     this.name = name;
 
-    // eslint-disable-next-line no-async-promise-executor
-    this.authorizationServer = new Promise(async (resolve, reject) =>
-      withSpan('auth.strategy.disovery', async (span) => {
+    this.authorizationServer = new Promise((resolve, reject) =>
+      withSpan('auth.strategy.disovery', (span) => {
         this.log.debug('Fetching authorization server metadata');
 
         span.setAttributes({
@@ -115,31 +116,33 @@ export abstract class BaseAuthenticationStrategy implements AuthenticationStrate
           strategy: this.name,
         });
 
-        const response = await oauth.discoveryRequest(issuerUrl, { [oauth.allowInsecureRequests]: this.allowInsecure });
-        const authorizationServer = await oauth.processDiscoveryResponse(issuerUrl, response);
-        this.log.trace('Fetched authorization server details', { authorizationServer });
+        oauth
+          .discoveryRequest(issuerUrl, { [oauth.allowInsecureRequests]: this.allowInsecure })
+          .then((response) => oauth.processDiscoveryResponse(issuerUrl, response))
+          .then((authorizationServer) => {
+            this.log.trace('Fetched authorization server details', { authorizationServer });
 
-        const { authorization_endpoint, jwks_uri } = authorizationServer;
+            if (!authorizationServer.authorization_endpoint) {
+              // this should never happen, but oauth4webapi allows for it so 🤷
+              const errorMessage = 'Authorization endpoint not found in the discovery document';
+              span.setStatus({ code: SpanStatusCode.ERROR, message: errorMessage });
+              return reject(new AppError(errorMessage, ErrorCodes.DISCOVERY_ENDPOINT_MISSING));
+            }
 
-        if (!authorization_endpoint) {
-          // this should never happen, but oauth4webapi allows for it so 🤷
-          const errorMessage = 'Authorization endpoint not found in the discovery document';
-          span.setStatus({ code: SpanStatusCode.ERROR, message: errorMessage });
-          return reject(new Error(errorMessage));
-        }
+            if (!authorizationServer.jwks_uri) {
+              // this should never happen, but oauth4webapi allows for it so 🤷
+              const errorMessage = 'JWKs endpoint not found in the discovery document';
+              span.setStatus({ code: SpanStatusCode.ERROR, message: errorMessage });
+              return reject(new AppError(errorMessage, ErrorCodes.JWK_ENDPOINT_MISSING));
+            }
 
-        if (!jwks_uri) {
-          // this should never happen, but oauth4webapi allows for it so 🤷
-          const errorMessage = 'JWKs endpoint not found in the discovery document';
-          span.setStatus({ code: SpanStatusCode.ERROR, message: errorMessage });
-          return reject(new Error(errorMessage));
-        }
-
-        return resolve({
-          ...authorizationServer,
-          authorization_endpoint,
-          jwks_uri,
-        });
+            return resolve({
+              ...authorizationServer,
+              authorization_endpoint: authorizationServer.authorization_endpoint,
+              jwks_uri: authorizationServer.jwks_uri,
+            });
+          })
+          .catch((error) => reject(error));
       }),
     );
   }
