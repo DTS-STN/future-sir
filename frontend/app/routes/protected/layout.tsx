@@ -6,10 +6,10 @@ import { useTranslation } from 'react-i18next';
 import type { Route } from './+types/layout';
 
 import { requireAuth } from '~/.server/utils/auth-utils';
+import { AppBar } from '~/components/app-bar';
 import { AppLink } from '~/components/app-link';
-import { LanguageSwitcher } from '~/components/language-switcher';
+import { MenuItem } from '~/components/menu';
 import { PageDetails } from '~/components/page-details';
-import { UserButton } from '~/components/user-button';
 import { useLanguage } from '~/hooks/use-language';
 import { useRoute } from '~/hooks/use-route';
 
@@ -24,14 +24,14 @@ export function loader({ context, request }: Route.LoaderArgs) {
 
 export default function Layout({ loaderData }: Route.ComponentProps) {
   const { currentLanguage } = useLanguage();
-  const { t } = useTranslation(['gcweb']);
+  const { t } = useTranslation(['gcweb', 'protected']);
   const { id: pageId } = useRoute();
 
   const { BUILD_DATE, BUILD_VERSION } = globalThis.__appEnvironment;
 
   return (
     <>
-      <header className="border-b-[3px] border-slate-700 print:hidden">
+      <header className="print:hidden">
         <div id="wb-bnr">
           <div className="container flex items-center justify-between gap-6 py-2.5 sm:py-3.5">
             <AppLink to="https://canada.ca/">
@@ -44,12 +44,16 @@ export default function Layout({ loaderData }: Route.ComponentProps) {
                 decoding="async"
               />
             </AppLink>
-            <div className="flex items-center space-x-4 text-right">
-              <LanguageSwitcher>{t('gcweb:language-switcher.alt-lang')}</LanguageSwitcher>
-              <UserButton name={loaderData.name?.toString()} />
-            </div>
           </div>
         </div>
+        <AppBar
+          name={loaderData.name?.toString()}
+          profileItems={<MenuItem file="routes/protected/index.tsx">{t('protected:index.dashboard')}</MenuItem>}
+        >
+          <MenuItem to="/">{t('protected:index.home')}</MenuItem>
+          <MenuItem file="routes/protected/admin.tsx">{t('protected:index.admin-dashboard')}</MenuItem>
+          <MenuItem file="routes/public/index.tsx">{t('protected:index.public')}</MenuItem>
+        </AppBar>
       </header>
       <main className="container">
         <Outlet />

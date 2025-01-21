@@ -3,8 +3,20 @@
   "admin": {
     "page-title": "Admin dashboard"
   },
+  "dashboard": {
+    "sin": "SIN",
+    "sin-system": "<span>SIN</span> Dashboard System",
+    "system": "System",
+    "assigned-cases": "Affaires Attribuées",
+    "get-started": "Get Started"
+  },
+  "in-person": {
+    "title": "In-person SIN request",
+    "description": "Process an application or amendment"
+  },
   "index": {
     "admin-dashboard": "Admin dashboard",
+    "dashboard": "Dashboard",
     "home": "Home",
     "in-person": "Navigate to 'In person case' page",
     "page-title": "Welcome to Future SIR (protected)",

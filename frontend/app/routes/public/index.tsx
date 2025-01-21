@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 
 import type { Route } from './+types/index';
 
-import { Menu, MenuItem } from '~/components/menu';
 import { PageTitle } from '~/components/page-title';
 import { getFixedT } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/public/layout';
@@ -27,9 +26,6 @@ export default function Index() {
 
   return (
     <>
-      <Menu>
-        <MenuItem file="routes/protected/index.tsx">{t('public:index.navigate')}</MenuItem>
-      </Menu>
       <PageTitle>{t('public:index.page-title')}</PageTitle>
       <p className="mt-8">{t('public:index.about')}</p>
     </>
