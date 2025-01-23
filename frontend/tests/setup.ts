@@ -9,6 +9,7 @@ beforeEach(() => {
 
 afterEach(() => {
   vi.clearAllMocks();
+  vi.resetModules();
   vi.useRealTimers();
   vi.unstubAllEnvs();
   vi.unstubAllGlobals();
