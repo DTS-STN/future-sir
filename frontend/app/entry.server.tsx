@@ -6,6 +6,9 @@ import type { ActionFunctionArgs, AppLoadContext, EntryContext, LoaderFunctionAr
 import { ServerRouter } from 'react-router';
 
 import { trace } from '@opentelemetry/api';
+// Import Valibot translations
+// https://valibot.dev/guides/internationalization/
+import '@valibot/i18n/fr';
 import { isbot } from 'isbot';
 import { PassThrough } from 'node:stream';
 import { I18nextProvider } from 'react-i18next';

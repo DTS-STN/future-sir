@@ -1,72 +1,69 @@
-import type { z } from 'zod';
+import * as v from 'valibot';
 
-import { nameSchema } from '~/.server/validation/name-schema';
+import { mapIssueErrorMessage } from '../utils/validation-utils';
+
+import { REGEX_PATTERNS } from '~/utils/regex-utils';
 
 /**
- * Interface defining customizable error messages for last name validation schema.
+ * Interface for customizable error messages in last name validation
  */
-export interface LastNameSchemaErrorMessages {
-  /**
-   * Error message for when the last name contains digits.
-   * @default 'Last name must not contain any digits.'
-   */
+export interface LastNameSchemaErrorMessages extends Record<string, string | undefined> {
   format_error?: string;
-
-  /**
-   * Error message for when the last name is not a string.
-   * @default 'Last name must be a string.'
-   */
-  invalid_type_error?: string;
-
-  /**
-   * Error message for when the last name exceeds the maximum length.
-   * @default 'Last name must contain at most {maximum} characters.'
-   */
   max_length_error?: string;
-
-  /**
-   * Error message for when the last name is required.
-   * @default 'Last name is required.'
-   */
   required_error?: string;
 }
 
 /**
- * Configuration options for last name validation, including maximum length and error messages.
+ * Localized error message configuration
+ */
+const DEFAULT_MESSAGES = {
+  en: {
+    format_error: 'Last name must not contain any digits.',
+    max_length_error: 'Last name must contain at most {{maximum}} character(s).',
+    required_error: 'Last name is required.',
+  },
+  fr: {
+    format_error: 'Le nom de famille ne doit contenir aucun chiffre.',
+    max_length_error: 'Le nom de famille doit contenir au maximum {{maximum}} caractère(s).',
+    required_error: 'Le nom de famille est requis.',
+  },
+} as const satisfies Record<Language, Required<LastNameSchemaErrorMessages>>;
+
+/**
+ * Configuration options for last name schema validation
  */
 export interface LastNameSchemaOptions {
+  /** Custom error messages to override defaults */
   errorMessages?: LastNameSchemaErrorMessages;
+  /** Maximum allowed length for the last name */
   maxLength?: number;
 }
 
-const DEFAULT_MESSAGES = {
-  format_error: 'Last name must not contain any digits.',
-  invalid_type_error: 'Last name must be a string.',
-  max_length_error: 'Last name must contain at most {maximum} characters.',
-  required_error: 'Last name is required.',
-} as const satisfies Required<LastNameSchemaErrorMessages>;
-
 /**
- * Creates a Zod schema for validating last names with customizable options.
+ * Creates a Valibot schema for validating last names
  *
- * @param options - Configuration options for validation.
- * @returns A Zod schema for validating last names.
+ * @param options - Validation configuration options
+ * @returns Valibot schema for last name validation
  */
-export function lastNameSchema(options: LastNameSchemaOptions = {}): z.ZodString {
+export function lastNameSchema(options: LastNameSchemaOptions = {}) {
   const { errorMessages = {}, maxLength = 100 } = options;
 
-  const messages: Required<LastNameSchemaErrorMessages> = {
-    ...DEFAULT_MESSAGES,
-    ...errorMessages,
-  };
-
-  return nameSchema({
-    errorMessages: {
-      format_error: messages.format_error,
-      invalid_type_error: messages.invalid_type_error,
-      max_length_error: messages.max_length_error,
-      required_error: messages.required_error,
-    },
-    maxLength,
-  });
+  return v.pipe(
+    // Base string validation with required error
+    v.string((issue) => mapIssueErrorMessage(issue, errorMessages, 'required_error', DEFAULT_MESSAGES)),
+    // Trim whitespace
+    v.trim(),
+    // Ensure non-empty
+    v.nonEmpty((issue) => mapIssueErrorMessage(issue, errorMessages, 'required_error', DEFAULT_MESSAGES)),
+    // Maximum length validation
+    v.maxLength(
+      maxLength, //
+      (issue) => mapIssueErrorMessage(issue, errorMessages, 'max_length_error', DEFAULT_MESSAGES),
+    ),
+    // Regex to prevent digits
+    v.regex(
+      REGEX_PATTERNS.NON_DIGIT, //
+      (issue) => mapIssueErrorMessage(issue, errorMessages, 'format_error', DEFAULT_MESSAGES),
+    ),
+  );
 }
