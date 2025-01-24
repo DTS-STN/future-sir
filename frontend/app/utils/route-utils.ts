@@ -1,7 +1,31 @@
+import type { Params } from 'react-router';
+import { generatePath, redirect } from 'react-router';
+
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import type { I18nPageRoute, I18nRoute, I18nRouteFile } from '~/i18n-routes';
-import { isI18nLayoutRoute, isI18nPageRoute } from '~/i18n-routes';
+import { i18nRoutes, isI18nLayoutRoute, isI18nPageRoute } from '~/i18n-routes';
+import { getLanguage } from '~/utils/i18n-utils';
+
+/**
+ * Generate a redirect response. Sets the status code and the Location header. Defaults to "302 Found".
+ *
+ * @param i18nRouteFile - The file name of the route to redirect to.
+ * @param resource - The request, URL, or path to extract the language from.
+ * @param params - Values for any parameters that are required in the URL.
+ */
+export function appRedirect(i18nRouteFile: I18nRouteFile, resource: Request | URL | string, params?: Params): Response {
+  const language = getLanguage(resource);
+
+  if (language === undefined) {
+    throw new AppError('No language found in request', ErrorCodes.NO_LANGUAGE_FOUND);
+  }
+
+  const route = getRouteByFile(i18nRouteFile, i18nRoutes);
+  const pathname = generatePath(route.paths[language], params);
+
+  return redirect(pathname);
+}
 
 /**
  * Recursively searches for a route matching the given file within a structure of I18nRoutes.
