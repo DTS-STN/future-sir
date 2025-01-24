@@ -1,0 +1,3 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`InputLegend > should render input legend component > expected html 1`] = `"<legend class="block font-semibold" data-testid="input-legend" id="id"><span>input legend</span></legend>"`;
