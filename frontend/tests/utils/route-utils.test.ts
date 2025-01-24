@@ -4,27 +4,9 @@ import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import type { I18nRouteFile } from '~/i18n-routes';
 import { i18nRoutes, isI18nLayoutRoute, isI18nPageRoute } from '~/i18n-routes';
-import { appRedirect, findRouteByFile, findRouteByPath, getRouteByFile, getRouteByPath } from '~/utils/route-utils';
+import { findRouteByFile, findRouteByPath, getRouteByFile, getRouteByPath } from '~/utils/route-utils';
 
 describe('route-utils', () => {
-  describe('appRedirect', () => {
-    it('should throw an error if no language is found', () => {
-      expect(() => appRedirect('routes/public/index.tsx', '')).toThrow(
-        expect.objectContaining({
-          msg: 'No language found in request',
-          errorCode: ErrorCodes.NO_LANGUAGE_FOUND,
-        }),
-      );
-    });
-
-    it('should redirect to the correct path if language is found', () => {
-      const result = appRedirect('routes/public/index.tsx', '/en/');
-
-      expect(result.status).toBe(302);
-      expect(result.headers.get('location')).toBe('/en/public');
-    });
-  });
-
   describe('findRouteByFile', () => {
     it('should return the correct route for a given file', () => {
       expect(findRouteByFile('routes/public/index.tsx', i18nRoutes)).toEqual({
