@@ -38,7 +38,7 @@ export function Menu({ className, children }: MenuProps) {
     <DropdownMenu>
       <DropdownMenuTrigger
         className={cn(
-          'flex h-full flex-nowrap space-x-2 bg-slate-700 px-2 text-white hover:bg-slate-600 hover:underline focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 aria-expanded:bg-slate-900 aria-expanded:text-white sm:space-x-3 sm:px-4',
+          'flex h-full flex-nowrap space-x-2 bg-slate-700 px-2 text-white hover:bg-slate-600 hover:underline focus:ring-2 focus:ring-black focus:ring-offset-2 focus:outline-hidden aria-expanded:bg-slate-900 aria-expanded:text-white sm:space-x-3 sm:px-4',
           className,
         )}
       >

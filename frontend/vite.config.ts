@@ -1,8 +1,7 @@
 import { reactRouter } from '@react-router/dev/vite';
 
+import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
-import autoprefixer from 'autoprefixer';
-import tailwindcss from 'tailwindcss';
 import { defineConfig } from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import { coverageConfigDefaults } from 'vitest/config';
@@ -15,17 +14,19 @@ import { preserveImportMetaUrl } from './vite.server.config';
  * See vite.server.config.ts for the server build config.
  */
 export default defineConfig({
-  css: {
-    postcss: {
-      // Configures PostCSS with Tailwind CSS and Autoprefixer.
-      // Tailwind CSS is used for utility-based styling, and Autoprefixer ensures styles work across browsers.
-      plugins: [tailwindcss, autoprefixer],
-    },
-  },
   optimizeDeps: {
-    entries: ['./app/entry.client.tsx', './app/root.tsx', './app/routes/**/*.tsx'],
+    entries: [
+      './app/entry.client.tsx', //
+      './app/root.tsx',
+      './app/routes/**/*.tsx',
+    ],
   },
-  plugins: [preserveImportMetaUrl(), tsconfigPaths(), framework()],
+  plugins: [
+    framework(), //
+    preserveImportMetaUrl(),
+    tailwindcss(),
+    tsconfigPaths(),
+  ],
   server: {
     hmr: {
       // Configures the Hot Module Replacement (HMR) port.

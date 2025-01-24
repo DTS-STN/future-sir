@@ -48,7 +48,7 @@ export function BilingualErrorBoundary({ actionData, error, loaderData, params }
           </div>
         </header>
         <main className="container">
-          <div className="grid grid-cols-1 gap-6 py-2.5 sm:grid-cols-2 sm:py-3.5">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <div id="english" lang="en">
               <PageTitle className="my-8">
                 <span>{en('gcweb:server-error.page-title')}</span>
