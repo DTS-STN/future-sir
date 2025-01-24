@@ -1,4 +1,3 @@
-import type { AppLoadContext } from 'react-router';
 import { redirect } from 'react-router';
 
 import { Redacted } from 'effect';
@@ -75,10 +74,10 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
  * Exchanges the authorization code for an access token and ID token.
  */
 async function handleCallback(
-  authStrategy: AuthenticationStrategy,
+  authStrategy: AuthenticationStrategy, //
   callbackUrl: URL,
   currentUrl: URL,
-  session: AppLoadContext['session'],
+  session: AppSession,
 ) {
   return withSpan('routes.auth.callback.handle_callback', async (span) => {
     span.setAttribute('request_url', currentUrl.toString());

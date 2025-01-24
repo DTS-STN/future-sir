@@ -1,11 +1,18 @@
 import type { RouteModules } from 'react-router';
 
+import type { Request } from 'express';
+
 import type { ClientEnvironment } from '~/.server/environment';
 import type { InstanceName } from '~/.server/utils/instance-registry';
 
 /* eslint-disable no-var */
 
 declare global {
+  /**
+   * The application's session type.
+   */
+  type AppSession = Request['session'];
+
   /**
    * The application's supported languages: English and French.
    */

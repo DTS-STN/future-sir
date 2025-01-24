@@ -1,4 +1,3 @@
-import type { AppLoadContext } from 'react-router';
 import { redirect } from 'react-router';
 
 import { trace } from '@opentelemetry/api';
@@ -82,10 +81,10 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
  * Generates a sign-in request and redirects the user to the authorization endpoint.
  */
 async function handleLogin(
-  authStrategy: AuthenticationStrategy,
+  authStrategy: AuthenticationStrategy, //
   callbackUrl: URL,
   currentUrl: URL,
-  session: AppLoadContext['session'],
+  session: AppSession,
 ) {
   const span = trace.getActiveSpan();
   span?.updateName('routes.auth.login.handle_login');
