@@ -58,16 +58,14 @@ export default function LastName({ actionData, params }: Route.ComponentProps) {
       <PageTitle className="mb-8">{t('protected:person-case.page-title')}</PageTitle>
       <ErrorSummary errors={errors} />
       <fetcher.Form method="post" noValidate>
-        <div className="space-y-6">
-          <InputField
-            id="last-name-id"
-            label={t('protected:person-case.last-name')}
-            name="last-name"
-            required
-            type="text"
-            errorMessage={errors?.lastName?.at(0)}
-          />
-        </div>
+        <InputField
+          id="last-name-id"
+          label={t('protected:person-case.last-name')}
+          name="last-name"
+          required
+          type="text"
+          errorMessage={errors?.lastName?.at(0)}
+        />
         <div className="mt-8 flex flex-wrap items-center gap-3">
           <ButtonLink
             id="back-button"
