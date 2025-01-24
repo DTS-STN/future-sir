@@ -1,7 +1,5 @@
 import { redirect } from 'react-router';
 
-import type { SessionData } from 'express-session';
-
 import { LogFactory } from '~/.server/logging';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
@@ -12,14 +10,14 @@ const log = LogFactory.getLogger(import.meta.url);
  * Represents an authenticated session by extending the base `SessionData` type.
  * This type ensures that the `authState` property is non-nullable.
  */
-export type AuthenticatedSession = SessionData & {
-  authState: NonNullable<SessionData['authState']>;
+export type AuthenticatedSession = AppSession & {
+  authState: NonNullable<AppSession['authState']>;
 };
 
 /**
  * Checks if the user session contains the specified role.
  */
-export function hasRole(session: SessionData, role: Role) {
+export function hasRole(session: AppSession, role: Role) {
   return session.authState?.idTokenClaims?.roles?.includes(role);
 }
 
@@ -29,7 +27,7 @@ export function hasRole(session: SessionData, role: Role) {
  * @throws {AppError} If the user does not have the required roles.
  */
 export function requireAuth(
-  session: SessionData,
+  session: AppSession, //
   currentUrl: URL,
   roles: Role[] = [],
 ): asserts session is AuthenticatedSession {
