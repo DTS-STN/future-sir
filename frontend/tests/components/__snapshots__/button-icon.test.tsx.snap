@@ -1,0 +1,35 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ButtonEndIcon > should pass additional props to FontAwesomeIcon > expected html 1`] = `
+<div
+  aria-label="end-icon"
+  class="ms-2"
+>
+  "spinner"
+</div>
+`;
+
+exports[`ButtonEndIcon > should render FontAwesomeIcon with the correct classes > expected html 1`] = `
+<div
+  class="ms-2 custom-class"
+>
+  "spinner"
+</div>
+`;
+
+exports[`ButtonStartIcon > should pass additional props to FontAwesomeIcon > expected html 1`] = `
+<div
+  aria-label="start-icon"
+  class="me-2"
+>
+  "spinner"
+</div>
+`;
+
+exports[`ButtonStartIcon > should render FontAwesomeIcon with the correct classes > expected html 1`] = `
+<div
+  class="me-2 custom-class"
+>
+  "spinner"
+</div>
+`;
