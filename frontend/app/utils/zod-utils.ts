@@ -1,3 +1,5 @@
+import type { typeToFlattenedError, ZodError } from 'zod';
+
 /**
  * Transforms a flattened error object by mapping each field to its first error message.
  *
@@ -33,4 +35,12 @@ export function transformFlattenedError<T extends { fieldErrors: Record<string, 
 ): { [K in keyof T['fieldErrors']]: string | undefined } {
   const transformedEntries = Object.entries(flattenedError.fieldErrors).map(([key, value]) => [key, value.at(0)]);
   return Object.fromEntries(transformedEntries);
+}
+
+type FlattenedZodError = typeToFlattenedError<ZodError<string>>;
+
+export function getErrorList(flattenedError: FlattenedZodError): string[] {
+  const fieldErrors = flattenedError.fieldErrors.errors ?? [];
+  const formErrors = flattenedError.formErrors;
+  return [...fieldErrors, ...formErrors];
 }

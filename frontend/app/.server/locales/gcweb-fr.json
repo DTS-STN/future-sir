@@ -69,5 +69,9 @@
     "page-message": "Nous espérons résoudre le problème sous peu. Il ne s'agit pas d'un problème avec votre ordinateur ou Internet, mais plutôt avec le serveur de notre site Web.",
     "correlation-id": "<strong>ID de corrélation\u00a0:</strong> <span>{{correlationId}}</span>",
     "error-code": "<strong>Code d'erreur\u00a0:</strong> <span>{{errorCode}}</span>"
+  },
+  "error-summary": {
+    "header_one": "L'erreur suivante a été trouvée dans le formulaire\u00a0:",
+    "header_other": "Les {{count}} erreurs suivantes ont été trouvées dans le formulaire\u00a0:"
   }
 }

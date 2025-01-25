@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 
 import { Button } from '~/components/button';
 import { InputField } from '~/components/input-field';
-import { Menu, MenuItem } from '~/components/menu';
 import { PageTitle } from '~/components/page-title';
 import { handle as parentHandle } from '~/routes/protected/layout';
 
@@ -19,12 +18,6 @@ export default function FirstName() {
   return (
     <>
       <div className="mb-8">
-        <Menu>
-          <MenuItem to="/">{t('protected:index.home')}</MenuItem>
-          <MenuItem file="routes/protected/index.tsx">{t('protected:index.protected')}</MenuItem>
-          <MenuItem file="routes/public/index.tsx">{t('protected:index.public')}</MenuItem>
-        </Menu>
-
         <PageTitle className="mt-8">{t('protected:person-case.page-title')}</PageTitle>
         <Form id="first-name-form" method="post">
           <InputField
@@ -35,7 +28,10 @@ export default function FirstName() {
             required
             type="text"
           />
-          <Button>{t('protected:person-case.add-button')}</Button>
+          <div className="space-x-2">
+            <Button>{t('protected:person-case.previous')}</Button>
+            <Button>{t('protected:person-case.next')}</Button>
+          </div>
         </Form>
       </div>
     </>
