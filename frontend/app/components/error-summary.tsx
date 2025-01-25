@@ -13,22 +13,20 @@ interface ErrorSummaryProps {
 export function ErrorSummary({ errors, full }: ErrorSummaryProps) {
   const { t } = useTranslation(['gcweb']);
 
-  const summaryErrors = useMemo<undefined | ErrorList>(() => {
-    if (!errors) {
-      return undefined;
-    }
-    if (full) {
-      return Object.values(errors)
-        .filter(Array.isArray)
-        .filter((arr) => arr.length > 0)
-        .flatMap((arr) => arr);
-    } else {
-      return Object.values(errors)
-        .filter(Array.isArray)
-        .filter((arr) => arr.length > 0)
-        .map((arr) => arr[0]);
+  const summaryErrors = useMemo<ErrorList | undefined>(() => {
+    if (errors) {
+      return full
+        ? Object.values(errors)
+            .filter(Array.isArray)
+            .filter((arr) => arr.length > 0)
+            .flatMap((arr) => arr)
+        : Object.values(errors)
+            .filter(Array.isArray)
+            .filter((arr) => arr.length > 0)
+            .map((arr) => arr[0]);
     }
   }, [errors, full]);
+
   return (
     <>
       {summaryErrors && summaryErrors.length > 0 && (

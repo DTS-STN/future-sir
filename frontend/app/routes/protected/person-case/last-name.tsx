@@ -1,5 +1,5 @@
-import { data, useFetcher } from 'react-router';
 import type { RouteHandle } from 'react-router';
+import { data, useFetcher } from 'react-router';
 
 import { useTranslation } from 'react-i18next';
 import * as v from 'valibot';
@@ -33,27 +33,17 @@ export function meta({ data }: Route.MetaArgs) {
 }
 
 export async function action({ request }: Route.ActionArgs) {
-  const formData = await request.formData();
-
-  // Validation schema
-  const schema = v.object({
-    lastName: lastNameSchema(),
-  });
-
-  // Form data input
-  const input = {
-    lastName: formData.get('last-name'),
-  };
-
-  // Safe-parse form data input
   const lang = getLanguage(request);
+
+  const formData = await request.formData();
+  const input = { lastName: formData.get('last-name') };
+
+  const schema = v.object({ lastName: lastNameSchema() });
   const parsedDataResult = v.safeParse(schema, input, { lang });
 
-  if (!parsedDataResult.success) {
-    return data({ errors: v.flatten<typeof schema>(parsedDataResult.issues).nested }, { status: 400 });
-  }
-
-  return i18nRedirect('routes/protected/request.tsx', request);
+  return parsedDataResult.success
+    ? i18nRedirect('routes/protected/request.tsx', request)
+    : data({ errors: v.flatten<typeof schema>(parsedDataResult.issues).nested }, { status: 400 });
 }
 
 export default function LastName({ actionData, params }: Route.ComponentProps) {
