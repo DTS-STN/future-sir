@@ -1,3 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`AnchorLink > should render anchor link component > expected html 1`] = `"<a href="#id" data-testid="anchor-link">input test</a>"`;
+exports[`AnchorLink > should handle click event without an onClick callback > expected html 1`] = `"<a href="#id" data-testid="anchor-link">click here</a><div id="id">Some content.</div>"`;
+
+exports[`AnchorLink > should render anchor link component > expected html 1`] = `"<a href="#id" data-testid="anchor-link">click here</a><div id="id">Some content.</div>"`;
+
+exports[`AnchorLink > should scroll to the correct element > expected html 1`] = `"<a href="#id" data-testid="anchor-link">click here</a><div id="id">Some content.</div>"`;
