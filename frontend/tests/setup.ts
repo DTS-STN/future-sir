@@ -2,8 +2,6 @@ import * as TestingLibrary from '@testing-library/react';
 import { afterEach, beforeEach, vi } from 'vitest';
 
 beforeEach(() => {
-  // disable logging so we don't pollute the output
-  vi.stubEnv('LOG_LEVEL', 'none');
   vi.mock('react-i18next');
 });
 

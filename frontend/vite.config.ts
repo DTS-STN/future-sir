@@ -50,6 +50,10 @@ export default defineConfig({
         ...coverageConfigDefaults.exclude,
       ],
     },
+    env: {
+      // disable logging so we don't pollute the output
+      LOG_LEVEL: 'none',
+    },
     setupFiles: ['./tests/setup.ts'],
   },
 });
