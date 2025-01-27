@@ -32,7 +32,7 @@ type ButtonProps = ComponentProps<'button'> & {
  */
 export function Button({ children, className, disabled, pill, size = 'base', variant = 'default', ...props }: ButtonProps) {
   const baseClassName = cn(
-    'inline-flex items-center justify-center rounded border align-middle font-lato no-underline outline-offset-4',
+    'inline-flex items-center justify-center rounded-sm border align-middle font-lato no-underline outline-offset-4',
     sizes[size],
     variants[variant],
     disabled && 'disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-70',
