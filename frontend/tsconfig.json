@@ -14,7 +14,6 @@
     "./tests/**/.server/**/*",
     "./eslint.config.mjs",
     "./playwright.config.ts",
-    "./postcss.config.mjs",
     "./prettier.config.mjs",
     "./react-router.config.ts",
     "./tailwind.config.ts",
