@@ -1,47 +1,5 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`InputCheckbox > disables checkbox when disabled prop is provided > expected html 1`] = `
-<input
-  aria-labelledby="input-checkbox-test-checkbox-label"
-  class="h-4 w-4 rounded border-gray-500 bg-gray-50 text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 pointer-events-none cursor-not-allowed opacity-70"
-  data-testid="input-checkbox"
-  disabled=""
-  id="input-checkbox-test-checkbox"
-  name="test-checkbox"
-  type="checkbox"
-/>
-`;
-
-exports[`InputCheckbox > renders checkbox with label and appends content > expected html 1`] = `
-<input
-  aria-labelledby="input-checkbox-test-checkbox-label"
-  class="h-4 w-4 rounded border-gray-500 bg-gray-50 text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-  data-testid="input-checkbox"
-  id="input-checkbox-test-checkbox"
-  name="test-checkbox"
-  type="checkbox"
-/>
-`;
-
-exports[`InputCheckbox > renders checkbox with label and appends content > expected html 2`] = `
-<input
-  aria-labelledby="input-checkbox-test-checkbox-label"
-  class="h-4 w-4 rounded border-gray-500 bg-gray-50 text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-  data-testid="input-checkbox"
-  id="input-checkbox-test-checkbox"
-  name="test-checkbox"
-  type="checkbox"
-/>
-`;
-
-exports[`InputCheckbox > renders checkbox with label and appends content > expected html 3`] = `
-<div
-  data-testid="append-content"
->
-  Appended Content
-</div>
-`;
-
 exports[`InputCheckbox > should disable checkbox when disabled prop is provided > expected html 1`] = `
 <input
   aria-labelledby="input-checkbox-test-checkbox-label"
@@ -83,9 +41,5 @@ exports[`InputCheckbox > should render checkbox with label and appends content >
   Appended Content
 </div>
 `;
-
-exports[`InputCheckbox > should render input checkbox component > expected html 1`] = `"<div><div class="flex items-center"><input id="input-checkbox-id" aria-labelledby="input-checkbox-id-label" class="h-4 w-4 rounded border-gray-500 bg-gray-50 text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500" data-testid="input-checkbox" type="checkbox" name="test"><label id="input-checkbox-id-label" for="input-checkbox-id" class="block pl-3 leading-6">input checkbox</label></div></div>"`;
-
-exports[`InputCheckbox > should render input checkbox with default value > expected html 1`] = `"<div><div class="flex items-center"><input id="input-checkbox-test-id" aria-labelledby="input-checkbox-test-id-label" class="h-4 w-4 rounded border-gray-500 bg-gray-50 text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500" data-testid="input-checkbox" type="checkbox" value="default value" name="test"><label id="input-checkbox-test-id-label" for="input-checkbox-test-id" class="block pl-3 leading-6">input checkbox</label></div></div>"`;
 
 exports[`InputCheckbox > should render input checkbox with error message > expected html 1`] = `"<div><span class="inline-block max-w-prose border-l-2 border-red-600 bg-red-50 px-3 py-1 my-2" data-testid="input-error-test-id" role="alert" id="input-checkbox-test-id-error">error message</span><div class="flex items-center"><input id="input-checkbox-test-id" aria-labelledby="input-checkbox-test-id-label" aria-errormessage="input-checkbox-test-id-error" class="h-4 w-4 rounded bg-gray-50 focus:outline-none focus:ring-2 border-red-500 text-red-700 focus:border-red-500 focus:ring-red-500" data-testid="input-checkbox" type="checkbox" name="test"><label id="input-checkbox-test-id-label" for="input-checkbox-test-id" class="block pl-3 leading-6">input checkbox</label></div></div>"`;
