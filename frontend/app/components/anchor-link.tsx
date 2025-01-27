@@ -1,4 +1,4 @@
-import type { ComponentProps, MouseEvent } from 'react';
+import type { ComponentProps, JSX, MouseEvent } from 'react';
 
 /**
  * AnchorLinkProps represents the properties for the AnchorLink component.
@@ -16,7 +16,7 @@ export interface AnchorLinkProps extends OmitStrict<ComponentProps<'a'>, 'href'>
  * @param props - The properties for the AnchorLink component.
  * @returns React element representing the anchor link.
  */
-export function AnchorLink({ anchorElementId, children, onClick, ...restProps }: AnchorLinkProps): React.ReactElement {
+export function AnchorLink({ anchorElementId, children, onClick, ...restProps }: AnchorLinkProps): JSX.Element {
   /**
    * handleOnSkipLinkClick is the click event handler for the anchor link.
    * It prevents the default anchor link behavior, scrolls to and focuses
