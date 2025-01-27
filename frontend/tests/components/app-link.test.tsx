@@ -54,4 +54,21 @@ describe('AppLink', () => {
 
     expect(container.innerHTML).toMatchSnapshot('expected html');
   });
+
+  it('renders a disabled link', () => {
+    const RoutesStub = createRoutesStub([
+      {
+        path: '/en/public',
+        Component: () => (
+          <AppLink disabled file="routes/public/index.tsx">
+            This is a test
+          </AppLink>
+        ),
+      },
+    ]);
+
+    const { container } = render(<RoutesStub initialEntries={['/en/public']} />);
+
+    expect(container.innerHTML).toMatchSnapshot('expected html');
+  });
 });

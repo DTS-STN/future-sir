@@ -1,6 +1,10 @@
 import type { ComponentProps } from 'react';
 
+import { ButtonEndIcon, ButtonStartIcon } from '~/components/button-icons';
 import { cn } from '~/utils/tailwind-utils';
+
+type ButtonEndIconProps = ComponentProps<typeof ButtonEndIcon>;
+type ButtonStartIconProps = ComponentProps<typeof ButtonStartIcon>;
 
 const sizes = {
   xs: 'px-3 py-2 text-xs',
@@ -20,28 +24,49 @@ const variants = {
   red: 'border-red-700 bg-red-700 text-white hover:bg-red-800 focus:bg-red-800',
 } as const;
 
-type ButtonProps = ComponentProps<'button'> & {
+const baseClassName = 'inline-flex items-center justify-center rounded border align-middle font-lato outline-offset-4';
+
+export interface ButtonProps extends ComponentProps<'button'> {
+  endIcon?: ButtonEndIconProps['icon'];
+  endIconProps?: OmitStrict<ButtonEndIconProps, 'icon'>;
   pill?: boolean;
   size?: keyof typeof sizes;
+  startIcon?: ButtonStartIconProps['icon'];
+  startIconProps?: OmitStrict<ButtonStartIconProps, 'icon'>;
   variant?: keyof typeof variants;
-};
+}
 
 /**
  * Tailwind CSS Buttons from Flowbite
  * @see https://flowbite.com/docs/components/buttons/
  */
-export function Button({ children, className, disabled, pill, size = 'base', variant = 'default', ...props }: ButtonProps) {
-  const baseClassName = cn(
-    'font-lato inline-flex items-center justify-center rounded-sm border align-middle no-underline outline-offset-4',
+export function Button({
+  children,
+  className,
+  disabled,
+  endIcon,
+  endIconProps,
+  pill,
+  size = 'base',
+  startIcon,
+  startIconProps,
+  variant = 'default',
+  ...props
+}: ButtonProps) {
+  const disabledClassName = 'pointer-events-none cursor-not-allowed opacity-70';
+  const buttonClassName = cn(
+    baseClassName,
     sizes[size],
     variants[variant],
-    disabled && 'disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-70',
+    disabled && disabledClassName,
     pill && 'rounded-full',
+    className,
   );
-
   return (
-    <button className={cn(baseClassName, className)} {...props}>
+    <button className={buttonClassName} {...props}>
+      {startIcon && <ButtonStartIcon {...(startIconProps ?? {})} icon={startIcon} />}
       {children}
+      {endIcon && <ButtonEndIcon {...(endIconProps ?? {})} icon={endIcon} />}
     </button>
   );
 }

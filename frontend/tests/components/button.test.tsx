@@ -1,5 +1,5 @@
-import { render } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { fireEvent, render } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
 
 import { Button } from '~/components/button';
 
@@ -31,5 +31,13 @@ describe('Button', () => {
       </Button>,
     );
     expect(container.innerHTML).toMatchSnapshot('expected html');
+  });
+
+  it('should execute the onClick handler', () => {
+    const handleClick = vi.fn();
+    const { getByText } = render(<Button onClick={handleClick}>Click me</Button>);
+    const button = getByText('Click me');
+    fireEvent.click(button);
+    expect(handleClick).toHaveBeenCalledOnce();
   });
 });
