@@ -56,6 +56,18 @@
     "screen-id": "Screen identifier:",
     "version": "Version:"
   },
+  "date-picker": {
+    "day": {
+      "label": "Day (DD)"
+    },
+    "month": {
+      "label": "Month",
+      "placeholder": "Select month"
+    },
+    "year": {
+      "label": "Year (YYYY)"
+    }
+  },
   "dialog": {
     "close": "Close"
   },
