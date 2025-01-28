@@ -26,6 +26,24 @@ Before submitting this PR, ensure that you have completed the following. You can
 - [ ] documentation has been updated to reflect the changes (if applicable)
 - [ ] linked this PR to a related issue (if applicable)
 
+<details>
+  <summary>Linting and formatting</summary>
+
+  ``` shell
+  npm run lint:check
+  npm run format:check
+  ```
+</details>
+
+<details>
+  <summary>Unit and e2e tests</summary>
+
+  ``` shell
+  npm run test
+  npm run test:e2e
+  ```
+</details>
+
 ## Additional Notes
 
 If this PR introduces significant changes, explain your reasoning and provide any necessary context here. Feel free to include diagrams, screenshots, or alternative approaches you considered.
