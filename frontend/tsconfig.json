@@ -16,7 +16,6 @@
     "./playwright.config.ts",
     "./prettier.config.mjs",
     "./react-router.config.ts",
-    "./tailwind.config.ts",
     "./vite.config.ts",
     "./vite.server.config.ts",
     "./vitest.workspace.ts"
