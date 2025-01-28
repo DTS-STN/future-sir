@@ -1,6 +1,6 @@
 import type { ComponentProps } from 'react';
 
-import { InlineLink } from '~/components/inline-link';
+import { InlineLink } from '~/components/links';
 import { useLanguage } from '~/hooks/use-language';
 import { useRoute } from '~/hooks/use-route';
 import type { I18nRouteFile } from '~/i18n-routes';

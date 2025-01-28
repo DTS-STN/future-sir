@@ -4,7 +4,7 @@ import { Trans, useTranslation } from 'react-i18next';
 
 import type { Route } from '../+types/root';
 
-import { AppLink } from '~/components/app-link';
+import { AppLink } from '~/components/links';
 import { PageTitle } from '~/components/page-title';
 import { isAppError } from '~/errors/app-error';
 

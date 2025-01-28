@@ -7,7 +7,7 @@ import type { Route } from './+types/layout';
 
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { AppBar } from '~/components/app-bar';
-import { AppLink } from '~/components/app-link';
+import { AppLink } from '~/components/links';
 import { MenuItem } from '~/components/menu';
 import { PageDetails } from '~/components/page-details';
 import { useLanguage } from '~/hooks/use-language';
