@@ -19,7 +19,7 @@ export function UserButton({ className, children, name }: UserButtonProps) {
     <DropdownMenu>
       <DropdownMenuTrigger
         className={cn(
-          'flex h-full flex-nowrap space-x-2 bg-slate-600 px-2 text-sm text-white hover:bg-slate-500 hover:underline focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 aria-expanded:bg-slate-800 aria-expanded:text-white sm:space-x-4 sm:px-4',
+          'flex h-full flex-nowrap space-x-2 bg-slate-600 px-2 text-sm text-white hover:bg-slate-500 hover:underline focus:ring-2 focus:ring-black focus:ring-offset-2 focus:outline-hidden aria-expanded:bg-slate-800 aria-expanded:text-white sm:space-x-4 sm:px-4',
           className,
         )}
       >

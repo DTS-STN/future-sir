@@ -36,11 +36,11 @@ export default function Index() {
           components={{ span: <span className="underline decoration-red-800 underline-offset-8" /> }}
         />
       </h1>
-      <h2 className="mb-2 mt-10 text-lg font-bold text-slate-700">{t('protected:dashboard.assigned-cases')}</h2>
+      <h2 className="mt-10 mb-2 text-lg font-bold text-slate-700">{t('protected:dashboard.assigned-cases')}</h2>
       <ButtonLink className="w-72" file="routes/protected/request.tsx">
         {t('gcweb:app.form')}
       </ButtonLink>
-      <h2 className="mb-2 mt-10 text-2xl font-bold text-slate-700">{t('protected:dashboard.get-started')}</h2>
+      <h2 className="mt-10 mb-2 text-2xl font-bold text-slate-700">{t('protected:dashboard.get-started')}</h2>
       <ButtonLink
         className="flex w-80 items-center justify-between rounded-none"
         file="routes/protected/person-case/first-name.tsx"
