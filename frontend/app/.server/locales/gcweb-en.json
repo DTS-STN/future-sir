@@ -56,6 +56,9 @@
     "screen-id": "Screen identifier:",
     "version": "Version:"
   },
+  "dialog": {
+    "close": "Close"
+  },
   "not-found": {
     "document-title": "Not found",
     "page-title": "We couldn't find that web page",

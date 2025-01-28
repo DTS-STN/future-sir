@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Dialog > renders Dialog component > expected html 1`] = `"<button type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="radix-:r0:" data-state="closed">Open Dialog</button>"`;
+
+exports[`Dialog > renders DialogOverlay with correct class name > expected html 1`] = `"<button type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="radix-:r3:" data-state="closed">Open Dialog</button>"`;
+
+exports[`Dialog > renders DialogTitle and DialogDescription > expected html 1`] = `"<button type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="radix-:r6:" data-state="closed">Open Dialog</button>"`;

@@ -56,6 +56,9 @@
     "screen-id": "Identificateur d'écran\u00a0:",
     "version": "Version\u00a0:"
   },
+  "dialog": {
+    "close": "Fermer"
+  },
   "not-found": {
     "document-title": "Page introuvable",
     "page-title": "Nous ne pouvons trouver cette page",
