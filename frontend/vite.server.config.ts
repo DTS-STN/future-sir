@@ -1,4 +1,3 @@
-import tailwindcss from '@tailwindcss/vite';
 import type { Plugin } from 'vite';
 import { defineConfig } from 'vite';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
@@ -41,7 +40,6 @@ export default defineConfig({
   },
   plugins: [
     preserveImportMetaUrl(),
-    tailwindcss(),
     // Integrates TypeScript path aliasing using the `vite-tsconfig-paths` plugin,
     // which resolves paths defined in `tsconfig.json` for cleaner imports.
     tsconfigPaths(),

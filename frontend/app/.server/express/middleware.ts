@@ -76,7 +76,7 @@ export function security(environment: ServerEnvironment): RequestHandler {
       `form-action 'self'`,
       `frame-ancestors 'self'`,
       `frame-src 'self'`,
-      `img-src 'self' www.canada.ca`,
+      `img-src 'self' data: www.canada.ca`,
       `object-src data:`,
       `script-src 'self' 'nonce-${response.locals.nonce}'`,
       `style-src 'self' fonts.googleapis.com use.fontawesome.com www.canada.ca`,

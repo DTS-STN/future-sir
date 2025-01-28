@@ -9,6 +9,7 @@ import { clientEnvironmentRevision } from '~/.server/environment';
 import { BilingualErrorBoundary } from '~/components/bilingual-error-boundary';
 import { UnilingualErrorBoundary } from '~/components/unilingual-error-boundary';
 import { useLanguage } from '~/hooks/use-language';
+import indexStyleSheet from '~/index.css?url';
 import tailwindStyleSheet from '~/tailwind.css?url';
 
 // see: https://docs.fontawesome.com/web/dig-deeper/security#content-security-policy
@@ -40,11 +41,8 @@ export function links(): Route.LinkDescriptors {
       href: 'https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap',
       crossOrigin: 'anonymous',
     },
-    {
-      rel: 'stylesheet',
-      href: tailwindStyleSheet,
-      crossOrigin: 'anonymous',
-    },
+    { rel: 'stylesheet', href: indexStyleSheet, crossOrigin: 'anonymous' },
+    { rel: 'stylesheet', href: tailwindStyleSheet, crossOrigin: 'anonymous' },
   ];
 }
 
