@@ -28,7 +28,7 @@ export default function Index() {
   const fr = i18n.getFixedT('fr');
 
   return (
-    <main role="main" className="flex h-svh bg-splash-page bg-cover bg-center">
+    <main role="main" className="bg-splash-page flex h-svh bg-cover bg-center">
       <div className="m-auto w-[300px] bg-white md:w-[400px] lg:w-[500px]">
         <div className="p-8">
           <h1 className="sr-only">
@@ -47,7 +47,7 @@ export default function Index() {
               />
             </AppLink>
           </div>
-          <div className="mb-2 mt-9 grid grid-cols-2 gap-8 md:mx-4 lg:mx-8">
+          <div className="mt-9 mb-2 grid grid-cols-2 gap-8 md:mx-4 lg:mx-8">
             <section lang="en" className="text-center">
               <h2 className="sr-only">{en('gcweb:header.govt-of-canada.text')}</h2>
               <ButtonLink file="routes/public/index.tsx" lang="en" variant="primary" size="lg" className="w-full">

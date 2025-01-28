@@ -48,7 +48,7 @@ export function ButtonLink({
   ...props
 }: ButtonLinkProps) {
   const baseClassName = cn(
-    'inline-flex items-center justify-center rounded-sm border align-middle font-lato no-underline outline-offset-4',
+    'font-lato inline-flex items-center justify-center rounded-sm border align-middle no-underline outline-offset-4',
     sizes[size],
     variants[variant],
     pill && 'rounded-full',
