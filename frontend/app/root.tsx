@@ -1,6 +1,8 @@
 import type { RouteHandle } from 'react-router';
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
 
+import { config as fontAwesomeConfig } from '@fortawesome/fontawesome-svg-core';
+
 import type { Route } from './+types/root';
 
 import { clientEnvironmentRevision } from '~/.server/environment';
@@ -8,6 +10,9 @@ import { BilingualErrorBoundary } from '~/components/bilingual-error-boundary';
 import { UnilingualErrorBoundary } from '~/components/unilingual-error-boundary';
 import { useLanguage } from '~/hooks/use-language';
 import tailwindStyleSheet from '~/tailwind.css?url';
+
+// see: https://docs.fontawesome.com/web/dig-deeper/security#content-security-policy
+fontAwesomeConfig.autoAddCss = false;
 
 export const handle = {
   i18nNamespace: ['gcweb'],
