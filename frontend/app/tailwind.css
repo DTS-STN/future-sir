@@ -1,5 +1,7 @@
 @import 'tailwindcss';
 
+@plugin 'tailwindcss-animate';
+
 @theme {
   /*
     Responsive design - Removing default breakpoints
