@@ -79,7 +79,8 @@ export function security(environment: ServerEnvironment): RequestHandler {
       `img-src 'self' data: www.canada.ca`,
       `object-src data:`,
       `script-src 'self' 'nonce-${response.locals.nonce}'`,
-      `style-src 'self' fonts.googleapis.com use.fontawesome.com www.canada.ca`,
+      // unsafe-inline is required by Radix Primitives 💩
+      `style-src 'self' 'unsafe-inline' fonts.googleapis.com use.fontawesome.com www.canada.ca`,
     ].join('; ');
 
     const permissionsPolicy = [
