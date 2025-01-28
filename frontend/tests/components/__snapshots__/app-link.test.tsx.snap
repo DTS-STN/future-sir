@@ -1,5 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`AppLink > renders a disabled link > expected html 1`] = `"<a role="link" aria-disabled="true">This is a test</a>"`;
+
 exports[`AppLink > renders a link with a specified language when provided > expected html 1`] = `"<a lang="en" href="/en/public" data-discover="true">This is a test</a>"`;
 
 exports[`AppLink > renders a link with the current language if no specific language is provided > expected html 1`] = `"<a href="/fr/public" data-discover="true">This is a test</a>"`;

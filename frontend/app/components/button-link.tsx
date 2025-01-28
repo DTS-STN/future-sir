@@ -1,7 +1,11 @@
 import type { ComponentProps } from 'react';
 
 import { AppLink } from '~/components/app-link';
+import { ButtonEndIcon, ButtonStartIcon } from '~/components/button-icons';
 import { cn } from '~/utils/tailwind-utils';
+
+type ButtonEndIconProps = ComponentProps<typeof ButtonEndIcon>;
+type ButtonStartIconProps = ComponentProps<typeof ButtonStartIcon>;
 
 const sizes = {
   xs: 'px-3 py-2 text-xs',
@@ -31,53 +35,46 @@ type ButtonLinkStyleProps = {
 type ButtonLinkProps = ComponentProps<typeof AppLink> &
   ButtonLinkStyleProps & {
     disabled?: boolean;
+    endIcon?: ButtonEndIconProps['icon'];
+    endIconProps?: OmitStrict<ButtonEndIconProps, 'icon'>;
+    startIcon?: ButtonStartIconProps['icon'];
+    startIconProps?: OmitStrict<ButtonStartIconProps, 'icon'>;
   };
 
+/**
+ * Tailwind CSS Buttons from Flowbite
+ * @see https://flowbite.com/docs/components/buttons/
+ *
+ * Disabling a link
+ * @see https://www.scottohara.me/blog/2021/05/28/disabled-links.html
+ */
 export function ButtonLink({
   children,
   className,
   disabled,
-  file,
-  hash,
-  params,
+  endIcon,
+  endIconProps,
   pill,
-  search,
-  to,
   size = 'base',
+  startIcon,
+  startIconProps,
   variant = 'default',
   ...props
 }: ButtonLinkProps) {
+  const disabledClassName = 'pointer-events-none cursor-not-allowed opacity-70';
   const baseClassName = cn(
     'font-lato inline-flex items-center justify-center rounded-sm border align-middle no-underline outline-offset-4',
     sizes[size],
     variants[variant],
+    disabled && disabledClassName,
     pill && 'rounded-full',
   );
 
-  if (disabled) {
-    return (
-      <a
-        className={cn(baseClassName, 'pointer-events-none cursor-not-allowed opacity-70', className)}
-        role="link"
-        aria-disabled="true"
-        {...props}
-      >
-        {children}
-      </a>
-    );
-  }
-
-  if (file) {
-    return (
-      <AppLink className={cn(baseClassName, className)} file={file} hash={hash} params={params} search={search} {...props}>
-        {children}
-      </AppLink>
-    );
-  }
-
   return (
-    <AppLink className={cn(baseClassName, className)} to={to} {...props}>
+    <AppLink className={cn(baseClassName, className)} disabled={disabled} {...props}>
+      {startIcon && <ButtonStartIcon {...(startIconProps ?? {})} icon={startIcon} />}
       {children}
+      {endIcon && <ButtonEndIcon {...(endIconProps ?? {})} icon={endIcon} />}
     </AppLink>
   );
 }

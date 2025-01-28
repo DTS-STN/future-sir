@@ -11,6 +11,7 @@ import { i18nRoutes } from '~/i18n-routes';
 import { getRouteByFile } from '~/utils/route-utils';
 
 type BilingualLinkProps = Omit<ComponentProps<typeof Link>, 'to'> & {
+  disabled?: boolean;
   file: I18nRouteFile;
   hash?: Path['hash'];
   lang?: Language;
@@ -20,6 +21,7 @@ type BilingualLinkProps = Omit<ComponentProps<typeof Link>, 'to'> & {
 };
 
 type UnilingualLinkProps = Omit<ComponentProps<typeof Link>, 'lang'> & {
+  disabled?: boolean;
   file?: never;
   hash?: never;
   lang?: Language;
@@ -29,7 +31,12 @@ type UnilingualLinkProps = Omit<ComponentProps<typeof Link>, 'lang'> & {
 
 type AppLinkProps = BilingualLinkProps | UnilingualLinkProps;
 
-export function AppLink({ children, hash, lang, params, file, search, to, ...props }: AppLinkProps) {
+/**
+ * Disabling a link
+ * @see https://www.scottohara.me/blog/2021/05/28/disabled-links.html
+ */
+
+export function AppLink({ children, disabled, hash, lang, params, file, search, to, ...props }: AppLinkProps) {
   const { currentLanguage } = useLanguage();
 
   if (to !== undefined) {
@@ -46,6 +53,14 @@ export function AppLink({ children, hash, lang, params, file, search, to, ...pro
     throw new AppError(
       'The `lang` parameter was not provided, and the current language could not be determined from the request',
       ErrorCodes.MISSING_LANG_PARAM,
+    );
+  }
+
+  if (disabled) {
+    return (
+      <a role="link" aria-disabled="true" {...props}>
+        {children}
+      </a>
     );
   }
 
