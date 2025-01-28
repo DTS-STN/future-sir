@@ -14,6 +14,7 @@
     "test": "vitest",
     "test:e2e": "playwright test",
     "format:check": "prettier --cache --check .",
+    "format:write": "prettier --write .",
     "lint:check": "eslint --cache ./",
     "typecheck": "react-router typegen && tsc"
   },
