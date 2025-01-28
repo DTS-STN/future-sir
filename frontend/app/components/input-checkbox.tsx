@@ -72,7 +72,7 @@ export function InputCheckbox({
           {children}
         </label>
       </div>
-      {append && <div className={cn('mt-4 ml-7', appendClassName)}>{append}</div>}
+      {append && <div className={cn('ml-7 mt-4', appendClassName)}>{append}</div>}
     </div>
   );
 }

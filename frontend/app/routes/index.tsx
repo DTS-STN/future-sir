@@ -47,7 +47,7 @@ export default function Index() {
               />
             </AppLink>
           </div>
-          <div className="mt-9 mb-2 grid grid-cols-2 gap-8 md:mx-4 lg:mx-8">
+          <div className="mb-2 mt-9 grid grid-cols-2 gap-8 md:mx-4 lg:mx-8">
             <section lang="en" className="text-center">
               <h2 className="sr-only">{en('gcweb:header.govt-of-canada.text')}</h2>
               <ButtonLink file="routes/public/index.tsx" lang="en" variant="primary" size="lg" className="w-full">

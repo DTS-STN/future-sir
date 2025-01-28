@@ -27,7 +27,7 @@ const DropdownMenuSubTrigger = React.forwardRef<
   <DropdownMenuPrimitive.SubTrigger
     ref={ref}
     className={cn(
-      'flex cursor-default items-center gap-2 rounded-xs px-2 py-1.5 text-sm outline-hidden select-none focus:bg-gray-200 data-[state=open]:bg-gray-200 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
+      'rounded-xs outline-hidden flex cursor-default select-none items-center gap-2 px-2 py-1.5 text-sm focus:bg-gray-200 data-[state=open]:bg-gray-200 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
       inset && 'pl-8',
       className,
     )}
@@ -82,7 +82,7 @@ const DropdownMenuItem = React.forwardRef<
   <DropdownMenuPrimitive.Item
     ref={ref}
     className={cn(
-      'relative flex cursor-default items-center gap-2 rounded-xs px-2 py-1.5 text-sm outline-hidden transition-colors select-none focus:bg-gray-200 data-disabled:pointer-events-none data-disabled:opacity-50 [&>svg]:size-4 [&>svg]:shrink-0',
+      'rounded-xs outline-hidden data-disabled:pointer-events-none data-disabled:opacity-50 relative flex cursor-default select-none items-center gap-2 px-2 py-1.5 text-sm transition-colors focus:bg-gray-200 [&>svg]:size-4 [&>svg]:shrink-0',
       inset && 'pl-8',
       className,
     )}
@@ -98,7 +98,7 @@ const DropdownMenuCheckboxItem = React.forwardRef<
   <DropdownMenuPrimitive.CheckboxItem
     ref={ref}
     className={cn(
-      'relative flex cursor-default items-center rounded-xs py-1.5 pr-2 pl-8 text-sm outline-hidden transition-colors select-none focus:bg-gray-200 data-disabled:pointer-events-none data-disabled:opacity-50',
+      'rounded-xs outline-hidden data-disabled:pointer-events-none data-disabled:opacity-50 relative flex cursor-default select-none items-center py-1.5 pl-8 pr-2 text-sm transition-colors focus:bg-gray-200',
       className,
     )}
     checked={checked}
@@ -121,7 +121,7 @@ const DropdownMenuRadioItem = React.forwardRef<
   <DropdownMenuPrimitive.RadioItem
     ref={ref}
     className={cn(
-      'relative flex cursor-default items-center rounded-xs py-1.5 pr-2 pl-8 text-sm outline-hidden transition-colors select-none focus:bg-gray-200 data-disabled:pointer-events-none data-disabled:opacity-50',
+      'rounded-xs outline-hidden data-disabled:pointer-events-none data-disabled:opacity-50 relative flex cursor-default select-none items-center py-1.5 pl-8 pr-2 text-sm transition-colors focus:bg-gray-200',
       className,
     )}
     {...props}

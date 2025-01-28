@@ -9,7 +9,7 @@ export function PageTitle({ children, className, ...props }: PageTitleProps) {
     <h1
       id="wb-cont"
       tabIndex={-1}
-      className={cn('font-lato mt-10 text-3xl font-bold focus-visible:ring-3', className)}
+      className={cn('font-lato focus-visible:ring-3 mt-10 text-3xl font-bold', className)}
       {...props}
     >
       {children}
