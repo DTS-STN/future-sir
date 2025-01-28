@@ -65,6 +65,12 @@
     "page-subtitle": "(Erreur 404)",
     "page-message": "Nous sommes désolés que vous ayez abouti ici. Il arrive parfois qu'une page ait été déplacée ou supprimée. Heureusement, nous pouvons vous aider à trouver ce que vous cherchez."
   },
+  "session-timeout": {
+    "continue-session": "Continuer la session",
+    "description": "Votre session expirera automatiquement dans {{timeRemaining}}. Sélectionnez «\u00a0Continuer la session\u00a0» pour prolonger votre session.",
+    "end-session": "Mettre fin à la session",
+    "header": "Avertissement d'expiration de la session"
+  },
   "server-error": {
     "document-title": "Erreur interne du serveur",
     "page-title": "Nous éprouvons des difficultés avec cette page",
