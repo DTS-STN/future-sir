@@ -4,8 +4,8 @@ import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useTranslation } from 'react-i18next';
 
-import { AppLink } from '~/components/app-link';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '~/components/dropdown-menu';
+import { AppLink } from '~/components/links';
 import { cn } from '~/utils/tailwind-utils';
 
 type MenuItemProps = ComponentProps<typeof AppLink>;

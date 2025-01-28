@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-import { AppLink } from '~/components/app-link';
+import { AppLink } from '~/components/links';
 import { PageTitle } from '~/components/page-title';
 import { useLanguage } from '~/hooks/use-language';
 

@@ -4,8 +4,8 @@ import { useTranslation } from 'react-i18next';
 
 import type { Route } from './+types/index';
 
-import { AppLink } from '~/components/app-link';
 import { ButtonLink } from '~/components/button-link';
+import { AppLink } from '~/components/links';
 import { getFixedT } from '~/i18n-config.server';
 
 export const handle = {

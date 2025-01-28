@@ -4,7 +4,7 @@ import { Outlet } from 'react-router';
 import { useTranslation } from 'react-i18next';
 
 import { AppBar } from '~/components/app-bar';
-import { AppLink } from '~/components/app-link';
+import { AppLink } from '~/components/links';
 import { MenuItem } from '~/components/menu';
 import { PageDetails } from '~/components/page-details';
 import { useLanguage } from '~/hooks/use-language';

@@ -1,7 +1,7 @@
 import type { ComponentProps } from 'react';
 
-import { AppLink } from '~/components/app-link';
 import { ButtonEndIcon, ButtonStartIcon } from '~/components/button-icons';
+import { AppLink } from '~/components/links';
 import { cn } from '~/utils/tailwind-utils';
 
 type ButtonEndIconProps = ComponentProps<typeof ButtonEndIcon>;

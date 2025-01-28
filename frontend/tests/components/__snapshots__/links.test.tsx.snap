@@ -1,0 +1,13 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`links > AppLink > should render a disabled link > expected html 1`] = `"<a role="link" aria-disabled="true">This is a test</a>"`;
+
+exports[`links > AppLink > should render a link with a specified language when provided > expected html 1`] = `"<a lang="en" href="/en/public" data-discover="true">This is a test</a>"`;
+
+exports[`links > AppLink > should render a link with the current language if no specific language is provided > expected html 1`] = `"<a href="/fr/public" data-discover="true">This is a test</a>"`;
+
+exports[`links > AppLink > should throw an error if no language is available > expected html 1`] = `"The \`lang\` parameter was not provided, and the current language could not be determined from the request"`;
+
+exports[`links > InlineLink > should correctly render an InlineLink when the file property is provided > expected html 1`] = `"<a class="text-slate-700 underline hover:text-blue-700 focus:text-blue-700" href="/fr/public" data-discover="true">This is a test</a>"`;
+
+exports[`links > InlineLink > should correctly render an InlineLink when the to property is provided > expected html 1`] = `"<a class="text-slate-700 underline hover:text-blue-700 focus:text-blue-700" href="https://example.com/">This is a test</a>"`;
