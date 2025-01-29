@@ -133,7 +133,7 @@ export abstract class BaseAuthenticationStrategy implements AuthenticationStrate
               // this should never happen, but oauth4webapi allows for it so 🤷
               const errorMessage = 'JWKs endpoint not found in the discovery document';
               span.setStatus({ code: SpanStatusCode.ERROR, message: errorMessage });
-              return reject(new AppError(errorMessage, ErrorCodes.JWK_ENDPOINT_MISSING));
+              return reject(new AppError(errorMessage, ErrorCodes.DISCOVERY_ENDPOINT_MISSING));
             }
 
             return resolve({
@@ -234,14 +234,10 @@ export abstract class BaseAuthenticationStrategy implements AuthenticationStrate
 
   public async decodeAndVerifyJwt(jwt: string, expectedAudience: string): Promise<jose.JWTPayload & { roles?: string[] }> {
     this.log.debug('Performing JWT verification');
-
     const authorizationServer = await this.authorizationServer;
-
     const getKey = jose.createRemoteJWKSet(new URL(authorizationServer.jwks_uri));
     const options = { audience: expectedAudience, issuer: authorizationServer.issuer };
-
-    const { payload } = await jose.jwtVerify<{ roles?: string[] }>(jwt, getKey, options);
-    return payload;
+    return (await jose.jwtVerify<{ roles?: string[] }>(jwt, getKey, options)).payload;
   }
 }
 
