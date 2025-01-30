@@ -40,7 +40,7 @@ export function InputTextarea({
 
   return (
     <div id={inputWrapperId} data-testid={inputWrapperId} className="form-group space-y-2">
-      <InputLabel id={inputLabelId} htmlFor={id}>
+      <InputLabel id={inputLabelId} htmlFor={id} required={required}>
         {label}
       </InputLabel>
       {errorMessage && <InputError id={inputErrorId}>{errorMessage}</InputError>}

@@ -1,3 +1,5 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`InputLabel > should render input label component > expected html 1`] = `"<label class="inline-block font-semibold" data-testid="input-label" id="id"><span>input test</span></label>"`;
+exports[`InputLabel > should render input label component > expected html 1`] = `"<label class="block" id="id" data-testid="input-label"><span class="font-semibold">input test</span></label>"`;
+
+exports[`InputLabel > should render input label component with required > expected html 1`] = `"<label class="block" id="id" data-testid="input-label"><span class="font-semibold">input test</span> <span aria-hidden="true">(input-label.required)</span></label>"`;

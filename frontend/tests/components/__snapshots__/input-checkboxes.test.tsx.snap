@@ -32,7 +32,9 @@ exports[`InputCheckboxes > should display helpMessageSecondary > expected html 1
 `;
 
 exports[`InputCheckboxes > should render component with legend and options > expected html 1`] = `
-<span>
+<span
+  class="font-semibold"
+>
   Test Legend
 </span>
 `;

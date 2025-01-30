@@ -51,7 +51,7 @@ export function InputRadios({
 
   return (
     <fieldset id={inputWrapperId} data-testid={inputWrapperId}>
-      <InputLegend id={inputLegendId} className={cn('mb-2', legendClassName)}>
+      <InputLegend id={inputLegendId} className={cn('mb-2', legendClassName)} required={required}>
         {legend}
       </InputLegend>
       {errorMessage && (

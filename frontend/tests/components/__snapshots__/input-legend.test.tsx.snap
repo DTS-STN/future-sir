@@ -1,3 +1,5 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`InputLegend > should render input legend component > expected html 1`] = `"<legend class="block font-semibold" data-testid="input-legend" id="id"><span>input legend</span></legend>"`;
+exports[`InputLegend > should render input legend component > expected html 1`] = `"<legend class="block" id="id" data-testid="input-legend"><span class="font-semibold">input legend</span></legend>"`;
+
+exports[`InputLegend > should render input legend component with required > expected html 1`] = `"<legend class="block" id="id" data-testid="input-legend"><span class="font-semibold">input legend</span> <span aria-hidden="true">(input-legend.required)</span></legend>"`;

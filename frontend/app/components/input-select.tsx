@@ -35,7 +35,7 @@ export function InputSelect(props: InputSelectProps) {
 
   return (
     <div id={inputWrapperId} data-testid={inputWrapperId}>
-      <InputLabel id={inputLabelId} htmlFor={id} className="mb-2">
+      <InputLabel id={inputLabelId} htmlFor={id} className="mb-2" required={required}>
         {label}
       </InputLabel>
       {errorMessage && (
