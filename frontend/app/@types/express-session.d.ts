@@ -21,6 +21,7 @@ declare module 'express-session' {
     inPersonSINCase: {
       firstName?: string;
       lastName?: string;
+      confirmPrivacyNotice?: string;
     };
   }
 }

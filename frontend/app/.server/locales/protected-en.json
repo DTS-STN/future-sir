@@ -31,5 +31,10 @@
     "next": "Next",
     "first-name": "Enter first name",
     "last-name": "Enter last name"
+  },
+  "privacy-statement": {
+    "confirm-privacy-notice-checkbox": "I agree to the terms and conditions",
+    "page-title": "Privacy Statement",
+    "title": "<span>Priv</span>acy Statement"
   }
 }
