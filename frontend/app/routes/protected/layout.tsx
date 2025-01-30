@@ -10,6 +10,7 @@ import { AppBar } from '~/components/app-bar';
 import { AppLink } from '~/components/links';
 import { MenuItem } from '~/components/menu';
 import { PageDetails } from '~/components/page-details';
+import { SkipNavigationLinks } from '~/components/skip-navigation-links';
 import { useLanguage } from '~/hooks/use-language';
 import { useRoute } from '~/hooks/use-route';
 
@@ -32,6 +33,7 @@ export default function Layout({ loaderData }: Route.ComponentProps) {
   return (
     <>
       <header className="print:hidden">
+        <SkipNavigationLinks />
         <div id="wb-bnr">
           <div className="container flex items-center justify-between gap-6 py-2.5 sm:py-3.5">
             <AppLink to="https://canada.ca/">
