@@ -1,13 +1,12 @@
 import type { RouteHandle } from 'react-router';
 
-import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Trans, useTranslation } from 'react-i18next';
+import { faMagnifyingGlass, faUserPlus } from '@fortawesome/free-solid-svg-icons';
+import { useTranslation } from 'react-i18next';
 
 import type { Route } from './+types/index';
 
 import { requireAuth } from '~/.server/utils/auth-utils';
-import { ButtonLink } from '~/components/button-link';
+import { Card, CardIcon, CardTag, CardTitle } from '~/components/card';
 import { PageTitle } from '~/components/page-title';
 import { getFixedT } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/layout';
@@ -31,31 +30,26 @@ export default function Index() {
 
   return (
     <div className="mb-8">
-      <PageTitle>{t('protected:dashboard.sin-system')}</PageTitle>
-      <h2 className="mt-10 mb-2 text-lg font-bold text-slate-700">{t('protected:dashboard.assigned-cases')}</h2>
-      <ButtonLink className="w-72" file="routes/protected/request.tsx">
-        {t('gcweb:app.form')}
-      </ButtonLink>
+      <PageTitle className="after:w-14">{t('protected:dashboard.sin-system')}</PageTitle>
       <h2 className="mt-10 mb-2 text-2xl font-bold text-slate-700">{t('protected:dashboard.get-started')}</h2>
-      <ButtonLink
-        className="flex w-80 items-center justify-between rounded-none"
-        file="routes/protected/person-case/privacy-statement.tsx"
-      >
-        <span className="text-bold flex flex-col text-slate-700">
-          <span className="text-xl">{t('protected:in-person.title')}</span>
-          <span>{t('protected:in-person.description')}</span>
-        </span>
-        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-700">
-          <FontAwesomeIcon icon={faChevronRight} className="my-auto size-4 text-white" />
-        </div>
-      </ButtonLink>
-      <p className="mt-8 text-lg">
-        <Trans
-          i18nKey="protected:index.resources"
-          components={{ mark: <mark /> }}
-          values={{ resource: t('protected:resource') }}
-        />
-      </p>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Card file="routes/protected/person-case/privacy-statement.tsx">
+          <CardIcon icon={faUserPlus}>
+            <CardTitle title={t('protected:in-person.title')} highlight>
+              {t('protected:in-person.description')}
+            </CardTitle>
+          </CardIcon>
+        </Card>
+        <Card disabled file="routes/protected/request.tsx" tag={<CardTag tag={t('protected:dashboard.coming-soon')} />}>
+          <CardIcon icon={faMagnifyingGlass}>
+            <CardTitle title={t('protected:enquiry-only.title')} highlight>
+              {t('protected:enquiry-only.description')}
+            </CardTitle>
+          </CardIcon>
+        </Card>
+      </div>
+      <h2 className="mt-10 mb-2 text-lg font-bold text-slate-700">{t('protected:dashboard.assigned-cases')}</h2>
+      <p>{t('protected:dashboard.no-cases')}</p>
     </div>
   );
 }

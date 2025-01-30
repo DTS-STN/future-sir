@@ -7,12 +7,18 @@
     "sin": "SIN",
     "sin-system": "SIN Dashboard System",
     "system": "System",
-    "assigned-cases": "Affaires Attribuées",
-    "get-started": "Get Started"
+    "assigned-cases": "Assigned cases",
+    "get-started": "Get started",
+    "no-cases": "No cases are currently assigned to you.",
+    "coming-soon": "Coming soon"
   },
   "in-person": {
     "title": "In-person SIN request",
     "description": "Process an application or amendment"
+  },
+  "enquiry-only": {
+    "title": "Enquiry only",
+    "description": "Search for a SIN record"
   },
   "index": {
     "admin-dashboard": "Admin dashboard",

@@ -7,12 +7,18 @@
     "sin": "SIN",
     "sin-system": "SIN Interface Système",
     "system": "Système",
-    "assigned-cases": "Affaires Attribuées",
-    "get-started": "Commencer Ici"
+    "assigned-cases": "Affaires attribuées",
+    "get-started": "Commencer ici",
+    "no-cases": "Aucun dossier n'est actuellement assigné à vous.",
+    "coming-soon": "Bientôt disponible"
   },
   "in-person": {
     "title": "Demande SIN en personne",
     "description": "Traiter une demande ou une modification"
+  },
+  "enquiry-only": {
+    "title": "Demande uniquement",
+    "description": "Rechercher un enregistrement SIN"
   },
   "index": {
     "admin-dashboard": "Interface d'administration",
