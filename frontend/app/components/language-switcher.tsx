@@ -1,5 +1,7 @@
 import type { ComponentProps } from 'react';
 
+import { useLocation } from 'react-router';
+
 import { InlineLink } from '~/components/links';
 import { useLanguage } from '~/hooks/use-language';
 import { useRoute } from '~/hooks/use-route';
@@ -10,6 +12,7 @@ type LanguageSwitcherProps = Omit<ComponentProps<typeof InlineLink>, 'file' | 'l
 
 export function LanguageSwitcher({ className, children, ...props }: LanguageSwitcherProps) {
   const { altLanguage } = useLanguage();
+  const { search } = useLocation();
   const { file } = useRoute();
 
   return (
@@ -18,6 +21,7 @@ export function LanguageSwitcher({ className, children, ...props }: LanguageSwit
       file={file as I18nRouteFile}
       lang={altLanguage}
       reloadDocument={true}
+      search={search}
       {...props}
     >
       {children}
