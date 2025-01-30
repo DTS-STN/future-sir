@@ -168,7 +168,9 @@ export const DatePickerField = ({
   return (
     <div id={ids.wrapper}>
       <fieldset className="space-y-2">
-        <InputLegend id={ids.legend}>{legend}</InputLegend>
+        <InputLegend id={ids.legend} required={required}>
+          {legend}
+        </InputLegend>
 
         {/* Error Messages */}
         {errorMessages && Object.values(errorMessages).filter(Boolean).length > 0 && (
