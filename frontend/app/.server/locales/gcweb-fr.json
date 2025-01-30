@@ -56,6 +56,18 @@
     "screen-id": "Identificateur d'écran\u00a0:",
     "version": "Version\u00a0:"
   },
+  "date-picker": {
+    "day": {
+      "label": "Jour (JJ)"
+    },
+    "month": {
+      "label": "Mois",
+      "placeholder": "Sélectionnez le mois"
+    },
+    "year": {
+      "label": "Année (AAAA)"
+    }
+  },
   "dialog": {
     "close": "Fermer"
   },
