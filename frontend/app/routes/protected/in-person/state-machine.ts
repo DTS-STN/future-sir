@@ -1,11 +1,15 @@
 import type { Actor } from 'xstate';
 import { createActor, setup } from 'xstate';
 
+import type { I18nRouteFile } from '~/i18n-routes';
+
 type Event = { type: 'prev' } | { type: 'next' } | { type: 'cancel' };
+type Meta = { i18nRouteFile: I18nRouteFile };
 
 export const machine = setup({
   types: {
     events: {} as Event,
+    meta: {} as Meta,
   },
 }).createMachine({
   id: '(in-person-machine)',
@@ -15,11 +19,17 @@ export const machine = setup({
       on: {
         next: { target: 'privacy-statement' },
       },
+      meta: {
+        i18nRouteFile: 'routes/protected/in-person/index.tsx',
+      },
     },
     'privacy-statement': {
       on: {
         next: { target: 'request-details' },
         cancel: { target: 'start' },
+      },
+      meta: {
+        i18nRouteFile: 'routes/protected/in-person/privacy-statement.tsx',
       },
     },
     'request-details': {
@@ -28,12 +38,18 @@ export const machine = setup({
         next: { target: 'primary-docs' },
         cancel: { target: 'start' },
       },
+      meta: {
+        i18nRouteFile: 'routes/protected/in-person/request-details.tsx',
+      },
     },
     'primary-docs': {
       on: {
         prev: { target: 'request-details' },
         next: { target: 'secondary-docs' },
         cancel: { target: 'start' },
+      },
+      meta: {
+        i18nRouteFile: 'routes/protected/in-person/primary-docs.tsx',
       },
     },
     'secondary-docs': {
@@ -42,12 +58,18 @@ export const machine = setup({
         next: { target: 'name-info' },
         cancel: { target: 'start' },
       },
+      meta: {
+        i18nRouteFile: 'routes/protected/in-person/secondary-docs.tsx',
+      },
     },
     'name-info': {
       on: {
         prev: { target: 'secondary-docs' },
         next: { target: 'personal-info' },
         cancel: { target: 'start' },
+      },
+      meta: {
+        i18nRouteFile: 'routes/protected/in-person/name-info.tsx',
       },
     },
     'personal-info': {
@@ -56,12 +78,18 @@ export const machine = setup({
         next: { target: 'birth-info' },
         cancel: { target: 'start' },
       },
+      meta: {
+        i18nRouteFile: 'routes/protected/in-person/personal-info.tsx',
+      },
     },
     'birth-info': {
       on: {
         prev: { target: 'personal-info' },
         next: { target: 'parent-info' },
         cancel: { target: 'start' },
+      },
+      meta: {
+        i18nRouteFile: 'routes/protected/in-person/birth-info.tsx',
       },
     },
     'parent-info': {
@@ -70,12 +98,18 @@ export const machine = setup({
         next: { target: 'previous-sin-info' },
         cancel: { target: 'start' },
       },
+      meta: {
+        i18nRouteFile: 'routes/protected/in-person/parent-info.tsx',
+      },
     },
     'previous-sin-info': {
       on: {
         prev: { target: 'parent-info' },
         next: { target: 'contact-info' },
         cancel: { target: 'start' },
+      },
+      meta: {
+        i18nRouteFile: 'routes/protected/in-person/previous-sin-info.tsx',
       },
     },
     'contact-info': {
@@ -84,11 +118,17 @@ export const machine = setup({
         next: { target: 'review' },
         cancel: { target: 'start' },
       },
+      meta: {
+        i18nRouteFile: 'routes/protected/in-person/contact-info.tsx',
+      },
     },
     'review': {
       on: {
         cancel: { target: 'start' },
         // TODO --- rest of events
+      },
+      meta: {
+        i18nRouteFile: 'routes/protected/in-person/review.tsx',
       },
     },
   },
