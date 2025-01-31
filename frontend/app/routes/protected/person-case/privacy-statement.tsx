@@ -1,7 +1,7 @@
 import { data, useFetcher } from 'react-router';
 import type { RouteHandle } from 'react-router';
 
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import * as v from 'valibot';
 
 import type { Route, Info } from './+types/privacy-statement';
@@ -13,6 +13,7 @@ import { Button } from '~/components/button';
 import { ButtonLink } from '~/components/button-link';
 import { ErrorSummary } from '~/components/error-summary';
 import { InputCheckbox } from '~/components/input-checkbox';
+import { PageTitle } from '~/components/page-title';
 import { Progress } from '~/components/progress';
 import { getFixedT } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/layout';
@@ -69,14 +70,8 @@ export default function PrivacyStatement({ loaderData, actionData, params }: Rou
 
   return (
     <>
-      <Progress className="mt-8 mb-8" label="" value={20} />
-      <span className="text-md">{t('protected:in-person.title')}</span>
-      <h1 className="mb-8 text-2xl font-bold text-slate-700">
-        <Trans
-          i18nKey="protected:privacy-statement.title"
-          components={{ span: <span className="underline decoration-red-800 underline-offset-8" /> }}
-        />
-      </h1>
+      <Progress className="mt-8" label="" value={20} />
+      <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:privacy-statement.page-title')}</PageTitle>
 
       <fetcher.Form method="post" noValidate>
         <div className="space-y-6">

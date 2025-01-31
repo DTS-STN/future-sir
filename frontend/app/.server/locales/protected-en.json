@@ -5,7 +5,7 @@
   },
   "dashboard": {
     "sin": "SIN",
-    "sin-system": "<span>SIN</span> Dashboard System",
+    "sin-system": "SIN Dashboard System",
     "system": "System",
     "assigned-cases": "Affaires Attribuées",
     "get-started": "Get Started"
@@ -34,7 +34,6 @@
   },
   "privacy-statement": {
     "confirm-privacy-notice-checkbox": "I agree to the terms and conditions",
-    "page-title": "Privacy Statement",
-    "title": "<span>Priv</span>acy Statement"
+    "page-title": "Privacy Statement"
   }
 }
