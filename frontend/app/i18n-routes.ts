@@ -62,6 +62,11 @@ export const i18nRoutes = [
         file: 'routes/protected/person-case/primary-docs.tsx',
         paths: { en: '/en/protected/person-case/primary-documents', fr: '/fr/protege/cas-personnel/documents-primaires' },
       },
+      {
+        id: 'PROT-0006',
+        file: 'routes/protected/person-case/request-details.tsx',
+        paths: { en: '/en/protected/person-case/request-details', fr: '/fr/protege/cas-personnel/faire-une-demande' },
+      },
       //
       // XState-driven in-person flow (poc)
       //

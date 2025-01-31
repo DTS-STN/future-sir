@@ -64,5 +64,29 @@
     },
     "please-select": "Please select",
     "page-title": "Primary identity document"
+  },
+  "request-details": {
+    "page-title": "Applicant",
+    "select-scenario": "Select the scenario that best describes the client's situation",
+    "scenarios": {
+      "for-self": "Client is applying for themself",
+      "legal-guardian": "Client is a parent or legal guardian applying on behalf of a minor or a dependent adult child",
+      "legal-representative": "Client is a legal representative applying on behalf of someone else",
+      "as-employee": "Client is a provincial/territorial employee applying on behalf of someone for whom they have legal authority",
+      "estate-representative": "Client is a legal representative of an estate requesting confirmation of SIN for a deceased person"
+    },
+    "type-request": "Type of request",
+    "requests": {
+      "select-option": "Select option",
+      "first-time": "First time SIN",
+      "record-confirmation": "SIN record amendment / Confirmation of SIN",
+      "name-change": "Legal name change",
+      "expiry-extension": "Extension of expiry date",
+      "change-status": "Change of status",
+      "sin-confirmation": "Confirmation of SIN",
+      "new-sin": "New SIN (fraud)"
+    },
+    "required-scenario": "Client scenario is required.",
+    "required-request": "Type of request is required."
   }
 }

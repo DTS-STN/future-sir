@@ -4,8 +4,8 @@
     "page-title": "Interface d'administration"
   },
   "dashboard": {
-    "sin": "SIN",
-    "sin-system": "SIN Interface Système",
+    "sin": "NAS",
+    "sin-system": "NAS Interface Système",
     "system": "Système",
     "assigned-cases": "Affaires attribuées",
     "get-started": "Commencer ici",
@@ -13,7 +13,7 @@
     "coming-soon": "Bientôt disponible"
   },
   "in-person": {
-    "title": "Demande SIN en personne",
+    "title": "Demande NAS en personne",
     "description": "Traiter une demande ou une modification"
   },
   "enquiry-only": {
@@ -64,5 +64,29 @@
     },
     "please-select": "Veuillez sélectionner",
     "page-title": "Document d'identité principal"
+  },
+  "request-details": {
+    "page-title": "Demandeur",
+    "select-scenario": "Sélectionnez le scénario qui décrit le mieux la situation du client",
+    "scenarios": {
+      "for-self": "Le client fait une demande pour lui-même",
+      "legal-guardian": "Le client est un parent ou un tuteur légal qui présente une demande au nom d'un mineur ou d'un enfant adulte à charge",
+      "legal-representative": "Le client est un représentant légal qui présente une demande au nom d'une autre personne",
+      "as-employee": "Le client est un employé provincial/territorial qui présente une demande au nom d'une personne pour laquelle il a une autorité légale",
+      "estate-representative": "Le client est un représentant légal d'une succession qui demande la confirmation du NAS d'une personne décédée"
+    },
+    "type-request": "Type de demande",
+    "requests": {
+      "select-option": "Sélectionner une option",
+      "first-time": "Premier NAS",
+      "record-confirmation": "Modification de l'enregistrement du NAS / Confirmation du NAS",
+      "name-change": "Changement de nom légal",
+      "expiry-extension": "Prolongation de la date d'expiration",
+      "change-status": "Changement de statut",
+      "sin-confirmation": "Confirmation du NAS",
+      "new-sin": "Nouveau NAS (fraude)"
+    },
+    "required-scenario": "Scénario client est requis.",
+    "required-request": "Type de demande est requis."
   }
 }

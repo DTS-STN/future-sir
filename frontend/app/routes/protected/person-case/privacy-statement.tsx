@@ -71,7 +71,7 @@ export async function action({ context, request }: Route.ActionArgs) {
       context.session.inPersonSINCase ??= {};
       context.session.inPersonSINCase.privacyStatement = parseResult.output;
 
-      throw i18nRedirect('routes/protected/request.tsx', request); //TODO: change it to redirect to file="routes/protected/person-case/request-details.tsx"
+      throw i18nRedirect('routes/protected/person-case/request-details.tsx', request);
     }
 
     default: {

@@ -30,6 +30,10 @@ declare module 'express-session' {
          */
         agreedToTerms: true;
       };
+      requestDetails?: {
+        type: string;
+        scenario: string;
+      };
       currentStatusInCanada?: string;
     };
   }
