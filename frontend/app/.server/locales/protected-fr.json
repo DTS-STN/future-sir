@@ -31,5 +31,10 @@
     "next": "Suivant",
     "first-name": "Entrez le prénom",
     "last-name": "Entrez le nom de famille"
+  },
+  "privacy-statement": {
+    "confirm-privacy-notice-checkbox": "J'accepte les termes et conditions.",
+    "page-title": "Déclaration de confidentialité",
+    "title": "<span>Décl</span>aration de confidentialité"
   }
 }

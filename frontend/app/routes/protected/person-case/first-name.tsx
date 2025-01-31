@@ -85,7 +85,12 @@ export default function FirstName({ loaderData, actionData, params }: Route.Comp
           type="text"
         />
         <div className="mt-8 flex flex-wrap items-center gap-3">
-          <ButtonLink id="back-button" file="routes/protected/index.tsx" params={params} disabled={isSubmitting}>
+          <ButtonLink
+            id="back-button"
+            file="routes/protected/person-case/privacy-statement.tsx"
+            params={params}
+            disabled={isSubmitting}
+          >
             {t('protected:person-case.previous')}
           </ButtonLink>
           <Button variant="primary" type="submit" id="continue-first-name-button" disabled={isSubmitting}>

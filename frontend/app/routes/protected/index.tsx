@@ -43,7 +43,7 @@ export default function Index() {
       <h2 className="mt-10 mb-2 text-2xl font-bold text-slate-700">{t('protected:dashboard.get-started')}</h2>
       <ButtonLink
         className="flex w-80 items-center justify-between rounded-none"
-        file="routes/protected/person-case/first-name.tsx"
+        file="routes/protected/person-case/privacy-statement.tsx"
       >
         <span className="text-bold flex flex-col text-slate-700">
           <span className="text-xl">{t('protected:in-person.title')}</span>
