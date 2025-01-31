@@ -1,3 +1,5 @@
+import { useId } from 'react';
+
 import { data, useFetcher } from 'react-router';
 import type { RouteHandle, SessionData } from 'react-router';
 
@@ -9,7 +11,7 @@ import type { Info, Route } from './+types/request-details';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
-import { ErrorSummary } from '~/components/error-summary';
+import { FetcherErrorSummary } from '~/components/error-summary';
 import { InputRadios } from '~/components/input-radios';
 import { InputSelect } from '~/components/input-select';
 import { PageTitle } from '~/components/page-title';
@@ -99,14 +101,17 @@ export async function action({ context, request }: Route.ActionArgs) {
 
 export default function CreateRequest({ loaderData, actionData, params }: Route.ComponentProps) {
   const { t } = useTranslation(handle.i18nNamespace);
-  const fetcher = useFetcher<Info['actionData']>();
+  const fetcherKey = useId();
+  const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
   const isSubmitting = fetcher.state !== 'idle';
   const errors = fetcher.data?.errors;
+
   const scenarioOptions = VALID_SCENARIOS.map((value) => ({
     value: value,
     children: t(`protected:request-details.scenarios.${value}` as 'protected:request-details.scenarios.for-self'),
     defaultChecked: value === loaderData.defaultFormValues?.scenario,
   }));
+
   const requestOptions = ['select-option', ...VALID_REQUESTS].map((value) => ({
     value: value === 'select-option' ? '' : value,
     children: t(`protected:request-details.requests.${value}` as 'protected:request-details.requests.select-option'),
@@ -115,34 +120,37 @@ export default function CreateRequest({ loaderData, actionData, params }: Route.
   return (
     <>
       <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:request-details.page-title')}</PageTitle>
-      <ErrorSummary errors={errors} />
-      <fetcher.Form method="post" noValidate>
-        <div className="space-y-6">
-          <InputRadios
-            id="scenario"
-            legend={t('protected:request-details.select-scenario')}
-            name="scenario"
-            options={scenarioOptions}
-            required
-          />
-          <InputSelect
-            className="w-max rounded-sm"
-            id="request-type"
-            name="request-type"
-            label={t('protected:request-details.type-request')}
-            defaultValue={loaderData.defaultFormValues?.type ?? ''}
-            options={requestOptions}
-          />
-        </div>
-        <div className="mt-8 flex flex-wrap items-center gap-3">
-          <Button name="action" value="back" id="back-button" disabled={isSubmitting}>
-            {t('protected:person-case.previous')}
-          </Button>
-          <Button name="action" value="next" variant="primary" id="continue-button" disabled={isSubmitting}>
-            {t('protected:person-case.next')}
-          </Button>
-        </div>
-      </fetcher.Form>
+      <FetcherErrorSummary fetcherKey={fetcherKey}>
+        <fetcher.Form method="post" noValidate>
+          <div className="space-y-6">
+            <InputRadios
+              id="scenario"
+              legend={t('protected:request-details.select-scenario')}
+              name="scenario"
+              options={scenarioOptions}
+              required
+              errorMessage={errors?.scenario?.at(0)}
+            />
+            <InputSelect
+              className="w-max rounded-sm"
+              id="request-type"
+              name="request-type"
+              label={t('protected:request-details.type-request')}
+              defaultValue={loaderData.defaultFormValues?.type ?? ''}
+              options={requestOptions}
+              errorMessage={errors?.type?.at(0)}
+            />
+          </div>
+          <div className="mt-8 flex flex-wrap items-center gap-3">
+            <Button name="action" value="back" id="back-button" disabled={isSubmitting}>
+              {t('protected:person-case.previous')}
+            </Button>
+            <Button name="action" value="next" variant="primary" id="continue-button" disabled={isSubmitting}>
+              {t('protected:person-case.next')}
+            </Button>
+          </div>
+        </fetcher.Form>
+      </FetcherErrorSummary>
     </>
   );
 }

@@ -1,3 +1,5 @@
+import { useId } from 'react';
+
 import { data, useFetcher } from 'react-router';
 import type { RouteHandle } from 'react-router';
 
@@ -10,7 +12,7 @@ import type { Route, Info } from './+types/primary-docs';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
-import { ErrorSummary } from '~/components/error-summary';
+import { FetcherErrorSummary } from '~/components/error-summary';
 import { InputSelect } from '~/components/input-select';
 import { PageTitle } from '~/components/page-title';
 import { Progress } from '~/components/progress';
@@ -80,7 +82,8 @@ export async function action({ context, request }: Route.ActionArgs) {
 export default function PrimaryDocs({ loaderData, actionData, params }: Route.ComponentProps) {
   const { t } = useTranslation(handle.i18nNamespace);
 
-  const fetcher = useFetcher<Info['actionData']>();
+  const fetcherKey = useId();
+  const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
   const isSubmitting = fetcher.state !== 'idle';
   const errors = fetcher.data?.errors;
 
@@ -132,30 +135,27 @@ export default function PrimaryDocs({ loaderData, actionData, params }: Route.Co
       </div>
       <Progress className="mt-8" label="" value={30} />
       <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:primary-identity-document.page-title')}</PageTitle>
-
-      <fetcher.Form method="post" noValidate>
-        <div className="space-y-6">
-          <ErrorSummary errors={errors} />
-
+      <FetcherErrorSummary fetcherKey={fetcherKey}>
+        <fetcher.Form method="post" noValidate>
           <InputSelect
             id="currentStatusInCanada"
             name="currentStatusInCanada"
-            errorMessage={errors?.currentStatusInCanada?.[0]}
+            errorMessage={errors?.currentStatusInCanada?.at(0)}
             defaultValue={loaderData.defaultFormValues.currentStatusInCanada}
             required
             options={currentStatusInCanadaOptions}
             label={t('protected:primary-identity-document.current-status-in-canada.title')}
           />
-        </div>
-        <div className="mt-8 flex flex-wrap items-center gap-3">
-          <Button name="action" value="back" id="back-button" disabled={isSubmitting}>
-            {t('protected:person-case.previous')}
-          </Button>
-          <Button name="action" value="next" variant="primary" id="continue-button" disabled={isSubmitting}>
-            {t('protected:person-case.next')}
-          </Button>
-        </div>
-      </fetcher.Form>
+          <div className="mt-8 flex flex-wrap items-center gap-3">
+            <Button name="action" value="back" id="back-button" disabled={isSubmitting}>
+              {t('protected:person-case.previous')}
+            </Button>
+            <Button name="action" value="next" variant="primary" id="continue-button" disabled={isSubmitting}>
+              {t('protected:person-case.next')}
+            </Button>
+          </div>
+        </fetcher.Form>
+      </FetcherErrorSummary>
     </>
   );
 }
