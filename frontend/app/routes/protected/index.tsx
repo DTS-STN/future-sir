@@ -8,6 +8,7 @@ import type { Route } from './+types/index';
 
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { ButtonLink } from '~/components/button-link';
+import { PageTitle } from '~/components/page-title';
 import { getFixedT } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/layout';
 
@@ -30,12 +31,7 @@ export default function Index() {
 
   return (
     <div className="mb-8">
-      <h1 className="mt-8 text-2xl font-bold text-slate-700">
-        <Trans
-          i18nKey="protected:dashboard.sin-system"
-          components={{ span: <span className="underline decoration-red-800 underline-offset-8" /> }}
-        />
-      </h1>
+      <PageTitle>{t('protected:dashboard.sin-system')}</PageTitle>
       <h2 className="mt-10 mb-2 text-lg font-bold text-slate-700">{t('protected:dashboard.assigned-cases')}</h2>
       <ButtonLink className="w-72" file="routes/protected/request.tsx">
         {t('gcweb:app.form')}

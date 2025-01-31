@@ -5,7 +5,7 @@
   },
   "dashboard": {
     "sin": "SIN",
-    "sin-system": "<span>SIN</span> Interface Système",
+    "sin-system": "SIN Interface Système",
     "system": "Système",
     "assigned-cases": "Affaires Attribuées",
     "get-started": "Commencer Ici"
@@ -34,7 +34,6 @@
   },
   "privacy-statement": {
     "confirm-privacy-notice-checkbox": "J'accepte les termes et conditions.",
-    "page-title": "Déclaration de confidentialité",
-    "title": "<span>Décl</span>aration de confidentialité"
+    "page-title": "Déclaration de confidentialité"
   }
 }
