@@ -1,4 +1,5 @@
-import { setup } from 'xstate';
+import type { Actor } from 'xstate';
+import { createActor, setup } from 'xstate';
 
 type Event = { type: 'prev' } | { type: 'next' } | { type: 'cancel' };
 
@@ -17,7 +18,6 @@ export const machine = setup({
     },
     'privacy-statement': {
       on: {
-        prev: { target: 'start' },
         next: { target: 'request-details' },
         cancel: { target: 'start' },
       },
@@ -93,3 +93,16 @@ export const machine = setup({
     },
   },
 });
+
+/**
+ * Creates a new machine actor or loads one from session.
+ */
+export function create(session: AppSession, tabId: string): Actor<typeof machine> {
+  const flow = (session.inPersonFlow ??= {}); // ensure session container exists
+
+  const snapshot = flow[tabId] && { snapshot: flow[tabId] };
+  const actor = createActor(machine, snapshot);
+  actor.subscribe((snapshot) => void (flow[tabId] = snapshot));
+
+  return actor;
+}

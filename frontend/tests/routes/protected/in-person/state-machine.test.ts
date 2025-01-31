@@ -20,7 +20,6 @@ describe('in-person machine transitions', () => {
   ] as const;
 
   const prevStates = Object.entries({
-    'privacy-statement': 'start',
     'request-details': 'privacy-statement',
     'primary-docs': 'request-details',
     'secondary-docs': 'primary-docs',
