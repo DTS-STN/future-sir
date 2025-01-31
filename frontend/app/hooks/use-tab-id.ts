@@ -98,7 +98,7 @@ export function useTabId(options?: Options): string | undefined {
         // if the tab id in session storage doesn't match the URL, update the URL
         const urlSearchParams = new URLSearchParams(search);
         urlSearchParams.set(searchParamKey, id);
-        void navigateFn({ search: urlSearchParams.toString() });
+        void navigateFn({ search: urlSearchParams.toString() }, { replace: true });
       }
     }
   }, [id, navigate, search]);
