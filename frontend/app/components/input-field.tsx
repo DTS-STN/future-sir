@@ -1,5 +1,3 @@
-import { forwardRef } from 'react';
-
 import { InputError } from './input-error';
 import { InputHelp } from './input-help';
 
@@ -30,23 +28,21 @@ export interface InputFieldProps {
   type?: 'email' | 'number' | 'password' | 'search' | 'tel' | 'text' | 'url';
 }
 
-const InputField = forwardRef<HTMLInputElement, InputFieldProps>((props, ref) => {
-  const {
-    ariaDescribedby,
-    errorMessage,
-    className,
-    defaultValue,
-    helpMessagePrimary,
-    helpMessagePrimaryClassName,
-    helpMessageSecondary,
-    helpMessageSecondaryClassName,
-    id,
-    label,
-    required,
-    type = 'text',
-    ...restInputProps
-  } = props;
-
+export function InputField({
+  ariaDescribedby,
+  errorMessage,
+  className,
+  defaultValue,
+  helpMessagePrimary,
+  helpMessagePrimaryClassName,
+  helpMessageSecondary,
+  helpMessageSecondaryClassName,
+  id,
+  label,
+  required,
+  type = 'text',
+  ...restInputProps
+}: InputFieldProps) {
   const inputErrorId = `input-${id}-error`;
   const inputHelpMessagePrimaryId = `input-${id}-help-primary`;
   const inputHelpMessageSecondaryId = `input-${id}-help-secondary`;
@@ -81,7 +77,6 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>((props, ref) =>
         </InputHelp>
       )}
       <input
-        ref={ref}
         aria-describedby={getAriaDescribedby()}
         aria-errormessage={errorMessage ? inputErrorId : undefined}
         aria-invalid={!!errorMessage}
@@ -112,8 +107,4 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>((props, ref) =>
       )}
     </div>
   );
-});
-
-InputField.displayName = 'InputField';
-
-export { InputField };
+}
