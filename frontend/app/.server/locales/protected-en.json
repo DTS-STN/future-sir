@@ -37,5 +37,23 @@
   "privacy-statement": {
     "confirm-privacy-notice-checkbox": "I agree to the terms and conditions",
     "page-title": "Privacy Statement"
+  },
+  "primary-identity-document": {
+    "current-status-in-canada": {
+      "title": "Current status in Canada",
+      "required": "Current status in Canada is required.",
+      "invalid": "Please select Canadian Citizen born outside Canada.",
+      "options": {
+        "canadian-citizen-born-in-canada": "Canadian citizen born in Canada",
+        "canadian-citizen-born-outside-canada": "Canadian citizen born outside Canada",
+        "registered-indian-born-in-canada": "Registered Indian born in Canada",
+        "registered-indian-born-outside-canada": "Registered Indian born outside Canada",
+        "permanent-resident": "Permanent Resident",
+        "temporary-resident": "Temporary Resident",
+        "no-legal-status-in-canada": "No Legal Status in Canada"
+      }
+    },
+    "please-select": "Please select",
+    "page-title": "Primary identity document"
   }
 }
