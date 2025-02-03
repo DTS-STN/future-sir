@@ -1,6 +1,7 @@
 import { data, useFetcher } from 'react-router';
 import type { RouteHandle } from 'react-router';
 
+import { faXmark, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import * as v from 'valibot';
 
@@ -70,6 +71,14 @@ export default function PrivacyStatement({ loaderData, actionData, params }: Rou
 
   return (
     <>
+      <div className="flex justify-end">
+        <Button id="abandon-button" endIcon={faXmark} variant="link">
+          {t('protected:person-case.abandon-button')}
+        </Button>
+        <Button id="refer-button" endIcon={faExclamationCircle} variant="link">
+          {t('protected:person-case.refer-button')}
+        </Button>
+      </div>
       <Progress className="mt-8" label="" value={20} />
       <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:privacy-statement.page-title')}</PageTitle>
 
