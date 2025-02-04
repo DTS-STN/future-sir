@@ -9,9 +9,7 @@ import type { Route, Info } from './+types/privacy-statement';
 
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
-import { confirmPrivacyNoticeSchema } from '~/.server/validation/confirmPrivacyNoticeSchema';
 import { Button } from '~/components/button';
-import { ButtonLink } from '~/components/button-link';
 import { ErrorSummary } from '~/components/error-summary';
 import { InputCheckbox } from '~/components/input-checkbox';
 import { PageTitle } from '~/components/page-title';
@@ -36,30 +34,42 @@ export async function loader({ context, request }: Route.LoaderArgs) {
   };
 }
 
-export const meta: Route.MetaFunction = ({ data }) => {
+export function meta({ data }: Route.MetaArgs) {
   return [{ title: data.documentTitle }];
-};
+}
 
 export async function action({ context, request }: Route.ActionArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
   const lang = getLanguage(request);
-
+  const t = await getFixedT(request, handle.i18nNamespace);
   const formData = await request.formData();
-  const input = { confirmPrivacyNotice: formData.get('confirmPrivacyNotice') as string };
 
-  const schema = v.object({ confirmPrivacyNotice: confirmPrivacyNoticeSchema() });
+  if (formData.get('action') === 'back') {
+    throw i18nRedirect('routes/protected/index.tsx', request);
+  }
+
+  // submit action
+  const schema = v.object({
+    confirmPrivacyNotice: v.pipe(
+      v.string(t('protected:privacy-statement.confirm-privacy-notice-checkbox.required')),
+      v.trim(),
+      v.nonEmpty(t('protected:privacy-statement.confirm-privacy-notice-checkbox.required')),
+    ),
+  });
+
+  const input = { confirmPrivacyNotice: formData.get('confirmPrivacyNotice') as string };
   const parsedDataResult = v.safeParse(schema, input, { lang });
 
   if (!parsedDataResult.success) {
     return data({ errors: v.flatten<typeof schema>(parsedDataResult.issues).nested }, { status: 400 });
   }
 
-  // If the first name is valid, store it in the session and redirect to the next page
   context.session.inPersonSINCase = {
     ...(context.session.inPersonSINCase ?? {}),
     ...input,
   };
-  return i18nRedirect('routes/protected/person-case/first-name.tsx', request);
+
+  throw i18nRedirect('routes/protected/person-case/first-name.tsx', request); //TODO: change it to redirect to file="routes/protected/person-case/request-details.tsx"
 }
 
 export default function PrivacyStatement({ loaderData, actionData, params }: Route.ComponentProps) {
@@ -116,14 +126,14 @@ export default function PrivacyStatement({ loaderData, actionData, params }: Rou
             defaultChecked={loaderData.defaultFormValues.confirmPrivacyNotice === 'on'}
             required
           >
-            {t('protected:privacy-statement.confirm-privacy-notice-checkbox')}
+            {t('protected:privacy-statement.confirm-privacy-notice-checkbox.title')}
           </InputCheckbox>
         </div>
         <div className="mt-8 flex flex-wrap items-center gap-3">
-          <ButtonLink id="back-button" file="routes/protected/index.tsx" params={params} disabled={isSubmitting}>
+          <Button name="action" value="back" id="back-button" disabled={isSubmitting}>
             {t('protected:person-case.previous')}
-          </ButtonLink>
-          <Button variant="primary" type="submit" id="continue-button" disabled={isSubmitting}>
+          </Button>
+          <Button name="action" value="next" variant="primary" id="continue-button" disabled={isSubmitting}>
             {t('protected:person-case.next')}
           </Button>
         </div>
