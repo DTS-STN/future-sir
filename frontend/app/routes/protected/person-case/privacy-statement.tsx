@@ -2,6 +2,7 @@ import { data, useFetcher } from 'react-router';
 import type { RouteHandle } from 'react-router';
 
 import { faXmark, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
+import type { SessionData } from 'express-session';
 import { useTranslation } from 'react-i18next';
 import * as v from 'valibot';
 
@@ -14,9 +15,12 @@ import { ErrorSummary } from '~/components/error-summary';
 import { InputCheckbox } from '~/components/input-checkbox';
 import { PageTitle } from '~/components/page-title';
 import { Progress } from '~/components/progress';
+import { AppError } from '~/errors/app-error';
 import { getFixedT } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/layout';
 import { getLanguage } from '~/utils/i18n-utils';
+
+type PrivacyStatmentSessionData = NonNullable<SessionData['inPersonSINCase']['privacyStatement']>;
 
 export const handle = {
   i18nNamespace: [...parentHandle.i18nNamespace, 'protected'],
@@ -28,9 +32,7 @@ export async function loader({ context, request }: Route.LoaderArgs) {
 
   return {
     documentTitle: t('protected:privacy-statement.page-title'),
-    defaultFormValues: {
-      confirmPrivacyNotice: context.session.inPersonSINCase?.confirmPrivacyNotice,
-    },
+    defaultFormValues: context.session.inPersonSINCase?.privacyStatement,
   };
 }
 
@@ -42,34 +44,40 @@ export async function action({ context, request }: Route.ActionArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
   const lang = getLanguage(request);
   const t = await getFixedT(request, handle.i18nNamespace);
+
   const formData = await request.formData();
+  const action = formData.get('action');
 
-  if (formData.get('action') === 'back') {
-    throw i18nRedirect('routes/protected/index.tsx', request);
+  switch (action) {
+    case 'back': {
+      throw i18nRedirect('routes/protected/index.tsx', request);
+    }
+
+    case 'next': {
+      const schema = v.object({
+        agreedToTerms: v.literal(true, t('protected:privacy-statement.confirm-privacy-notice-checkbox.required')),
+      }) satisfies v.GenericSchema<PrivacyStatmentSessionData>;
+
+      const input = {
+        agreedToTerms: formData.get('agreedToTerms') ? true : undefined,
+      } satisfies Partial<PrivacyStatmentSessionData>;
+
+      const parseResult = v.safeParse(schema, input, { lang });
+
+      if (!parseResult.success) {
+        return data({ errors: v.flatten<typeof schema>(parseResult.issues).nested }, { status: 400 });
+      }
+
+      context.session.inPersonSINCase ??= {};
+      context.session.inPersonSINCase.privacyStatement = parseResult.output;
+
+      throw i18nRedirect('routes/protected/person-case/first-name.tsx', request); //TODO: change it to redirect to file="routes/protected/person-case/request-details.tsx"
+    }
+
+    default: {
+      throw new AppError(`Unrecognized action: ${action}`);
+    }
   }
-
-  // submit action
-  const schema = v.object({
-    confirmPrivacyNotice: v.pipe(
-      v.string(t('protected:privacy-statement.confirm-privacy-notice-checkbox.required')),
-      v.trim(),
-      v.nonEmpty(t('protected:privacy-statement.confirm-privacy-notice-checkbox.required')),
-    ),
-  });
-
-  const input = { confirmPrivacyNotice: formData.get('confirmPrivacyNotice') as string };
-  const parsedDataResult = v.safeParse(schema, input, { lang });
-
-  if (!parsedDataResult.success) {
-    return data({ errors: v.flatten<typeof schema>(parsedDataResult.issues).nested }, { status: 400 });
-  }
-
-  context.session.inPersonSINCase = {
-    ...(context.session.inPersonSINCase ?? {}),
-    ...input,
-  };
-
-  throw i18nRedirect('routes/protected/person-case/first-name.tsx', request); //TODO: change it to redirect to file="routes/protected/person-case/request-details.tsx"
 }
 
 export default function PrivacyStatement({ loaderData, actionData, params }: Route.ComponentProps) {
@@ -120,10 +128,10 @@ export default function PrivacyStatement({ loaderData, actionData, params }: Rou
           </p>
 
           <InputCheckbox
-            id="confirmPrivacyNotice"
-            name="confirmPrivacyNotice"
-            errorMessage={errors?.confirmPrivacyNotice?.[0]}
-            defaultChecked={loaderData.defaultFormValues.confirmPrivacyNotice === 'on'}
+            id="agreed-to-terms"
+            name="agreedToTerms"
+            errorMessage={errors?.agreedToTerms?.[0]}
+            defaultChecked={loaderData.defaultFormValues?.agreedToTerms}
             required
           >
             {t('protected:privacy-statement.confirm-privacy-notice-checkbox.title')}

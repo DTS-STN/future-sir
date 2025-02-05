@@ -37,7 +37,7 @@
   "privacy-statement": {
     "confirm-privacy-notice-checkbox": {
       "title": "J'accepte les termes et conditions.",
-      "required": "Privacy notice statement is required."
+      "required": "L'acceptation des termes et conditions est obligatoire."
     },
     "page-title": "Déclaration de confidentialité"
   },
