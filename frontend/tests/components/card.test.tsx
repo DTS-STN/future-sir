@@ -1,33 +1,31 @@
 import { createRoutesStub } from 'react-router';
 
-import { faUserPlus } from '@fortawesome/free-solid-svg-icons';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
 import { render } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
-import { Card, CardIcon, CardImage, CardTag, CardTitle } from '~/components/card';
+import { Button } from '~/components/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardIcon,
+  CardImage,
+  CardTag,
+  CardTitle,
+} from '~/components/card';
+import { AppLink } from '~/components/links';
 
 describe('Card', () => {
   it('should render a card', () => {
     const { container } = render(
       <Card>
-        <CardIcon icon={faUserPlus}>
-          <CardTitle title="Card Title" highlight>
-            Test Card
-          </CardTitle>
-        </CardIcon>
-      </Card>,
-    );
-    expect(container.innerHTML).toMatchSnapshot('expected html');
-  });
-
-  it('should render a disabled card', () => {
-    const { container } = render(
-      <Card disabled>
-        <CardIcon icon={faUserPlus}>
-          <CardTitle title="Card Title" highlight>
-            Test Card
-          </CardTitle>
-        </CardIcon>
+        <CardHeader>
+          <CardTitle>Card Title</CardTitle>
+          <CardDescription>Test Card</CardDescription>
+        </CardHeader>
       </Card>,
     );
     expect(container.innerHTML).toMatchSnapshot('expected html');
@@ -38,12 +36,13 @@ describe('Card', () => {
       {
         path: '/fr/public',
         Component: () => (
-          <Card file="routes/public/index.tsx">
-            <CardIcon icon={faUserPlus}>
-              <CardTitle title="Card Title" highlight>
-                Test Card
-              </CardTitle>
-            </CardIcon>
+          <Card asChild>
+            <AppLink file="routes/public/index.tsx">
+              <CardHeader>
+                <CardTitle>Card Title</CardTitle>
+                <CardDescription>Test Card</CardDescription>
+              </CardHeader>
+            </AppLink>
           </Card>
         ),
       },
@@ -58,16 +57,17 @@ describe('Card', () => {
       {
         path: '/fr/public',
         Component: () => (
-          <Card
-            file="routes/public/index.tsx"
-            image={<CardImage src="https://www.canada.ca/content/dam/canada/activities/20250115-1-520x200.jpg" alt="" />}
-            tag={<CardTag tag={'Coming soon'} />}
-          >
-            <CardIcon icon={faUserPlus}>
-              <CardTitle title="Card Title" highlight>
-                Test Card
-              </CardTitle>
-            </CardIcon>
+          <Card asChild>
+            <AppLink file="routes/public/index.tsx">
+              <CardImage src="https://www.canada.ca/content/dam/canada/activities/20250115-1-520x200.jpg" />
+              <CardHeader>
+                <CardTitle>Card Title</CardTitle>
+                <CardDescription>Test Card</CardDescription>
+              </CardHeader>
+              <CardFooter>
+                <CardTag>Coming soon</CardTag>
+              </CardFooter>
+            </AppLink>
           </Card>
         ),
       },
@@ -77,22 +77,21 @@ describe('Card', () => {
     expect(container.innerHTML).toMatchSnapshot('expected html');
   });
 
-  it('should render a disabled card with a link', () => {
+  it('should render a card with a link with an icon', () => {
     const RoutesStub = createRoutesStub([
       {
         path: '/fr/public',
         Component: () => (
-          <Card
-            disabled
-            file="routes/public/index.tsx"
-            image={<CardImage src="https://www.canada.ca/content/dam/canada/activities/20250115-1-520x200.jpg" alt="" />}
-            tag={<CardTag tag={'Coming soon'} />}
-          >
-            <CardIcon icon={faUserPlus}>
-              <CardTitle title="Card Title" highlight>
-                Test Card
-              </CardTitle>
-            </CardIcon>
+          <Card>
+            <div className="flex items-center gap-4 p-6">
+              <CardIcon icon={faUser} />
+              <CardHeader className="p-0">
+                <CardTitle asChild>
+                  <h2>Card Title</h2>
+                </CardTitle>
+                <CardDescription>Test Card</CardDescription>
+              </CardHeader>
+            </div>
           </Card>
         ),
       },
@@ -102,65 +101,28 @@ describe('Card', () => {
     expect(container.innerHTML).toMatchSnapshot('expected html');
   });
 
-  it('should render a card with onClick', () => {
-    const RoutesStub = createRoutesStub([
-      {
-        Component: () => (
-          <Card onClick={() => {}} tag={<CardTag tag={'Coming soon'} />}>
-            <CardIcon icon={faUserPlus}>
-              <CardTitle title="Card Title" highlight>
-                Test Card
-              </CardTitle>
-            </CardIcon>
-          </Card>
-        ),
-      },
-    ]);
-
-    const { container } = render(<RoutesStub initialEntries={['/fr/public']} />);
-    expect(container.innerHTML).toMatchSnapshot('expected html');
-  });
-
-  it('should render a card with onClick with an image', () => {
+  it('should render a card with a link with an icon, content, footer with button and heading2', () => {
     const RoutesStub = createRoutesStub([
       {
         path: '/fr/public',
         Component: () => (
-          <Card
-            onClick={() => {}}
-            image={<CardImage src="https://www.canada.ca/content/dam/canada/activities/20250115-1-520x200.jpg" alt="" />}
-            tag={<CardTag tag={'Coming soon'} />}
-          >
-            <CardIcon icon={faUserPlus}>
-              <CardTitle title="Card Title" highlight>
-                Test Card
-              </CardTitle>
-            </CardIcon>
-          </Card>
-        ),
-      },
-    ]);
-
-    const { container } = render(<RoutesStub initialEntries={['/fr/public']} />);
-    expect(container.innerHTML).toMatchSnapshot('expected html');
-  });
-
-  it('should render a disabled card with onClick', () => {
-    const RoutesStub = createRoutesStub([
-      {
-        path: '/fr/public',
-        Component: () => (
-          <Card
-            disabled
-            onClick={() => {}}
-            image={<CardImage src="https://www.canada.ca/content/dam/canada/activities/20250115-1-520x200.jpg" alt="" />}
-            tag={<CardTag tag={'Coming soon'} />}
-          >
-            <CardIcon icon={faUserPlus}>
-              <CardTitle title="Card Title" highlight>
-                Test Card
-              </CardTitle>
-            </CardIcon>
+          <Card>
+            <div className="flex items-center gap-4 p-6">
+              <CardIcon icon={faUser} />
+              <CardHeader className="p-0">
+                <CardTitle asChild>
+                  <h2>Card Title</h2>
+                </CardTitle>
+                <CardDescription>Test Card</CardDescription>
+              </CardHeader>
+            </div>
+            <CardContent className="space-y-3">
+              <p>Card content part 1</p>
+              <p>Card content part 2</p>
+            </CardContent>
+            <CardFooter>
+              <Button>Click me</Button>
+            </CardFooter>
           </Card>
         ),
       },
