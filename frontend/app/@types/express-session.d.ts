@@ -16,12 +16,20 @@ declare module 'express-session' {
       state: string;
     };
     /**
-     * Stores data for an in-person SIN case
+     * Represents the session data for the in-person SIN case.
      */
     inPersonSINCase: {
       firstName?: string;
       lastName?: string;
-      confirmPrivacyNotice?: string;
+      /**
+       * Represents the privacy statement data for the in-person SIN case.
+       */
+      privacyStatement?: {
+        /**
+         * Indicates whether the user has agreed to the terms of the privacy statement.
+         */
+        agreedToTerms: true;
+      };
       currentStatusInCanada?: string;
     };
   }
