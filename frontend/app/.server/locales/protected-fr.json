@@ -35,7 +35,10 @@
     "last-name": "Entrez le nom de famille"
   },
   "privacy-statement": {
-    "confirm-privacy-notice-checkbox": "J'accepte les termes et conditions.",
+    "confirm-privacy-notice-checkbox": {
+      "title": "J'accepte les termes et conditions.",
+      "required": "Privacy notice statement is required."
+    },
     "page-title": "Déclaration de confidentialité"
   }
 }

@@ -35,7 +35,10 @@
     "last-name": "Enter last name"
   },
   "privacy-statement": {
-    "confirm-privacy-notice-checkbox": "I agree to the terms and conditions",
+    "confirm-privacy-notice-checkbox": {
+      "title": "I agree to the terms and conditions",
+      "required": "Privacy notice statement is required."
+    },
     "page-title": "Privacy Statement"
   }
 }
