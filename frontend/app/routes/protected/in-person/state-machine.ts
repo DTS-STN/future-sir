@@ -1,10 +1,20 @@
+import type { ActionFunctionArgs } from 'react-router';
+import { generatePath } from 'react-router';
+
 import type { Actor } from 'xstate';
 import { createActor, setup } from 'xstate';
 
+import { AppError } from '~/errors/app-error';
+import { ErrorCodes } from '~/errors/error-codes';
 import type { I18nRouteFile } from '~/i18n-routes';
+import { i18nRoutes } from '~/i18n-routes';
+import { getLanguage } from '~/utils/i18n-utils';
+import { getRouteByFile } from '~/utils/route-utils';
 
 type Event = { type: 'prev' } | { type: 'next' } | { type: 'cancel' };
 type Meta = { i18nRouteFile: I18nRouteFile };
+
+const machineId = '(in-person-machine)';
 
 export const machine = setup({
   types: {
@@ -12,7 +22,7 @@ export const machine = setup({
     meta: {} as Meta,
   },
 }).createMachine({
-  id: '(in-person-machine)',
+  id: machineId,
   initial: 'start',
   states: {
     'start': {
@@ -135,14 +145,50 @@ export const machine = setup({
 });
 
 /**
- * Creates a new machine actor or loads one from session.
+ * Creates a new machine actor.
  */
 export function create(session: AppSession, tabId: string): Actor<typeof machine> {
   const flow = (session.inPersonFlow ??= {}); // ensure session container exists
 
+  const actor = createActor(machine);
+  actor.subscribe((snapshot) => void (flow[tabId] = snapshot));
+
+  return actor.start();
+}
+
+/**
+ * Loads a machine actor from session.
+ */
+export function load(session: AppSession, tabId: string): Actor<typeof machine> {
+  const flow = (session.inPersonFlow ??= {}); // ensure session container exists
+
   const snapshot = flow[tabId] && { snapshot: flow[tabId] };
+
+  if (!snapshot) {
+    throw new AppError('The machine snapshot was not found in session', ErrorCodes.MISSING_SNAPSHOT);
+  }
+
   const actor = createActor(machine, snapshot);
   actor.subscribe((snapshot) => void (flow[tabId] = snapshot));
 
-  return actor;
+  return actor.start();
+}
+
+export function getRoute(actor: Actor<typeof machine>, args: ActionFunctionArgs): string {
+  const language = getLanguage(args.request);
+
+  if (!language) {
+    throw new AppError('The current language could not be determined from the request', ErrorCodes.MISSING_LANG_PARAM);
+  }
+
+  const snapshot = actor.getSnapshot();
+  const meta = snapshot.getMeta()[`${machineId}.${snapshot.value}`];
+
+  if (!meta) {
+    throw new AppError('The metadata for the current machine state could not be determined', ErrorCodes.MISSING_META);
+  }
+
+  const { paths } = getRouteByFile(meta.i18nRouteFile, i18nRoutes);
+
+  return generatePath(paths[language], args.params);
 }
