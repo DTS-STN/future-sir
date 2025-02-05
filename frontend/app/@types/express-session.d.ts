@@ -22,6 +22,7 @@ declare module 'express-session' {
       firstName?: string;
       lastName?: string;
       confirmPrivacyNotice?: string;
+      currentStatusInCanada?: string;
     };
   }
 }

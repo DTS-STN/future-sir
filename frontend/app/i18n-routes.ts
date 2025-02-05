@@ -62,7 +62,15 @@ export const i18nRoutes = [
       {
         id: 'PROT-0006',
         file: 'routes/protected/person-case/privacy-statement.tsx',
-        paths: { en: '/en/protected/person-case/privacy-statement', fr: '/fr/protege/person-case/privacy-statement' },
+        paths: {
+          en: '/en/protected/person-case/privacy-statement',
+          fr: '/fr/protege/person-case/declaration-de-confidentialite',
+        },
+      },
+      {
+        id: 'PROT-0007',
+        file: 'routes/protected/person-case/primary-docs.tsx',
+        paths: { en: '/en/protected/person-case/primary-documents', fr: '/fr/protege/person-case/documents-primaires' },
       },
       //
       // XState-driven in-person flow (poc)
@@ -98,7 +106,7 @@ export const i18nRoutes = [
             id: 'IPF-0003',
             file: 'routes/protected/in-person/primary-docs.tsx',
             paths: {
-              en: '/en/protected/in-person/primary-docsuments',
+              en: '/en/protected/in-person/primary-documents',
               fr: '/fr/protege/en-personne/documents-primaires',
             },
           },
