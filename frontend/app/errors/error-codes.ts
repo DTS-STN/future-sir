@@ -12,6 +12,14 @@ export const ErrorCodes = {
   // component error codes
   MISSING_LANG_PARAM: 'CMP-0001',
 
+  // form error codes
+  UNRECOGNIZED_ACTION: 'FRM-0001',
+
+  // FSM error codes
+  MISSING_TAB_ID: 'FSM-0001',
+  MISSING_META: 'FSM-0002',
+  MISSING_SNAPSHOT: 'FSM-0003',
+
   // i18n error codes
   NO_LANGUAGE_FOUND: 'I18N-0001',
 
