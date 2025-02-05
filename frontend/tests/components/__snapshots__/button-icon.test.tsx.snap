@@ -3,7 +3,7 @@
 exports[`ButtonEndIcon > should pass additional props to FontAwesomeIcon > expected html 1`] = `
 <div
   aria-label="end-icon"
-  class="ms-2"
+  class="ms-1"
 >
   "spinner"
 </div>
@@ -11,7 +11,7 @@ exports[`ButtonEndIcon > should pass additional props to FontAwesomeIcon > expec
 
 exports[`ButtonEndIcon > should render FontAwesomeIcon with the correct classes > expected html 1`] = `
 <div
-  class="ms-2 custom-class"
+  class="ms-1 custom-class"
 >
   "spinner"
 </div>
@@ -20,7 +20,7 @@ exports[`ButtonEndIcon > should render FontAwesomeIcon with the correct classes 
 exports[`ButtonStartIcon > should pass additional props to FontAwesomeIcon > expected html 1`] = `
 <div
   aria-label="start-icon"
-  class="me-2"
+  class="me-1"
 >
   "spinner"
 </div>
@@ -28,7 +28,7 @@ exports[`ButtonStartIcon > should pass additional props to FontAwesomeIcon > exp
 
 exports[`ButtonStartIcon > should render FontAwesomeIcon with the correct classes > expected html 1`] = `
 <div
-  class="me-2 custom-class"
+  class="me-1 custom-class"
 >
   "spinner"
 </div>

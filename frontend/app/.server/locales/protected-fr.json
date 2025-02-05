@@ -26,9 +26,11 @@
   },
   "person-case": {
     "page-title": "Cas en personne",
+    "abandon-button": "Abandonner",
     "add-button": "Ajouter un prénom",
     "previous": "Précédent",
     "next": "Suivant",
+    "refer-button": "Parrainer",
     "first-name": "Entrez le prénom",
     "last-name": "Entrez le nom de famille"
   },

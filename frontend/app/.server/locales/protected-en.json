@@ -26,9 +26,11 @@
   },
   "person-case": {
     "page-title": "In person case",
+    "abandon-button": "Abandon",
     "add-button": "Add first name",
     "previous": "Previous",
     "next": "Next",
+    "refer-button": "Refer",
     "first-name": "Enter first name",
     "last-name": "Enter last name"
   },
