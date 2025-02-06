@@ -1,5 +1,7 @@
 import * as v from 'valibot';
 
+import { stringToIntegerSchema } from '../validation/string-to-integer-schema';
+
 import { authentication, defaults as authenticationDefaults } from '~/.server/environment/authentication';
 import { client, defaults as clientDefaults } from '~/.server/environment/client';
 import { features, defaults as featuresDefaults } from '~/.server/environment/features';
@@ -39,7 +41,7 @@ export const server = v.pipe(
     ...session.entries,
     ...telemetry.entries,
     NODE_ENV: v.optional(v.picklist(['production', 'development', 'test']), defaults.NODE_ENV),
-    PORT: v.optional(v.pipe(v.string(), v.transform(Number), v.integer(), v.minValue(0)), defaults.PORT),
+    PORT: v.optional(v.pipe(stringToIntegerSchema(), v.minValue(0)), defaults.PORT),
   }),
   v.rawCheck(({ dataset }) => {
     if (dataset.typed) {

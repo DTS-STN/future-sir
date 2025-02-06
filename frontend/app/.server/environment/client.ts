@@ -1,11 +1,14 @@
 import * as v from 'valibot';
 
+import { stringToBooleanSchema } from '../validation/string-to-boolean-schema';
+
 import { buildinfo, defaults as buildinfoDefaults } from '~/.server/environment/buildinfo';
+import { boolToString } from '~/utils/boolean-utils';
 
 export type Client = Readonly<v.InferOutput<typeof client>>;
 
 export const defaults = {
-  I18NEXT_DEBUG: 'false',
+  I18NEXT_DEBUG: boolToString(false),
   ...buildinfoDefaults,
 } as const;
 
@@ -15,12 +18,6 @@ export const defaults = {
  */
 export const client = v.object({
   ...buildinfo.entries,
-  I18NEXT_DEBUG: v.optional(
-    v.pipe(
-      v.picklist(['true', 'false']),
-      v.transform((input) => input === 'true'),
-    ),
-    defaults.I18NEXT_DEBUG,
-  ),
+  I18NEXT_DEBUG: v.optional(stringToBooleanSchema(), defaults.I18NEXT_DEBUG),
   isProduction: v.boolean(),
 });
