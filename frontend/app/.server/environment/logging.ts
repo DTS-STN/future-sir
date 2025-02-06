@@ -1,17 +1,15 @@
-import { z } from 'zod';
+import * as v from 'valibot';
 
 import { logLevels } from '~/.server/logging';
-import * as ValidationUtils from '~/utils/validation-utils';
 
-export type Logging = Readonly<z.infer<typeof logging>>;
+export type Logging = Readonly<v.InferOutput<typeof logging>>;
+
+const isProduction = process.env.NODE_ENV === 'production';
 
 export const defaults = {
-  LOG_LEVEL:
-    process.env.NODE_ENV === 'production' //
-      ? 'info'
-      : 'debug',
+  LOG_LEVEL: isProduction ? 'info' : 'debug',
 } as const;
 
-export const logging = z.object({
-  LOG_LEVEL: z.string().default(defaults.LOG_LEVEL).refine(ValidationUtils.isIn(logLevels)),
+export const logging = v.object({
+  LOG_LEVEL: v.optional(v.picklist(Object.keys(logLevels)), defaults.LOG_LEVEL),
 });

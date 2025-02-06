@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import * as v from 'valibot';
 
-export type Buildinfo = Readonly<z.infer<typeof buildinfo>>;
+export type Buildinfo = Readonly<v.InferOutput<typeof buildinfo>>;
 
 export const defaults = {
   BUILD_DATE: '1970-01-01T00:00:00.000Z',
@@ -9,9 +9,9 @@ export const defaults = {
   BUILD_VERSION: '0.0.0-000000-00000000',
 } as const;
 
-export const buildinfo = z.object({
-  BUILD_DATE: z.string().default(defaults.BUILD_DATE),
-  BUILD_ID: z.string().default(defaults.BUILD_ID),
-  BUILD_REVISION: z.string().default(defaults.BUILD_REVISION),
-  BUILD_VERSION: z.string().default(defaults.BUILD_VERSION),
+export const buildinfo = v.object({
+  BUILD_DATE: v.optional(v.string(), defaults.BUILD_DATE),
+  BUILD_ID: v.optional(v.string(), defaults.BUILD_ID),
+  BUILD_REVISION: v.optional(v.string(), defaults.BUILD_REVISION),
+  BUILD_VERSION: v.optional(v.string(), defaults.BUILD_VERSION),
 });

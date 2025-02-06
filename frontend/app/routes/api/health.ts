@@ -58,7 +58,8 @@ async function isAuthorized(request: Request): Promise<boolean> {
   //
 
   const { AZUREAD_ISSUER_URL, AZUREAD_CLIENT_ID } = serverEnvironment;
-  const AZUREAD_CLIENT_SECRET = Redacted.value(serverEnvironment.AZUREAD_CLIENT_SECRET);
+  const AZUREAD_CLIENT_SECRET =
+    serverEnvironment.AZUREAD_CLIENT_SECRET && Redacted.value(serverEnvironment.AZUREAD_CLIENT_SECRET);
 
   if (!AZUREAD_ISSUER_URL || !AZUREAD_CLIENT_ID || !AZUREAD_CLIENT_SECRET) {
     throw new AppError('The Azure OIDC settings are misconfigured', ErrorCodes.MISCONFIGURED_PROVIDER);

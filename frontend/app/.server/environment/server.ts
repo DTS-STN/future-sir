@@ -1,4 +1,4 @@
-import { z, ZodIssueCode } from 'zod';
+import * as v from 'valibot';
 
 import { authentication, defaults as authenticationDefaults } from '~/.server/environment/authentication';
 import { client, defaults as clientDefaults } from '~/.server/environment/client';
@@ -8,11 +8,11 @@ import { redis, defaults as redisDefaults } from '~/.server/environment/redis';
 import { session, defaults as sessionDefaults } from '~/.server/environment/session';
 import { telemetry, defaults as telemetryDefaults } from '~/.server/environment/telemetry';
 import { LogFactory } from '~/.server/logging';
-import * as ValidationUtils from '~/utils/validation-utils';
+import { stringToIntegerSchema } from '~/.server/validation/string-to-integer-schema';
 
 const log = LogFactory.getLogger(import.meta.url);
 
-export type Server = Readonly<z.infer<typeof server>>;
+export type Server = Readonly<v.InferOutput<typeof server>>;
 
 export const defaults = {
   NODE_ENV: 'development',
@@ -30,35 +30,29 @@ export const defaults = {
  * Server-side environment variables.
  * Also includes all client-side variables.
  */
-export const server = z
-  .object({
-    NODE_ENV: z.enum(['production', 'development', 'test']).default(defaults.NODE_ENV),
-    PORT: ValidationUtils.asNumber(z.string().default(defaults.PORT)).pipe(z.number().min(0)),
-  })
-  .merge(authentication)
-  .merge(client)
-  .merge(features)
-  .merge(logging)
-  .merge(redis)
-  .merge(session)
-  .merge(telemetry)
-  .superRefine((data, ctx) => {
-    const isSentinel = data.REDIS_CONNECTION_TYPE === 'sentinel';
-    const hasMasterName = data.REDIS_SENTINEL_MASTER_NAME !== undefined;
+export const server = v.pipe(
+  v.object({
+    ...authentication.entries,
+    ...client.entries,
+    ...features.entries,
+    ...logging.entries,
+    ...redis.entries,
+    ...session.entries,
+    ...telemetry.entries,
+    NODE_ENV: v.optional(v.picklist(['production', 'development', 'test']), defaults.NODE_ENV),
+    PORT: v.optional(v.pipe(stringToIntegerSchema(), v.minValue(0)), defaults.PORT),
+  }),
+  v.rawCheck(({ dataset }) => {
+    if (dataset.typed) {
+      const { value } = dataset;
 
-    if (isSentinel && !hasMasterName) {
-      ctx.addIssue({
-        code: ZodIssueCode.custom,
-        path: ['REDIS_SENTINEL_MASTER_NAME'],
-        message: 'REDIS_SENTINEL_MASTER_NAME is required when REDIS_CONNECTION_TYPE is sentinel',
-      });
+      warn(
+        value.isProduction && value.ENABLE_DEVMODE_OIDC === true,
+        'Setting ENABLE_DEVMODE_OIDC=true is not recommended in production!',
+      );
     }
-
-    warn(
-      data.isProduction && data.ENABLE_DEVMODE_OIDC === true,
-      'Setting ENABLE_DEVMODE_OIDC=true is not recommended in production!',
-    );
-  });
+  }),
+);
 
 /**
  * Logs a warning if the check evaluates to true.

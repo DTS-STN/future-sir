@@ -1,16 +1,15 @@
-import { z } from 'zod';
+import * as v from 'valibot';
 
-import * as ValidationUtils from '~/utils/validation-utils';
+import { stringToBooleanSchema } from '~/.server/validation/string-to-boolean-schema';
 
-export type Features = Readonly<z.infer<typeof features>>;
+export type Features = Readonly<v.InferOutput<typeof features>>;
+
+const isProduction = process.env.NODE_ENV === 'production';
 
 export const defaults = {
-  ENABLE_DEVMODE_OIDC:
-    process.env.NODE_ENV === 'production' //
-      ? 'false'
-      : 'true',
+  ENABLE_DEVMODE_OIDC: isProduction ? 'false' : 'true',
 } as const;
 
-export const features = z.object({
-  ENABLE_DEVMODE_OIDC: ValidationUtils.asBoolean(z.string().default(defaults.ENABLE_DEVMODE_OIDC)),
+export const features = v.object({
+  ENABLE_DEVMODE_OIDC: v.optional(stringToBooleanSchema(), defaults.ENABLE_DEVMODE_OIDC),
 });
