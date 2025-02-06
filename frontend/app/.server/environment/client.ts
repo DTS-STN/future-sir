@@ -1,8 +1,7 @@
 import * as v from 'valibot';
 
-import { stringToBooleanSchema } from '../validation/string-to-boolean-schema';
-
 import { buildinfo, defaults as buildinfoDefaults } from '~/.server/environment/buildinfo';
+import { stringToBooleanSchema } from '~/.server/validation/string-to-boolean-schema';
 
 export type Client = Readonly<v.InferOutput<typeof client>>;
 

@@ -1,7 +1,5 @@
 import * as v from 'valibot';
 
-import { stringToIntegerSchema } from '../validation/string-to-integer-schema';
-
 import { authentication, defaults as authenticationDefaults } from '~/.server/environment/authentication';
 import { client, defaults as clientDefaults } from '~/.server/environment/client';
 import { features, defaults as featuresDefaults } from '~/.server/environment/features';
@@ -10,6 +8,7 @@ import { redis, defaults as redisDefaults } from '~/.server/environment/redis';
 import { session, defaults as sessionDefaults } from '~/.server/environment/session';
 import { telemetry, defaults as telemetryDefaults } from '~/.server/environment/telemetry';
 import { LogFactory } from '~/.server/logging';
+import { stringToIntegerSchema } from '~/.server/validation/string-to-integer-schema';
 
 const log = LogFactory.getLogger(import.meta.url);
 

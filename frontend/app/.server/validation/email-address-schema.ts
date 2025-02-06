@@ -1,7 +1,7 @@
 import * as v from 'valibot';
 import isEmail from 'validator/es/lib/isEmail';
 
-import { mapIssueErrorMessage } from '../utils/validation-utils';
+import { mapIssueErrorMessage } from '~/.server/utils/validation-utils';
 
 /**
  * Interface for customizable error messages in email address validation

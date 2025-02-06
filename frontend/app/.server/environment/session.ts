@@ -1,8 +1,8 @@
 import { Redacted } from 'effect';
 import * as v from 'valibot';
 
-import { stringToBooleanSchema } from '../validation/string-to-boolean-schema';
-import { stringToIntegerSchema } from '../validation/string-to-integer-schema';
+import { stringToBooleanSchema } from '~/.server/validation/string-to-boolean-schema';
+import { stringToIntegerSchema } from '~/.server/validation/string-to-integer-schema';
 
 export type Session = Readonly<v.InferOutput<typeof session>>;
 

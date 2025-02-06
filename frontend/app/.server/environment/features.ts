@@ -1,6 +1,6 @@
 import * as v from 'valibot';
 
-import { stringToBooleanSchema } from '../validation/string-to-boolean-schema';
+import { stringToBooleanSchema } from '~/.server/validation/string-to-boolean-schema';
 
 export type Features = Readonly<v.InferOutput<typeof features>>;
 
