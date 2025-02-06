@@ -78,7 +78,7 @@
     "@eslint/js": "^9.19.0",
     "@playwright/test": "^1.50.1",
     "@react-router/dev": "^7.1.5",
-    "@tailwindcss/vite": "^4.0.3",
+    "@tailwindcss/vite": "^4.0.4",
     "@testing-library/react": "^16.2.0",
     "@trivago/prettier-plugin-sort-imports": "^5.2.2",
     "@types/compression": "^1.7.5",
