@@ -14,7 +14,6 @@ describe('stringToIntegerSchema', () => {
   it('should parse a string with spaces', () => {
     const schema = stringToIntegerSchema();
     const result = v.safeParse(schema, ' 123 ');
-    console.log(result);
     assert(result.success === true);
     expect(result.output).toBe(123);
   });
@@ -31,7 +30,6 @@ describe('stringToIntegerSchema', () => {
   it('should fail to parse an empty string', () => {
     const schema = stringToIntegerSchema();
     const result = v.safeParse(schema, '');
-    console.log(result);
     assert(result.success === false);
     expect(v.flatten(result.issues)).toEqual({
       root: ['Invalid length: Expected !0 but received 0'],
