@@ -1,8 +1,7 @@
-import { z } from 'zod';
+import { Redacted } from 'effect';
+import * as v from 'valibot';
 
-import * as ValidationUtils from '~/utils/validation-utils';
-
-export type Telemetry = Readonly<z.infer<typeof telemetry>>;
+export type Telemetry = Readonly<v.InferOutput<typeof telemetry>>;
 
 export const defaults = {
   OTEL_SERVICE_NAME: 'future-sir-frontend',
@@ -13,11 +12,11 @@ export const defaults = {
   OTEL_TRACES_ENDPOINT: 'http://localhost:4318/v1/traces',
 } as const;
 
-export const telemetry = z.object({
-  OTEL_SERVICE_NAME: z.string().default(defaults.OTEL_SERVICE_NAME),
-  OTEL_SERVICE_VERSION: z.string().default(defaults.OTEL_SERVICE_VERSION),
-  OTEL_ENVIRONMENT_NAME: z.string().default(defaults.OTEL_ENVIRONMENT_NAME),
-  OTEL_AUTH_HEADER: ValidationUtils.redact(z.string().default(defaults.OTEL_AUTH_HEADER)),
-  OTEL_METRICS_ENDPOINT: z.string().default(defaults.OTEL_METRICS_ENDPOINT),
-  OTEL_TRACES_ENDPOINT: z.string().default(defaults.OTEL_TRACES_ENDPOINT),
+export const telemetry = v.object({
+  OTEL_SERVICE_NAME: v.optional(v.string(), defaults.OTEL_SERVICE_NAME),
+  OTEL_SERVICE_VERSION: v.optional(v.string(), defaults.OTEL_SERVICE_VERSION),
+  OTEL_ENVIRONMENT_NAME: v.optional(v.string(), defaults.OTEL_ENVIRONMENT_NAME),
+  OTEL_AUTH_HEADER: v.pipe(v.optional(v.string(), defaults.OTEL_AUTH_HEADER), v.transform(Redacted.make)),
+  OTEL_METRICS_ENDPOINT: v.optional(v.string(), defaults.OTEL_METRICS_ENDPOINT),
+  OTEL_TRACES_ENDPOINT: v.optional(v.string(), defaults.OTEL_TRACES_ENDPOINT),
 });

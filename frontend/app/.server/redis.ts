@@ -37,7 +37,7 @@ function getRedisConfig(): RedisOptions {
     REDIS_USERNAME,
   } = serverEnvironment;
 
-  const redisPassword = Redacted.value(REDIS_PASSWORD);
+  const redisPassword = REDIS_PASSWORD && Redacted.value(REDIS_PASSWORD);
   const redisCommandTimeout = Duration.toMillis(Duration.seconds(REDIS_COMMAND_TIMEOUT_SECONDS));
 
   const retryStrategy = (times: number): number => {

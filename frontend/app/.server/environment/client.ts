@@ -1,9 +1,8 @@
-import { z } from 'zod';
+import * as v from 'valibot';
 
 import { buildinfo, defaults as buildinfoDefaults } from '~/.server/environment/buildinfo';
-import * as ValidationUtils from '~/utils/validation-utils';
 
-export type Client = Readonly<z.infer<typeof client>>;
+export type Client = Readonly<v.InferOutput<typeof client>>;
 
 export const defaults = {
   I18NEXT_DEBUG: 'false',
@@ -14,9 +13,14 @@ export const defaults = {
  * Environment variables that are safe to expose publicly to the client.
  * ⚠️ IMPORTANT: DO NOT PUT SENSITIVE CONFIGURATIONS HERE ⚠️
  */
-export const client = z
-  .object({
-    I18NEXT_DEBUG: ValidationUtils.asBoolean(z.string().default(defaults.I18NEXT_DEBUG)),
-    isProduction: z.boolean(),
-  })
-  .merge(buildinfo);
+export const client = v.object({
+  ...buildinfo.entries,
+  I18NEXT_DEBUG: v.optional(
+    v.pipe(
+      v.picklist(['true', 'false']),
+      v.transform((input) => input === 'true'),
+    ),
+    defaults.I18NEXT_DEBUG,
+  ),
+  isProduction: v.boolean(),
+});
