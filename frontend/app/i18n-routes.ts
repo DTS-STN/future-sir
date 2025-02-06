@@ -51,26 +51,16 @@ export const i18nRoutes = [
       },
       {
         id: 'PROT-0004',
-        file: 'routes/protected/person-case/first-name.tsx',
-        paths: { en: '/en/protected/person-case/first-name', fr: '/fr/protege/person-case/first-name' },
-      },
-      {
-        id: 'PROT-0005',
-        file: 'routes/protected/person-case/last-name.tsx',
-        paths: { en: '/en/protected/person-case/last-name', fr: '/fr/protege/person-case/last-name' },
-      },
-      {
-        id: 'PROT-0006',
         file: 'routes/protected/person-case/privacy-statement.tsx',
         paths: {
           en: '/en/protected/person-case/privacy-statement',
-          fr: '/fr/protege/person-case/declaration-de-confidentialite',
+          fr: '/fr/protege/cas-personnel/declaration-de-confidentialite',
         },
       },
       {
-        id: 'PROT-0007',
+        id: 'PROT-0005',
         file: 'routes/protected/person-case/primary-docs.tsx',
-        paths: { en: '/en/protected/person-case/primary-documents', fr: '/fr/protege/person-case/documents-primaires' },
+        paths: { en: '/en/protected/person-case/primary-documents', fr: '/fr/protege/cas-personnel/documents-primaires' },
       },
       //
       // XState-driven in-person flow (poc)

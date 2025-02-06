@@ -74,7 +74,7 @@ export async function action({ context, request }: Route.ActionArgs) {
     ...input,
   };
 
-  throw i18nRedirect('routes/protected/person-case/first-name.tsx', request); //TODO: change it to redirect to file="routes/protected/person-case/secondary-docs.tsx"
+  throw i18nRedirect('routes/protected/request.tsx', request); //TODO: change it to redirect to file="routes/protected/person-case/secondary-docs.tsx"
 }
 
 export default function PrimaryDocs({ loaderData, actionData, params }: Route.ComponentProps) {
