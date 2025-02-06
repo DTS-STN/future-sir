@@ -1,7 +1,5 @@
 import * as v from 'valibot';
 
-import { boolToString } from '~/utils/boolean-utils';
-
 /**
  * Creates a Valibot schema to validate and transform a string representing
  * a boolean ('true' or 'false') into an actual boolean (true or false).
@@ -25,7 +23,7 @@ export function stringToBooleanSchema(): v.GenericSchema<string, boolean> {
     v.string(),
     v.trim(),
     v.nonEmpty(),
-    v.picklist([boolToString(true), boolToString(false)]),
-    v.transform((input) => input === boolToString(true)),
+    v.picklist(['true', 'false']),
+    v.transform((input) => input === 'true'),
   );
 }

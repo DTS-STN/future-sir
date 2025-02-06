@@ -4,8 +4,6 @@ import * as v from 'valibot';
 import { stringToBooleanSchema } from '../validation/string-to-boolean-schema';
 import { stringToIntegerSchema } from '../validation/string-to-integer-schema';
 
-import { boolToString } from '~/utils/boolean-utils';
-
 export type Session = Readonly<v.InferOutput<typeof session>>;
 
 export const defaults = {
@@ -14,7 +12,7 @@ export const defaults = {
   SESSION_COOKIE_PATH: '/',
   SESSION_COOKIE_SAMESITE: 'strict',
   SESSION_COOKIE_SECRET: '00000000-0000-0000-0000-000000000000',
-  SESSION_COOKIE_SECURE: boolToString(true),
+  SESSION_COOKIE_SECURE: 'true',
   SESSION_EXPIRES_SECONDS: '3600',
   SESSION_KEY_PREFIX: 'SESSION:',
 } as const;

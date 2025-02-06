@@ -3,12 +3,11 @@ import * as v from 'valibot';
 import { stringToBooleanSchema } from '../validation/string-to-boolean-schema';
 
 import { buildinfo, defaults as buildinfoDefaults } from '~/.server/environment/buildinfo';
-import { boolToString } from '~/utils/boolean-utils';
 
 export type Client = Readonly<v.InferOutput<typeof client>>;
 
 export const defaults = {
-  I18NEXT_DEBUG: boolToString(false),
+  I18NEXT_DEBUG: 'false',
   ...buildinfoDefaults,
 } as const;
 
