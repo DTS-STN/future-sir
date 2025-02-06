@@ -29,9 +29,17 @@ export const redis = v.pipe(
     v.partialCheck(
       [['REDIS_CONNECTION_TYPE'], ['REDIS_SENTINEL_MASTER_NAME']],
       (input) => {
+        // Check if the connection type is sentinel
         const isSentinel = input.REDIS_CONNECTION_TYPE === 'sentinel';
+
+        // If the connection type is not sentinel, we don't need to check for the master name
+        if (!isSentinel) {
+          return true;
+        }
+
+        // If the connection type is sentinel, we need to check for the master name
         const hasMasterName = input.REDIS_SENTINEL_MASTER_NAME !== undefined;
-        return isSentinel && hasMasterName;
+        return hasMasterName;
       },
       'REDIS_SENTINEL_MASTER_NAME is required when REDIS_CONNECTION_TYPE is sentinel',
     ),
