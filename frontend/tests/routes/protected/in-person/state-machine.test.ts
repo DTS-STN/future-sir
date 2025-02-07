@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { createActor } from 'xstate';
 
-import { machine } from '~/routes/protected/in-person/state-machine';
+import { machine, routes } from '~/routes/protected/in-person/state-machine';
 
 describe('in-person machine transitions', () => {
   const states = [
@@ -17,7 +17,7 @@ describe('in-person machine transitions', () => {
     'previous-sin-info',
     'contact-info',
     'review',
-  ] as const;
+  ];
 
   const prevStates = Object.entries({
     'request-details': 'privacy-statement',
@@ -29,7 +29,7 @@ describe('in-person machine transitions', () => {
     'parent-info': 'birth-info',
     'previous-sin-info': 'parent-info',
     'contact-info': 'previous-sin-info',
-  } as const);
+  });
 
   const nextStates = Object.entries({
     'start': 'privacy-statement',
@@ -43,10 +43,10 @@ describe('in-person machine transitions', () => {
     'parent-info': 'previous-sin-info',
     'previous-sin-info': 'contact-info',
     'contact-info': 'review',
-  } as const);
+  });
 
   it.each(nextStates)('should transition from %s to %s on next event', (from, to) => {
-    const state = machine.resolveState({ value: from });
+    const state = machine.resolveState({ context: { routes }, value: from });
     const actor = createActor(machine, { state }).start();
 
     actor.send({ type: 'next' });
@@ -55,7 +55,7 @@ describe('in-person machine transitions', () => {
   });
 
   it.each(prevStates)('should transition from %s to %s on prev event', (from, to) => {
-    const state = machine.resolveState({ value: from });
+    const state = machine.resolveState({ context: { routes }, value: from });
     const actor = createActor(machine, { state }).start();
 
     actor.send({ type: 'prev' });
@@ -64,7 +64,7 @@ describe('in-person machine transitions', () => {
   });
 
   it.each(states.filter((state) => state !== 'start'))('should transition from %s to start on cancel', (from) => {
-    const state = machine.resolveState({ value: from });
+    const state = machine.resolveState({ context: { routes }, value: from });
     const actor = createActor(machine, { state }).start();
 
     actor.send({ type: 'cancel' });

@@ -1,4 +1,4 @@
-import { Form, redirect, useOutletContext } from 'react-router';
+import { Form, redirect } from 'react-router';
 
 import type { Route } from './+types/index';
 
@@ -6,22 +6,16 @@ import { Button } from '~/components/button';
 import { PageTitle } from '~/components/page-title';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
-import { create, getRoute } from '~/routes/protected/in-person/state-machine';
+import { createMachineActor, getStateRoute } from '~/routes/protected/in-person/state-machine-service';
 
 export async function action({ context, params, request }: Route.ActionArgs) {
-  const tabId = new URL(request.url).searchParams.get('tid');
-
-  if (!tabId) {
-    return Response.json('Tab id is required; it must not be null or empty', { status: 400 });
-  }
-
-  const actor = create(context.session, tabId);
+  const actor = createMachineActor(context.session, request);
 
   const formData = await request.formData();
   const action = formData.get('action');
 
   switch (action) {
-    case 'start': {
+    case 'next': {
       actor.send({ type: 'next' });
       break;
     }
@@ -31,20 +25,22 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     }
   }
 
-  throw redirect(getRoute(actor, { context, params, request }));
+  return redirect(getStateRoute(actor, { context, params, request }));
+}
+
+export function loader({ context, params, request }: Route.LoaderArgs) {
+  return { tabId: new URL(request.url).searchParams.get('tid') };
 }
 
 export default function InPersonFlow({ actionData, loaderData, matches, params }: Route.ComponentProps) {
-  const { tabId } = useOutletContext<{ tabId: string }>();
-
   return (
     <div className="space-y-3">
       <PageTitle>
         <span>In-person flow</span>
-        <span className="block text-sm">(tabid: {tabId})</span>
+        <span className="block text-sm">(tabid: {loaderData.tabId})</span>
       </PageTitle>
       <Form method="post">
-        <Button name="action" value="start" variant="primary" size="xl">
+        <Button name="action" value="next" variant="primary" size="xl">
           Start
         </Button>
       </Form>
