@@ -2,6 +2,10 @@ import 'express-session';
 
 import type { IDTokenClaims } from '~/.server/auth/auth-strategies';
 
+type SupportingDocs =
+  | { supportingDocumentsRequired: false }
+  | { supportingDocumentsRequired: true; supportingDocumentTypes: string[] };
+
 declare module 'express-session' {
   interface SessionData {
     authState: {
@@ -19,8 +23,11 @@ declare module 'express-session' {
      * Represents the session data for the in-person SIN case.
      */
     inPersonSINCase: {
-      firstName?: string;
-      lastName?: string;
+      currentNameInfo?: SupportingDocs & {
+        firstName: string;
+        middleName?: string;
+        lastName: string;
+      };
       /**
        * Represents the privacy statement data for the in-person SIN case.
        */

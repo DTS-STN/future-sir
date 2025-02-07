@@ -88,5 +88,48 @@
     },
     "required-scenario": "Client scenario is required.",
     "required-request": "Type of request is required."
+  },
+  "current-name": {
+    "page-title": "Current name",
+    "page-description": "The current name fields are pre-filled from the primary identity document. Review and update them to the applicant's current name(s) if needed. These names will be used for their SIN.",
+    "first-name": "Current first name(s)",
+    "middle-name": "Current middle name(s)",
+    "last-name": "Current last name",
+    "first-name-error": {
+      "format-error": "First name must not contain any digits.",
+      "max-length-error": "First name must contain at most {{maximum}} character(s).",
+      "required-error": "First name is required."
+    },
+    "middle-name-error": {
+      "format-error": "Middle name must not contain any digits.",
+      "max-length-error": "Middle name must contain at most {{maximum}} character(s).",
+      "required-error": "Middle name is required."
+    },
+    "last-name-error": {
+      "format-error": "Last name must not contain any digits.",
+      "max-length-error": "Last name must contain at most {{maximum}} character(s).",
+      "required-error": "Last name is required."
+    },
+    "supporting-error": {
+      "invalid-error": "Invalid supporting document(s) type.",
+      "required-error": "Supporting document(s) type is required."
+    },
+    "supporting-docs": {
+      "title": "Supporting documents",
+      "description": "If the documents provided do not contain the applicant's current name(s), and their current name(s) don't comply with naming rules, a supporting document containing such name(s) is required. If a supporting document is required and presented, ensure that it meets current proof-of-identity criteria.",
+      "docs-required": "Supporting document(s) required?",
+      "doc-type": "Supporting document type"
+    },
+    "doc-types": {
+      "marriage-document": "Marriage Certificate or Marriage Registration",
+      "divorce-decree": "Divorce Decree",
+      "name-change": "Certificate of legal change of name or Court Order",
+      "adoption-order": "Adoption Order",
+      "notarial-certificate": "Notarial Certificate (also called Notarial Adoption Certificate)",
+      "resident-record": "Request to Amend Record of Landing or Confirmation of Permanent Resident",
+      "replace-imm1442": "Replacement IMM1442 (WP, SP, or VR) with modification to name indicated in \"Remarks\"",
+      "birth-certificate": "Birth certificate contains family name to be registered",
+      "citizenship-certificate": "Certificate of Canadian Citizenship contains family name to be registered"
+    }
   }
 }
