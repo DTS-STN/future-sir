@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { createActor } from 'xstate';
 
-import { machine, routes } from '~/routes/protected/in-person/state-machine';
+import { machine, routes } from '~/routes/protected/in-person/state-machine.server';
 
 describe('in-person machine transitions', () => {
   const states = [

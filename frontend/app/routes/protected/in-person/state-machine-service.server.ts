@@ -5,11 +5,12 @@ import type { Actor } from 'xstate';
 import { createActor } from 'xstate';
 
 import { LogFactory } from '~/.server/logging';
+import { i18nRedirect } from '~/.server/utils/route-utils';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { i18nRoutes } from '~/i18n-routes';
-import type { StateName } from '~/routes/protected/in-person/state-machine';
-import { machine } from '~/routes/protected/in-person/state-machine';
+import type { StateName } from '~/routes/protected/in-person/state-machine.server';
+import { machine } from '~/routes/protected/in-person/state-machine.server';
 import { getLanguage } from '~/utils/i18n-utils';
 import { getRouteByFile } from '~/utils/route-utils';
 
@@ -59,19 +60,19 @@ export function loadMachineActor(session: AppSession, request: Request, state: S
   const tabId = new URL(request.url).searchParams.get('tid');
 
   if (!tabId) {
-    // XXX :: GjB :: how should we handle this case?
-    //               Showing an error page seems like bad UX.
-    log.warn('Could not find tabId in request; returning 400 response.');
-    throw Response.json('The tabId could not be found in the request', { status: 400 });
+    // XXX :: GjB :: I think adding a search param (or something) to indicate to
+    //               index.tsx that this happened would be beneficial.
+    //               This would allow us to show a message to the user explaining the situation.
+    log.warn('Could not find tabId in request; redirecting to start of flow');
+    throw i18nRedirect('routes/protected/in-person/index.tsx', request);
   }
 
   if (!flow[tabId]) {
-    // XXX :: GjB :: how should we handle this case?
-    //               Showing an error page seems like bad UX.
-    throw new AppError(
-      'The machine snapshot was not found in session', //
-      ErrorCodes.MISSING_SNAPSHOT,
-    );
+    // XXX :: GjB :: I think adding a search param (or something) to indicate to
+    //               index.tsx that this happened would be beneficial.
+    //               This would allow us to show a message to the user explaining the situation.
+    log.warn('Could not find a machine snapshot session; redirecting to start of flow');
+    throw i18nRedirect('routes/protected/in-person/index.tsx', request);
   }
 
   const snapshot = machine.resolveState({ value: state, context: flow[tabId].context });

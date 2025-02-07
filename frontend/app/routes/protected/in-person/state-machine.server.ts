@@ -37,7 +37,7 @@ export const routes = {
   'previous-sin-info': 'routes/protected/in-person/previous-sin-info.tsx',
   'contact-info': 'routes/protected/in-person/contact-info.tsx',
   'review': 'routes/protected/in-person/review.tsx',
-} satisfies Record<StateName, I18nRouteFile>;
+} as const satisfies Record<StateName, I18nRouteFile>;
 
 /**
  * XState machine definition for the in-person application process.
