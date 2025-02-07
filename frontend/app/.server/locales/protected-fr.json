@@ -53,6 +53,7 @@
       "required": "Statut actuel au Canada est requis.",
       "invalid": "Veuillez sélectionner un citoyen canadien né en dehors du Canada.",
       "options": {
+        "select-option": "Sélectionner une option",
         "canadian-citizen-born-in-canada": "Citoyen canadien né au Canada",
         "canadian-citizen-born-outside-canada": "Citoyen canadien né à l'extérieur du Canada",
         "registered-indian-born-in-canada": "Indien enregistré né au Canada",
@@ -62,7 +63,17 @@
         "no-legal-status-in-canada": "Aucun statut légal au Canada"
       }
     },
-    "please-select": "Veuillez sélectionner",
+    "document-type": {
+      "title": "Type de document",
+      "required": "Le type de document est requis.",
+      "options": {
+        "select-option": "Sélectionner une option",
+        "certificate-of-canadian-citizenship": "Certificat de citoyenneté canadienne",
+        "certificate-of-registration-of-birth-abroad": "Certificat d'enregistrement de naissance à l'étranger",
+        "birth-certificate-and-certificate-of-indian-status": "Certificats de naissance et certificats de statut indien",
+        "certificate-of-canadian-citizenship-and-certificate-of-indian-status": "Certificat de citoyenneté canadienne et certificat de statut indien"
+      }
+    },
     "page-title": "Document d'identité principal"
   },
   "request-details": {
