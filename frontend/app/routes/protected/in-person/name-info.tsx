@@ -6,7 +6,7 @@ import { Button } from '~/components/button';
 import { PageTitle } from '~/components/page-title';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
-import { getStateRoute, loadMachineActor } from '~/routes/protected/in-person/state-machine-service.server';
+import { getStateRoute, loadMachineActor } from '~/routes/protected/in-person/state-machine.server';
 
 export async function action({ context, params, request }: Route.ActionArgs) {
   const actor = loadMachineActor(context.session, request, 'name-info');

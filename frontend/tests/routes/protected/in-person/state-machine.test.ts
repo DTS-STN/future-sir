@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { createActor } from 'xstate';
 
-import { machine, routes } from '~/routes/protected/in-person/state-machine.server';
+import { machine, stateRoutes } from '~/routes/protected/in-person/state-machine.server';
 
 describe('in-person machine transitions', () => {
   const states = [
@@ -46,7 +46,7 @@ describe('in-person machine transitions', () => {
   });
 
   it.each(nextStates)('should transition from %s to %s on next event', (from, to) => {
-    const state = machine.resolveState({ context: { routes }, value: from });
+    const state = machine.resolveState({ context: { formData: {}, stateRoutes }, value: from });
     const actor = createActor(machine, { state }).start();
 
     actor.send({ type: 'next' });
@@ -55,7 +55,7 @@ describe('in-person machine transitions', () => {
   });
 
   it.each(prevStates)('should transition from %s to %s on prev event', (from, to) => {
-    const state = machine.resolveState({ context: { routes }, value: from });
+    const state = machine.resolveState({ context: { formData: {}, stateRoutes }, value: from });
     const actor = createActor(machine, { state }).start();
 
     actor.send({ type: 'prev' });
@@ -64,7 +64,7 @@ describe('in-person machine transitions', () => {
   });
 
   it.each(states.filter((state) => state !== 'start'))('should transition from %s to start on cancel', (from) => {
-    const state = machine.resolveState({ context: { routes }, value: from });
+    const state = machine.resolveState({ context: { formData: {}, stateRoutes }, value: from });
     const actor = createActor(machine, { state }).start();
 
     actor.send({ type: 'cancel' });

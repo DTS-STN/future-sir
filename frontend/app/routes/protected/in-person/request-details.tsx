@@ -6,13 +6,24 @@ import { Button } from '~/components/button';
 import { PageTitle } from '~/components/page-title';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
-import { getStateRoute, loadMachineActor } from '~/routes/protected/in-person/state-machine-service.server';
+import { getStateRoute, loadMachineActor } from '~/routes/protected/in-person/state-machine.server';
 
 export async function action({ context, params, request }: Route.ActionArgs) {
   const actor = loadMachineActor(context.session, request, 'request-details');
 
   const formData = await request.formData();
   const action = formData.get('action');
+
+  ///
+  /// Simulated form data
+  /// TODO :: GjB :: replace with actual form data
+
+  const requestType = '00000000-0000-0000-0000-000000000000'; // some business id;
+  const situationType = '00000000-0000-0000-0000-000000000000'; // some business id;
+
+  ///
+  ///
+  ///
 
   switch (action) {
     case 'prev': {
@@ -26,7 +37,13 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     }
 
     case 'next': {
-      actor.send({ type: 'next' });
+      actor.send({
+        type: 'next',
+        formData: {
+          requestType,
+          situationType,
+        },
+      });
       break;
     }
 
@@ -39,8 +56,8 @@ export async function action({ context, params, request }: Route.ActionArgs) {
 }
 
 export function loader({ context, params, request }: Route.LoaderArgs) {
-  loadMachineActor(context.session, request, 'request-details');
-  return { tabId: new URL(request.url).searchParams.get('tid') };
+  const actor = loadMachineActor(context.session, request, 'request-details');
+  return { tabId: new URL(request.url).searchParams.get('tid'), machineContext: actor.getSnapshot().context };
 }
 
 export default function RequestDetails({ actionData, loaderData, matches, params }: Route.ComponentProps) {
@@ -63,6 +80,7 @@ export default function RequestDetails({ actionData, loaderData, matches, params
           </Button>
         </div>
       </Form>
+      <pre>{JSON.stringify(loaderData.machineContext, null, 2)}</pre>
     </div>
   );
 }
