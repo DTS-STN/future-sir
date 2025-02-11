@@ -34,7 +34,10 @@ declare module 'express-session' {
         type: string;
         scenario: string;
       };
-      currentStatusInCanada?: string;
+      primaryDocuments?: {
+        currentStatusInCanada: string;
+        documentType: string;
+      };
     };
   }
 }

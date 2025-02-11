@@ -53,6 +53,7 @@
       "required": "Current status in Canada is required.",
       "invalid": "Please select Canadian Citizen born outside Canada.",
       "options": {
+        "select-option": "Select option",
         "canadian-citizen-born-in-canada": "Canadian citizen born in Canada",
         "canadian-citizen-born-outside-canada": "Canadian citizen born outside Canada",
         "registered-indian-born-in-canada": "Registered Indian born in Canada",
@@ -62,7 +63,17 @@
         "no-legal-status-in-canada": "No Legal Status in Canada"
       }
     },
-    "please-select": "Please select",
+    "document-type": {
+      "title": "Document type",
+      "required": "Document type is required.",
+      "options": {
+        "select-option": "Select option",
+        "certificate-of-canadian-citizenship": "Certificate of Canadian citizenship",
+        "certificate-of-registration-of-birth-abroad": "Certificate of Registration of Birth Abroad",
+        "birth-certificate-and-certificate-of-indian-status": "Birth certificates and Certificates of Indian Status",
+        "certificate-of-canadian-citizenship-and-certificate-of-indian-status": "Certificate of Canadian Citizenship and Certificate of Indian Status"
+      }
+    },
     "page-title": "Primary identity document"
   },
   "request-details": {
