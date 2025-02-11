@@ -104,12 +104,12 @@ export default function CreateRequest({ loaderData, actionData, params }: Route.
   const errors = fetcher.data?.errors;
   const scenarioOptions = VALID_SCENARIOS.map((value) => ({
     value: value,
-    children: t(`protected:request-details.scenarios.${value}` as 'protected:request-details.scenarios.for-self'),
+    children: t(`protected:request-details.scenarios.${value}`),
     defaultChecked: value === loaderData.defaultFormValues?.scenario,
   }));
   const requestOptions = ['select-option', ...VALID_REQUESTS].map((value) => ({
     value: value === 'select-option' ? '' : value,
-    children: t(`protected:request-details.requests.${value}` as 'protected:request-details.requests.select-option'),
+    children: t(`protected:request-details.requests.${value}`),
   }));
 
   return (
