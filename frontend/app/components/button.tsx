@@ -22,10 +22,8 @@ const variants = {
   green: 'border-green-700 bg-green-700 text-white hover:bg-green-800 focus:bg-green-800',
   primary: 'border-slate-700 bg-slate-700 text-white hover:bg-sky-800 focus:bg-sky-800',
   red: 'border-red-700 bg-red-700 text-white hover:bg-red-800 focus:bg-red-800',
-  link: 'bg-white text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:bg-gray-100 focus:text-blue-700 underline border-0',
+  link: 'bg-white text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:bg-gray-100 focus:text-blue-700 border-0 underline',
 } as const;
-
-const baseClassName = 'inline-flex items-center justify-center rounded border align-middle font-lato outline-offset-4';
 
 export interface ButtonProps extends ComponentProps<'button'> {
   endIcon?: ButtonEndIconProps['icon'];
@@ -44,7 +42,6 @@ export interface ButtonProps extends ComponentProps<'button'> {
 export function Button({
   children,
   className,
-  disabled,
   endIcon,
   endIconProps,
   pill,
@@ -54,12 +51,11 @@ export function Button({
   variant = 'default',
   ...props
 }: ButtonProps) {
-  const disabledClassName = 'pointer-events-none cursor-not-allowed opacity-70';
   const buttonClassName = cn(
-    baseClassName,
+    'font-lato inline-flex items-center justify-center rounded border align-middle outline-offset-4',
     sizes[size],
     variants[variant],
-    disabled && disabledClassName,
+    'disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-70',
     pill && 'rounded-full',
     className,
   );

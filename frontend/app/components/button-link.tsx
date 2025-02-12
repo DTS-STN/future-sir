@@ -23,7 +23,7 @@ const variants = {
   green: 'border-green-700 bg-green-700 text-white hover:bg-green-800 focus:bg-green-800',
   primary: 'border-slate-700 bg-slate-700 text-white hover:bg-sky-800 focus:bg-sky-800',
   red: 'border-red-700 bg-red-700 text-white hover:bg-red-800 focus:bg-red-800',
-  link: 'bg-white text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:bg-gray-100 focus:text-blue-700 underline border-0',
+  link: 'bg-white text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:bg-gray-100 focus:text-blue-700 border-0 underline',
 } as const;
 
 type ButtonLinkStyleProps = {
@@ -62,17 +62,19 @@ export function ButtonLink({
   variant = 'default',
   ...props
 }: ButtonLinkProps) {
-  const disabledClassName = 'pointer-events-none cursor-not-allowed opacity-70';
-  const baseClassName = cn(
-    'font-lato inline-flex items-center justify-center rounded-sm border align-middle no-underline outline-offset-4',
-    sizes[size],
-    variants[variant],
-    disabled && disabledClassName,
-    pill && 'rounded-full',
-  );
-
   return (
-    <AppLink className={cn(baseClassName, className)} disabled={disabled} {...props}>
+    <AppLink
+      className={cn(
+        'font-lato inline-flex items-center justify-center rounded-sm border align-middle no-underline outline-offset-4',
+        sizes[size],
+        variants[variant],
+        disabled && 'pointer-events-none cursor-not-allowed opacity-70',
+        pill && 'rounded-full',
+        className,
+      )}
+      disabled={disabled}
+      {...props}
+    >
       {startIcon && <ButtonStartIcon {...(startIconProps ?? {})} icon={startIcon} />}
       {children}
       {endIcon && <ButtonEndIcon {...(endIconProps ?? {})} icon={endIcon} />}
