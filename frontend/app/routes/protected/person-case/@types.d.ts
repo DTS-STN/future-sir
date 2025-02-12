@@ -41,6 +41,11 @@ declare module 'express-session' {
         lastNamePreviouslyUsed?: string[];
         gender: string;
       };
+      secondaryDocument: {
+        documentType: string;
+        document: File;
+        expiryDate: string;
+      };
       previousSin: {
         hasPreviousSin: string;
         socialInsuranceNumber?: string;

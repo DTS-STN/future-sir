@@ -139,6 +139,11 @@ export const i18nRoutes = [
       },
       {
         id: 'PROT-0009',
+        file: 'routes/protected/person-case/secondary-doc.tsx',
+        paths: { en: '/en/protected/person-case/secondary-document', fr: '/fr/protege/cas-personnel/document-secondaire' },
+      },
+      {
+        id: 'PROT-0009',
         file: 'routes/protected/person-case/birth-details.tsx',
         paths: {
           en: '/en/protected/person-case/birth-details',

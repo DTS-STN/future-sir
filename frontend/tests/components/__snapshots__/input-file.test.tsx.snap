@@ -8,7 +8,6 @@ exports[`InputFile > should render input file component > expected html 1`] = `
   >
     <label
       class="block"
-      for="test-id"
       id="input-file-test-id-label"
     >
       <span
@@ -20,11 +19,22 @@ exports[`InputFile > should render input file component > expected html 1`] = `
     <input
       accept=""
       aria-labelledby="input-file-test-id-label"
-      class="block cursor-pointer rounded-lg border border-gray-500 focus:border-blue-500 focus:ring-3 focus:ring-blue-500 focus:outline-hidden file:border-r file:border-gray-200 file:bg-gray-50 file:text-black hover:file:bg-gray-200 disabled:pointer-events-none disabled:bg-gray-100 disabled:opacity-70 aria-invalid:border-red-500 aria-invalid:focus:border-red-500 aria-invalid:focus:ring-red-500"
+      class="peer absolute -z-10 h-12 w-50 overflow-hidden opacity-0 sm:w-100"
       id="input-file-test-id-input"
       name="test"
       type="file"
     />
+    <label
+      class="block w-full cursor-pointer overflow-hidden rounded-lg border border-gray-500 px-3 py-2 whitespace-nowrap peer-focus:border-blue-500 peer-focus:ring-1 peer-focus:ring-blue-500 peer-focus:outline-hidden sm:w-fit sm:pr-20 sm:pl-0 peer-disabled:pointer-events-none peer-disabled:bg-gray-100 peer-disabled:opacity-70"
+      for="input-file-test-id-input"
+    >
+      <span
+        class="mr-3 hidden rounded bg-slate-100 px-3 py-4 sm:inline"
+      >
+        input-file.choose-file
+      </span>
+      input-file.no-file
+    </label>
   </div>
 </div>
 `;
@@ -37,7 +47,6 @@ exports[`InputFile > should render input file with error message > expected html
   >
     <label
       class="block"
-      for="test-id"
       id="input-file-test-id-label"
     >
       <span
@@ -61,11 +70,22 @@ exports[`InputFile > should render input file with error message > expected html
       aria-errormessage="input-file-test-id-error"
       aria-invalid="true"
       aria-labelledby="input-file-test-id-label"
-      class="block cursor-pointer rounded-lg border border-gray-500 focus:border-blue-500 focus:ring-3 focus:ring-blue-500 focus:outline-hidden file:border-r file:border-gray-200 file:bg-gray-50 file:text-black hover:file:bg-gray-200 disabled:pointer-events-none disabled:bg-gray-100 disabled:opacity-70 aria-invalid:border-red-500 aria-invalid:focus:border-red-500 aria-invalid:focus:ring-red-500"
+      class="peer absolute -z-10 h-12 w-50 overflow-hidden opacity-0 sm:w-100"
       id="input-file-test-id-input"
       name="test"
       type="file"
     />
+    <label
+      class="block w-full cursor-pointer overflow-hidden rounded-lg border px-3 py-2 whitespace-nowrap peer-focus:ring-1 peer-focus:outline-hidden sm:w-fit sm:pr-20 sm:pl-0 peer-disabled:pointer-events-none peer-disabled:bg-gray-100 peer-disabled:opacity-70 border-red-500 peer-focus:border-red-500 peer-focus:ring-red-500"
+      for="input-file-test-id-input"
+    >
+      <span
+        class="mr-3 hidden rounded bg-slate-100 px-3 py-4 sm:inline"
+      >
+        input-file.choose-file
+      </span>
+      input-file.no-file
+    </label>
   </div>
 </div>
 `;
@@ -78,7 +98,6 @@ exports[`InputFile > should render input file with help message > expected html 
   >
     <label
       class="block"
-      for="test-id"
       id="input-file-test-id-label"
     >
       <span
@@ -91,11 +110,22 @@ exports[`InputFile > should render input file with help message > expected html 
       accept=""
       aria-describedby="input-file-test-id-help-secondary"
       aria-labelledby="input-file-test-id-label"
-      class="block cursor-pointer rounded-lg border border-gray-500 focus:border-blue-500 focus:ring-3 focus:ring-blue-500 focus:outline-hidden file:border-r file:border-gray-200 file:bg-gray-50 file:text-black hover:file:bg-gray-200 disabled:pointer-events-none disabled:bg-gray-100 disabled:opacity-70 aria-invalid:border-red-500 aria-invalid:focus:border-red-500 aria-invalid:focus:ring-red-500"
+      class="peer absolute -z-10 h-12 w-50 overflow-hidden opacity-0 sm:w-100"
       id="input-file-test-id-input"
       name="test"
       type="file"
     />
+    <label
+      class="block w-full cursor-pointer overflow-hidden rounded-lg border border-gray-500 px-3 py-2 whitespace-nowrap peer-focus:border-blue-500 peer-focus:ring-1 peer-focus:ring-blue-500 peer-focus:outline-hidden sm:w-fit sm:pr-20 sm:pl-0 peer-disabled:pointer-events-none peer-disabled:bg-gray-100 peer-disabled:opacity-70"
+      for="input-file-test-id-input"
+    >
+      <span
+        class="mr-3 hidden rounded bg-slate-100 px-3 py-4 sm:inline"
+      >
+        input-file.choose-file
+      </span>
+      input-file.no-file
+    </label>
     <span
       class="block max-w-prose text-gray-500"
       data-testid="input-help"
@@ -115,7 +145,6 @@ exports[`InputFile > should render input file with required > expected html 1`] 
   >
     <label
       class="block"
-      for="test-id"
       id="input-file-test-id-label"
     >
       <span
@@ -136,12 +165,23 @@ exports[`InputFile > should render input file with required > expected html 1`] 
       accept=""
       aria-labelledby="input-file-test-id-label"
       aria-required="true"
-      class="block cursor-pointer rounded-lg border border-gray-500 focus:border-blue-500 focus:ring-3 focus:ring-blue-500 focus:outline-hidden file:border-r file:border-gray-200 file:bg-gray-50 file:text-black hover:file:bg-gray-200 disabled:pointer-events-none disabled:bg-gray-100 disabled:opacity-70 aria-invalid:border-red-500 aria-invalid:focus:border-red-500 aria-invalid:focus:ring-red-500"
+      class="peer absolute -z-10 h-12 w-50 overflow-hidden opacity-0 sm:w-100"
       id="input-file-test-id-input"
       name="test"
       required=""
       type="file"
     />
+    <label
+      class="block w-full cursor-pointer overflow-hidden rounded-lg border border-gray-500 px-3 py-2 whitespace-nowrap peer-focus:border-blue-500 peer-focus:ring-1 peer-focus:ring-blue-500 peer-focus:outline-hidden sm:w-fit sm:pr-20 sm:pl-0 peer-disabled:pointer-events-none peer-disabled:bg-gray-100 peer-disabled:opacity-70"
+      for="input-file-test-id-input"
+    >
+      <span
+        class="mr-3 hidden rounded bg-slate-100 px-3 py-4 sm:inline"
+      >
+        input-file.choose-file
+      </span>
+      input-file.no-file
+    </label>
   </div>
 </div>
 `;

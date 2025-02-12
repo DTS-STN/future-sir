@@ -34,7 +34,7 @@ const inputStyles = {
  * Props for the DatePickerField component
  */
 export interface DatePickerFieldProps {
-  defaultValue: string;
+  defaultValue?: string;
   disabled?: boolean;
   errorMessages?: {
     all?: string;
@@ -118,7 +118,7 @@ export const DatePickerField = ({
   }, {} as AriaErrorMessage);
 
   // Extract default date parts from the default value
-  const { day = '', month = '', year = '' } = extractDateParts(defaultValue);
+  const { day = '', month = '', year = '' } = extractDateParts(defaultValue ?? '');
 
   // Define date picker part fields
   const datePickerPartFields = {

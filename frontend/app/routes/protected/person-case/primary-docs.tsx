@@ -251,7 +251,8 @@ export async function action({ context, request }: Route.ActionArgs) {
       }
 
       (context.session.inPersonSINCase ??= {}).primaryDocuments = parseResult.output;
-      throw i18nRedirect('routes/protected/request.tsx', request); // TODO: change it to redirect to file="routes/protected/person-case/secondary-docs.tsx"
+
+      throw i18nRedirect('routes/protected/person-case/secondary-doc.tsx', request);
     }
     default: {
       throw new AppError(`Unrecognized action: ${action}`, ErrorCodes.UNRECOGNIZED_ACTION);

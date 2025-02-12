@@ -136,6 +136,35 @@
       "invalid": "Primary identity document is invalid."
     }
   },
+  "secondary-identity-document": {
+    "document-type": {
+      "title": "Document type",
+      "required": "Document type is required.",
+      "invalid": "Document type is invalid.",
+      "options": {
+        "passport": "Passport (Canadian or foreign)",
+        "id-card": "Canadian provincial or territorial ID card or driver's license",
+        "other-id": "Any other Canadian government issued ID"
+      }
+    },
+    "expiry-date": {
+      "title": "Expiry date",
+      "required": "Expiry date is required.",
+      "invalid": "Expiry date is invalid.",
+      "required-year": "Expiry year is required.",
+      "invalid-year": "Expiry year is invalid.",
+      "required-month": "Expiry month is required.",
+      "invalid-month": "Expiry month is invalid.",
+      "required-day": "Expiry day is required.",
+      "invalid-day": "Expiry day is invalid."
+    },
+    "upload-document": {
+      "title": "Upload secondary document",
+      "required": "Secondary document is required.",
+      "invalid": "Secondary document is invalid."
+    },
+    "page-title": "Secondary identity document"
+  },
   "request-details": {
     "page-title": "Applicant",
     "select-scenario": "Select the scenario that best describes the client's situation",
