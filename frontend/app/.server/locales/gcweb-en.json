@@ -100,5 +100,9 @@
   },
   "input-legend": {
     "required": "required"
+  },
+  "input-option": {
+    "yes": "Yes",
+    "no": "No"
   }
 }

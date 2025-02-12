@@ -10,7 +10,7 @@
   },
   "nav": {
     "skip-to-content": "Passer au contenu principal",
-    "skip-to-about": "Passer à « À propos de ce site »"
+    "skip-to-about": "Passer à «\u00a0À propos de ce site\u00a0»"
   },
   "header": {
     "language-selection": "Sélection de la langue",
@@ -100,5 +100,9 @@
   },
   "input-legend": {
     "required": "obligatoire"
+  },
+  "input-option": {
+    "yes": "Oui",
+    "no": "Non"
   }
 }

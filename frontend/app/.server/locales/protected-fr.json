@@ -99,5 +99,48 @@
     },
     "required-scenario": "Scénario client est requis.",
     "required-request": "Type de demande est requis."
+  },
+  "current-name": {
+    "page-title": "Nom actuel",
+    "page-description": "Les champs relatifs au nom actuel sont pré-remplis à partir du document d'identité principal. Vérifiez-les et mettez-les à jour avec le(s) nom(s) actuel(s) du demandeur si nécessaire. Ces noms seront utilisés pour leur NAS.",
+    "first-name": "Prénom(s) actuel(s)",
+    "middle-name": "Deuxième(s) prénom(s) actuel(s)",
+    "last-name": "Nom de famille actuel",
+    "first-name-error": {
+      "format-error": "Le prénom ne doit contenir aucun chiffre.",
+      "max-length-error": "Le prénom doit contenir au maximum {{maximum}} caractère(s).",
+      "required-error": "Le prénom est requis."
+    },
+    "middle-name-error": {
+      "format-error": "Le deuxième prénom ne doit contenir aucun chiffre.",
+      "max-length-error": "Le deuxième prénom doit contenir au maximum {{maximum}} caractère(s).",
+      "required-error": "Le deuxième prénom est requis."
+    },
+    "last-name-error": {
+      "format-error": "Le nom de famille ne doit contenir aucun chiffre.",
+      "max-length-error": "Le nom de famille doit contenir au maximum {{maximum}} caractère(s).",
+      "required-error": "Le nom de famille est requis."
+    },
+    "supporting-error": {
+      "invalid-error": "Type de document(s) justificatif invalide.",
+      "required-error": "Le type de document(s) justificatif est requis."
+    },
+    "supporting-docs": {
+      "title": "Documents de support",
+      "description": "Si les documents fournis ne contiennent pas le(s) nom(s) actuel(s) du demandeur, et que leur(s) nom(s) actuel(s) ne respectent pas les règles de dénomination, un document de support contenant ces nom(s) est requis. Si un document de support est requis et présenté, assurez-vous qu'il respecte les critères actuels de preuve d'identité.",
+      "docs-required": "Document(s) de support requis ?",
+      "doc-type": "Type de document de support"
+    },
+    "doc-types": {
+      "marriage-document": "Certificat de mariage ou enregistrement de mariage",
+      "divorce-decree": "Décret de divorce",
+      "name-change": "Certificat de changement légal de nom ou ordonnance du tribunal",
+      "adoption-order": "Ordonnance d'adoption",
+      "notarial-certificate": "Certificat notarié (également appelé certificat notarié d'adoption)",
+      "resident-record": "Demande de modification du dossier d'atterrissage ou confirmation de résident permanent",
+      "replace-imm1442": "IMM1442 de remplacement (WP, SP, ou VR) avec modification du nom indiqué dans les «\u00a0Remarques\u00a0»",
+      "birth-certificate": "Acte de naissance contenant le nom de famille à enregistrer",
+      "citizenship-certificate": "Certificat de citoyenneté canadienne contenant le nom de famille à enregistrer"
+    }
   }
 }
