@@ -46,6 +46,6 @@ export function i18nRedirect(
   const path = generatePath(i18nPageRoute.paths[language], params);
   const url = search ? `${path}?${search.toString()}` : path;
 
-  log.debug('Generating redirect response; url=[%s]', url);
+  log.debug('Generating redirect response; url=[%s], init=[%s]', url, init);
   return redirect(url, init);
 }
