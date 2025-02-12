@@ -18,7 +18,7 @@ describe('InputSelect', () => {
       />,
     );
 
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('should render input select component with help message', () => {
@@ -36,7 +36,7 @@ describe('InputSelect', () => {
       />,
     );
 
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('should render input select component with required', () => {
@@ -54,7 +54,7 @@ describe('InputSelect', () => {
       />,
     );
 
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('should render input select component with error message', () => {
@@ -72,6 +72,6 @@ describe('InputSelect', () => {
       />,
     );
 
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 });

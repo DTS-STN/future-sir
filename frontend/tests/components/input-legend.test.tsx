@@ -10,7 +10,7 @@ describe('InputLegend', () => {
         input legend
       </InputLegend>,
     );
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('should render input legend component with required', () => {
@@ -19,6 +19,6 @@ describe('InputLegend', () => {
         input legend
       </InputLegend>,
     );
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 });

@@ -7,7 +7,7 @@ import { LoadingButton } from '~/components/loading-button';
 describe('LoadingButton', () => {
   it('renders the children correctly', () => {
     const { container } = render(<LoadingButton>Test Button</LoadingButton>);
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('renders the loading spinner at the start position', () => {
@@ -16,7 +16,7 @@ describe('LoadingButton', () => {
         Test Button
       </LoadingButton>,
     );
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('renders the loading spinner at the end position', () => {
@@ -25,7 +25,7 @@ describe('LoadingButton', () => {
         Test Button
       </LoadingButton>,
     );
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('renders the custom loading icon', () => {
@@ -34,6 +34,6 @@ describe('LoadingButton', () => {
         Test Button
       </LoadingButton>,
     );
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 });

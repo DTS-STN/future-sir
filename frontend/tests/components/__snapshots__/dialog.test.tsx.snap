@@ -1,7 +1,43 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Dialog > renders Dialog component > expected html 1`] = `"<button type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="radix-:r0:" data-state="closed">Open Dialog</button>"`;
+exports[`Dialog > renders Dialog component > expected html 1`] = `
+<div>
+  <button
+    aria-controls="radix-:r0:"
+    aria-expanded="false"
+    aria-haspopup="dialog"
+    data-state="closed"
+    type="button"
+  >
+    Open Dialog
+  </button>
+</div>
+`;
 
-exports[`Dialog > renders DialogOverlay with correct class name > expected html 1`] = `"<button type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="radix-:r3:" data-state="closed">Open Dialog</button>"`;
+exports[`Dialog > renders DialogOverlay with correct class name > expected html 1`] = `
+<div>
+  <button
+    aria-controls="radix-:r3:"
+    aria-expanded="false"
+    aria-haspopup="dialog"
+    data-state="closed"
+    type="button"
+  >
+    Open Dialog
+  </button>
+</div>
+`;
 
-exports[`Dialog > renders DialogTitle and DialogDescription > expected html 1`] = `"<button type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="radix-:r6:" data-state="closed">Open Dialog</button>"`;
+exports[`Dialog > renders DialogTitle and DialogDescription > expected html 1`] = `
+<div>
+  <button
+    aria-controls="radix-:r6:"
+    aria-expanded="false"
+    aria-haspopup="dialog"
+    data-state="closed"
+    type="button"
+  >
+    Open Dialog
+  </button>
+</div>
+`;

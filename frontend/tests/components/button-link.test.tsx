@@ -15,7 +15,7 @@ describe('ButtonLink', () => {
     ]);
 
     const { container } = render(<RoutesStub initialEntries={['/fr/public']} />);
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('should render a ButtonLink with custom styles', () => {
@@ -31,7 +31,7 @@ describe('ButtonLink', () => {
     ]);
 
     const { container } = render(<RoutesStub initialEntries={['/fr/public']} />);
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('should render a disabled ButtonLink correctly', () => {
@@ -47,7 +47,7 @@ describe('ButtonLink', () => {
     ]);
 
     const { container } = render(<RoutesStub initialEntries={['/fr/public']} />);
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('should render a pill ButtonLink correctly', () => {
@@ -63,6 +63,6 @@ describe('ButtonLink', () => {
     ]);
 
     const { container } = render(<RoutesStub initialEntries={['/fr/public']} />);
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 });

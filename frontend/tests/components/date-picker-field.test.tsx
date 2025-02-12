@@ -23,7 +23,7 @@ describe('DatePickerField', () => {
 
     const { container } = render(<RoutesStub />);
 
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('should render date picker field component with required', () => {
@@ -48,7 +48,7 @@ describe('DatePickerField', () => {
 
     const { container } = render(<RoutesStub />);
 
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('should render date picker field component with help message primary and help message secondary', () => {
@@ -74,7 +74,7 @@ describe('DatePickerField', () => {
 
     const { container } = render(<RoutesStub />);
 
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('should render date picker field component with default value', () => {
@@ -98,7 +98,7 @@ describe('DatePickerField', () => {
 
     const { container } = render(<RoutesStub />);
 
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('should render date picker field component with error message', () => {
@@ -128,6 +128,6 @@ describe('DatePickerField', () => {
 
     const { container } = render(<RoutesStub />);
 
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 });

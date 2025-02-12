@@ -59,6 +59,6 @@ describe('InputCheckbox', () => {
         input checkbox
       </InputCheckbox>,
     );
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 });

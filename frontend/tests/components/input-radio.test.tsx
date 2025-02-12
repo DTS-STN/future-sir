@@ -12,7 +12,7 @@ describe('InputRadio', () => {
         {labelText}
       </InputRadio>,
     );
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('disables radio button when disabled prop is provided', () => {
@@ -21,6 +21,6 @@ describe('InputRadio', () => {
         Radio Label
       </InputRadio>,
     );
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 });

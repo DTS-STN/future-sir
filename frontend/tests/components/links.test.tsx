@@ -27,7 +27,7 @@ describe('links', () => {
 
       const { container } = render(<RoutesStub initialEntries={['/']} />);
 
-      expect(container.innerHTML).toMatchSnapshot('expected html');
+      expect(container).toMatchSnapshot('expected html');
     });
 
     it('should render a link with the current language if no specific language is provided', () => {
@@ -40,7 +40,7 @@ describe('links', () => {
 
       const { container } = render(<RoutesStub initialEntries={['/fr/public']} />);
 
-      expect(container.innerHTML).toMatchSnapshot('expected html');
+      expect(container).toMatchSnapshot('expected html');
     });
 
     it('should throw an error if no language is available', () => {
@@ -54,7 +54,7 @@ describe('links', () => {
 
       const { container } = render(<RoutesStub initialEntries={['/']} />);
 
-      expect(container.innerHTML).toMatchSnapshot('expected html');
+      expect(container).toMatchSnapshot('expected html');
     });
 
     it('should render a disabled link', () => {
@@ -71,7 +71,7 @@ describe('links', () => {
 
       const { container } = render(<RoutesStub initialEntries={['/en/public']} />);
 
-      expect(container.innerHTML).toMatchSnapshot('expected html');
+      expect(container).toMatchSnapshot('expected html');
     });
   });
 
@@ -86,7 +86,7 @@ describe('links', () => {
 
       const { container } = render(<RoutesStub initialEntries={['/fr/public']} />);
 
-      expect(container.innerHTML).toMatchSnapshot('expected html');
+      expect(container).toMatchSnapshot('expected html');
     });
 
     it('should correctly render an InlineLink when the to property is provided', () => {
@@ -99,7 +99,7 @@ describe('links', () => {
 
       const { container } = render(<RoutesStub initialEntries={['/fr/public']} />);
 
-      expect(container.innerHTML).toMatchSnapshot('expected html');
+      expect(container).toMatchSnapshot('expected html');
     });
   });
 });

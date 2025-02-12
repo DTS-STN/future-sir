@@ -28,7 +28,7 @@ describe('Dialog', () => {
         </DialogContent>
       </Dialog>,
     );
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('renders DialogOverlay with correct class name', () => {
@@ -42,7 +42,7 @@ describe('Dialog', () => {
         </DialogContent>
       </Dialog>,
     );
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('renders DialogTitle and DialogDescription', () => {
@@ -57,6 +57,6 @@ describe('Dialog', () => {
         </DialogContent>
       </Dialog>,
     );
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 });

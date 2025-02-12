@@ -6,7 +6,7 @@ import { InputField } from '~/components/input-field';
 describe('InputField', () => {
   it('should render input field component', () => {
     const { container } = render(<InputField id="test-id" name="test" label="label test" defaultValue="default value" />);
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('should render input field with help message', () => {
@@ -19,20 +19,20 @@ describe('InputField', () => {
         helpMessageSecondary="help message"
       />,
     );
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('should render input field with required', () => {
     const { container } = render(
       <InputField id="test-id" name="test" label="label test" defaultValue="default value" required />,
     );
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('should render input field with error message', () => {
     const { container } = render(
       <InputField id="test-id" name="test" label="label test" defaultValue="default value" errorMessage="error message" />,
     );
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 });

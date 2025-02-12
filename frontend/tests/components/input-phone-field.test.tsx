@@ -7,13 +7,13 @@ describe('InputPhoneField', () => {
   it('should render', () => {
     const phoneNumber = '+15146667777';
     const { container } = render(<InputPhoneField id="test-id" name="test" label="label test" defaultValue={phoneNumber} />);
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('should render international phone number', () => {
     const phoneNumber = '+50644444444';
     const { container } = render(<InputPhoneField id="test-id" name="test" label="label test" defaultValue={phoneNumber} />);
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('should render with help message', () => {
@@ -27,7 +27,7 @@ describe('InputPhoneField', () => {
         helpMessageSecondary="help message"
       />,
     );
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('should render with required', () => {
@@ -35,7 +35,7 @@ describe('InputPhoneField', () => {
     const { container } = render(
       <InputPhoneField id="test-id" name="test" label="label test" defaultValue={phoneNumber} required />,
     );
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('should render with error message', () => {
@@ -43,6 +43,6 @@ describe('InputPhoneField', () => {
     const { container } = render(
       <InputPhoneField id="test-id" name="test" label="label test" defaultValue={phoneNumber} errorMessage="error message" />,
     );
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 });

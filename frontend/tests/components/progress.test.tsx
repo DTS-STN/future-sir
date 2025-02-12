@@ -14,7 +14,7 @@ describe('Progress component', () => {
       },
     ]);
     const { container } = render(<RoutesStub initialEntries={['/en/public']} />);
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('renders with custom size and variant', () => {
@@ -25,7 +25,7 @@ describe('Progress component', () => {
       },
     ]);
     const { container } = render(<RoutesStub initialEntries={['/en/public']} />);
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('renders with custom value', () => {
@@ -36,7 +36,7 @@ describe('Progress component', () => {
       },
     ]);
     const { container } = render(<RoutesStub initialEntries={['/en/public']} />);
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('renders with custom className', () => {
@@ -47,6 +47,6 @@ describe('Progress component', () => {
       },
     ]);
     const { container } = render(<RoutesStub initialEntries={['/en/public']} />);
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 });

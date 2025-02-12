@@ -17,7 +17,7 @@ describe('InputPatternField', () => {
     const { container } = render(
       <InputPatternField id="test-id" name="test" label="label test" defaultValue={defaultValue} format={testFormat} />,
     );
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('should render with help message', () => {
@@ -31,14 +31,14 @@ describe('InputPatternField', () => {
         helpMessageSecondary="help message"
       />,
     );
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('should render with required', () => {
     const { container } = render(
       <InputPatternField id="test-id" name="test" label="label test" format={testFormat} defaultValue="800000002" required />,
     );
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('should render with error message', () => {
@@ -52,6 +52,6 @@ describe('InputPatternField', () => {
         errorMessage="error message"
       />,
     );
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 });

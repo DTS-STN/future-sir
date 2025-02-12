@@ -21,7 +21,7 @@ describe('AppBar', () => {
 
     const { container } = render(<RoutesStub initialEntries={['/fr/public']} />);
 
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('should correctly render an AppBar with a MenuItem when the to property is provided', () => {
@@ -38,7 +38,7 @@ describe('AppBar', () => {
 
     const { container } = render(<RoutesStub initialEntries={['/fr/public']}></RoutesStub>);
 
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('should render render an AppBar with a name provided', () => {
@@ -55,7 +55,7 @@ describe('AppBar', () => {
 
     const { container } = render(<RoutesStub initialEntries={['/fr/public']}></RoutesStub>);
 
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('should render render an AppBar with a profile item provided', () => {
@@ -70,6 +70,6 @@ describe('AppBar', () => {
       },
     ]);
     const { container } = render(<RoutesStub initialEntries={['/fr/public']}></RoutesStub>);
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 });

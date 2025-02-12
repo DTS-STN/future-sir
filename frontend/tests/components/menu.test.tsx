@@ -20,7 +20,7 @@ describe('Menu', () => {
 
     const { container } = render(<RoutesStub initialEntries={['/fr/public']} />);
 
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('should correctly render a Menu with a MenuItem when the to property is provided', () => {
@@ -37,6 +37,6 @@ describe('Menu', () => {
 
     const { container } = render(<RoutesStub initialEntries={['/fr/public']}></RoutesStub>);
 
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 });

@@ -104,6 +104,6 @@ describe('DropdownMenu', () => {
         </DropdownMenuContent>
       </DropdownMenu>,
     );
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 });

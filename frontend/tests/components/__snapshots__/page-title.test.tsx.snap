@@ -1,3 +1,17 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`PageTitle > should render a h1 tag with default styles > expected html 1`] = `"<div class="mt-10 mb-8"><h1 id="wb-cont" tabindex="-1" class="font-lato text-3xl font-bold focus-visible:ring-3 after:mt-2 after:block after:h-1.5 after:w-18 after:bg-red-700">Test Title</h1></div>"`;
+exports[`PageTitle > should render a h1 tag with default styles > expected html 1`] = `
+<div>
+  <div
+    class="mt-10 mb-8"
+  >
+    <h1
+      class="font-lato text-3xl font-bold focus-visible:ring-3 after:mt-2 after:block after:h-1.5 after:w-18 after:bg-red-700"
+      id="wb-cont"
+      tabindex="-1"
+    >
+      Test Title
+    </h1>
+  </div>
+</div>
+`;
