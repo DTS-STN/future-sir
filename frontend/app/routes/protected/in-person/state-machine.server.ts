@@ -5,7 +5,6 @@ import type { Actor } from 'xstate';
 import { createActor, setup } from 'xstate';
 
 import { LogFactory } from '~/.server/logging';
-import { i18nRedirect } from '~/.server/utils/route-utils';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import type { I18nRouteFile } from '~/i18n-routes';
@@ -19,17 +18,28 @@ export type Machine = typeof machine;
 /* eslint-disable @typescript-eslint/no-empty-object-type */
 
 export type BirthInfoData = {};
+
 export type ContactInfoData = {};
+
 export type NameInfoData = {};
+
 export type ParentInfoData = {};
+
 export type PersonalInfoData = {};
+
 export type PreviousSinInfoData = {};
+
 export type PrimaryDocsData = {};
+
 export type PrivacyStatementData = {};
+
 export type RequestDetailsData = {
-  requestType: string;
-  situationType: string;
+  requestDetails: {
+    requestType: string;
+    situationType: string;
+  };
 };
+
 export type SecondaryDocsData = {};
 
 const log = LogFactory.getLogger(import.meta.url);
@@ -79,7 +89,7 @@ export const stateRoutes = {
 export const machine = setup({
   types: {
     context: {} as {
-      formData: {
+      data: {
         birthInfoData?: BirthInfoData;
         contactInfoData?: ContactInfoData;
         nameInfoData?: NameInfoData;
@@ -96,9 +106,10 @@ export const machine = setup({
     events: {} as
       | { type: 'cancel' }
       | { type: 'prev' }
+      | { type: 'next' }
       | {
           type: 'next';
-          formData?:
+          data:
             | BirthInfoData
             | ContactInfoData
             | NameInfoData
@@ -112,15 +123,18 @@ export const machine = setup({
         },
   },
   actions: {
+    'reset-context': ({ context }) => {
+      context.data = {};
+    },
     'update-context': ({ context, event }) => {
-      if ('formData' in event) {
-        Object.assign(context.formData, event.formData);
+      if ('data' in event) {
+        Object.assign(context.data, event.data);
       }
     },
   },
 }).createMachine({
   context: {
-    formData: {},
+    data: {},
     stateRoutes,
   },
   initial: 'start',
@@ -133,7 +147,10 @@ export const machine = setup({
     'privacy-statement': {
       on: {
         next: { target: 'request-details' },
-        cancel: { target: 'start' },
+        cancel: {
+          actions: 'reset-context',
+          target: 'start',
+        },
       },
     },
     'request-details': {
@@ -143,68 +160,98 @@ export const machine = setup({
           actions: 'update-context',
           target: 'primary-docs',
         },
-        cancel: { target: 'start' },
+        cancel: {
+          actions: 'reset-context',
+          target: 'start',
+        },
       },
     },
     'primary-docs': {
       on: {
         prev: { target: 'request-details' },
         next: { target: 'secondary-docs' },
-        cancel: { target: 'start' },
+        cancel: {
+          actions: 'reset-context',
+          target: 'start',
+        },
       },
     },
     'secondary-docs': {
       on: {
         prev: { target: 'primary-docs' },
         next: { target: 'name-info' },
-        cancel: { target: 'start' },
+        cancel: {
+          actions: 'reset-context',
+          target: 'start',
+        },
       },
     },
     'name-info': {
       on: {
         prev: { target: 'secondary-docs' },
         next: { target: 'personal-info' },
-        cancel: { target: 'start' },
+        cancel: {
+          actions: 'reset-context',
+          target: 'start',
+        },
       },
     },
     'personal-info': {
       on: {
         prev: { target: 'name-info' },
         next: { target: 'birth-info' },
-        cancel: { target: 'start' },
+        cancel: {
+          actions: 'reset-context',
+          target: 'start',
+        },
       },
     },
     'birth-info': {
       on: {
         prev: { target: 'personal-info' },
         next: { target: 'parent-info' },
-        cancel: { target: 'start' },
+        cancel: {
+          actions: 'reset-context',
+          target: 'start',
+        },
       },
     },
     'parent-info': {
       on: {
         prev: { target: 'birth-info' },
         next: { target: 'previous-sin-info' },
-        cancel: { target: 'start' },
+        cancel: {
+          actions: 'reset-context',
+          target: 'start',
+        },
       },
     },
     'previous-sin-info': {
       on: {
         prev: { target: 'parent-info' },
         next: { target: 'contact-info' },
-        cancel: { target: 'start' },
+        cancel: {
+          actions: 'reset-context',
+          target: 'start',
+        },
       },
     },
     'contact-info': {
       on: {
         prev: { target: 'previous-sin-info' },
         next: { target: 'review' },
-        cancel: { target: 'start' },
+        cancel: {
+          actions: 'reset-context',
+          target: 'start',
+        },
       },
     },
     'review': {
       on: {
-        cancel: { target: 'start' },
+        cancel: {
+          actions: 'reset-context',
+          target: 'start',
+        },
         // TODO :: rest of events
       },
     },
@@ -247,28 +294,25 @@ export function createMachineActor(session: AppSession, request: Request): Actor
  * @throws {AppError} If the machine snapshot is not found in the session.
  * @throws {Response} 400 response if the `tabId` is missing in the request.
  */
-export function loadMachineActor(session: AppSession, request: Request, state: StateName): Actor<Machine> {
+export function loadMachineActor(session: AppSession, request: Request, stateName?: StateName): Actor<Machine> | undefined {
   const flow = (session.inPersonFlow ??= {}); // ensure session container exists
 
   const tabId = new URL(request.url).searchParams.get('tid');
 
   if (!tabId) {
-    // XXX :: GjB :: I think adding a search param (or something) to indicate to
-    //               index.tsx that this happened would be beneficial.
-    //               This would allow us to show a message to the user explaining the situation.
-    log.warn('Could not find tab id in request; redirecting to start of flow');
-    throw i18nRedirect('routes/protected/in-person/index.tsx', request);
+    log.debug('Could not find tab id in request; returning undefined');
+    return undefined;
   }
 
   if (!flow[tabId]) {
-    // XXX :: GjB :: I think adding a search param (or something) to indicate to
-    //               index.tsx that this happened would be beneficial.
-    //               This would allow us to show a message to the user explaining the situation.
-    log.warn('Could not find a machine snapshot session; redirecting to start of flow');
-    throw i18nRedirect('routes/protected/in-person/index.tsx', request);
+    log.debug('Could not find a machine snapshot session; returning undefined');
+    return undefined;
   }
 
-  const snapshot = machine.resolveState({ value: state, context: flow[tabId].context });
+  // if a desired state name has been provided, we load it,
+  // otherwise use the state name that has been stored in session
+  const snapshot = stateName ? machine.resolveState({ value: stateName, context: flow[tabId].context }) : flow[tabId];
+
   const actor = createActor(machine, { snapshot });
   actor.subscribe((snapshot) => void (flow[tabId] = snapshot));
   log.debug('Loaded in-person state machine for session [%s] and tabId [%s]', session.id, tabId);

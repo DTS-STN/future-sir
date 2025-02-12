@@ -46,7 +46,7 @@ describe('in-person machine transitions', () => {
   });
 
   it.each(nextStates)('should transition from %s to %s on next event', (from, to) => {
-    const state = machine.resolveState({ context: { formData: {}, stateRoutes }, value: from });
+    const state = machine.resolveState({ context: { data: {}, stateRoutes }, value: from });
     const actor = createActor(machine, { state }).start();
 
     actor.send({ type: 'next' });
@@ -55,7 +55,7 @@ describe('in-person machine transitions', () => {
   });
 
   it.each(prevStates)('should transition from %s to %s on prev event', (from, to) => {
-    const state = machine.resolveState({ context: { formData: {}, stateRoutes }, value: from });
+    const state = machine.resolveState({ context: { data: {}, stateRoutes }, value: from });
     const actor = createActor(machine, { state }).start();
 
     actor.send({ type: 'prev' });
@@ -64,7 +64,7 @@ describe('in-person machine transitions', () => {
   });
 
   it.each(states.filter((state) => state !== 'start'))('should transition from %s to start on cancel', (from) => {
-    const state = machine.resolveState({ context: { formData: {}, stateRoutes }, value: from });
+    const state = machine.resolveState({ context: { data: {}, stateRoutes }, value: from });
     const actor = createActor(machine, { state }).start();
 
     actor.send({ type: 'cancel' });

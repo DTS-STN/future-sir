@@ -2,14 +2,23 @@ import { Form, redirect } from 'react-router';
 
 import type { Route } from './+types/request-details';
 
+import { LogFactory } from '~/.server/logging';
+import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
 import { PageTitle } from '~/components/page-title';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { getStateRoute, loadMachineActor } from '~/routes/protected/in-person/state-machine.server';
 
+const log = LogFactory.getLogger(import.meta.url);
+
 export async function action({ context, params, request }: Route.ActionArgs) {
   const actor = loadMachineActor(context.session, request, 'request-details');
+
+  if (!actor) {
+    log.warn('Could not find a machine snapshot session; redirecting to start of flow');
+    throw i18nRedirect('routes/protected/in-person/index.tsx', request, { search: new URLSearchParams({ restarted: 'true' }) });
+  }
 
   const formData = await request.formData();
   const action = formData.get('action');
@@ -39,9 +48,11 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     case 'next': {
       actor.send({
         type: 'next',
-        formData: {
-          requestType,
-          situationType,
+        data: {
+          requestDetails: {
+            requestType,
+            situationType,
+          },
         },
       });
       break;
@@ -56,8 +67,15 @@ export async function action({ context, params, request }: Route.ActionArgs) {
 }
 
 export function loader({ context, params, request }: Route.LoaderArgs) {
-  const actor = loadMachineActor(context.session, request, 'request-details');
-  return { tabId: new URL(request.url).searchParams.get('tid'), machineContext: actor.getSnapshot().context };
+  const tabId = new URL(request.url).searchParams.get('tid');
+  if (!tabId) return null; // no tab id.. return early and wait for one
+
+  if (!loadMachineActor(context.session, request, 'request-details')) {
+    log.warn('Could not find a machine snapshot session; redirecting to start of flow');
+    throw i18nRedirect('routes/protected/in-person/index.tsx', request, { search: new URLSearchParams({ restarted: 'true' }) });
+  }
+
+  return { tabId };
 }
 
 export default function RequestDetails({ actionData, loaderData, matches, params }: Route.ComponentProps) {
@@ -65,7 +83,7 @@ export default function RequestDetails({ actionData, loaderData, matches, params
     <div className="space-y-3">
       <PageTitle>
         <span>Request details</span>
-        <span className="block text-sm">(tabid: {loaderData.tabId})</span>
+        <span className="block text-sm">(tabid: {loaderData?.tabId ?? '...'})</span>
       </PageTitle>
       <Form method="post">
         <div className="space-x-3">
@@ -80,7 +98,6 @@ export default function RequestDetails({ actionData, loaderData, matches, params
           </Button>
         </div>
       </Form>
-      <pre>{JSON.stringify(loaderData.machineContext, null, 2)}</pre>
     </div>
   );
 }
