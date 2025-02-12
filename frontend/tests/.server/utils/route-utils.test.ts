@@ -20,5 +20,12 @@ describe('route-utils', () => {
       expect(result.status).toBe(302);
       expect(result.headers.get('location')).toBe('/en/public');
     });
+
+    it('should redirect to the correct path when search params are provided', () => {
+      const result = i18nRedirect('routes/public/index.tsx', '/en/', { search: new URLSearchParams('foo=bar=baz') });
+
+      expect(result.status).toBe(302);
+      expect(result.headers.get('location')).toBe('/en/public?foo=bar%3Dbaz');
+    });
   });
 });
