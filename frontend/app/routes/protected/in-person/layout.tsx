@@ -10,7 +10,12 @@ export function loader({ context, params, request }: Route.LoaderArgs) {
   const tabId = new URL(request.url).searchParams.get('tid');
   if (!tabId) return null; // no tab id.. return early and wait for one
 
-  return { machineContext: loadMachineActor(context.session, request)?.getSnapshot().context };
+  const snapshot = loadMachineActor(context.session, request)?.getSnapshot();
+
+  return {
+    machineContext: snapshot?.context,
+    metaObject: snapshot?.getMeta(),
+  };
 }
 
 export default function Layout({ actionData, loaderData, matches, params }: Route.ComponentProps) {
@@ -19,7 +24,7 @@ export default function Layout({ actionData, loaderData, matches, params }: Rout
   return (
     <>
       <Outlet context={{ tabId }} />
-      <StateMachineDebug machineContext={loaderData?.machineContext} />
+      <StateMachineDebug machineContext={loaderData?.machineContext} metaObject={loaderData?.metaObject} />
     </>
   );
 }

@@ -27,6 +27,9 @@ export const ErrorCodes = {
   // validation error codes
   INVALID_NUMBER: 'VAL-0001',
 
+  // xstate error codes
+  MISSING_META: 'XST-0001',
+
   // dev-only error codes
   TEST_ERROR_CODE: 'DEV-0001',
 } as const;

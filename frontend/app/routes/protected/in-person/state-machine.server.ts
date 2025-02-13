@@ -61,25 +61,7 @@ export type StateName =
   | 'contact-info'
   | 'review';
 
-/**
- * Mapping of state names to their corresponding route files.
- * This object defines the routes for each state in the in-person application process.
- * The keys are the state names, and the values are the paths to the route files.
- */
-export const stateRoutes = {
-  'start': 'routes/protected/in-person/index.tsx',
-  'privacy-statement': 'routes/protected/in-person/privacy-statement.tsx',
-  'request-details': 'routes/protected/in-person/request-details.tsx',
-  'primary-docs': 'routes/protected/in-person/primary-docs.tsx',
-  'secondary-docs': 'routes/protected/in-person/secondary-docs.tsx',
-  'name-info': 'routes/protected/in-person/name-info.tsx',
-  'personal-info': 'routes/protected/in-person/personal-info.tsx',
-  'birth-info': 'routes/protected/in-person/birth-info.tsx',
-  'parent-info': 'routes/protected/in-person/parent-info.tsx',
-  'previous-sin-info': 'routes/protected/in-person/previous-sin-info.tsx',
-  'contact-info': 'routes/protected/in-person/contact-info.tsx',
-  'review': 'routes/protected/in-person/review.tsx',
-} as const satisfies Record<StateName, I18nRouteFile>;
+export const machineId = 'in-person';
 
 /**
  * XState machine definition for the in-person application process.
@@ -101,7 +83,6 @@ export const machine = setup({
         requestDetailsData?: RequestDetailsData;
         secondaryDocsData?: SecondaryDocsData;
       };
-      stateRoutes: typeof stateRoutes;
     },
     events: {} as
       | { type: 'cancel' }
@@ -121,6 +102,9 @@ export const machine = setup({
             | RequestDetailsData
             | SecondaryDocsData;
         },
+    meta: {} as {
+      route: I18nRouteFile;
+    },
   },
   actions: {
     'reset-context': ({ context }) => {
@@ -133,18 +117,24 @@ export const machine = setup({
     },
   },
 }).createMachine({
+  id: machineId,
   context: {
     data: {},
-    stateRoutes,
   },
   initial: 'start',
   states: {
     'start': {
+      meta: {
+        route: 'routes/protected/in-person/index.tsx',
+      },
       on: {
         next: { target: 'privacy-statement' },
       },
     },
     'privacy-statement': {
+      meta: {
+        route: 'routes/protected/in-person/privacy-statement.tsx',
+      },
       on: {
         next: { target: 'request-details' },
         cancel: {
@@ -154,6 +144,9 @@ export const machine = setup({
       },
     },
     'request-details': {
+      meta: {
+        route: 'routes/protected/in-person/request-details.tsx',
+      },
       on: {
         prev: { target: 'privacy-statement' },
         next: {
@@ -167,6 +160,9 @@ export const machine = setup({
       },
     },
     'primary-docs': {
+      meta: {
+        route: 'routes/protected/in-person/primary-docs.tsx',
+      },
       on: {
         prev: { target: 'request-details' },
         next: { target: 'secondary-docs' },
@@ -177,6 +173,9 @@ export const machine = setup({
       },
     },
     'secondary-docs': {
+      meta: {
+        route: 'routes/protected/in-person/secondary-docs.tsx',
+      },
       on: {
         prev: { target: 'primary-docs' },
         next: { target: 'name-info' },
@@ -187,6 +186,9 @@ export const machine = setup({
       },
     },
     'name-info': {
+      meta: {
+        route: 'routes/protected/in-person/name-info.tsx',
+      },
       on: {
         prev: { target: 'secondary-docs' },
         next: { target: 'personal-info' },
@@ -197,6 +199,9 @@ export const machine = setup({
       },
     },
     'personal-info': {
+      meta: {
+        route: 'routes/protected/in-person/personal-info.tsx',
+      },
       on: {
         prev: { target: 'name-info' },
         next: { target: 'birth-info' },
@@ -207,6 +212,9 @@ export const machine = setup({
       },
     },
     'birth-info': {
+      meta: {
+        route: 'routes/protected/in-person/birth-info.tsx',
+      },
       on: {
         prev: { target: 'personal-info' },
         next: { target: 'parent-info' },
@@ -217,6 +225,9 @@ export const machine = setup({
       },
     },
     'parent-info': {
+      meta: {
+        route: 'routes/protected/in-person/parent-info.tsx',
+      },
       on: {
         prev: { target: 'birth-info' },
         next: { target: 'previous-sin-info' },
@@ -227,6 +238,9 @@ export const machine = setup({
       },
     },
     'previous-sin-info': {
+      meta: {
+        route: 'routes/protected/in-person/previous-sin-info.tsx',
+      },
       on: {
         prev: { target: 'parent-info' },
         next: { target: 'contact-info' },
@@ -237,6 +251,9 @@ export const machine = setup({
       },
     },
     'contact-info': {
+      meta: {
+        route: 'routes/protected/in-person/contact-info.tsx',
+      },
       on: {
         prev: { target: 'previous-sin-info' },
         next: { target: 'review' },
@@ -247,6 +264,9 @@ export const machine = setup({
       },
     },
     'review': {
+      meta: {
+        route: 'routes/protected/in-person/review.tsx',
+      },
       on: {
         cancel: {
           actions: 'reset-context',
@@ -277,7 +297,7 @@ export function createMachineActor(session: AppSession, request: Request): Actor
     throw Response.json('The tabId could not be found in the request', { status: 400 });
   }
 
-  const actor = createActor(machine);
+  const actor = createActor(machine, { id: tabId });
   actor.subscribe((snapshot) => void (flow[tabId] = snapshot));
   log.debug('Created new in-person state machine for session [%s] and tabId [%s]', session.id, tabId);
 
@@ -313,7 +333,7 @@ export function loadMachineActor(session: AppSession, request: Request, stateNam
   // otherwise use the state name that has been stored in session
   const snapshot = stateName ? machine.resolveState({ value: stateName, context: flow[tabId].context }) : flow[tabId];
 
-  const actor = createActor(machine, { snapshot });
+  const actor = createActor(machine, { id: tabId, snapshot });
   actor.subscribe((snapshot) => void (flow[tabId] = snapshot));
   log.debug('Loaded in-person state machine for session [%s] and tabId [%s]', session.id, tabId);
 
@@ -341,11 +361,16 @@ export function getStateRoute(actor: Actor<Machine>, { params, request }: Action
     );
   }
 
-  const { context, value } = actor.getSnapshot();
-  const i18nRouteFile = context.stateRoutes[value];
+  const snapshot = actor.getSnapshot();
+  const meta = snapshot.getMeta()[`${machineId}.${snapshot.value}`];
+
+  if (!meta) {
+    // this should never happen if the state machine is configured correctly
+    throw new AppError('The metadata for the current machine state could not be determined', ErrorCodes.MISSING_META);
+  }
 
   const url = new URL(request.url);
-  const { paths } = getRouteByFile(i18nRouteFile, i18nRoutes);
+  const { paths } = getRouteByFile(meta.route, i18nRoutes);
   url.pathname = generatePath(paths[language], params);
 
   return url.toString();
