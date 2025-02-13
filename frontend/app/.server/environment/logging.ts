@@ -1,6 +1,7 @@
 import * as v from 'valibot';
 
 import { logLevels } from '~/.server/logging';
+import type { LogLevel } from '~/.server/logging';
 
 export type Logging = Readonly<v.InferOutput<typeof logging>>;
 
@@ -11,5 +12,5 @@ export const defaults = {
 } as const;
 
 export const logging = v.object({
-  LOG_LEVEL: v.optional(v.picklist(Object.keys(logLevels)), defaults.LOG_LEVEL),
+  LOG_LEVEL: v.optional(v.picklist(Object.keys(logLevels) as LogLevel[]), defaults.LOG_LEVEL),
 });
