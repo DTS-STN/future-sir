@@ -162,7 +162,7 @@ export async function action({ context, request }: Route.ActionArgs) {
 
 export default function CurrentName({ loaderData, actionData, params }: Route.ComponentProps) {
   const { t } = useTranslation(handle.i18nNamespace);
-  const [requireDoc, setRequireDoc] = useState<boolean | undefined>(loaderData.defaultFormValues?.supportingDocumentsRequired);
+  const [requireDoc, setRequireDoc] = useState<boolean | undefined>(loaderData.defaultFormValues.supportingDocumentsRequired);
   const fetcherKey = useId();
   const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
   const isSubmitting = fetcher.state !== 'idle';
@@ -190,7 +190,7 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
   const docTypes = VALID_DOC_TYPES.map((value) => ({
     value: value,
     children: t(`protected:current-name.doc-types.${value}` as 'protected:current-name.doc-types.marriage-document'),
-    defaultChecked: loaderData.defaultFormValues?.supportingDocumentTypes?.includes(value),
+    defaultChecked: loaderData.defaultFormValues.supportingDocumentTypes?.includes(value),
   }));
 
   return (
