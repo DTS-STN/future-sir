@@ -17,13 +17,13 @@ vi.mock('react-router', () => ({
 describe('ErrorSummary', () => {
   it('should not render an error summary when there are no errors', () => {
     const { container } = render(<ErrorSummary errors={[]} />);
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
     expect(container.ownerDocument.activeElement !== container.querySelector('section')).toBeTruthy();
   });
 
   it('should render an error summary with 1 error', () => {
     const { container } = render(<ErrorSummary errors={[{ fieldId: 'input-test', errorMessage: 'Test error 1' }]} />);
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
     expect(container.ownerDocument.activeElement === container.querySelector('section')).toBeTruthy();
   });
 
@@ -36,7 +36,7 @@ describe('ErrorSummary', () => {
         ]}
       />,
     );
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
     expect(container.ownerDocument.activeElement === container.querySelector('section')).toBeTruthy();
   });
 });
@@ -54,7 +54,7 @@ describe('ActionDataErrorSummary', () => {
       </ActionDataErrorSummary>,
     );
 
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
     expect(container.ownerDocument.activeElement === container.querySelector('section')).toBeTruthy();
   });
 });
@@ -74,7 +74,7 @@ describe('FetcherErrorSummary', () => {
       </FetcherErrorSummary>,
     );
 
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
     expect(container.ownerDocument.activeElement === container.querySelector('section')).toBeTruthy();
   });
 });
@@ -93,7 +93,7 @@ describe('FormErrorSummary', () => {
       </FormErrorSummary>,
     );
 
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
     expect(container.ownerDocument.activeElement === container.querySelector('section')).toBeTruthy();
   });
 });

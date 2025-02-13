@@ -14,7 +14,7 @@ describe('AnchorLink', () => {
       </>,
     );
 
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('should scroll to the correct element', () => {
@@ -32,7 +32,7 @@ describe('AnchorLink', () => {
 
     fireEvent.click(getByTestId('anchor-link'));
 
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
     expect(HTMLElement.prototype.focus).toHaveBeenCalled();
     expect(HTMLElement.prototype.scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth' });
   });
@@ -50,7 +50,7 @@ describe('AnchorLink', () => {
 
     fireEvent.click(getByTestId('anchor-link'));
 
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
     expect(HTMLElement.prototype.focus).toHaveBeenCalled();
     expect(HTMLElement.prototype.scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth' });
   });

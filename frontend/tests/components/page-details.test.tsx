@@ -15,6 +15,6 @@ describe('PageDetails', () => {
     ]);
 
     const { container } = render(<RoutesStub initialEntries={['/fr/public']} />);
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 });

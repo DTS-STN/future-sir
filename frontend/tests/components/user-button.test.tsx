@@ -9,7 +9,7 @@ import { UserButton } from '~/components/user-button';
 describe('UserButton', () => {
   it('should correctly render a UserButton with no MenuItems provided', () => {
     const { container } = render(<UserButton name="Test Name" />);
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('should correctly render a UserButton with a MenuItem when the file property is provided', () => {
@@ -26,7 +26,7 @@ describe('UserButton', () => {
 
     const { container } = render(<RoutesStub initialEntries={['/fr/public']} />);
 
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('should correctly render a UserButton with a MenuItem when the to property is provided', () => {
@@ -43,6 +43,6 @@ describe('UserButton', () => {
 
     const { container } = render(<RoutesStub initialEntries={['/fr/public']}></RoutesStub>);
 
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 });

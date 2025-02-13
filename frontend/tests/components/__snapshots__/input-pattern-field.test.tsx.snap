@@ -1,19 +1,320 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`InputPatternField > should render 800 000 002 -> 800 000 002 > expected html 1`] = `"<div id="input-pattern-field-test-id" data-testid="input-pattern-field-test-id"><label class="block mb-2" id="input-pattern-field-test-id-label" for="test-id"><span class="font-semibold">label test</span></label><input inputmode="numeric" aria-invalid="false" aria-labelledby="input-pattern-field-test-id-label" data-testid="input-pattern-field" id="test-id" class="block rounded-lg border-gray-500 focus:border-blue-500 focus:outline-none focus:ring focus:ring-blue-500 disabled:bg-gray-100 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-70 read-only:bg-gray-100 read-only:pointer-events-none read-only:cursor-not-allowed read-only:opacity-70" type="text" value="800 000 002" name="test"></div>"`;
+exports[`InputPatternField > should render 800 000 002 -> 800 000 002 > expected html 1`] = `
+<div>
+  <div
+    data-testid="input-pattern-field-test-id"
+    id="input-pattern-field-test-id"
+  >
+    <label
+      class="block mb-2"
+      for="test-id"
+      id="input-pattern-field-test-id-label"
+    >
+      <span
+        class="font-semibold"
+      >
+        label test
+      </span>
+    </label>
+    <input
+      aria-invalid="false"
+      aria-labelledby="input-pattern-field-test-id-label"
+      class="block rounded-lg border-gray-500 focus:border-blue-500 focus:outline-none focus:ring focus:ring-blue-500 disabled:bg-gray-100 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-70 read-only:bg-gray-100 read-only:pointer-events-none read-only:cursor-not-allowed read-only:opacity-70"
+      data-testid="input-pattern-field"
+      id="test-id"
+      inputmode="numeric"
+      name="test"
+      type="text"
+      value="800 000 002"
+    />
+  </div>
+</div>
+`;
 
-exports[`InputPatternField > should render 800 000-002 -> 800 000 002 > expected html 1`] = `"<div id="input-pattern-field-test-id" data-testid="input-pattern-field-test-id"><label class="block mb-2" id="input-pattern-field-test-id-label" for="test-id"><span class="font-semibold">label test</span></label><input inputmode="numeric" aria-invalid="false" aria-labelledby="input-pattern-field-test-id-label" data-testid="input-pattern-field" id="test-id" class="block rounded-lg border-gray-500 focus:border-blue-500 focus:outline-none focus:ring focus:ring-blue-500 disabled:bg-gray-100 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-70 read-only:bg-gray-100 read-only:pointer-events-none read-only:cursor-not-allowed read-only:opacity-70" type="text" value="800 000 002" name="test"></div>"`;
+exports[`InputPatternField > should render 800 000-002 -> 800 000 002 > expected html 1`] = `
+<div>
+  <div
+    data-testid="input-pattern-field-test-id"
+    id="input-pattern-field-test-id"
+  >
+    <label
+      class="block mb-2"
+      for="test-id"
+      id="input-pattern-field-test-id-label"
+    >
+      <span
+        class="font-semibold"
+      >
+        label test
+      </span>
+    </label>
+    <input
+      aria-invalid="false"
+      aria-labelledby="input-pattern-field-test-id-label"
+      class="block rounded-lg border-gray-500 focus:border-blue-500 focus:outline-none focus:ring focus:ring-blue-500 disabled:bg-gray-100 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-70 read-only:bg-gray-100 read-only:pointer-events-none read-only:cursor-not-allowed read-only:opacity-70"
+      data-testid="input-pattern-field"
+      id="test-id"
+      inputmode="numeric"
+      name="test"
+      type="text"
+      value="800 000 002"
+    />
+  </div>
+</div>
+`;
 
-exports[`InputPatternField > should render 800-000-002 -> 800 000 002 > expected html 1`] = `"<div id="input-pattern-field-test-id" data-testid="input-pattern-field-test-id"><label class="block mb-2" id="input-pattern-field-test-id-label" for="test-id"><span class="font-semibold">label test</span></label><input inputmode="numeric" aria-invalid="false" aria-labelledby="input-pattern-field-test-id-label" data-testid="input-pattern-field" id="test-id" class="block rounded-lg border-gray-500 focus:border-blue-500 focus:outline-none focus:ring focus:ring-blue-500 disabled:bg-gray-100 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-70 read-only:bg-gray-100 read-only:pointer-events-none read-only:cursor-not-allowed read-only:opacity-70" type="text" value="800 000 002" name="test"></div>"`;
+exports[`InputPatternField > should render 800-000-002 -> 800 000 002 > expected html 1`] = `
+<div>
+  <div
+    data-testid="input-pattern-field-test-id"
+    id="input-pattern-field-test-id"
+  >
+    <label
+      class="block mb-2"
+      for="test-id"
+      id="input-pattern-field-test-id-label"
+    >
+      <span
+        class="font-semibold"
+      >
+        label test
+      </span>
+    </label>
+    <input
+      aria-invalid="false"
+      aria-labelledby="input-pattern-field-test-id-label"
+      class="block rounded-lg border-gray-500 focus:border-blue-500 focus:outline-none focus:ring focus:ring-blue-500 disabled:bg-gray-100 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-70 read-only:bg-gray-100 read-only:pointer-events-none read-only:cursor-not-allowed read-only:opacity-70"
+      data-testid="input-pattern-field"
+      id="test-id"
+      inputmode="numeric"
+      name="test"
+      type="text"
+      value="800 000 002"
+    />
+  </div>
+</div>
+`;
 
-exports[`InputPatternField > should render 800000 002 -> 800 000 002 > expected html 1`] = `"<div id="input-pattern-field-test-id" data-testid="input-pattern-field-test-id"><label class="block mb-2" id="input-pattern-field-test-id-label" for="test-id"><span class="font-semibold">label test</span></label><input inputmode="numeric" aria-invalid="false" aria-labelledby="input-pattern-field-test-id-label" data-testid="input-pattern-field" id="test-id" class="block rounded-lg border-gray-500 focus:border-blue-500 focus:outline-none focus:ring focus:ring-blue-500 disabled:bg-gray-100 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-70 read-only:bg-gray-100 read-only:pointer-events-none read-only:cursor-not-allowed read-only:opacity-70" type="text" value="800 000 002" name="test"></div>"`;
+exports[`InputPatternField > should render 800000 002 -> 800 000 002 > expected html 1`] = `
+<div>
+  <div
+    data-testid="input-pattern-field-test-id"
+    id="input-pattern-field-test-id"
+  >
+    <label
+      class="block mb-2"
+      for="test-id"
+      id="input-pattern-field-test-id-label"
+    >
+      <span
+        class="font-semibold"
+      >
+        label test
+      </span>
+    </label>
+    <input
+      aria-invalid="false"
+      aria-labelledby="input-pattern-field-test-id-label"
+      class="block rounded-lg border-gray-500 focus:border-blue-500 focus:outline-none focus:ring focus:ring-blue-500 disabled:bg-gray-100 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-70 read-only:bg-gray-100 read-only:pointer-events-none read-only:cursor-not-allowed read-only:opacity-70"
+      data-testid="input-pattern-field"
+      id="test-id"
+      inputmode="numeric"
+      name="test"
+      type="text"
+      value="800 000 002"
+    />
+  </div>
+</div>
+`;
 
-exports[`InputPatternField > should render 800000-002 -> 800 000 002 > expected html 1`] = `"<div id="input-pattern-field-test-id" data-testid="input-pattern-field-test-id"><label class="block mb-2" id="input-pattern-field-test-id-label" for="test-id"><span class="font-semibold">label test</span></label><input inputmode="numeric" aria-invalid="false" aria-labelledby="input-pattern-field-test-id-label" data-testid="input-pattern-field" id="test-id" class="block rounded-lg border-gray-500 focus:border-blue-500 focus:outline-none focus:ring focus:ring-blue-500 disabled:bg-gray-100 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-70 read-only:bg-gray-100 read-only:pointer-events-none read-only:cursor-not-allowed read-only:opacity-70" type="text" value="800 000 002" name="test"></div>"`;
+exports[`InputPatternField > should render 800000-002 -> 800 000 002 > expected html 1`] = `
+<div>
+  <div
+    data-testid="input-pattern-field-test-id"
+    id="input-pattern-field-test-id"
+  >
+    <label
+      class="block mb-2"
+      for="test-id"
+      id="input-pattern-field-test-id-label"
+    >
+      <span
+        class="font-semibold"
+      >
+        label test
+      </span>
+    </label>
+    <input
+      aria-invalid="false"
+      aria-labelledby="input-pattern-field-test-id-label"
+      class="block rounded-lg border-gray-500 focus:border-blue-500 focus:outline-none focus:ring focus:ring-blue-500 disabled:bg-gray-100 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-70 read-only:bg-gray-100 read-only:pointer-events-none read-only:cursor-not-allowed read-only:opacity-70"
+      data-testid="input-pattern-field"
+      id="test-id"
+      inputmode="numeric"
+      name="test"
+      type="text"
+      value="800 000 002"
+    />
+  </div>
+</div>
+`;
 
-exports[`InputPatternField > should render 800000002 -> 800 000 002 > expected html 1`] = `"<div id="input-pattern-field-test-id" data-testid="input-pattern-field-test-id"><label class="block mb-2" id="input-pattern-field-test-id-label" for="test-id"><span class="font-semibold">label test</span></label><input inputmode="numeric" aria-invalid="false" aria-labelledby="input-pattern-field-test-id-label" data-testid="input-pattern-field" id="test-id" class="block rounded-lg border-gray-500 focus:border-blue-500 focus:outline-none focus:ring focus:ring-blue-500 disabled:bg-gray-100 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-70 read-only:bg-gray-100 read-only:pointer-events-none read-only:cursor-not-allowed read-only:opacity-70" type="text" value="800 000 002" name="test"></div>"`;
+exports[`InputPatternField > should render 800000002 -> 800 000 002 > expected html 1`] = `
+<div>
+  <div
+    data-testid="input-pattern-field-test-id"
+    id="input-pattern-field-test-id"
+  >
+    <label
+      class="block mb-2"
+      for="test-id"
+      id="input-pattern-field-test-id-label"
+    >
+      <span
+        class="font-semibold"
+      >
+        label test
+      </span>
+    </label>
+    <input
+      aria-invalid="false"
+      aria-labelledby="input-pattern-field-test-id-label"
+      class="block rounded-lg border-gray-500 focus:border-blue-500 focus:outline-none focus:ring focus:ring-blue-500 disabled:bg-gray-100 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-70 read-only:bg-gray-100 read-only:pointer-events-none read-only:cursor-not-allowed read-only:opacity-70"
+      data-testid="input-pattern-field"
+      id="test-id"
+      inputmode="numeric"
+      name="test"
+      type="text"
+      value="800 000 002"
+    />
+  </div>
+</div>
+`;
 
-exports[`InputPatternField > should render with error message > expected html 1`] = `"<div id="input-pattern-field-test-id" data-testid="input-pattern-field-test-id"><label class="block mb-2" id="input-pattern-field-test-id-label" for="test-id"><span class="font-semibold">label test</span></label><p class="mb-2"><span class="inline-block max-w-prose border-l-2 border-red-600 bg-red-50 px-3 py-1" data-testid="input-error-test-id" role="alert" id="input-pattern-field-test-id-error">error message</span></p><input inputmode="numeric" aria-errormessage="input-pattern-field-test-id-error" aria-invalid="true" aria-labelledby="input-pattern-field-test-id-label" data-testid="input-pattern-field" id="test-id" class="block rounded-lg focus:outline-none focus:ring disabled:bg-gray-100 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-70 read-only:bg-gray-100 read-only:pointer-events-none read-only:cursor-not-allowed read-only:opacity-70 border-red-500 focus:border-red-500 focus:ring-red-500" type="text" value="800 000 002" name="test"></div>"`;
+exports[`InputPatternField > should render with error message > expected html 1`] = `
+<div>
+  <div
+    data-testid="input-pattern-field-test-id"
+    id="input-pattern-field-test-id"
+  >
+    <label
+      class="block mb-2"
+      for="test-id"
+      id="input-pattern-field-test-id-label"
+    >
+      <span
+        class="font-semibold"
+      >
+        label test
+      </span>
+    </label>
+    <p
+      class="mb-2"
+    >
+      <span
+        class="inline-block max-w-prose border-l-2 border-red-600 bg-red-50 px-3 py-1"
+        data-testid="input-error-test-id"
+        id="input-pattern-field-test-id-error"
+        role="alert"
+      >
+        error message
+      </span>
+    </p>
+    <input
+      aria-errormessage="input-pattern-field-test-id-error"
+      aria-invalid="true"
+      aria-labelledby="input-pattern-field-test-id-label"
+      class="block rounded-lg focus:outline-none focus:ring disabled:bg-gray-100 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-70 read-only:bg-gray-100 read-only:pointer-events-none read-only:cursor-not-allowed read-only:opacity-70 border-red-500 focus:border-red-500 focus:ring-red-500"
+      data-testid="input-pattern-field"
+      id="test-id"
+      inputmode="numeric"
+      name="test"
+      type="text"
+      value="800 000 002"
+    />
+  </div>
+</div>
+`;
 
-exports[`InputPatternField > should render with help message > expected html 1`] = `"<div id="input-pattern-field-test-id" data-testid="input-pattern-field-test-id"><label class="block mb-2" id="input-pattern-field-test-id-label" for="test-id"><span class="font-semibold">label test</span></label><input inputmode="numeric" aria-describedby="input-pattern-field-test-id-help-secondary" aria-invalid="false" aria-labelledby="input-pattern-field-test-id-label" data-testid="input-pattern-field" id="test-id" class="block rounded-lg border-gray-500 focus:border-blue-500 focus:outline-none focus:ring focus:ring-blue-500 disabled:bg-gray-100 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-70 read-only:bg-gray-100 read-only:pointer-events-none read-only:cursor-not-allowed read-only:opacity-70" type="text" value="800 000 002" name="test"><span class="block max-w-prose text-gray-500 mt-2" data-testid="input-pattern-field-help-secondary" id="input-pattern-field-test-id-help-secondary">help message</span></div>"`;
+exports[`InputPatternField > should render with help message > expected html 1`] = `
+<div>
+  <div
+    data-testid="input-pattern-field-test-id"
+    id="input-pattern-field-test-id"
+  >
+    <label
+      class="block mb-2"
+      for="test-id"
+      id="input-pattern-field-test-id-label"
+    >
+      <span
+        class="font-semibold"
+      >
+        label test
+      </span>
+    </label>
+    <input
+      aria-describedby="input-pattern-field-test-id-help-secondary"
+      aria-invalid="false"
+      aria-labelledby="input-pattern-field-test-id-label"
+      class="block rounded-lg border-gray-500 focus:border-blue-500 focus:outline-none focus:ring focus:ring-blue-500 disabled:bg-gray-100 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-70 read-only:bg-gray-100 read-only:pointer-events-none read-only:cursor-not-allowed read-only:opacity-70"
+      data-testid="input-pattern-field"
+      id="test-id"
+      inputmode="numeric"
+      name="test"
+      type="text"
+      value="800 000 002"
+    />
+    <span
+      class="block max-w-prose text-gray-500 mt-2"
+      data-testid="input-pattern-field-help-secondary"
+      id="input-pattern-field-test-id-help-secondary"
+    >
+      help message
+    </span>
+  </div>
+</div>
+`;
 
-exports[`InputPatternField > should render with required > expected html 1`] = `"<div id="input-pattern-field-test-id" data-testid="input-pattern-field-test-id"><label class="block mb-2" id="input-pattern-field-test-id-label" for="test-id"><span class="font-semibold">label test</span> <span aria-hidden="true">(input-label.required)</span></label><input inputmode="numeric" aria-invalid="false" aria-labelledby="input-pattern-field-test-id-label" aria-required="true" data-testid="input-pattern-field" id="test-id" class="block rounded-lg border-gray-500 focus:border-blue-500 focus:outline-none focus:ring focus:ring-blue-500 disabled:bg-gray-100 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-70 read-only:bg-gray-100 read-only:pointer-events-none read-only:cursor-not-allowed read-only:opacity-70" required="" type="text" value="800 000 002" name="test"></div>"`;
+exports[`InputPatternField > should render with required > expected html 1`] = `
+<div>
+  <div
+    data-testid="input-pattern-field-test-id"
+    id="input-pattern-field-test-id"
+  >
+    <label
+      class="block mb-2"
+      for="test-id"
+      id="input-pattern-field-test-id-label"
+    >
+      <span
+        class="font-semibold"
+      >
+        label test
+      </span>
+       
+      <span
+        aria-hidden="true"
+      >
+        (
+        input-label.required
+        )
+      </span>
+    </label>
+    <input
+      aria-invalid="false"
+      aria-labelledby="input-pattern-field-test-id-label"
+      aria-required="true"
+      class="block rounded-lg border-gray-500 focus:border-blue-500 focus:outline-none focus:ring focus:ring-blue-500 disabled:bg-gray-100 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-70 read-only:bg-gray-100 read-only:pointer-events-none read-only:cursor-not-allowed read-only:opacity-70"
+      data-testid="input-pattern-field"
+      id="test-id"
+      inputmode="numeric"
+      name="test"
+      required=""
+      type="text"
+      value="800 000 002"
+    />
+  </div>
+</div>
+`;

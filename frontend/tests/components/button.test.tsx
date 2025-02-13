@@ -6,22 +6,22 @@ import { Button } from '~/components/button';
 describe('Button', () => {
   it('should render a button with default styles', () => {
     const { container } = render(<Button>Test Button</Button>);
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('should apply the correct styles for different sizes', () => {
     const { container } = render(<Button size="sm">Test Button</Button>);
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('should apply the correct styles for different variants', () => {
     const { container } = render(<Button variant="primary">Test Button</Button>);
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('should render a pill Button correctly', () => {
     const { container } = render(<Button pill={true}>Test Button</Button>);
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('should render a disabled Button correctly', () => {
@@ -30,7 +30,7 @@ describe('Button', () => {
         Test Button
       </Button>,
     );
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('should execute the onClick handler', () => {

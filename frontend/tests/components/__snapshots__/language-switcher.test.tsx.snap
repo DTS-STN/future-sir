@@ -1,3 +1,14 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`LanguageSwitcher > should render a LanguageSwitcher with the correct props > expected html 1`] = `"<a lang="en" class="underline text-white hover:text-blue-100 focus:text-blue-200 sm:text-lg" href="/en/public" data-discover="true">English</a>"`;
+exports[`LanguageSwitcher > should render a LanguageSwitcher with the correct props > expected html 1`] = `
+<div>
+  <a
+    class="underline text-white hover:text-blue-100 focus:text-blue-200 sm:text-lg"
+    data-discover="true"
+    href="/en/public"
+    lang="en"
+  >
+    English
+  </a>
+</div>
+`;

@@ -1,13 +1,196 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ActionDataErrorSummary > displays errors from action data > expected html 1`] = `"<div><section class="my-5 border-4 border-red-600 p-4" tabindex="-1" role="alert"><h2 class="font-lato text-lg font-semibold">{"key":"gcweb:error-summary.header","options":{"count":1}}</h2><ol class="mt-1.5 list-decimal space-y-2 pl-7"><li><a href="#test-field" data-testid="anchor-link" class="text-red-700 underline hover:decoration-2 focus:decoration-2">Test error message</a></li></ol></section><div id="test-field" aria-errormessage="test-error">Test Field</div><div id="test-error">Test error message</div></div>"`;
+exports[`ActionDataErrorSummary > displays errors from action data > expected html 1`] = `
+<div>
+  <div>
+    <section
+      class="my-5 border-4 border-red-600 p-4"
+      role="alert"
+      tabindex="-1"
+    >
+      <h2
+        class="font-lato text-lg font-semibold"
+      >
+        {"key":"gcweb:error-summary.header","options":{"count":1}}
+      </h2>
+      <ol
+        class="mt-1.5 list-decimal space-y-2 pl-7"
+      >
+        <li>
+          <a
+            class="text-red-700 underline hover:decoration-2 focus:decoration-2"
+            data-testid="anchor-link"
+            href="#test-field"
+          >
+            Test error message
+          </a>
+        </li>
+      </ol>
+    </section>
+    <div
+      aria-errormessage="test-error"
+      id="test-field"
+    >
+      Test Field
+    </div>
+    <div
+      id="test-error"
+    >
+      Test error message
+    </div>
+  </div>
+</div>
+`;
 
-exports[`ErrorSummary > should not render an error summary when there are no errors > expected html 1`] = `""`;
+exports[`ErrorSummary > should not render an error summary when there are no errors > expected html 1`] = `<div />`;
 
-exports[`ErrorSummary > should render an error summary with 1 error > expected html 1`] = `"<section class="my-5 border-4 border-red-600 p-4" tabindex="-1" role="alert"><h2 class="font-lato text-lg font-semibold">{"key":"gcweb:error-summary.header","options":{"count":1}}</h2><ol class="mt-1.5 list-decimal space-y-2 pl-7"><li><a href="#input-test" data-testid="anchor-link" class="text-red-700 underline hover:decoration-2 focus:decoration-2">Test error 1</a></li></ol></section>"`;
+exports[`ErrorSummary > should render an error summary with 1 error > expected html 1`] = `
+<div>
+  <section
+    class="my-5 border-4 border-red-600 p-4"
+    role="alert"
+    tabindex="-1"
+  >
+    <h2
+      class="font-lato text-lg font-semibold"
+    >
+      {"key":"gcweb:error-summary.header","options":{"count":1}}
+    </h2>
+    <ol
+      class="mt-1.5 list-decimal space-y-2 pl-7"
+    >
+      <li>
+        <a
+          class="text-red-700 underline hover:decoration-2 focus:decoration-2"
+          data-testid="anchor-link"
+          href="#input-test"
+        >
+          Test error 1
+        </a>
+      </li>
+    </ol>
+  </section>
+</div>
+`;
 
-exports[`ErrorSummary > should render an error summary with 2 errors > expected html 1`] = `"<section class="my-5 border-4 border-red-600 p-4" tabindex="-1" role="alert"><h2 class="font-lato text-lg font-semibold">{"key":"gcweb:error-summary.header","options":{"count":2}}</h2><ol class="mt-1.5 list-decimal space-y-2 pl-7"><li><a href="#input-test" data-testid="anchor-link" class="text-red-700 underline hover:decoration-2 focus:decoration-2">Test error 1</a></li><li><a href="#input-test" data-testid="anchor-link" class="text-red-700 underline hover:decoration-2 focus:decoration-2">Test error 2</a></li></ol></section>"`;
+exports[`ErrorSummary > should render an error summary with 2 errors > expected html 1`] = `
+<div>
+  <section
+    class="my-5 border-4 border-red-600 p-4"
+    role="alert"
+    tabindex="-1"
+  >
+    <h2
+      class="font-lato text-lg font-semibold"
+    >
+      {"key":"gcweb:error-summary.header","options":{"count":2}}
+    </h2>
+    <ol
+      class="mt-1.5 list-decimal space-y-2 pl-7"
+    >
+      <li>
+        <a
+          class="text-red-700 underline hover:decoration-2 focus:decoration-2"
+          data-testid="anchor-link"
+          href="#input-test"
+        >
+          Test error 1
+        </a>
+      </li>
+      <li>
+        <a
+          class="text-red-700 underline hover:decoration-2 focus:decoration-2"
+          data-testid="anchor-link"
+          href="#input-test"
+        >
+          Test error 2
+        </a>
+      </li>
+    </ol>
+  </section>
+</div>
+`;
 
-exports[`FetcherErrorSummary > displays errors from fetcher data > expected html 1`] = `"<div><section class="my-5 border-4 border-red-600 p-4" tabindex="-1" role="alert"><h2 class="font-lato text-lg font-semibold">{"key":"gcweb:error-summary.header","options":{"count":1}}</h2><ol class="mt-1.5 list-decimal space-y-2 pl-7"><li><a href="#test-field" data-testid="anchor-link" class="text-red-700 underline hover:decoration-2 focus:decoration-2">Test error message</a></li></ol></section><div id="test-field" aria-errormessage="test-error">Test Field</div><div id="test-error">Test error message</div></div>"`;
+exports[`FetcherErrorSummary > displays errors from fetcher data > expected html 1`] = `
+<div>
+  <div>
+    <section
+      class="my-5 border-4 border-red-600 p-4"
+      role="alert"
+      tabindex="-1"
+    >
+      <h2
+        class="font-lato text-lg font-semibold"
+      >
+        {"key":"gcweb:error-summary.header","options":{"count":1}}
+      </h2>
+      <ol
+        class="mt-1.5 list-decimal space-y-2 pl-7"
+      >
+        <li>
+          <a
+            class="text-red-700 underline hover:decoration-2 focus:decoration-2"
+            data-testid="anchor-link"
+            href="#test-field"
+          >
+            Test error message
+          </a>
+        </li>
+      </ol>
+    </section>
+    <div
+      aria-errormessage="test-error"
+      id="test-field"
+    >
+      Test Field
+    </div>
+    <div
+      id="test-error"
+    >
+      Test error message
+    </div>
+  </div>
+</div>
+`;
 
-exports[`FormErrorSummary > displays errors from form action data > expected html 1`] = `"<div><section class="my-5 border-4 border-red-600 p-4" tabindex="-1" role="alert"><h2 class="font-lato text-lg font-semibold">{"key":"gcweb:error-summary.header","options":{"count":1}}</h2><ol class="mt-1.5 list-decimal space-y-2 pl-7"><li><a href="#test-field" data-testid="anchor-link" class="text-red-700 underline hover:decoration-2 focus:decoration-2">Test error message</a></li></ol></section><div id="test-field" aria-errormessage="test-error">Test Field</div><div id="test-error">Test error message</div></div>"`;
+exports[`FormErrorSummary > displays errors from form action data > expected html 1`] = `
+<div>
+  <div>
+    <section
+      class="my-5 border-4 border-red-600 p-4"
+      role="alert"
+      tabindex="-1"
+    >
+      <h2
+        class="font-lato text-lg font-semibold"
+      >
+        {"key":"gcweb:error-summary.header","options":{"count":1}}
+      </h2>
+      <ol
+        class="mt-1.5 list-decimal space-y-2 pl-7"
+      >
+        <li>
+          <a
+            class="text-red-700 underline hover:decoration-2 focus:decoration-2"
+            data-testid="anchor-link"
+            href="#test-field"
+          >
+            Test error message
+          </a>
+        </li>
+      </ol>
+    </section>
+    <div
+      aria-errormessage="test-error"
+      id="test-field"
+    >
+      Test Field
+    </div>
+    <div
+      id="test-error"
+    >
+      Test error message
+    </div>
+  </div>
+</div>
+`;

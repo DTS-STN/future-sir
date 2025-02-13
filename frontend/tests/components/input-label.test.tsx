@@ -10,7 +10,7 @@ describe('InputLabel', () => {
         input test
       </InputLabel>,
     );
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('should render input label component with required', () => {
@@ -19,6 +19,6 @@ describe('InputLabel', () => {
         input test
       </InputLabel>,
     );
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 });

@@ -28,7 +28,7 @@ describe('Card', () => {
         </CardHeader>
       </Card>,
     );
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('should render a card with a link', () => {
@@ -49,7 +49,7 @@ describe('Card', () => {
     ]);
 
     const { container } = render(<RoutesStub initialEntries={['/fr/public']} />);
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('should render a card with a link with an image', () => {
@@ -74,7 +74,7 @@ describe('Card', () => {
     ]);
 
     const { container } = render(<RoutesStub initialEntries={['/fr/public']} />);
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('should render a card with a link with an icon', () => {
@@ -98,7 +98,7 @@ describe('Card', () => {
     ]);
 
     const { container } = render(<RoutesStub initialEntries={['/fr/public']} />);
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 
   it('should render a card with a link with an icon, content, footer with button and heading2', () => {
@@ -129,6 +129,6 @@ describe('Card', () => {
     ]);
 
     const { container } = render(<RoutesStub initialEntries={['/fr/public']} />);
-    expect(container.innerHTML).toMatchSnapshot('expected html');
+    expect(container).toMatchSnapshot('expected html');
   });
 });
