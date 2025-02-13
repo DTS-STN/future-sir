@@ -3,7 +3,7 @@ import { ErrorCodes } from '~/errors/error-codes';
 
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
 
-export const instanceNames = ['redisClient'] as const;
+export const instanceNames = ['logLevel', 'redisClient'] as const;
 
 export type InstanceName = (typeof instanceNames)[number];
 

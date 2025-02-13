@@ -1,13 +1,24 @@
 import util from 'node:util';
+import * as v from 'valibot';
 import type { Logform, Logger } from 'winston';
 import winston, { format, transports } from 'winston';
 import { fullFormat } from 'winston-error-format';
+
+import { logging } from './environment/logging';
+import { singleton } from './utils/instance-registry';
+
+import { preprocess } from '~/utils/validation-utils';
+
+export const LOG_LEVELS = ['audit', 'debug', 'error', 'info', 'none', 'trace', 'warn'] as const;
+
+export type LogLevels = typeof LOG_LEVELS;
+export type LogLevel = LogLevels[number];
 
 /**
  * Defines a constant object representing logging levels.
  * This object provides a mapping between string names and their corresponding integer values for logging levels.
  */
-export const logLevels = {
+const logLevels = {
   none: 0,
   error: 1,
   warn: 2,
@@ -15,7 +26,7 @@ export const logLevels = {
   audit: 4,
   debug: 5,
   trace: 6,
-} as const;
+} as const satisfies Record<LogLevel, number>;
 
 const consoleTransport = new transports.Console({
   handleExceptions: true,
@@ -55,7 +66,7 @@ export const LogFactory = {
  * This function takes a Logform.TransformableInfo object and returns a formatted string.
  * The formatted string includes the timestamp, level, label, message, and any additional metadata.
  */
-function asFormattedInfo(transformableInfo: Logform.TransformableInfo): string {
+export function asFormattedInfo(transformableInfo: Logform.TransformableInfo): string {
   const { label, level, message, timestamp, ...rest } = transformableInfo;
   const formattedInfo = `${timestamp} ${level.toUpperCase().padStart(7)} --- [${formatLabel(`${label}`, 25)}]: ${message}`;
   const sanitizedRest = Object.fromEntries(Object.entries(rest).filter(([key]) => typeof key !== 'symbol'));
@@ -82,16 +93,9 @@ function formatLabel(label: string, size: number): string {
 
 /**
  * Retrieves the log level from the environment variables.
- * This function checks the `LOG_LEVEL` environment variable. If it's undefined
- * or empty, it defaults to 'info' in production and 'debug' in other
- * environments.
  */
-function getLogLevel(): string {
-  const { LOG_LEVEL } = process.env;
-
-  if (LOG_LEVEL === undefined || LOG_LEVEL === '') {
-    return process.env.NODE_ENV === 'production' ? 'info' : 'debug';
-  }
-
-  return LOG_LEVEL;
+function getLogLevel() {
+  return singleton('logLevel', () => {
+    return v.parse(logging, preprocess(process.env)).LOG_LEVEL;
+  });
 }
