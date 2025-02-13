@@ -1,11 +1,9 @@
 import 'winston';
 
-import type { logLevels } from '~/.server/environment';
-
-type LogLevels = keyof typeof logLevels;
+import type { LogLevel } from '~/.server/logging';
 
 declare module 'winston' {
-  interface Logger extends Record<LogLevels, LeveledLogMethod> {}
+  interface Logger extends Record<LogLevel, LeveledLogMethod> {}
 }
 
 export {};

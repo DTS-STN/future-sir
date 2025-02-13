@@ -17,6 +17,8 @@ export const logLevels = {
   trace: 6,
 } as const;
 
+export type LogLevel = keyof typeof logLevels;
+
 const consoleTransport = new transports.Console({
   handleExceptions: true,
   handleRejections: true,
