@@ -25,7 +25,7 @@
 # Stage: Base image
 # The base image provides the foundation for all subsequent stages.
 # It uses a slim nodejs image optimized for production, based on Debian Bookworm.
-FROM docker.io/library/node:22.13.1-bookworm-slim AS base
+FROM docker.io/library/node:22.14.0-bookworm-slim AS base
 
 ARG BUILD_DATE="1970-01-01T00:00:00.000Z"
 ARG BUILD_ID="000000"
