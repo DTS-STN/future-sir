@@ -1,0 +1,147 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`InputFile > should render input file component > expected html 1`] = `
+<div>
+  <div
+    class="space-y-2"
+    id="input-file-test-id"
+  >
+    <label
+      class="block"
+      for="test-id"
+      id="input-file-test-id-label"
+    >
+      <span
+        class="font-semibold"
+      >
+        label test
+      </span>
+    </label>
+    <input
+      accept=""
+      aria-labelledby="input-file-test-id-label"
+      class="block cursor-pointer rounded-lg border border-gray-500 focus:border-blue-500 focus:ring-3 focus:ring-blue-500 focus:outline-hidden file:border-r file:border-gray-200 file:bg-gray-50 file:text-black hover:file:bg-gray-200 disabled:pointer-events-none disabled:bg-gray-100 disabled:opacity-70 aria-invalid:border-red-500 aria-invalid:focus:border-red-500 aria-invalid:focus:ring-red-500"
+      id="input-file-test-id-input"
+      name="test"
+      type="file"
+    />
+  </div>
+</div>
+`;
+
+exports[`InputFile > should render input file with error message > expected html 1`] = `
+<div>
+  <div
+    class="space-y-2"
+    id="input-file-test-id"
+  >
+    <label
+      class="block"
+      for="test-id"
+      id="input-file-test-id-label"
+    >
+      <span
+        class="font-semibold"
+      >
+        label test
+      </span>
+    </label>
+    <p>
+      <span
+        class="inline-block max-w-prose border-l-2 border-red-600 bg-red-50 px-3 py-1"
+        data-testid="input-error-test-id"
+        id="input-file-test-id-error"
+        role="alert"
+      >
+        error message
+      </span>
+    </p>
+    <input
+      accept=""
+      aria-errormessage="input-file-test-id-error"
+      aria-invalid="true"
+      aria-labelledby="input-file-test-id-label"
+      class="block cursor-pointer rounded-lg border border-gray-500 focus:border-blue-500 focus:ring-3 focus:ring-blue-500 focus:outline-hidden file:border-r file:border-gray-200 file:bg-gray-50 file:text-black hover:file:bg-gray-200 disabled:pointer-events-none disabled:bg-gray-100 disabled:opacity-70 aria-invalid:border-red-500 aria-invalid:focus:border-red-500 aria-invalid:focus:ring-red-500"
+      id="input-file-test-id-input"
+      name="test"
+      type="file"
+    />
+  </div>
+</div>
+`;
+
+exports[`InputFile > should render input file with help message > expected html 1`] = `
+<div>
+  <div
+    class="space-y-2"
+    id="input-file-test-id"
+  >
+    <label
+      class="block"
+      for="test-id"
+      id="input-file-test-id-label"
+    >
+      <span
+        class="font-semibold"
+      >
+        label test
+      </span>
+    </label>
+    <input
+      accept=""
+      aria-describedby="input-file-test-id-help-secondary"
+      aria-labelledby="input-file-test-id-label"
+      class="block cursor-pointer rounded-lg border border-gray-500 focus:border-blue-500 focus:ring-3 focus:ring-blue-500 focus:outline-hidden file:border-r file:border-gray-200 file:bg-gray-50 file:text-black hover:file:bg-gray-200 disabled:pointer-events-none disabled:bg-gray-100 disabled:opacity-70 aria-invalid:border-red-500 aria-invalid:focus:border-red-500 aria-invalid:focus:ring-red-500"
+      id="input-file-test-id-input"
+      name="test"
+      type="file"
+    />
+    <span
+      class="block max-w-prose text-gray-500"
+      data-testid="input-help"
+      id="input-file-test-id-help-secondary"
+    >
+      help message
+    </span>
+  </div>
+</div>
+`;
+
+exports[`InputFile > should render input file with required > expected html 1`] = `
+<div>
+  <div
+    class="space-y-2"
+    id="input-file-test-id"
+  >
+    <label
+      class="block"
+      for="test-id"
+      id="input-file-test-id-label"
+    >
+      <span
+        class="font-semibold"
+      >
+        label test
+      </span>
+       
+      <span
+        aria-hidden="true"
+      >
+        (
+        input-label.required
+        )
+      </span>
+    </label>
+    <input
+      accept=""
+      aria-labelledby="input-file-test-id-label"
+      aria-required="true"
+      class="block cursor-pointer rounded-lg border border-gray-500 focus:border-blue-500 focus:ring-3 focus:ring-blue-500 focus:outline-hidden file:border-r file:border-gray-200 file:bg-gray-50 file:text-black hover:file:bg-gray-200 disabled:pointer-events-none disabled:bg-gray-100 disabled:opacity-70 aria-invalid:border-red-500 aria-invalid:focus:border-red-500 aria-invalid:focus:ring-red-500"
+      id="input-file-test-id-input"
+      name="test"
+      required=""
+      type="file"
+    />
+  </div>
+</div>
+`;
