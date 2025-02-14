@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState } from 'react';
 import type { ComponentPropsWithoutRef, JSX } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { useActionData, useFetcher } from 'react-router';
 
 import { useTranslation } from 'react-i18next';
 
-import { AnchorLink } from '~/components/anchor-link';
+import { AnchorLink } from '~/components/links';
 import { cn } from '~/utils/tailwind-utils';
 
 /**

@@ -2,7 +2,7 @@ import type { PropsWithChildren } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { AnchorLink } from '~/components/anchor-link';
+import { AnchorLink } from '~/components/links';
 
 export function SkipNavigationLinks() {
   const { t } = useTranslation(['gcweb']);

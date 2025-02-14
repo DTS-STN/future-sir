@@ -1,4 +1,4 @@
-import type { ComponentProps, JSX } from 'react';
+import type { ComponentProps, JSX, MouseEvent } from 'react';
 
 import type { Params, Path } from 'react-router';
 import { generatePath, Link } from 'react-router';
@@ -17,7 +17,7 @@ import { cn } from '~/utils/tailwind-utils';
  * This type extends the base properties of a React Router `Link` component,
  * excluding the `to` property, and adds fields specific to i18n routes.
  */
-type BilingualLinkProps = Omit<ComponentProps<typeof Link>, 'to'> & {
+type BilingualLinkProps = OmitStrict<ComponentProps<typeof Link>, 'to'> & {
   disabled?: boolean;
   file: I18nRouteFile;
   hash?: Path['hash'];
@@ -34,7 +34,7 @@ type BilingualLinkProps = Omit<ComponentProps<typeof Link>, 'to'> & {
  * excluding the `lang` property from the base type, and enforces constraints
  * to ensure that only standard routes (non-i18n) are used.
  */
-type UnilingualLinkProps = Omit<ComponentProps<typeof Link>, 'lang'> & {
+type UnilingualLinkProps = OmitStrict<ComponentProps<typeof Link>, 'lang'> & {
   disabled?: boolean;
   file?: never;
   hash?: never;
@@ -47,6 +47,15 @@ type UnilingualLinkProps = Omit<ComponentProps<typeof Link>, 'lang'> & {
  * Props for the `AppLink` component, supporting both bilingual (i18n) and unilingual routes.
  */
 type AppLinkProps = BilingualLinkProps | UnilingualLinkProps;
+
+/**
+ * AnchorLinkProps represents the properties for the AnchorLink component.
+ * It extends the ComponentProps<'a'> type, omitting the 'href' property,
+ * and adds the required 'anchorElementId' property.
+ */
+type AnchorLinkProps = OmitStrict<ComponentProps<'a'>, 'href'> & {
+  anchorElementId: string;
+};
 
 /**
  * Props for the `InlineLink` component. Effecetively extends the `AppLink` component's props.
@@ -82,8 +91,8 @@ export function AppLink({ children, disabled, hash, lang, params, file, search, 
   }
 
   if (disabled) {
-    // see: https://www.scottohara.me/blog/2021/05/28/disabled-links.html
     return (
+      // see: "disabling a link" -- https://www.scottohara.me/blog/2021/05/28/disabled-links.html
       <a role="link" aria-disabled="true" {...props}>
         {children}
       </a>
@@ -100,6 +109,33 @@ export function AppLink({ children, disabled, hash, lang, params, file, search, 
     <Link lang={langProp} to={{ hash, pathname, search }} reloadDocument={reloadDocumentProp} {...props}>
       {children}
     </Link>
+  );
+}
+
+/**
+ * AnchorLink is a React component used to create anchor links that scroll
+ * and focus on the specified target element when clicked.
+ *
+ * @param props - The properties for the AnchorLink component.
+ * @returns React element representing the anchor link.
+ */
+export function AnchorLink({ anchorElementId, children, onClick, ...restProps }: AnchorLinkProps): JSX.Element {
+  /**
+   * handleOnSkipLinkClick is the click event handler for the anchor link.
+   * It prevents the default anchor link behavior, scrolls to and focuses
+   * on the target element specified by 'anchorElementId', and invokes
+   * the optional 'onClick' callback.
+   */
+  function handleOnSkipLinkClick(event: MouseEvent<HTMLAnchorElement>) {
+    event.preventDefault();
+    scrollAndFocusFromAnchorLink(event.currentTarget.href);
+    onClick?.(event);
+  }
+
+  return (
+    <a href={`#${anchorElementId}`} onClick={handleOnSkipLinkClick} data-testid="anchor-link" {...restProps}>
+      {children}
+    </a>
   );
 }
 
@@ -128,4 +164,24 @@ export function InlineLink({ className, children, file, hash, params, search, to
       {children}
     </AppLink>
   );
+}
+
+/**
+ * Scrolls and focuses on the element identified by the anchor link's hash.
+ *
+ * @param href - The anchor link URL.
+ */
+function scrollAndFocusFromAnchorLink(href: string): void {
+  if (URL.canParse(href)) {
+    const { hash } = new URL(href);
+
+    if (hash) {
+      const targetElement = document.querySelector<HTMLElement>(hash);
+
+      if (targetElement) {
+        targetElement.scrollIntoView({ behavior: 'smooth' });
+        targetElement.focus();
+      }
+    }
+  }
 }
