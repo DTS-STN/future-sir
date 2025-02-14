@@ -16,7 +16,7 @@ describe('InputCheckboxes', () => {
   ];
 
   it('should render component with legend and options', () => {
-    const { getByText } = render(<InputCheckboxes id="test" legend="Test Legend" name="test" options={options} />);
+    const { getByText } = render(<InputCheckboxes id="test-id" legend="Test Legend" name="test" options={options} />);
 
     expect(getByText('Test Legend')).toMatchSnapshot('expected html');
     expect(getByText('Option 1')).toMatchSnapshot('expected html');
@@ -25,7 +25,7 @@ describe('InputCheckboxes', () => {
 
   it('should display error message', () => {
     const { getByText } = render(
-      <InputCheckboxes id="test" legend="Test Legend" name="test" options={options} errorMessage="Test Error Message" />,
+      <InputCheckboxes id="test-id" legend="Test Legend" name="test" options={options} errorMessage="Test Error Message" />,
     );
     expect(getByText('Test Error Message')).toMatchSnapshot('expected html');
   });
@@ -33,7 +33,7 @@ describe('InputCheckboxes', () => {
   it('should display helpMessagePrimary', () => {
     const { getByText } = render(
       <InputCheckboxes
-        id="test"
+        id="test-id"
         legend="Test Legend"
         name="test"
         options={options}
@@ -46,7 +46,7 @@ describe('InputCheckboxes', () => {
   it('should display helpMessageSecondary', () => {
     const { getByText } = render(
       <InputCheckboxes
-        id="test"
+        id="test-id"
         legend="Test Legend"
         name="test"
         options={options}

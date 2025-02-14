@@ -13,7 +13,7 @@ describe('InputCheckbox', () => {
     const labelText = 'Checkbox Label';
     const appendContent = <div data-testid="append-content">Appended Content</div>;
     const { getByLabelText, getByTestId } = render(
-      <InputCheckbox id="test-checkbox" name="test-checkbox" append={appendContent}>
+      <InputCheckbox id="test-id" name="test-checkbox" append={appendContent}>
         {labelText}
       </InputCheckbox>,
     );
@@ -32,7 +32,7 @@ describe('InputCheckbox', () => {
   it('should fire onChange event when checkbox is clicked', () => {
     const onChangeMock = vi.fn();
     const { getByTestId } = render(
-      <InputCheckbox id="test-checkbox" name="test-checkbox" onChange={onChangeMock}>
+      <InputCheckbox id="test-id" name="test-checkbox" onChange={onChangeMock}>
         Checkbox Label
       </InputCheckbox>,
     );
@@ -44,7 +44,7 @@ describe('InputCheckbox', () => {
 
   it('should disable checkbox when disabled prop is provided', () => {
     const { getByTestId } = render(
-      <InputCheckbox id="test-checkbox" name="test-checkbox" disabled>
+      <InputCheckbox id="test-id" name="test-checkbox" disabled>
         Checkbox Label
       </InputCheckbox>,
     );

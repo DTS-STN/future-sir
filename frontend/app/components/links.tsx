@@ -176,7 +176,7 @@ function scrollAndFocusFromAnchorLink(href: string): void {
     const { hash } = new URL(href);
 
     if (hash) {
-      const targetElement = document.querySelector<HTMLElement>(hash);
+      const targetElement = document.getElementById(hash.replace('#', ''));
 
       if (targetElement) {
         targetElement.scrollIntoView({ behavior: 'smooth' });
