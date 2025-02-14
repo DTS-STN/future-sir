@@ -11,9 +11,6 @@ env:
 permissions: read-all
 
 jobs:
-  # Checks for changes to the various subprojects and emits a
-  # set of boolean values that can be used to trigger each
-  # subproject's build and test jobs
   check-changes:
     runs-on: ubuntu-latest
     outputs:
@@ -114,34 +111,3 @@ jobs:
         working-directory: frontend/
       - run: npm run test:e2e
         working-directory: frontend/
-
-  # -------------------- status aggregation ---------------------
-  # This job aggregates the status of all PR check jobs.
-  # Branch protection should be configured to require this job to succeed.
-  # -------------------------------------------------------------
-  pr-status-check:
-    runs-on: ubuntu-latest
-    needs: [build-frontend, test-frontend]
-    steps:
-      - name: Aggregate job statuses
-        run: |
-          # Check each job's status.
-          # Only consider jobs that *failed* as contributing to PR failure.
-          # Skipped jobs will be ignored.
-
-          JOB_STATUSES=
-
-          if [ "${{ needs.build-frontend.result }}" == "failure" ]; then
-            JOB_STATUSES+="- build-frontend: ${{ needs.build-frontend.result }}\n"
-          fi
-          if [ "${{ needs.test-frontend.result }}" == "failure" ]; then
-            JOB_STATUSES+="- test-frontend: ${{ needs.test-frontend.result }}\n"
-          fi
-
-          if [ -n "$JOB_STATUSES" ]; then
-            echo "::error::PR checks failed due to the following job failures:"
-            echo "$JOB_STATUSES"
-            exit 1 # exit with non-zero code to fail this job and the workflow
-          fi
-
-          echo "All relevant PR checks passed!"
