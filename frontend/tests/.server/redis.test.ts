@@ -30,6 +30,8 @@ vi.mock('~/.server/utils/instance-registry', () => ({
 describe('Redis Client Initialization', () => {
   describe('getRedisClient', () => {
     it('should create a Redis client in standalone mode', () => {
+      throw new Error('BARF!!');
+
       vi.mocked(serverEnvironment).REDIS_CONNECTION_TYPE = 'standalone';
 
       const redisClient = getRedisClient();
