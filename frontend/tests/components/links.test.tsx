@@ -1,9 +1,9 @@
 import { createRoutesStub, useRouteError } from 'react-router';
 
-import { render } from '@testing-library/react';
+import { fireEvent, render } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { AppLink, InlineLink } from '~/components/links';
+import { AnchorLink, AppLink, InlineLink } from '~/components/links';
 import type { AppError } from '~/errors/app-error';
 
 describe('links', () => {
@@ -72,6 +72,59 @@ describe('links', () => {
       const { container } = render(<RoutesStub initialEntries={['/en/public']} />);
 
       expect(container).toMatchSnapshot('expected html');
+    });
+  });
+
+  describe('AnchorLink', () => {
+    it('should render anchor link component', () => {
+      const { container } = render(
+        <>
+          <AnchorLink anchorElementId="id" onClick={vi.fn()}>
+            click here
+          </AnchorLink>
+          <div id="id">Some content.</div>
+        </>,
+      );
+
+      expect(container).toMatchSnapshot('expected html');
+    });
+
+    it('should scroll to the correct element', () => {
+      HTMLElement.prototype.scrollIntoView = vi.fn();
+      HTMLElement.prototype.focus = vi.fn();
+
+      const { container, getByTestId } = render(
+        <>
+          <AnchorLink anchorElementId="id" onClick={vi.fn()}>
+            click here
+          </AnchorLink>
+          <div id="id">Some content.</div>
+        </>,
+      );
+
+      fireEvent.click(getByTestId('anchor-link'));
+
+      expect(container).toMatchSnapshot('expected html');
+      expect(HTMLElement.prototype.focus).toHaveBeenCalled();
+      expect(HTMLElement.prototype.scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth' });
+    });
+
+    it('should handle click event without an onClick callback', () => {
+      HTMLElement.prototype.scrollIntoView = vi.fn();
+      HTMLElement.prototype.focus = vi.fn();
+
+      const { container, getByTestId } = render(
+        <>
+          <AnchorLink anchorElementId="id">click here</AnchorLink>
+          <div id="id">Some content.</div>
+        </>,
+      );
+
+      fireEvent.click(getByTestId('anchor-link'));
+
+      expect(container).toMatchSnapshot('expected html');
+      expect(HTMLElement.prototype.focus).toHaveBeenCalled();
+      expect(HTMLElement.prototype.scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth' });
     });
   });
 
