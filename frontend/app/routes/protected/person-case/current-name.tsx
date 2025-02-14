@@ -210,7 +210,6 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
         <fetcher.Form method="post" noValidate>
           <div className="space-y-6">
             <InputField
-              id="first-name-id"
               errorMessage={errors?.firstName?.at(0)}
               label={t('protected:current-name.first-name')}
               name="first-name"
@@ -220,7 +219,6 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
               className="w-full rounded-sm sm:w-104"
             />
             <InputField
-              id="middle-name-id"
               errorMessage={errors?.middleName?.at(0)}
               label={t('protected:current-name.middle-name')}
               name="middle-name"
@@ -229,7 +227,6 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
               className="w-full rounded-sm sm:w-104"
             />
             <InputField
-              id="last-name-id"
               errorMessage={errors?.lastName?.at(0)}
               label={t('protected:current-name.last-name')}
               name="last-name"
