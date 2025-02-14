@@ -15,53 +15,6 @@ env:
 
 permissions: read-all
 
-# -------------------------------------------------------------
-# (disclaimer: this comment was generated using an LLM)
-#
-# IMPORTANT: STEP DUPLICATION FOR PR CHECKS WORKFLOW
-#
-# The 'test-frontend' and 'build-frontend' jobs defined in this workflow are
-# *intentionally duplicated* in the 'PR checks' workflow (pr-checks.yaml).
-#
-# REASON FOR DUPLICATION:
-# In the 'PR checks' workflow, it is crucial that the workflow *waits* for the
-# frontend build and test processes to complete and *reports their status* back
-# to the pull request for branch protection purposes.
-#
-# GitHub Actions workflows using `uses: ./.github/workflows/build-frontend.yaml`
-# to call this workflow would trigger a *separate, independent workflow run*.
-# The 'PR checks' workflow would *not* inherently wait for or track the status
-# of that separate run.  Therefore, 'PR checks' would not correctly enforce
-# branch protection based on the outcome of these frontend jobs if they were
-# triggered via `uses`.
-#
-# To ensure proper PR checks that wait and report status, the *steps* defining
-# the frontend build and test are directly embedded as jobs within the
-# 'PR checks' workflow itself.
-#
-# SYNCHRONIZATION IS CRITICAL:
-# If you update the steps in the 'test-frontend' or 'build-frontend' jobs below
-# in *this* `build-frontend.yaml` workflow, you **MUST ENSURE** that you
-# **IMMEDIATELY and EXACTLY replicate those step changes** in the
-# 'test-frontend' and 'build-frontend' jobs within the `pr-checks.yaml` workflow.
-#
-# FAILURE TO SYNCHRONIZE STEP DEFINITIONS MAY LEAD TO:
-# - Inconsistent build/test behavior between PR checks and main branch builds.
-# - Branch protection not being properly enforced for frontend changes.
-#
-# MITIGATION OF DUPLICATION (RECOMMENDED):
-# To reduce redundancy and improve maintainability in the long run, consider
-# refactoring the *steps* for building and testing the frontend into reusable
-# components. Options include:
-#
-#   - Shell scripts (for simpler, script-based steps)
-#   - Composite Actions (for more complex steps or step sequences)
-#
-# These reusable components can then be called from *both* this `build-frontend.yaml`
-# workflow and the `pr-checks.yaml` workflow, ensuring consistency and reducing
-# maintenance overhead.
-#
-# -------------------------------------------------------------
 jobs:
   test-frontend:
     runs-on: ubuntu-latest
