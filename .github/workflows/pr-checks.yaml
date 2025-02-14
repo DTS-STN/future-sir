@@ -38,7 +38,76 @@ jobs:
             core.setOutput('gitops', hasGitopsChanges);
             core.setOutput('infrastructure', hasInfrastructureChanges);
 
+  # ----------------------- frontend jobs -----------------------
+  # (disclaimer: this comment was generated using an LLM)
+  #
+  # Frontend build and test jobs are triggered when PR updates frontend/** files.
+  #
+  # IMPORTANT: These jobs are intentionally duplicated from the separate
+  #            `build-frontend.yaml` workflow configuration.
+  #
+  #            REASON FOR DUPLICATION:
+  #            In GitHub Actions, using `uses: ./.github/workflows/build-frontend.yaml`
+  #            within this 'PR checks' workflow would initiate a *new, independent workflow run*
+  #            of 'build-frontend.yaml'.  Critically, this 'PR checks' workflow would *not*
+  #            wait for the completion or failure status of that separate 'build-frontend.yaml' run.
+  #
+  #            GitHub Actions workflows using `uses` to reference other workflows do *not*
+  #            create a parent-child relationship in terms of status reporting for the purpose of
+  #            workflow checks on pull requests.  The 'PR checks' workflow would immediately
+  #            proceed and likely succeed, regardless of the outcome of the triggered 'build-frontend.yaml'
+  #            workflow.
+  #
+  #            Therefore, to enforce proper PR checks that *wait* for the frontend build and test
+  #            processes and *fail* the 'PR checks' workflow if those processes fail, the *steps*
+  #            defining the frontend build and test must be directly embedded as jobs within *this*
+  #            'PR checks' workflow definition. This ensures they are executed as part of the
+  #            'PR checks' workflow run itself, allowing GitHub Actions to correctly track their status
+  #            and enforce branch protection policies.
+  #
+  #            To mitigate code duplication between this 'PR checks' workflow and the separate
+  #            'build-frontend.yaml' workflow (intended for pushes to `main`), consider refactoring
+  #            the *steps* for building and testing the frontend into reusable components such as:
+  #
+  #              - Shell scripts (for simpler, script-based steps)
+  #              - Composite Actions (for more complex steps or step sequences)
+  #
+  #            These reusable components can then be called from both this 'PR checks' workflow
+  #            and the separate 'build-frontend.yaml' workflow, reducing redundancy and improving
+  #            maintainability.
+  #
+  # -------------------------------------------------------------
   build-frontend:
     needs: check-changes
     if: ${{ needs.check-changes.outputs.frontend == 'true' }}
-    uses: ./.github/workflows/build-frontend.yaml
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+      - run: npm clean-install
+        working-directory: frontend/
+      - run: podman build --file containerfile .
+        working-directory: frontend/
+  test-frontend:
+    needs: check-changes
+    if: ${{ needs.check-changes.outputs.frontend == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+      - run: npm clean-install
+        working-directory: frontend/
+      - run: npm run format:check
+        working-directory: frontend/
+      - run: npm run lint:check
+        working-directory: frontend/
+      - run: npm run test -- --coverage
+        working-directory: frontend/
+      - run: npx playwright install chromium --with-deps
+        working-directory: frontend/
+      - run: npm run test:e2e
+        working-directory: frontend/
