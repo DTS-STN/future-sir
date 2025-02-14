@@ -3,13 +3,13 @@
 exports[`InputField > should render input field component > expected html 1`] = `
 <div>
   <div
-    data-testid="input-test-id"
-    id="input-test-id"
+    class="space-y-2"
+    id="input-text-field-test-id"
   >
     <label
-      class="block mb-2"
+      class="block"
       for="test-id"
-      id="input-test-id-label"
+      id="input-text-field-test-id-label"
     >
       <span
         class="font-semibold"
@@ -18,11 +18,9 @@ exports[`InputField > should render input field component > expected html 1`] = 
       </span>
     </label>
     <input
-      aria-invalid="false"
-      aria-labelledby="input-test-id-label"
-      class="block rounded-lg border-gray-500 focus:border-blue-500 focus:outline-hidden focus:ring-3 focus:ring-blue-500 disabled:bg-gray-100 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-70 read-only:bg-gray-100 read-only:pointer-events-none read-only:cursor-not-allowed read-only:opacity-70"
-      data-testid="input-field"
-      id="test-id"
+      aria-labelledby="input-text-field-test-id-label"
+      class="block rounded-lg border-gray-500 focus:border-blue-500 focus:ring-3 focus:ring-blue-500 focus:outline-hidden read-only:pointer-events-none read-only:bg-gray-100 read-only:opacity-70 disabled:pointer-events-none disabled:bg-gray-100 disabled:opacity-70 aria-invalid:border-red-500 aria-invalid:focus:border-red-500 aria-invalid:focus:ring-red-500"
+      id="input-text-field-test-id-input"
       name="test"
       type="text"
       value="default value"
@@ -34,13 +32,13 @@ exports[`InputField > should render input field component > expected html 1`] = 
 exports[`InputField > should render input field with error message > expected html 1`] = `
 <div>
   <div
-    data-testid="input-test-id"
-    id="input-test-id"
+    class="space-y-2"
+    id="input-text-field-test-id"
   >
     <label
-      class="block mb-2"
+      class="block"
       for="test-id"
-      id="input-test-id-label"
+      id="input-text-field-test-id-label"
     >
       <span
         class="font-semibold"
@@ -48,25 +46,22 @@ exports[`InputField > should render input field with error message > expected ht
         label test
       </span>
     </label>
-    <p
-      class="mb-2"
-    >
+    <p>
       <span
         class="inline-block max-w-prose border-l-2 border-red-600 bg-red-50 px-3 py-1"
         data-testid="input-error-test-id"
-        id="input-test-id-error"
+        id="input-text-field-test-id-error"
         role="alert"
       >
         error message
       </span>
     </p>
     <input
-      aria-errormessage="input-test-id-error"
+      aria-errormessage="input-text-field-test-id-error"
       aria-invalid="true"
-      aria-labelledby="input-test-id-label"
-      class="block rounded-lg focus:outline-hidden focus:ring-3 disabled:bg-gray-100 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-70 read-only:bg-gray-100 read-only:pointer-events-none read-only:cursor-not-allowed read-only:opacity-70 border-red-500 focus:border-red-500 focus:ring-red-500"
-      data-testid="input-field"
-      id="test-id"
+      aria-labelledby="input-text-field-test-id-label"
+      class="block rounded-lg border-gray-500 focus:border-blue-500 focus:ring-3 focus:ring-blue-500 focus:outline-hidden read-only:pointer-events-none read-only:bg-gray-100 read-only:opacity-70 disabled:pointer-events-none disabled:bg-gray-100 disabled:opacity-70 aria-invalid:border-red-500 aria-invalid:focus:border-red-500 aria-invalid:focus:ring-red-500"
+      id="input-text-field-test-id-input"
       name="test"
       type="text"
       value="default value"
@@ -78,13 +73,13 @@ exports[`InputField > should render input field with error message > expected ht
 exports[`InputField > should render input field with help message > expected html 1`] = `
 <div>
   <div
-    data-testid="input-test-id"
-    id="input-test-id"
+    class="space-y-2"
+    id="input-text-field-test-id"
   >
     <label
-      class="block mb-2"
+      class="block"
       for="test-id"
-      id="input-test-id-label"
+      id="input-text-field-test-id-label"
     >
       <span
         class="font-semibold"
@@ -93,20 +88,18 @@ exports[`InputField > should render input field with help message > expected htm
       </span>
     </label>
     <input
-      aria-describedby="input-test-id-help-secondary"
-      aria-invalid="false"
-      aria-labelledby="input-test-id-label"
-      class="block rounded-lg border-gray-500 focus:border-blue-500 focus:outline-hidden focus:ring-3 focus:ring-blue-500 disabled:bg-gray-100 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-70 read-only:bg-gray-100 read-only:pointer-events-none read-only:cursor-not-allowed read-only:opacity-70"
-      data-testid="input-field"
-      id="test-id"
+      aria-describedby="input-text-field-test-id-help-secondary"
+      aria-labelledby="input-text-field-test-id-label"
+      class="block rounded-lg border-gray-500 focus:border-blue-500 focus:ring-3 focus:ring-blue-500 focus:outline-hidden read-only:pointer-events-none read-only:bg-gray-100 read-only:opacity-70 disabled:pointer-events-none disabled:bg-gray-100 disabled:opacity-70 aria-invalid:border-red-500 aria-invalid:focus:border-red-500 aria-invalid:focus:ring-red-500"
+      id="input-text-field-test-id-input"
       name="test"
       type="text"
       value="default value"
     />
     <span
-      class="block max-w-prose text-gray-500 mt-2"
-      data-testid="input-field-help-secondary"
-      id="input-test-id-help-secondary"
+      class="block max-w-prose text-gray-500"
+      data-testid="input-help"
+      id="input-text-field-test-id-help-secondary"
     >
       help message
     </span>
@@ -117,13 +110,13 @@ exports[`InputField > should render input field with help message > expected htm
 exports[`InputField > should render input field with required > expected html 1`] = `
 <div>
   <div
-    data-testid="input-test-id"
-    id="input-test-id"
+    class="space-y-2"
+    id="input-text-field-test-id"
   >
     <label
-      class="block mb-2"
+      class="block"
       for="test-id"
-      id="input-test-id-label"
+      id="input-text-field-test-id-label"
     >
       <span
         class="font-semibold"
@@ -140,12 +133,10 @@ exports[`InputField > should render input field with required > expected html 1`
       </span>
     </label>
     <input
-      aria-invalid="false"
-      aria-labelledby="input-test-id-label"
+      aria-labelledby="input-text-field-test-id-label"
       aria-required="true"
-      class="block rounded-lg border-gray-500 focus:border-blue-500 focus:outline-hidden focus:ring-3 focus:ring-blue-500 disabled:bg-gray-100 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-70 read-only:bg-gray-100 read-only:pointer-events-none read-only:cursor-not-allowed read-only:opacity-70"
-      data-testid="input-field"
-      id="test-id"
+      class="block rounded-lg border-gray-500 focus:border-blue-500 focus:ring-3 focus:ring-blue-500 focus:outline-hidden read-only:pointer-events-none read-only:bg-gray-100 read-only:opacity-70 disabled:pointer-events-none disabled:bg-gray-100 disabled:opacity-70 aria-invalid:border-red-500 aria-invalid:focus:border-red-500 aria-invalid:focus:ring-red-500"
+      id="input-text-field-test-id-input"
       name="test"
       required=""
       type="text"

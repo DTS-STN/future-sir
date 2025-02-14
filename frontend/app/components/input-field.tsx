@@ -1,37 +1,26 @@
+import { useId } from 'react';
+import type { ComponentProps } from 'react';
+
 import { InputError } from '~/components/input-error';
 import { InputHelp } from '~/components/input-help';
 import { InputLabel } from '~/components/input-label';
 import { cn } from '~/utils/tailwind-utils';
 
-const inputBaseClassName =
-  'block rounded-lg border-gray-500 focus:border-blue-500 focus:outline-hidden focus:ring-3 focus:ring-blue-500';
-const inputDisabledClassName =
-  'disabled:bg-gray-100 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-70';
-const inputReadOnlyClassName =
-  'read-only:bg-gray-100 read-only:pointer-events-none read-only:cursor-not-allowed read-only:opacity-70';
-const inputErrorClassName = 'border-red-500 focus:border-red-500 focus:ring-red-500';
-
-export interface InputFieldProps {
-  ariaDescribedby?: string;
-  className?: string;
-  defaultValue?: string;
+export interface InputFieldProps extends ComponentProps<'input'> {
   errorMessage?: string;
   helpMessagePrimary?: React.ReactNode;
   helpMessagePrimaryClassName?: string;
   helpMessageSecondary?: React.ReactNode;
   helpMessageSecondaryClassName?: string;
-  id: string;
   label: string;
   name: string;
-  required?: boolean;
   type?: 'email' | 'number' | 'password' | 'search' | 'tel' | 'text' | 'url';
 }
 
 export function InputField({
-  ariaDescribedby,
+  'aria-describedby': ariaDescribedby,
   errorMessage,
   className,
-  defaultValue,
   helpMessagePrimary,
   helpMessagePrimaryClassName,
   helpMessageSecondary,
@@ -40,67 +29,65 @@ export function InputField({
   label,
   required,
   type = 'text',
-  ...restInputProps
+  ...rest
 }: InputFieldProps) {
-  const inputErrorId = `input-${id}-error`;
-  const inputHelpMessagePrimaryId = `input-${id}-help-primary`;
-  const inputHelpMessageSecondaryId = `input-${id}-help-secondary`;
-  const inputLabelId = `input-${id}-label`;
-  const inputWrapperId = `input-${id}`;
+  const defaultId = useId();
+  const baseId = `input-${type}-field-${id ?? defaultId}`;
+  const ids = {
+    wrapper: baseId,
+    label: `${baseId}-label`,
+    input: `${baseId}-input`,
+    error: `${baseId}-error`,
+    help: {
+      primary: `${baseId}-help-primary`,
+      secondary: `${baseId}-help-secondary`,
+    },
+  };
 
-  function getAriaDescribedby() {
-    const describedby = [];
-    if (ariaDescribedby) describedby.push(ariaDescribedby);
-    if (helpMessagePrimary) describedby.push(inputHelpMessagePrimaryId);
-    if (helpMessageSecondary) describedby.push(inputHelpMessageSecondaryId);
-    return describedby.length > 0 ? describedby.join(' ') : undefined;
-  }
+  const ariaDescribedbyIds =
+    [
+      ariaDescribedby, //
+      !!helpMessagePrimary && ids.help.primary,
+      !!helpMessageSecondary && ids.help.secondary,
+    ]
+      .filter(Boolean)
+      .join(' ') || undefined;
 
   return (
-    <div id={inputWrapperId} data-testid={inputWrapperId}>
-      <InputLabel id={inputLabelId} htmlFor={id} className="mb-2" required={required}>
+    <div id={ids.wrapper} className="space-y-2">
+      <InputLabel id={ids.label} htmlFor={id} required={required}>
         {label}
       </InputLabel>
       {errorMessage && (
-        <p className="mb-2">
-          <InputError id={inputErrorId}>{errorMessage}</InputError>
+        <p>
+          <InputError id={ids.error}>{errorMessage}</InputError>
         </p>
       )}
       {helpMessagePrimary && (
-        <InputHelp
-          id={inputHelpMessagePrimaryId}
-          className={cn('mb-2', helpMessagePrimaryClassName)}
-          data-testid="input-field-help-primary"
-        >
+        <InputHelp id={ids.help.primary} className={helpMessagePrimaryClassName}>
           {helpMessagePrimary}
         </InputHelp>
       )}
       <input
-        aria-describedby={getAriaDescribedby()}
-        aria-errormessage={errorMessage ? inputErrorId : undefined}
-        aria-invalid={!!errorMessage}
-        aria-labelledby={inputLabelId}
-        aria-required={required}
+        aria-describedby={ariaDescribedbyIds}
+        aria-errormessage={errorMessage ? ids.error : undefined}
+        aria-invalid={errorMessage ? true : undefined}
+        aria-labelledby={ids.label}
+        aria-required={required ? true : undefined}
         className={cn(
-          inputBaseClassName,
-          inputDisabledClassName,
-          inputReadOnlyClassName,
-          errorMessage && inputErrorClassName,
+          'block rounded-lg border-gray-500 focus:border-blue-500 focus:ring-3 focus:ring-blue-500 focus:outline-hidden',
+          'read-only:pointer-events-none read-only:bg-gray-100 read-only:opacity-70',
+          'disabled:pointer-events-none disabled:bg-gray-100 disabled:opacity-70',
+          'aria-invalid:border-red-500 aria-invalid:focus:border-red-500 aria-invalid:focus:ring-red-500',
           className,
         )}
-        data-testid="input-field"
-        defaultValue={defaultValue}
-        id={id}
+        id={ids.input}
         required={required}
         type={type}
-        {...restInputProps}
+        {...rest}
       />
       {helpMessageSecondary && (
-        <InputHelp
-          id={inputHelpMessageSecondaryId}
-          className={cn('mt-2', helpMessageSecondaryClassName)}
-          data-testid="input-field-help-secondary"
-        >
+        <InputHelp id={ids.help.secondary} className={helpMessageSecondaryClassName}>
           {helpMessageSecondary}
         </InputHelp>
       )}
