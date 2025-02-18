@@ -122,6 +122,9 @@
   "overrides": {
     "vite": {
       "rollup": "npm:@rollup/wasm-node@^4.34.8"
+    },
+    "eslint-import-resolver-typescript": {
+      "tinyglobby": "npm:tinyglobby@0.2.10"
     }
   }
 }
