@@ -27,3 +27,13 @@ export function padWithZero(value: number, maxLength: number): string {
   if (value.toString().length >= maxLength) return value.toString();
   return value.toString().padStart(maxLength, '0');
 }
+
+/**
+ * Returns undefined for empty strings, whitespace, or undefined values.
+ * Otherwise, it returns the original string if it's not empty.
+ * @param str - The string to check, which may be undefined.
+ * @returns The original string or undefined.
+ */
+export function trimToUndefined(str: string | undefined): string | undefined {
+  return Number(str?.trim().length) > 0 ? str : undefined;
+}

@@ -6,6 +6,10 @@ type SupportingDocs =
   | { supportingDocumentsRequired: false }
   | { supportingDocumentsRequired: true; supportingDocumentTypes: string[] };
 
+type CurrentName =
+  | { preferredSameAsDocumentName: true }
+  | ({ preferredSameAsDocumentName: false; firstName: string; middleName?: string; lastName: string } & SupportingDocs);
+
 declare module 'express-session' {
   interface SessionData {
     authState: {
@@ -23,11 +27,7 @@ declare module 'express-session' {
      * Represents the session data for the in-person SIN case.
      */
     inPersonSINCase: {
-      currentNameInfo?: SupportingDocs & {
-        firstName: string;
-        middleName?: string;
-        lastName: string;
-      };
+      currentNameInfo?: CurrentName;
       /**
        * Represents the privacy statement data for the in-person SIN case.
        */
