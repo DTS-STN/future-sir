@@ -98,6 +98,9 @@ exports[`UnilingualErrorBoundary > should render the unilingual error boundary w
     <link
       rel="modulepreload"
     />
+    <link
+      rel="modulepreload"
+    />
     <script>
        
     </script>
