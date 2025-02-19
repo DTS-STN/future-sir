@@ -8,8 +8,9 @@
     },
     {
       "path": "infrastructure"
-    },
+    }
   ],
   "settings": {
-  },
+    "tailwindCSS.experimental.configFile": "frontend/app/tailwind.css"
+  }
 }
