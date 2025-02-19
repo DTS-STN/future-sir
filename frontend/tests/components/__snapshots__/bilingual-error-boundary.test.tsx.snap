@@ -145,6 +145,9 @@ exports[`BilingualErrorBoundary > should render the bilingual error boundary whe
     <link
       rel="modulepreload"
     />
+    <link
+      rel="modulepreload"
+    />
     <script>
        
     </script>
