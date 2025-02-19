@@ -151,5 +151,19 @@
       "birth-certificate": "Birth certificate contains family name to be registered",
       "citizenship-certificate": "Certificate of Canadian Citizenship contains family name to be registered"
     }
+  },
+  "previous-sin": {
+    "page-title": "Previous SIN",
+    "has-previous-sin-label": "Has the applicant ever had a SIN?",
+    "has-previous-sin-options": {
+      "yes": "Yes",
+      "no": "No",
+      "unknown": "Unknown (don't recall)"
+    },
+    "social-insurance-number-label": "Social Insurance Number",
+    "error-messages": {
+      "has-previous-sin-required": "Select whether the applicant has had a previous SIN",
+      "sin-required": "Enter a valid SIN"
+    }
   }
 }

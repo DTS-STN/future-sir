@@ -151,5 +151,19 @@
       "birth-certificate": "Acte de naissance contenant le nom de famille à enregistrer",
       "citizenship-certificate": "Certificat de citoyenneté canadienne contenant le nom de famille à enregistrer"
     }
+  },
+  "previous-sin": {
+    "page-title": "NAS précédent",
+    "has-previous-sin-label": "Le demandeur a-t-il déjà eu un NAS?",
+    "has-previous-sin-options": {
+      "yes": "Oui",
+      "no": "Non",
+      "unknown": "Inconnu (je ne me souviens pas)"
+    },
+    "social-insurance-number-label": "Numéro d'assurance sociale",
+    "error-messages": {
+      "has-previous-sin-required": "Indiquez si le demandeur a déjà eu un NAS.",
+      "sin-required": "Entrez un NAS valide"
+    }
   }
 }
