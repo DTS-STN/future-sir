@@ -27,6 +27,7 @@ import { getFixedT } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/layout';
 import { getLanguage } from '~/utils/i18n-utils';
 import { REGEX_PATTERNS } from '~/utils/regex-utils';
+import { trimToUndefined } from '~/utils/string-utils';
 
 type CurrentNameSessionData = NonNullable<SessionData['inPersonSINCase']['currentNameInfo']>;
 
@@ -51,17 +52,27 @@ export const handle = {
 export async function loader({ context, request }: Route.LoaderArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
   const t = await getFixedT(request, handle.i18nNamespace);
-  const supportingDocumentsRequired = context.session.inPersonSINCase?.currentNameInfo?.supportingDocumentsRequired;
+  const currentNameInfo = context.session.inPersonSINCase?.currentNameInfo;
+  const preferredSameAsDocumentName = currentNameInfo?.preferredSameAsDocumentName;
   return {
     documentTitle: t('protected:primary-identity-document.page-title'),
     defaultFormValues: {
-      firstName: context.session.inPersonSINCase?.currentNameInfo?.firstName,
-      middleName: context.session.inPersonSINCase?.currentNameInfo?.middleName,
-      lastName: context.session.inPersonSINCase?.currentNameInfo?.lastName,
-      supportingDocumentsRequired: supportingDocumentsRequired,
-      supportingDocumentTypes: supportingDocumentsRequired
-        ? context.session.inPersonSINCase?.currentNameInfo?.supportingDocumentTypes
-        : undefined,
+      primaryDocsInfo: {
+        //TODO: Replace with name from primary document
+        firstName: 'N/A', //context.session.inPersonSINCase?.primaryDocuments?.firstName,
+        middleName: 'N/A', //context.session.inPersonSINCase?.primaryDocuments?.middleName,
+        lastName: 'N/A', //context.session.inPersonSINCase?.primaryDocuments?.lastName
+      },
+      preferredSameAsDocumentName: preferredSameAsDocumentName,
+      ...(!preferredSameAsDocumentName && {
+        firstName: currentNameInfo?.firstName,
+        middleName: currentNameInfo?.middleName,
+        lastName: currentNameInfo?.lastName,
+        supportingDocumentsRequired: currentNameInfo?.supportingDocumentsRequired,
+        supportingDocumentTypes: currentNameInfo?.supportingDocumentsRequired
+          ? currentNameInfo.supportingDocumentTypes
+          : undefined,
+      }),
     },
   };
 }
@@ -85,8 +96,13 @@ export async function action({ context, request }: Route.ActionArgs) {
     }
 
     case 'next': {
-      const schema = v.intersect([
-        v.object({
+      const sameName = formData.get('same-name');
+      if (sameName === REQUIRE_OPTIONS.yes) {
+        context.session.inPersonSINCase ??= {};
+        context.session.inPersonSINCase.currentNameInfo = { preferredSameAsDocumentName: true };
+      } else {
+        const differentNameSchema = v.object({
+          preferredSameAsDocumentName: v.literal(false, t('protected:current-name.preferred-name.required-error')),
           firstName: v.pipe(
             v.string(t('protected:current-name.first-name-error.required-error')),
             v.trim(),
@@ -109,15 +125,16 @@ export async function action({ context, request }: Route.ActionArgs) {
             v.maxLength(nameMaxLength, t('protected:current-name.last-name-error.max-length-error')),
             v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:current-name.last-name-error.format-error')),
           ),
-        }),
-        v.variant(
+        });
+
+        const supportingDocsSchema = v.variant(
           'supportingDocumentsRequired',
           [
             v.object({
-              supportingDocumentsRequired: v.literal(false),
+              supportingDocumentsRequired: v.literal(false, t('protected:current-name.supporting-error.required-error')),
             }),
             v.object({
-              supportingDocumentsRequired: v.literal(true),
+              supportingDocumentsRequired: v.literal(true, t('protected:current-name.supporting-error.required-error')),
               supportingDocumentTypes: v.pipe(
                 v.array(v.string(), t('protected:current-name.supporting-error.required-error')),
                 v.nonEmpty(t('protected:current-name.supporting-error.required-error')),
@@ -129,27 +146,33 @@ export async function action({ context, request }: Route.ActionArgs) {
             }),
           ],
           t('protected:current-name.supporting-error.required-error'),
-        ),
-      ]) satisfies v.GenericSchema<CurrentNameSessionData>;
+        );
 
-      const input = {
-        firstName: String(formData.get('first-name')),
-        middleName: String(formData.get('middle-name')),
-        lastName: String(formData.get('last-name')),
-        supportingDocumentsRequired: formData.get('docs-required')
-          ? formData.get('docs-required') === REQUIRE_OPTIONS.yes
-          : undefined,
-        supportingDocumentTypes: formData.getAll('doc-type') as string[],
-      } satisfies Partial<v.InferInput<typeof schema>>;
+        const schema = v.intersect([
+          differentNameSchema,
+          supportingDocsSchema,
+        ]) satisfies v.GenericSchema<CurrentNameSessionData>;
 
-      const parseResult = v.safeParse(schema, input, { lang });
+        const input = {
+          preferredSameAsDocumentName: formData.get('same-name') === REQUIRE_OPTIONS.yes,
+          firstName: String(formData.get('first-name')),
+          middleName: trimToUndefined(formData.get('middle-name') as string),
+          lastName: String(formData.get('last-name')),
+          supportingDocumentsRequired: formData.get('docs-required') === REQUIRE_OPTIONS.yes,
+          supportingDocumentTypes: formData.getAll('doc-type') as string[],
+        } satisfies OmitStrict<Partial<v.InferInput<typeof schema>>, 'preferredSameAsDocumentName'> & {
+          preferredSameAsDocumentName: boolean;
+        };
 
-      if (!parseResult.success) {
-        return data({ errors: v.flatten<typeof schema>(parseResult.issues).nested }, { status: 400 });
+        const parseResult = v.safeParse(schema, input, { lang });
+
+        if (!parseResult.success) {
+          return data({ errors: v.flatten<typeof schema>(parseResult.issues).nested }, { status: 400 });
+        }
+
+        context.session.inPersonSINCase ??= {};
+        context.session.inPersonSINCase.currentNameInfo = parseResult.output;
       }
-
-      context.session.inPersonSINCase ??= {};
-      context.session.inPersonSINCase.currentNameInfo = parseResult.output;
 
       throw i18nRedirect('routes/protected/request.tsx', request);
     }
@@ -162,11 +185,31 @@ export async function action({ context, request }: Route.ActionArgs) {
 
 export default function CurrentName({ loaderData, actionData, params }: Route.ComponentProps) {
   const { t } = useTranslation(handle.i18nNamespace);
+  const [sameName, setSameName] = useState<boolean | undefined>(loaderData.defaultFormValues.preferredSameAsDocumentName);
   const [requireDoc, setRequireDoc] = useState<boolean | undefined>(loaderData.defaultFormValues.supportingDocumentsRequired);
   const fetcherKey = useId();
   const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
   const isSubmitting = fetcher.state !== 'idle';
   const errors = fetcher.data?.errors;
+
+  function handleSameNameChanged(event: ChangeEvent<HTMLInputElement>) {
+    setSameName(event.target.value === REQUIRE_OPTIONS.yes);
+  }
+
+  const nameOptions: InputRadiosProps['options'] = [
+    {
+      children: t('gcweb:input-option.yes'),
+      value: REQUIRE_OPTIONS.yes,
+      defaultChecked: sameName === true,
+      onChange: handleSameNameChanged,
+    },
+    {
+      children: t('gcweb:input-option.no'),
+      value: REQUIRE_OPTIONS.no,
+      defaultChecked: sameName === false,
+      onChange: handleSameNameChanged,
+    },
+  ];
 
   function handleRequireDocChanged(event: ChangeEvent<HTMLInputElement>) {
     setRequireDoc(event.target.value === REQUIRE_OPTIONS.yes);
@@ -205,54 +248,81 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
       </div>
       <Progress className="mt-8" label="" value={30} />
       <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:current-name.page-title')}</PageTitle>
-      <p className="mb-8">{t('protected:current-name.page-description')}</p>
+      <p className="mb-4">{t('protected:current-name.recorded-name.description')}</p>
+      <ul className="mb-8 list-disc pl-5 font-bold">
+        <li>
+          {t('protected:current-name.recorded-name.first-name')}
+          <span className="ml-[1ch] font-normal">{loaderData.defaultFormValues.primaryDocsInfo.firstName}</span>
+        </li>
+        <li>
+          {t('protected:current-name.recorded-name.middle-name')}
+          <span className="ml-[1ch] font-normal">{loaderData.defaultFormValues.primaryDocsInfo.middleName}</span>
+        </li>
+        <li>
+          {t('protected:current-name.recorded-name.last-name')}
+          <span className="ml-[1ch] font-normal">{loaderData.defaultFormValues.primaryDocsInfo.lastName}</span>
+        </li>
+      </ul>
       <FetcherErrorSummary fetcherKey={fetcherKey}>
         <fetcher.Form method="post" noValidate>
           <div className="space-y-6">
-            <InputField
-              errorMessage={errors?.firstName?.at(0)}
-              label={t('protected:current-name.first-name')}
-              name="first-name"
-              defaultValue={loaderData.defaultFormValues.firstName}
-              required
-              type="text"
-              className="w-full rounded-sm sm:w-104"
-            />
-            <InputField
-              errorMessage={errors?.middleName?.at(0)}
-              label={t('protected:current-name.middle-name')}
-              name="middle-name"
-              defaultValue={loaderData.defaultFormValues.middleName}
-              type="text"
-              className="w-full rounded-sm sm:w-104"
-            />
-            <InputField
-              errorMessage={errors?.lastName?.at(0)}
-              label={t('protected:current-name.last-name')}
-              name="last-name"
-              defaultValue={loaderData.defaultFormValues.lastName}
-              required
-              type="text"
-              className="w-full rounded-sm sm:w-104"
-            />
-            <h2 className="font-lato mt-12 text-2xl font-bold">{t('protected:current-name.supporting-docs.title')}</h2>
-            <p>{t('protected:current-name.supporting-docs.description')}</p>
             <InputRadios
-              id="docs-required-id"
-              legend={t('protected:current-name.supporting-docs.docs-required')}
-              name="docs-required"
-              options={requireOptions}
+              errorMessage={errors?.preferredSameAsDocumentName?.at(0)}
+              id="same-name-id"
+              legend={t('protected:current-name.preferred-name.description')}
+              name="same-name"
+              options={nameOptions}
               required
             />
-            {requireDoc && (
-              <InputCheckboxes
-                id="doc-type-id"
-                errorMessage={errors?.supportingDocumentTypes?.at(0)}
-                legend={t('protected:current-name.supporting-docs.doc-type')}
-                name="doc-type"
-                options={docTypes}
-                required
-              />
+            {sameName === false && (
+              <>
+                <InputField
+                  errorMessage={errors?.firstName?.at(0)}
+                  label={t('protected:current-name.preferred-name.first-name')}
+                  name="first-name"
+                  defaultValue={loaderData.defaultFormValues.firstName}
+                  required
+                  type="text"
+                  className="w-full rounded-sm sm:w-104"
+                />
+                <InputField
+                  errorMessage={errors?.middleName?.at(0)}
+                  label={t('protected:current-name.preferred-name.middle-name')}
+                  name="middle-name"
+                  defaultValue={loaderData.defaultFormValues.middleName}
+                  type="text"
+                  className="w-full rounded-sm sm:w-104"
+                />
+                <InputField
+                  errorMessage={errors?.lastName?.at(0)}
+                  label={t('protected:current-name.preferred-name.last-name')}
+                  name="last-name"
+                  defaultValue={loaderData.defaultFormValues.lastName}
+                  required
+                  type="text"
+                  className="w-full rounded-sm sm:w-104"
+                />
+                <h2 className="font-lato mt-12 text-2xl font-bold">{t('protected:current-name.supporting-docs.title')}</h2>
+                <p>{t('protected:current-name.supporting-docs.description')}</p>
+                <InputRadios
+                  id="docs-required-id"
+                  errorMessage={errors?.supportingDocumentsRequired?.at(0)}
+                  legend={t('protected:current-name.supporting-docs.docs-required')}
+                  name="docs-required"
+                  options={requireOptions}
+                  required
+                />
+                {requireDoc && (
+                  <InputCheckboxes
+                    id="doc-type-id"
+                    errorMessage={errors?.supportingDocumentTypes?.at(0)}
+                    legend={t('protected:current-name.supporting-docs.doc-type')}
+                    name="doc-type"
+                    options={docTypes}
+                    required
+                  />
+                )}
+              </>
             )}
           </div>
           <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">

@@ -101,11 +101,20 @@
     "required-request": "Type de demande est requis."
   },
   "current-name": {
-    "page-title": "Nom actuel",
-    "page-description": "Les champs relatifs au nom actuel sont pré-remplis à partir du document d'identité principal. Vérifiez-les et mettez-les à jour avec le(s) nom(s) actuel(s) du demandeur si nécessaire. Ces noms seront utilisés pour leur NAS.",
-    "first-name": "Prénom(s) actuel(s)",
-    "middle-name": "Deuxième(s) prénom(s) actuel(s)",
-    "last-name": "Nom de famille actuel",
+    "page-title": "Nom pour le NAS",
+    "recorded-name": {
+      "description": "Le nom suivant est enregistré sur le principal document d'identité du demandeur\u00a0:",
+      "first-name": "Prénom(s)\u00a0:",
+      "middle-name": "Deuxième prénom(s)\u00a0:",
+      "last-name": "Nom(s) de famille\u00a0:"
+    },
+    "preferred-name": {
+      "description": "Le nom préféré du demandeur est-il le même que celui figurant sur son document d'identité principal?",
+      "required-error": "Le choix du prénom préféré est requis.",
+      "first-name": "Prénom(s) actuel(s)",
+      "middle-name": "Deuxième(s) prénom(s) actuel(s)",
+      "last-name": "Nom(s) de famille actuel(s)"
+    },
     "first-name-error": {
       "format-error": "Le prénom ne doit contenir aucun chiffre.",
       "max-length-error": "Le prénom doit contenir au maximum {{maximum}} caractère(s).",
@@ -127,8 +136,8 @@
     },
     "supporting-docs": {
       "title": "Documents de support",
-      "description": "Si les documents fournis ne contiennent pas le(s) nom(s) actuel(s) du demandeur, et que leur(s) nom(s) actuel(s) ne respectent pas les règles de dénomination, un document de support contenant ces nom(s) est requis. Si un document de support est requis et présenté, assurez-vous qu'il respecte les critères actuels de preuve d'identité.",
-      "docs-required": "Document(s) de support requis ?",
+      "description": "Un document justificatif contenant le(s) nom(s) préféré(s) du demandeur est requis si le document d'identité principal ne contient pas le(s) nom(s) préféré(s) du demandeur et que le changement n'est pas conforme aux règles de dénomination.",
+      "docs-required": "Document(s) de support requis?",
       "doc-type": "Type de document de support"
     },
     "doc-types": {

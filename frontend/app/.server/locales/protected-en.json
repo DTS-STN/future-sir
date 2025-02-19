@@ -101,11 +101,20 @@
     "required-request": "Type of request is required."
   },
   "current-name": {
-    "page-title": "Current name",
-    "page-description": "The current name fields are pre-filled from the primary identity document. Review and update them to the applicant's current name(s) if needed. These names will be used for their SIN.",
-    "first-name": "Current first name(s)",
-    "middle-name": "Current middle name(s)",
-    "last-name": "Current last name",
+    "page-title": "Name for SIN",
+    "recorded-name": {
+      "description": "The following name is recorded on the applicant's primary identity document:",
+      "first-name": "First name(s):",
+      "middle-name": "Middle name(s):",
+      "last-name": "Last name(s):"
+    },
+    "preferred-name": {
+      "description": "Is the applicant's perferred name the same as their primary identity document name?",
+      "required-error": "Preferred name choice is required.",
+      "first-name": "Current first name(s)",
+      "middle-name": "Current middle name(s)",
+      "last-name": "Current last name(s)"
+    },
     "first-name-error": {
       "format-error": "First name must not contain any digits.",
       "max-length-error": "First name must contain at most {{maximum}} character(s).",
@@ -127,7 +136,7 @@
     },
     "supporting-docs": {
       "title": "Supporting documents",
-      "description": "If the documents provided do not contain the applicant's current name(s), and their current name(s) don't comply with naming rules, a supporting document containing such name(s) is required. If a supporting document is required and presented, ensure that it meets current proof-of-identity criteria.",
+      "description": "A supporting document containing the applicant's preferred name(s) is required if the primary identity document does not contain the applicant's preferred name(s), and the change does not comply with naming rules.",
       "docs-required": "Supporting document(s) required?",
       "doc-type": "Supporting document type"
     },
