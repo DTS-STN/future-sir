@@ -45,6 +45,10 @@ declare module 'express-session' {
         currentStatusInCanada: string;
         documentType: string;
       };
+      previousSin?: {
+        hasPreviousSin: string;
+        socialInsuranceNumber?: string;
+      };
     };
   }
 }
