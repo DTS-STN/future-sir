@@ -49,6 +49,17 @@ declare module 'express-session' {
         hasPreviousSin: string;
         socialInsuranceNumber?: string;
       };
+      contactInformation?: {
+        preferredLanguage: string;
+        primaryPhoneNumber: string;
+        secondaryPhoneNumber?: string;
+        emailAddress?: string;
+        country: string;
+        address: string;
+        postalCode: string;
+        city: string;
+        province: string;
+      };
     };
   }
 }

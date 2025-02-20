@@ -165,5 +165,39 @@
       "has-previous-sin-required": "Indiquez si le demandeur a déjà eu un NAS.",
       "sin-required": "Entrez un NAS valide"
     }
+  },
+  "contact-information": {
+    "page-title": "Contact information",
+    "correspondence": "Correspondence",
+    "preferred-language-label": "Preferred language of correspondence",
+    "preferred-language-options": {
+      "french": "French",
+      "english": "English"
+    },
+    "primary-phone-label": "Primary phone number",
+    "secondary-phone-label": "Secondary phone number",
+    "email-label": "Email address",
+    "mailing-address": "Mailing address",
+    "country-select-label": "Country",
+    "country-options": {
+      "select-option": "Select option",
+      "canada": "Canada",
+      "other": "Other"
+    },
+    "address-label": "Address",
+    "address-help-message": "Include apartment number (if applicable), street number, street name. For example: 123 Main St. Suite 4B",
+    "postal-code-label": "Postal code",
+    "city-label": "City, town, or village",
+    "province-label": "Province, state, or region",
+    "error-messages": {
+      "preferred-language-required": "Please select a preferred language",
+      "primary-phone-required": "Please enter a primary phone number",
+      "email-address-invalid-format": "Please enter a valid email address",
+      "country-required": "Please select a country",
+      "address-required": "Please enter an address",
+      "postal-code-required": "Please enter a postal code",
+      "city-required": "Please entrer a city",
+      "province-required": "Please enter a province"
+    }
   }
 }

@@ -83,6 +83,14 @@ export const i18nRoutes = [
           fr: '/fr/protege/cas-personnel/previous-sin',
         },
       },
+      {
+        id: 'PROT-0012',
+        file: 'routes/protected/person-case/contact-information.tsx',
+        paths: {
+          en: '/en/protected/person-case/contact-information',
+          fr: '/fr/protege/cas-personnel/contact-information',
+        },
+      },
       //
       // XState-driven in-person flow (poc)
       //
