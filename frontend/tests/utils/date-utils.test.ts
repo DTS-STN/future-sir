@@ -4,20 +4,28 @@ import { isValidTimeZone } from '~/utils/date-utils';
 
 describe('date-utils', () => {
   describe('isValidTimeZone', () => {
-    it('should return true for valid timezones', () => {
-      expect(isValidTimeZone('UTC')).toEqual(true);
-      expect(isValidTimeZone('Canada/Newfoundland')).toEqual(true);
-      expect(isValidTimeZone('Canada/Atlantic')).toEqual(true);
-      expect(isValidTimeZone('Canada/Central')).toEqual(true);
-      expect(isValidTimeZone('Canada/Mountain')).toEqual(true);
-      expect(isValidTimeZone('Canada/Pacific')).toEqual(true);
+    const invalidTimeZones = [
+      '', //
+      'Canada',
+      'Canada/Los_Angeles',
+      'MyTimeZone!!',
+    ];
+
+    const validTimeZones = [
+      'Canada/Atlantic',
+      'Canada/Central',
+      'Canada/Mountain',
+      'Canada/Newfoundland',
+      'Canada/Pacific',
+      'UTC',
+    ];
+
+    it.each(invalidTimeZones)('should return [false] for invalid time zone [%s]', (timeZone) => {
+      expect(isValidTimeZone(timeZone)).toEqual(false);
     });
 
-    it('should return false for invalid timezones', () => {
-      expect(isValidTimeZone('')).toEqual(false);
-      expect(isValidTimeZone('Canada')).toEqual(false);
-      expect(isValidTimeZone('MyTimezone!')).toEqual(false);
-      expect(isValidTimeZone('Canada/Los_Angeles')).toEqual(false);
+    it.each(validTimeZones)('should return [true] for valid time zone [%s]', (timeZone) => {
+      expect(isValidTimeZone(timeZone)).toEqual(true);
     });
   });
 });
