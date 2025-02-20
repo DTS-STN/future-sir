@@ -102,8 +102,7 @@ export async function action({ context, request }: Route.ActionArgs) {
       context.session.inPersonSINCase ??= {};
       context.session.inPersonSINCase.previousSin = parseResult.output;
 
-      //TODO: replace with correct route
-      throw i18nRedirect('routes/protected/person-case/primary-docs.tsx', request);
+      throw i18nRedirect('routes/protected/person-case/contact-information.tsx', request);
     }
 
     default: {
