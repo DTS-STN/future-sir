@@ -8,6 +8,7 @@ import * as v from 'valibot';
 
 import type { Info, Route } from './+types/contact-information';
 
+import { getLocalizedCountries } from '~/.server/services/locale-data-service';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
@@ -26,18 +27,19 @@ type ContactInformationSessionData = NonNullable<SessionData['inPersonSINCase'][
 
 const VALID_LANGUAGES = ['english', 'french'] as const;
 
-const VALID_COUNTRIES = ['canada', 'other'] as const;
-
 export const handle = {
   i18nNamespace: [...parentHandle.i18nNamespace, 'protected'],
 } as const satisfies RouteHandle;
 
 export async function loader({ context, request }: Route.LoaderArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
+  const lang = getLanguage(request);
   const t = await getFixedT(request, handle.i18nNamespace);
+
   return {
     documentTitle: t('protected:contact-information.page-title'),
     defaultFormValues: context.session.inPersonSINCase?.contactInformation,
+    localizedCountries: getLocalizedCountries(lang),
   };
 }
 
@@ -74,7 +76,10 @@ export async function action({ context, request }: Route.ActionArgs) {
         emailAddress: v.optional(
           v.pipe(v.string(), v.trim(), v.email(t('protected:contact-information.error-messages.email-address-invalid-format'))),
         ),
-        country: v.picklist(VALID_COUNTRIES, t('protected:contact-information.error-messages.country-required')),
+        country: v.picklist(
+          getLocalizedCountries(lang).map(({ id }) => id),
+          t('protected:contact-information.error-messages.country-required'),
+        ),
         address: v.pipe(v.string(), v.trim(), v.nonEmpty(t('protected:contact-information.error-messages.address-required'))),
         postalCode: v.pipe(
           v.string(),
@@ -129,11 +134,9 @@ export default function ContactInformation({ loaderData, actionData, params }: R
     defaultChecked: value === loaderData.defaultFormValues?.preferredLanguage,
   }));
 
-  const countryOptions = ['select-option', ...VALID_COUNTRIES].map((value) => ({
-    value: value === 'select-option' ? '' : value,
-    children: t(
-      `protected:contact-information.country-options.${value}` as 'protected:contact-information.country-options.select-option',
-    ),
+  const countryOptions = [{ id: 'select-option', name: '' }, ...loaderData.localizedCountries].map(({ id, name }) => ({
+    value: id === 'select-option' ? '' : id,
+    children: id === 'select-option' ? t(`protected:contact-information.country-options.${id}`) : name,
   }));
 
   // TODO conditionally render different address fields if Canada is selected as a country
