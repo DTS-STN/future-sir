@@ -7,6 +7,7 @@ import { data, useFetcher } from 'react-router';
 import { faExclamationCircle, faXmark } from '@fortawesome/free-solid-svg-icons';
 import type { SessionData } from 'express-session';
 import { useTranslation } from 'react-i18next';
+import type { PartialDeep } from 'type-fest';
 import * as v from 'valibot';
 
 import type { Info, Route } from './+types/current-name';
@@ -45,7 +46,7 @@ const VALID_DOC_TYPES: string[] = [
   'replace-imm1442',
   'birth-certificate',
   'citizenship-certificate',
-] as const;
+];
 
 export const handle = {
   i18nNamespace: [...parentHandle.i18nNamespace, 'protected'],
@@ -53,30 +54,18 @@ export const handle = {
 
 export async function loader({ context, request }: Route.LoaderArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
-
   const { t } = await getTranslation(request, handle.i18nNamespace);
-  const currentNameInfo = context.session.inPersonSINCase?.currentNameInfo;
-  const preferredSameAsDocumentName = currentNameInfo?.preferredSameAsDocumentName;
 
   return {
     documentTitle: t('protected:primary-identity-document.page-title'),
     defaultFormValues: {
+      currentNameInfo: context.session.inPersonSINCase?.currentNameInfo,
       primaryDocsInfo: {
         //TODO: Replace with name from primary document
         firstName: 'N/A', //context.session.inPersonSINCase?.primaryDocuments?.firstName,
         middleName: 'N/A', //context.session.inPersonSINCase?.primaryDocuments?.middleName,
         lastName: 'N/A', //context.session.inPersonSINCase?.primaryDocuments?.lastName
       },
-      preferredSameAsDocumentName: preferredSameAsDocumentName,
-      ...(!preferredSameAsDocumentName && {
-        firstName: currentNameInfo?.firstName,
-        middleName: currentNameInfo?.middleName,
-        lastName: currentNameInfo?.lastName,
-        supportingDocumentsRequired: currentNameInfo?.supportingDocumentsRequired,
-        supportingDocumentTypes: currentNameInfo?.supportingDocumentsRequired
-          ? currentNameInfo.supportingDocumentTypes
-          : undefined,
-      }),
     },
   };
 }
@@ -99,83 +88,80 @@ export async function action({ context, request }: Route.ActionArgs) {
     }
 
     case 'next': {
-      const sameName = formData.get('same-name');
-      if (sameName === REQUIRE_OPTIONS.yes) {
-        context.session.inPersonSINCase ??= {};
-        context.session.inPersonSINCase.currentNameInfo = { preferredSameAsDocumentName: true };
-      } else {
-        const differentNameSchema = v.object({
-          preferredSameAsDocumentName: v.literal(false, t('protected:current-name.preferred-name.required-error')),
-          firstName: v.pipe(
-            v.string(t('protected:current-name.first-name-error.required-error')),
-            v.trim(),
-            v.nonEmpty(t('protected:current-name.first-name-error.required-error')),
-            v.maxLength(nameMaxLength, t('protected:current-name.first-name-error.max-length-error')),
-            v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:current-name.first-name-error.format-error')),
-          ),
-          middleName: v.optional(
-            v.pipe(
-              v.string(t('protected:current-name.middle-name-error.required-error')),
+      const schema = v.variant(
+        'preferredSameAsDocumentName',
+        [
+          v.object({
+            preferredSameAsDocumentName: v.literal(true),
+          }),
+          v.object({
+            preferredSameAsDocumentName: v.literal(false),
+            firstName: v.pipe(
+              v.string(t('protected:current-name.first-name-error.required-error')),
               v.trim(),
-              v.maxLength(nameMaxLength, t('protected:current-name.middle-name-error.max-length-error')),
-              v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:current-name.middle-name-error.format-error')),
+              v.nonEmpty(t('protected:current-name.first-name-error.required-error')),
+              v.maxLength(nameMaxLength, t('protected:current-name.first-name-error.max-length-error')),
+              v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:current-name.first-name-error.format-error')),
             ),
-          ),
-          lastName: v.pipe(
-            v.string(t('protected:current-name.last-name-error.required-error')),
-            v.trim(),
-            v.nonEmpty(t('protected:current-name.last-name-error.required-error')),
-            v.maxLength(nameMaxLength, t('protected:current-name.last-name-error.max-length-error')),
-            v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:current-name.last-name-error.format-error')),
-          ),
-        });
-
-        const supportingDocsSchema = v.variant(
-          'supportingDocumentsRequired',
-          [
-            v.object({
-              supportingDocumentsRequired: v.literal(false, t('protected:current-name.supporting-error.required-error')),
-            }),
-            v.object({
-              supportingDocumentsRequired: v.literal(true, t('protected:current-name.supporting-error.required-error')),
-              supportingDocumentTypes: v.pipe(
-                v.array(v.string(), t('protected:current-name.supporting-error.required-error')),
-                v.nonEmpty(t('protected:current-name.supporting-error.required-error')),
-                v.checkItems(
-                  (item, index, array) => array.indexOf(item) === index && VALID_DOC_TYPES.includes(item),
-                  t('protected:current-name.supporting-error.invalid-error'),
-                ),
+            middleName: v.optional(
+              v.pipe(
+                v.string(t('protected:current-name.middle-name-error.required-error')),
+                v.trim(),
+                v.maxLength(nameMaxLength, t('protected:current-name.middle-name-error.max-length-error')),
+                v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:current-name.middle-name-error.format-error')),
               ),
-            }),
-          ],
-          t('protected:current-name.supporting-error.required-error'),
-        );
+            ),
+            lastName: v.pipe(
+              v.string(t('protected:current-name.last-name-error.required-error')),
+              v.trim(),
+              v.nonEmpty(t('protected:current-name.last-name-error.required-error')),
+              v.maxLength(nameMaxLength, t('protected:current-name.last-name-error.max-length-error')),
+              v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:current-name.last-name-error.format-error')),
+            ),
+            supportingDocuments: v.variant(
+              'required',
+              [
+                v.object({
+                  required: v.literal(false),
+                }),
+                v.object({
+                  required: v.literal(true),
+                  documentTypes: v.pipe(
+                    v.array(v.string(), t('protected:current-name.supporting-error.required-error')),
+                    v.nonEmpty(t('protected:current-name.supporting-error.required-error')),
+                    v.checkItems(
+                      (item, index, array) => array.indexOf(item) === index && VALID_DOC_TYPES.includes(item),
+                      t('protected:current-name.supporting-error.invalid-error'),
+                    ),
+                  ),
+                }),
+              ],
+              t('protected:current-name.supporting-error.required-error'),
+            ),
+          }),
+        ],
+        t('protected:current-name.preferred-name.required-error'),
+      ) satisfies v.GenericSchema<CurrentNameSessionData>;
 
-        const schema = v.intersect([
-          differentNameSchema,
-          supportingDocsSchema,
-        ]) satisfies v.GenericSchema<CurrentNameSessionData>;
+      const input = {
+        preferredSameAsDocumentName: formData.get('same-name') ? formData.get('same-name') === REQUIRE_OPTIONS.yes : undefined,
+        firstName: String(formData.get('first-name')),
+        middleName: trimToUndefined(String(formData.get('middle-name'))),
+        lastName: String(formData.get('last-name')),
+        supportingDocuments: {
+          required: formData.get('docs-required') ? formData.get('docs-required') === REQUIRE_OPTIONS.yes : undefined,
+          documentTypes: formData.getAll('doc-type').map(String),
+        },
+      } satisfies PartialDeep<v.InferInput<typeof schema>>;
 
-        const input = {
-          preferredSameAsDocumentName: formData.get('same-name') === REQUIRE_OPTIONS.yes,
-          firstName: String(formData.get('first-name')),
-          middleName: trimToUndefined(formData.get('middle-name') as string),
-          lastName: String(formData.get('last-name')),
-          supportingDocumentsRequired: formData.get('docs-required') === REQUIRE_OPTIONS.yes,
-          supportingDocumentTypes: formData.getAll('doc-type') as string[],
-        } satisfies OmitStrict<Partial<v.InferInput<typeof schema>>, 'preferredSameAsDocumentName'> & {
-          preferredSameAsDocumentName: boolean;
-        };
+      const parseResult = v.safeParse(schema, input, { lang });
 
-        const parseResult = v.safeParse(schema, input, { lang });
-
-        if (!parseResult.success) {
-          return data({ errors: v.flatten<typeof schema>(parseResult.issues).nested }, { status: 400 });
-        }
-
-        context.session.inPersonSINCase ??= {};
-        context.session.inPersonSINCase.currentNameInfo = parseResult.output;
+      if (!parseResult.success) {
+        return data({ errors: v.flatten<typeof schema>(parseResult.issues).nested }, { status: 400 });
       }
+
+      context.session.inPersonSINCase ??= {};
+      context.session.inPersonSINCase.currentNameInfo = parseResult.output;
 
       throw i18nRedirect('routes/protected/request.tsx', request);
     }
@@ -188,8 +174,13 @@ export async function action({ context, request }: Route.ActionArgs) {
 
 export default function CurrentName({ loaderData, actionData, params }: Route.ComponentProps) {
   const { t } = useTranslation(handle.i18nNamespace);
-  const [sameName, setSameName] = useState<boolean | undefined>(loaderData.defaultFormValues.preferredSameAsDocumentName);
-  const [requireDoc, setRequireDoc] = useState<boolean | undefined>(loaderData.defaultFormValues.supportingDocumentsRequired);
+  const [sameName, setSameName] = useState<boolean | undefined>(
+    loaderData.defaultFormValues.currentNameInfo?.preferredSameAsDocumentName,
+  );
+  const [requireDoc, setRequireDoc] = useState<boolean | undefined>(
+    loaderData.defaultFormValues.currentNameInfo?.preferredSameAsDocumentName === false &&
+      loaderData.defaultFormValues.currentNameInfo.supportingDocuments.required,
+  );
   const fetcherKey = useId();
   const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
   const isSubmitting = fetcher.state !== 'idle';
@@ -236,7 +227,11 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
   const docTypes = VALID_DOC_TYPES.map((value) => ({
     value: value,
     children: t(`protected:current-name.doc-types.${value}` as 'protected:current-name.doc-types.marriage-document'),
-    defaultChecked: loaderData.defaultFormValues.supportingDocumentTypes?.includes(value),
+    defaultChecked:
+      (loaderData.defaultFormValues.currentNameInfo?.preferredSameAsDocumentName === false &&
+        loaderData.defaultFormValues.currentNameInfo.supportingDocuments.required &&
+        loaderData.defaultFormValues.currentNameInfo.supportingDocuments.documentTypes.includes(value)) ||
+      false,
   }));
 
   return (
@@ -283,7 +278,11 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
                   errorMessage={errors?.firstName?.at(0)}
                   label={t('protected:current-name.preferred-name.first-name')}
                   name="first-name"
-                  defaultValue={loaderData.defaultFormValues.firstName}
+                  defaultValue={
+                    (loaderData.defaultFormValues.currentNameInfo?.preferredSameAsDocumentName === false &&
+                      loaderData.defaultFormValues.currentNameInfo.firstName) ||
+                    ''
+                  }
                   required
                   type="text"
                   className="w-full rounded-sm sm:w-104"
@@ -292,7 +291,12 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
                   errorMessage={errors?.middleName?.at(0)}
                   label={t('protected:current-name.preferred-name.middle-name')}
                   name="middle-name"
-                  defaultValue={loaderData.defaultFormValues.middleName}
+                  defaultValue={
+                    ((loaderData.defaultFormValues.currentNameInfo?.preferredSameAsDocumentName === false &&
+                      loaderData.defaultFormValues.currentNameInfo.middleName) ??
+                      '') ||
+                    ''
+                  }
                   type="text"
                   className="w-full rounded-sm sm:w-104"
                 />
@@ -300,7 +304,11 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
                   errorMessage={errors?.lastName?.at(0)}
                   label={t('protected:current-name.preferred-name.last-name')}
                   name="last-name"
-                  defaultValue={loaderData.defaultFormValues.lastName}
+                  defaultValue={
+                    (loaderData.defaultFormValues.currentNameInfo?.preferredSameAsDocumentName === false &&
+                      loaderData.defaultFormValues.currentNameInfo.lastName) ||
+                    ''
+                  }
                   required
                   type="text"
                   className="w-full rounded-sm sm:w-104"
@@ -309,7 +317,7 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
                 <p>{t('protected:current-name.supporting-docs.description')}</p>
                 <InputRadios
                   id="docs-required-id"
-                  errorMessage={errors?.supportingDocumentsRequired?.at(0)}
+                  errorMessage={errors?.['supportingDocuments.required']?.at(0)}
                   legend={t('protected:current-name.supporting-docs.docs-required')}
                   name="docs-required"
                   options={requireOptions}
@@ -318,7 +326,7 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
                 {requireDoc && (
                   <InputCheckboxes
                     id="doc-type-id"
-                    errorMessage={errors?.supportingDocumentTypes?.at(0)}
+                    errorMessage={errors?.['supportingDocuments.documentTypes']?.at(0)}
                     legend={t('protected:current-name.supporting-docs.doc-type')}
                     name="doc-type"
                     options={docTypes}
