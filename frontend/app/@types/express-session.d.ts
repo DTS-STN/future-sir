@@ -10,6 +10,10 @@ type CurrentName =
   | { preferredSameAsDocumentName: true }
   | ({ preferredSameAsDocumentName: false; firstName: string; middleName?: string; lastName: string } & SupportingDocs);
 
+type BirthDetails =
+  | { country: 'CAN'; province: string; city: string; fromMultipleBirth: boolean }
+  | { country: string; province?: string; city?: string; fromMultipleBirth: boolean };
+
 declare module 'express-session' {
   interface SessionData {
     authState: {
@@ -60,6 +64,7 @@ declare module 'express-session' {
         city: string;
         province: string;
       };
+      birthDetails?: BirthDetails;
     };
   }
 }
