@@ -59,12 +59,12 @@ describe('date-utils', () => {
 
     it('should return [true] for a date that is equal to the current date', () => {
       vi.setSystemTime(new Date('2000-01-01T05:00:00Z'));
-      expect(isPastInTimezone('Canada/Eastern', new Date('2000-01-01'))).toEqual(true);
+      expect(isTodayInTimezone('Canada/Eastern', new Date('2000-01-01'))).toEqual(true);
     });
 
     it('should return [true] for a date that is within 24 hours of the current date', () => {
       vi.setSystemTime(new Date('2000-01-01T12:34:56Z'));
-      expect(isPastInTimezone('Canada/Eastern', new Date('2000-01-01'))).toEqual(true);
+      expect(isTodayInTimezone('Canada/Eastern', new Date('2000-01-01'))).toEqual(true);
     });
   });
 
