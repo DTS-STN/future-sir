@@ -6,7 +6,7 @@ import type { Route } from './+types/admin';
 
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { PageTitle } from '~/components/page-title';
-import { getFixedT } from '~/i18n-config.server';
+import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/layout';
 
 export const handle = {
@@ -15,7 +15,7 @@ export const handle = {
 
 export async function loader({ context, request }: Route.LoaderArgs) {
   requireAuth(context.session, new URL(request.url), ['admin']);
-  const t = await getFixedT(request, handle.i18nNamespace);
+  const { t } = await getTranslation(request, handle.i18nNamespace);
   return { documentTitle: t('protected:index.page-title') };
 }
 

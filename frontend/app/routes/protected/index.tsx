@@ -13,7 +13,7 @@ import { requireAuth } from '~/.server/utils/auth-utils';
 import { Card, CardDescription, CardHeader, CardIcon, CardTitle } from '~/components/card';
 import { AppLink } from '~/components/links';
 import { PageTitle } from '~/components/page-title';
-import { getFixedT } from '~/i18n-config.server';
+import { getTranslation } from '~/i18n-config.server';
 import type { I18nRouteFile } from '~/i18n-routes';
 import { handle as parentHandle } from '~/routes/protected/layout';
 
@@ -23,7 +23,7 @@ export const handle = {
 
 export async function loader({ context, request }: Route.LoaderArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
-  const t = await getFixedT(request, handle.i18nNamespace);
+  const { t } = await getTranslation(request, handle.i18nNamespace);
   return { documentTitle: t('protected:index.page-title') };
 }
 

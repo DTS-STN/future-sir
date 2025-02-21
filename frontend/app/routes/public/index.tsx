@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import type { Route } from './+types/index';
 
 import { PageTitle } from '~/components/page-title';
-import { getFixedT } from '~/i18n-config.server';
+import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/public/layout';
 
 export const handle = {
@@ -13,7 +13,7 @@ export const handle = {
 } as const satisfies RouteHandle;
 
 export async function loader({ request }: Route.LoaderArgs) {
-  const t = await getFixedT(request, handle.i18nNamespace);
+  const { t } = await getTranslation(request, handle.i18nNamespace);
   return { documentTitle: t('public:index.page-title') };
 }
 

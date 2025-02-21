@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import type { Route } from './+types/request';
 
 import { requireAuth } from '~/.server/utils/auth-utils';
-import { getFixedT } from '~/i18n-config.server';
+import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/layout';
 
 export const handle = {
@@ -14,7 +14,7 @@ export const handle = {
 
 export async function loader({ context, request }: Route.LoaderArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
-  const t = await getFixedT(request, handle.i18nNamespace);
+  const { t } = await getTranslation(request, handle.i18nNamespace);
   return { documentTitle: t('protected:index.page-title') };
 }
 
