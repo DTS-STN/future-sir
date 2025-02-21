@@ -8,7 +8,12 @@ import * as v from 'valibot';
 
 import type { Info, Route } from './+types/contact-information';
 
-import { getLocalizedCountries } from '~/.server/services/locale-data-service';
+import {
+  getCountries,
+  getLocalizedCountries,
+  getLocalizedProvincesTerritoriesStates,
+  getProvincesTerritoriesStates,
+} from '~/.server/services/locale-data-service';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
@@ -38,6 +43,7 @@ export async function loader({ context, request }: Route.LoaderArgs) {
     documentTitle: t('protected:contact-information.page-title'),
     defaultFormValues: context.session.inPersonSINCase?.contactInformation,
     localizedCountries: getLocalizedCountries(lang),
+    localizedProvincesTerritoriesStates: getLocalizedProvincesTerritoriesStates(lang),
   };
 }
 
@@ -74,7 +80,7 @@ export async function action({ context, request }: Route.ActionArgs) {
           v.pipe(v.string(), v.trim(), v.email(t('protected:contact-information.error-messages.email-address-invalid-format'))),
         ),
         country: v.picklist(
-          getLocalizedCountries(lang).map(({ id }) => id),
+          getCountries().map(({ id }) => id),
           t('protected:contact-information.error-messages.country-required'),
         ),
         address: v.pipe(v.string(), v.trim(), v.nonEmpty(t('protected:contact-information.error-messages.address-required'))),
@@ -84,7 +90,10 @@ export async function action({ context, request }: Route.ActionArgs) {
           v.nonEmpty(t('protected:contact-information.error-messages.postal-code-required')),
         ),
         city: v.pipe(v.string(), v.trim(), v.nonEmpty(t('protected:contact-information.error-messages.city-required'))),
-        province: v.pipe(v.string(), v.trim(), v.nonEmpty(t('protected:contact-information.error-messages.province-required'))),
+        province: v.picklist(
+          getProvincesTerritoriesStates().map(({ id }) => id),
+          t('protected:contact-information.error-messages.province-required'),
+        ),
       }) satisfies v.GenericSchema<ContactInformationSessionData>;
 
       const input = {
@@ -133,7 +142,15 @@ export default function ContactInformation({ loaderData, actionData, params }: R
 
   const countryOptions = [{ id: 'select-option', name: '' }, ...loaderData.localizedCountries].map(({ id, name }) => ({
     value: id === 'select-option' ? '' : id,
-    children: id === 'select-option' ? t(`protected:contact-information.country-options.${id}`) : name,
+    children: id === 'select-option' ? t('protected:contact-information.select-option') : name,
+  }));
+
+  const provinceTerritoryStateOptions = [
+    { id: 'select-option', name: '' },
+    ...loaderData.localizedProvincesTerritoriesStates,
+  ].map(({ id, name }) => ({
+    value: id === 'select-option' ? '' : id,
+    children: id === 'select-option' ? t('protected:contact-information.select-option') : name,
   }));
 
   // TODO conditionally render different address fields if Canada is selected as a country
@@ -216,12 +233,15 @@ export default function ContactInformation({ loaderData, actionData, params }: R
               errorMessage={errors?.city?.at(0)}
               defaultValue={loaderData.defaultFormValues?.city}
             />
-            <InputField
+            <InputSelect
+              className="w-max rounded-sm"
               id="province"
               label={t('protected:contact-information.province-label')}
               name="province"
+              options={provinceTerritoryStateOptions}
               errorMessage={errors?.province?.at(0)}
               defaultValue={loaderData.defaultFormValues?.province}
+              required
             />
           </div>
           <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
