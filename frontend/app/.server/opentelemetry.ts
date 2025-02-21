@@ -7,7 +7,6 @@ import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
 import { NodeSDK } from '@opentelemetry/sdk-node';
 import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';
 import { ATTR_DEPLOYMENT_ENVIRONMENT_NAME } from '@opentelemetry/semantic-conventions/incubating';
-import { Redacted } from 'effect';
 
 import { serverEnvironment } from '~/.server/environment';
 import { LogFactory } from '~/.server/logging';
@@ -34,14 +33,14 @@ const nodeSdk = new NodeSDK({
     exporter: new OTLPMetricExporter({
       url: serverEnvironment.OTEL_METRICS_ENDPOINT,
       compression: CompressionAlgorithm.GZIP,
-      headers: { authorization: Redacted.value(serverEnvironment.OTEL_AUTH_HEADER) },
+      headers: { authorization: serverEnvironment.OTEL_AUTH_HEADER.value() },
     }),
   }),
 
   traceExporter: new OTLPTraceExporter({
     url: serverEnvironment.OTEL_TRACES_ENDPOINT,
     compression: CompressionAlgorithm.GZIP,
-    headers: { authorization: Redacted.value(serverEnvironment.OTEL_AUTH_HEADER) },
+    headers: { authorization: serverEnvironment.OTEL_AUTH_HEADER.value() },
   }),
 });
 

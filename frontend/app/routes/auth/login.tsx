@@ -1,7 +1,6 @@
 import { redirect } from 'react-router';
 
 import { trace } from '@opentelemetry/api';
-import { Redacted } from 'effect';
 
 import type { Route } from './+types/login';
 
@@ -37,8 +36,7 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
 
     case 'azuread': {
       const { AZUREAD_ISSUER_URL, AZUREAD_CLIENT_ID } = serverEnvironment;
-      const AZUREAD_CLIENT_SECRET =
-        serverEnvironment.AZUREAD_CLIENT_SECRET && Redacted.value(serverEnvironment.AZUREAD_CLIENT_SECRET);
+      const AZUREAD_CLIENT_SECRET = serverEnvironment.AZUREAD_CLIENT_SECRET?.value();
 
       if (!AZUREAD_ISSUER_URL || !AZUREAD_CLIENT_ID || !AZUREAD_CLIENT_SECRET) {
         throw new AppError('The Azure OIDC settings are misconfigured', ErrorCodes.MISCONFIGURED_PROVIDER);

@@ -1,6 +1,5 @@
 import type { HealthCheckOptions } from '@dts-stn/health-checks';
 import { execute } from '@dts-stn/health-checks';
-import { Redacted } from 'effect';
 
 import type { Route } from './+types/health';
 
@@ -58,8 +57,7 @@ async function isAuthorized(request: Request): Promise<boolean> {
   //
 
   const { AZUREAD_ISSUER_URL, AZUREAD_CLIENT_ID } = serverEnvironment;
-  const AZUREAD_CLIENT_SECRET =
-    serverEnvironment.AZUREAD_CLIENT_SECRET && Redacted.value(serverEnvironment.AZUREAD_CLIENT_SECRET);
+  const AZUREAD_CLIENT_SECRET = serverEnvironment.AZUREAD_CLIENT_SECRET?.value();
 
   if (!AZUREAD_ISSUER_URL || !AZUREAD_CLIENT_ID || !AZUREAD_CLIENT_SECRET) {
     throw new AppError('The Azure OIDC settings are misconfigured', ErrorCodes.MISCONFIGURED_PROVIDER);

@@ -1,4 +1,3 @@
-import { Redacted } from 'effect';
 import Redis from 'ioredis';
 import { describe, expect, it, vi } from 'vitest';
 
@@ -16,7 +15,7 @@ vi.mock('~/.server/environment', () => ({
     REDIS_CONNECTION_TYPE: undefined, // set in each test
     REDIS_HOST: 'localhost',
     REDIS_PORT: 6379,
-    REDIS_PASSWORD: Redacted.make('password'),
+    REDIS_PASSWORD: { value: () => 'password' },
     REDIS_USERNAME: 'user',
     REDIS_SENTINEL_MASTER_NAME: 'mymaster',
     REDIS_COMMAND_TIMEOUT_SECONDS: 10,

@@ -1,5 +1,6 @@
-import { Redacted } from 'effect';
 import * as v from 'valibot';
+
+import { Redacted } from '~/.server/utils/security-utils';
 
 export type Authentication = Readonly<v.InferOutput<typeof authentication>>;
 
@@ -14,5 +15,5 @@ export const authentication = v.object({
 
   AZUREAD_ISSUER_URL: v.optional(v.string()),
   AZUREAD_CLIENT_ID: v.optional(v.string()),
-  AZUREAD_CLIENT_SECRET: v.optional(v.pipe(v.string(), v.transform(Redacted.make))),
+  AZUREAD_CLIENT_SECRET: v.optional(v.pipe(v.string(), v.transform(Redacted<string>))),
 });

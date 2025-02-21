@@ -1,5 +1,4 @@
 import { trace } from '@opentelemetry/api';
-import { Redacted } from 'effect';
 import type { RequestHandler } from 'express';
 import sessionMiddleware from 'express-session';
 import { minimatch } from 'minimatch';
@@ -133,7 +132,7 @@ export function session(environment: ServerEnvironment): RequestHandler {
   const middleware = sessionMiddleware({
     store: sessionStore,
     name: SESSION_COOKIE_NAME,
-    secret: [Redacted.value(SESSION_COOKIE_SECRET)],
+    secret: [SESSION_COOKIE_SECRET.value()],
     genid: () => randomUUID(),
     proxy: true,
     resave: false,

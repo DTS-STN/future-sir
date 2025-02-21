@@ -1,6 +1,6 @@
-import { Redacted } from 'effect';
 import * as v from 'valibot';
 
+import { Redacted } from '~/.server/utils/security-utils';
 import { stringToIntegerSchema } from '~/.server/validation/string-to-integer-schema';
 
 export type Redis = Readonly<v.InferOutput<typeof redis>>;
@@ -18,7 +18,7 @@ export const redis = v.pipe(
     REDIS_HOST: v.optional(v.string(), defaults.REDIS_HOST),
     REDIS_PORT: v.optional(v.pipe(stringToIntegerSchema(), v.minValue(0)), defaults.REDIS_PORT),
     REDIS_USERNAME: v.optional(v.string()),
-    REDIS_PASSWORD: v.optional(v.pipe(v.string(), v.transform(Redacted.make))),
+    REDIS_PASSWORD: v.optional(v.pipe(v.string(), v.transform(Redacted<string>))),
     REDIS_SENTINEL_MASTER_NAME: v.optional(v.string()),
     REDIS_COMMAND_TIMEOUT_SECONDS: v.optional(
       v.pipe(stringToIntegerSchema(), v.minValue(0)),
