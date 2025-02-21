@@ -15,5 +15,5 @@ export const authentication = v.object({
 
   AZUREAD_ISSUER_URL: v.optional(v.string()),
   AZUREAD_CLIENT_ID: v.optional(v.string()),
-  AZUREAD_CLIENT_SECRET: v.optional(v.pipe(v.string(), v.transform(Redacted<string>))),
+  AZUREAD_CLIENT_SECRET: v.optional(v.pipe(v.string(), v.transform(Redacted.make))),
 });

@@ -17,7 +17,7 @@ export const telemetry = v.object({
   OTEL_SERVICE_NAME: v.optional(v.string(), defaults.OTEL_SERVICE_NAME),
   OTEL_SERVICE_VERSION: v.optional(v.string(), defaults.OTEL_SERVICE_VERSION),
   OTEL_ENVIRONMENT_NAME: v.optional(v.string(), defaults.OTEL_ENVIRONMENT_NAME),
-  OTEL_AUTH_HEADER: v.pipe(v.optional(v.string(), defaults.OTEL_AUTH_HEADER), v.transform(Redacted<string>)),
+  OTEL_AUTH_HEADER: v.pipe(v.optional(v.string(), defaults.OTEL_AUTH_HEADER), v.transform(Redacted.make)),
   OTEL_METRICS_ENDPOINT: v.optional(v.string(), defaults.OTEL_METRICS_ENDPOINT),
   OTEL_TRACES_ENDPOINT: v.optional(v.string(), defaults.OTEL_TRACES_ENDPOINT),
 });

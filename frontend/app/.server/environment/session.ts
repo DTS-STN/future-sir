@@ -24,7 +24,7 @@ export const session = v.object({
   SESSION_COOKIE_PATH: v.optional(v.string(), defaults.SESSION_COOKIE_PATH),
   SESSION_COOKIE_SAMESITE: v.optional(v.picklist(['lax', 'strict', 'none']), defaults.SESSION_COOKIE_SAMESITE),
   SESSION_COOKIE_SECRET: v.optional(
-    v.pipe(v.string(), v.minLength(32), v.transform(Redacted<string>)),
+    v.pipe(v.string(), v.minLength(32), v.transform(Redacted.make)),
     defaults.SESSION_COOKIE_SECRET,
   ),
   SESSION_COOKIE_SECURE: v.optional(stringToBooleanSchema(), defaults.SESSION_COOKIE_SECURE),
