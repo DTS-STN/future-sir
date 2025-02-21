@@ -169,6 +169,7 @@
   "contact-information": {
     "page-title": "Contact information",
     "correspondence": "Correspondence",
+    "select-option": "Select option",
     "preferred-language-label": "Preferred language of correspondence",
     "preferred-language-options": {
       "french": "French",
@@ -179,11 +180,6 @@
     "email-label": "Email address",
     "mailing-address": "Mailing address",
     "country-select-label": "Country",
-    "country-options": {
-      "select-option": "Select option",
-      "canada": "Canada",
-      "other": "Other"
-    },
     "address-label": "Address",
     "address-help-message": "Include apartment number (if applicable), street number, street name. For example: 123 Main St. Suite 4B",
     "postal-code-label": "Postal code",
