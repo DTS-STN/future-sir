@@ -199,5 +199,33 @@
       "city-required": "Please entrer a city",
       "province-required": "Please enter a province"
     }
+  },
+  "birth-details": {
+    "page-title": "Détails de naissance",
+    "country": {
+      "label": "Pays de naissance",
+      "required-country": "Le pays de naissance est requis.",
+      "invalid-country": "Le pays de naissance est invalide."
+    },
+    "province": {
+      "label": "Province, état ou région de naissance",
+      "required-province": "La province, l'état ou la région de naissance est requis.",
+      "invalid-province": "La province, l'état ou la région de naissance est invalide."
+    },
+    "city": {
+      "label": "Ville, commune ou village de naissance",
+      "required-city": "La ville, la commune ou le village de naissance est requis.",
+      "invalid-city": "La ville, la commune ou le village de naissance est invalide."
+    },
+    "from-multiple": {
+      "label": "Le demandeur fait-il partie d'une naissance multiple (jumeau, triplé, etc.)?",
+      "required-from-multiple": "Il est requis de savoir si le demandeur fait partie d'une naissance multiple.",
+      "invalid-from-multiple": "Le statut de naissance multiple du demandeur est invalide."
+    },
+    "countries": {
+      "select-option": "Sélectionner une option",
+      "CAN": "Canada",
+      "FRA": "France"
+    }
   }
 }

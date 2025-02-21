@@ -76,6 +76,14 @@ export const i18nRoutes = [
         },
       },
       {
+        id: 'PROT-0009',
+        file: 'routes/protected/person-case/birth-details.tsx',
+        paths: {
+          en: '/en/protected/person-case/birth-details',
+          fr: '/fr/protege/cas-personnel/details-de-naissance',
+        },
+      },
+      {
         id: 'PROT-0011',
         file: 'routes/protected/person-case/previous-sin.tsx',
         paths: {
