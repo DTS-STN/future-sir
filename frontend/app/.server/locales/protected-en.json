@@ -48,6 +48,7 @@
     "page-title": "Privacy Statement"
   },
   "primary-identity-document": {
+    "page-title": "Primary identity document",
     "current-status-in-canada": {
       "title": "Current status in Canada",
       "required": "Current status in Canada is required.",
@@ -66,6 +67,7 @@
     "document-type": {
       "title": "Document type",
       "required": "Document type is required.",
+      "invalid": "Please select Certificate of Canadian citizenship.",
       "options": {
         "select-option": "Select option",
         "certificate-of-canadian-citizenship": "Certificate of Canadian citizenship",
@@ -74,7 +76,65 @@
         "certificate-of-canadian-citizenship-and-certificate-of-indian-status": "Certificate of Canadian Citizenship and Certificate of Indian Status"
       }
     },
-    "page-title": "Primary identity document"
+    "registration-number": {
+      "label": "Registration number",
+      "invalid": "Registration number must contain {{length}} digit(s).",
+      "required": "Registration number is required."
+    },
+    "client-number": {
+      "label": "Client number",
+      "invalid": "Client number must contain {{length}} digit(s).",
+      "required": "Client number is required."
+    },
+    "given-name": {
+      "format": "Given name must contain letters only.",
+      "help-message-primary": "Enter exactly as it appears on applicant's primary identity document",
+      "label": "Given name",
+      "max-length": "Given name must contain at most {{maximum}} character(s).",
+      "required": "Given name is required."
+    },
+    "last-name": {
+      "format": "Last name must contain letters only.",
+      "help-message-primary": "Enter exactly as it appears on applicant's primary identity document",
+      "label": "Last name",
+      "max-length": "Last name must contain at most {{maximum}} character(s).",
+      "required": "Last name is required."
+    },
+    "date-of-birth": {
+      "label": "Date of birth",
+      "invalid": "Date of birth is invalid.",
+      "invalid-future-date": "Date of birth must be in past or today.",
+      "required-year": "Year of birth is required.",
+      "invalid-year": "Year of birth is invalid.",
+      "required-month": "Month of birth is required.",
+      "invalid-month": "Month of birth is invalid.",
+      "required-day": "Day of birth is required.",
+      "invalid-day": "Day of birth is invalid."
+    },
+    "gender": {
+      "label": "Gender",
+      "required": "Gender is required.",
+      "options": {
+        "female": "Female",
+        "male": "Male",
+        "other": "Other"
+      }
+    },
+    "citizenship-date": {
+      "label": "Citizenship date",
+      "invalid": "Citizenship date is invalid",
+      "required-year": "Year of citizenship date is required.",
+      "invalid-year": "Year of citizenship date is invalid.",
+      "required-month": "Month of citizenship date is required.",
+      "invalid-month": "Month of citizenship date is invalid.",
+      "required-day": "Day of citizenship date is required.",
+      "invalid-day": "Day of citizenship date is invalid."
+    },
+    "upload-document": {
+      "label": "Upload primary identity document",
+      "required": "Primary identity document is required.",
+      "invalid": "Primary identity document is invalid."
+    }
   },
   "request-details": {
     "page-title": "Applicant",

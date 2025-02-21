@@ -48,6 +48,7 @@
     "page-title": "Déclaration de confidentialité"
   },
   "primary-identity-document": {
+    "page-title": "Document d'identité principal",
     "current-status-in-canada": {
       "title": "Statut actuel au Canadaa",
       "required": "Statut actuel au Canada est requis.",
@@ -66,6 +67,7 @@
     "document-type": {
       "title": "Type de document",
       "required": "Le type de document est requis.",
+      "invalid": "Veuillez sélectionner Certificat de citoyenneté canadienne.",
       "options": {
         "select-option": "Sélectionner une option",
         "certificate-of-canadian-citizenship": "Certificat de citoyenneté canadienne",
@@ -74,7 +76,66 @@
         "certificate-of-canadian-citizenship-and-certificate-of-indian-status": "Certificat de citoyenneté canadienne et certificat de statut indien"
       }
     },
-    "page-title": "Document d'identité principal"
+    "registration-number": {
+      "label": "Numéro d'enregistrement",
+      "invalid": "Le numéro d'enregistrement doit contenir {{length}} chiffre(s).",
+      "required": "Le numéro d'enregistrement est requis."
+    },
+    "client-number": {
+      "label": "Numéro de client",
+      "invalid": "Le numéro de client doit contenir {{length}} chiffre(s).",
+      "required": "Le numéro de client est requis."
+    },
+    "given-name": {
+      "format": "Le prénom doit contenir uniquement des lettres.",
+      "help-message-primary": "Entrez exactement tel qu'il apparaît sur le document d'identité principal du demandeur.",
+      "label": "Nom donné",
+      "max-length": "Le prénom doit contenir au maximum {{maximum}} caractère(s).",
+      "required": "Le prénom est requis."
+    },
+    "last-name": {
+      "format": "Le nom de famille doit contenir uniquement des lettres.",
+      "help-message-primary": "Entrez exactement tel qu'il apparaît sur le document d'identité principal du demandeur.",
+      "label": "Nom de famille",
+      "max-length": "Le nom de famille doit contenir au maximum {{maximum}} caractère(s).",
+      "required": "Le nom de famille est requis."
+    },
+    "date-of-birth": {
+      "label": "Date de naissance",
+      "invalid": "La date de naissance est invalide.",
+      "invalid-future-date": "La date de naissance doit être passée ou actuelle.",
+      "required-year": "L'année de naissance est requise.",
+      "invalid-year": "L'année de naissance est invalide.",
+      "required-month": "La mois de naissance est requise.",
+      "invalid-month": "La mois de naissance est invalide.",
+      "required-day": "La jour de naissance est requise.",
+      "invalid-day": "La jour de naissance est invalide."
+    },
+    "gender": {
+      "label": "Genre",
+      "required": "Le genre est requis.",
+      "options": {
+        "female": "Femme",
+        "male": "Homme",
+        "other": "Autre"
+      }
+    },
+    "citizenship-date": {
+      "label": "Date de citoyenneté",
+      "invalid": "La date de citoyenneté est invalide.",
+      "invalid-future-date": "La date de naissance doit être dans le passé ou aujourd'hui.",
+      "required-year": "L'année de citoyenneté est requise.",
+      "invalid-year": "L'année de citoyenneté est invalide.",
+      "required-month": "La date du mois de citoyenneté est requise.",
+      "invalid-month": "La date du mois de citoyenneté est invalide.",
+      "required-day": "La date du jour de citoyenneté est requise.",
+      "invalid-day": "La date du jour de citoyenneté est invalide."
+    },
+    "upload-document": {
+      "label": "Téléchargez le document d'identité principal",
+      "required": "Un document d'identité principal est requis.",
+      "invalid": "Le document d'identité principal est invalide."
+    }
   },
   "request-details": {
     "page-title": "Demandeur",

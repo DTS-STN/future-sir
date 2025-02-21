@@ -18,8 +18,16 @@ declare module 'express-session' {
         scenario: string;
       };
       primaryDocuments: {
+        citizenshipDate: string;
+        clientNumber: string;
         currentStatusInCanada: string;
+        dateOfBirth: string;
         documentType: string;
+        gender: string;
+        givenName: string;
+        lastName: string;
+        registrationNumber: string;
+        document: File;
       };
       previousSin: {
         hasPreviousSin: string;
