@@ -1,5 +1,6 @@
-import { Redacted } from 'effect';
 import * as v from 'valibot';
+
+import { Redacted } from '~/.server/utils/security-utils';
 
 export type Authentication = Readonly<v.InferOutput<typeof authentication>>;
 

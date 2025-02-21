@@ -1,4 +1,3 @@
-import { Duration, Redacted } from 'effect';
 import type { RedisOptions } from 'ioredis';
 import Redis from 'ioredis';
 
@@ -37,8 +36,8 @@ function getRedisConfig(): RedisOptions {
     REDIS_USERNAME,
   } = serverEnvironment;
 
-  const redisPassword = REDIS_PASSWORD && Redacted.value(REDIS_PASSWORD);
-  const redisCommandTimeout = Duration.toMillis(Duration.seconds(REDIS_COMMAND_TIMEOUT_SECONDS));
+  const redisPassword = REDIS_PASSWORD?.value();
+  const redisCommandTimeout = REDIS_COMMAND_TIMEOUT_SECONDS * 1000;
 
   const retryStrategy = (times: number): number => {
     // exponential backoff starting at 250ms to a maximum of 5s

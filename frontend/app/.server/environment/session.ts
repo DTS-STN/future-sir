@@ -1,6 +1,6 @@
-import { Redacted } from 'effect';
 import * as v from 'valibot';
 
+import { Redacted } from '~/.server/utils/security-utils';
 import { stringToBooleanSchema } from '~/.server/validation/string-to-boolean-schema';
 import { stringToIntegerSchema } from '~/.server/validation/string-to-integer-schema';
 

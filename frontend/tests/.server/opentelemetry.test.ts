@@ -16,10 +16,6 @@ vi.mock('@opentelemetry/auto-instrumentations-node');
 vi.mock('@opentelemetry/exporter-metrics-otlp-proto');
 vi.mock('@opentelemetry/exporter-trace-otlp-proto');
 
-vi.mock('effect', () => ({
-  Redacted: { value: vi.fn((val) => val) },
-}));
-
 vi.mock('~/.server/environment', () => ({
   serverEnvironment: {
     OTEL_SERVICE_NAME: 'service',
@@ -27,7 +23,7 @@ vi.mock('~/.server/environment', () => ({
     OTEL_ENVIRONMENT_NAME: 'test',
     OTEL_METRICS_ENDPOINT: 'http://metrics.example.com/',
     OTEL_TRACES_ENDPOINT: 'http://traces.example.com',
-    OTEL_AUTH_HEADER: 'Api-Key Sleep-Token',
+    OTEL_AUTH_HEADER: { value: () => 'Api-Key Sleep-Token' },
   },
 }));
 

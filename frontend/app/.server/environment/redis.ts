@@ -1,6 +1,6 @@
-import { Redacted } from 'effect';
 import * as v from 'valibot';
 
+import { Redacted } from '~/.server/utils/security-utils';
 import { stringToIntegerSchema } from '~/.server/validation/string-to-integer-schema';
 
 export type Redis = Readonly<v.InferOutput<typeof redis>>;
