@@ -81,6 +81,10 @@ app.all('*', rrRequestHandler(viteDevServer));
 log.info('  ✓ registering global error handler');
 app.use(globalErrorHandler());
 
-log.info('Server initialization complete');
+log.info('Server initialization completed with runtime configuration: %o', {
+  client: Object.fromEntries(Object.entries(clientEnvironment).sort()),
+  server: Object.fromEntries(Object.entries(serverEnvironment).sort()),
+});
+
 const server = app.listen(serverEnvironment.PORT);
 log.info('Listening on http://localhost:%s/', (server.address() as AddressInfo).port);

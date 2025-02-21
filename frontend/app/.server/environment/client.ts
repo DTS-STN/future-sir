@@ -6,7 +6,6 @@ import { stringToBooleanSchema } from '~/.server/validation/string-to-boolean-sc
 export type Client = Readonly<v.InferOutput<typeof client>>;
 
 export const defaults = {
-  I18NEXT_DEBUG: 'false',
   ...buildinfoDefaults,
 } as const;
 
@@ -16,6 +15,6 @@ export const defaults = {
  */
 export const client = v.object({
   ...buildinfo.entries,
-  I18NEXT_DEBUG: v.optional(stringToBooleanSchema(), defaults.I18NEXT_DEBUG),
+  I18NEXT_DEBUG: v.optional(stringToBooleanSchema()),
   isProduction: v.boolean(),
 });
