@@ -1,15 +1,19 @@
 import 'express-session';
 
-type SupportingDocs =
-  | { supportingDocumentsRequired: false }
-  | { supportingDocumentsRequired: true; supportingDocumentTypes: string[] };
-
 declare module 'express-session' {
   interface SessionData {
     inPersonSINCase: Partial<{
       currentNameInfo:
         | { preferredSameAsDocumentName: true }
-        | ({ preferredSameAsDocumentName: false; firstName: string; middleName?: string; lastName: string } & SupportingDocs);
+        | {
+            preferredSameAsDocumentName: false;
+            firstName: string;
+            middleName?: string;
+            lastName: string;
+            supportingDocuments:
+              | { required: false } //
+              | { required: true; documentTypes: string[] };
+          };
       privacyStatement: {
         agreedToTerms: true;
       };
