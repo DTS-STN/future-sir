@@ -15,6 +15,7 @@ import { getLanguage } from '~/utils/i18n-utils';
  * @param languageOrRequest - The language code or Request object to get the language from.
  * @param namespace - The namespace to get the translation function for.
  * @returns A translation function for the given language and namespace.
+ * @throws {AppError} If no language is found in the `languageOrRequest`.
  */
 export async function getFixedT<NS extends Namespace>(
   languageOrRequest: Language | Request,
@@ -32,6 +33,28 @@ export async function getFixedT<NS extends Namespace>(
 
   const i18n = await initI18next(language);
   return i18n.getFixedT(language, namespace);
+}
+
+/**
+ * Similar to react-i18next's `useTranslation()` hook, this function will return a `t`
+ * function and a `lang` value that represents the current language.
+ *
+ * @param languageOrRequest - The language code or Request object to get the language from.
+ * @param namespace - The namespace to get the translation function for.
+ * @returns A Promise resolving to an object containing the language code (`lang`) and a translation function (`t`) for the given namespace.
+ * @throws {AppError} If no language is found in the `languageOrRequest`.
+ */
+export async function getTranslation<NS extends Namespace>(
+  languageOrRequest: Language | Request,
+  namespace: NS,
+): Promise<{ lang: Language; t: TFunction<NS> }> {
+  const lang = getLanguage(languageOrRequest);
+
+  if (lang === undefined) {
+    throw new AppError('No language found in request', ErrorCodes.NO_LANGUAGE_FOUND);
+  }
+
+  return { lang, t: await getFixedT(languageOrRequest, namespace) };
 }
 
 /**

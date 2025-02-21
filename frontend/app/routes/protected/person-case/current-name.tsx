@@ -1,15 +1,15 @@
 import type { ChangeEvent } from 'react';
 import { useId, useState } from 'react';
 
-import { data, useFetcher } from 'react-router';
 import type { RouteHandle } from 'react-router';
+import { data, useFetcher } from 'react-router';
 
 import { faExclamationCircle, faXmark } from '@fortawesome/free-solid-svg-icons';
 import type { SessionData } from 'express-session';
 import { useTranslation } from 'react-i18next';
 import * as v from 'valibot';
 
-import type { Route, Info } from './+types/current-name';
+import type { Info, Route } from './+types/current-name';
 
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
@@ -23,15 +23,17 @@ import { PageTitle } from '~/components/page-title';
 import { Progress } from '~/components/progress';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
-import { getFixedT } from '~/i18n-config.server';
+import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/layout';
-import { getLanguage } from '~/utils/i18n-utils';
 import { REGEX_PATTERNS } from '~/utils/regex-utils';
 import { trimToUndefined } from '~/utils/string-utils';
 
 type CurrentNameSessionData = NonNullable<SessionData['inPersonSINCase']['currentNameInfo']>;
 
-const REQUIRE_OPTIONS = { yes: 'Yes', no: 'No' } as const;
+const REQUIRE_OPTIONS = {
+  yes: 'Yes', //
+  no: 'No',
+} as const;
 
 const VALID_DOC_TYPES: string[] = [
   'marriage-document',
@@ -51,9 +53,11 @@ export const handle = {
 
 export async function loader({ context, request }: Route.LoaderArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
-  const t = await getFixedT(request, handle.i18nNamespace);
+
+  const { t } = await getTranslation(request, handle.i18nNamespace);
   const currentNameInfo = context.session.inPersonSINCase?.currentNameInfo;
   const preferredSameAsDocumentName = currentNameInfo?.preferredSameAsDocumentName;
+
   return {
     documentTitle: t('protected:primary-identity-document.page-title'),
     defaultFormValues: {
@@ -83,9 +87,8 @@ export function meta({ data }: Route.MetaArgs) {
 
 export async function action({ context, request }: Route.ActionArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
-  const lang = getLanguage(request);
-  const t = await getFixedT(request, handle.i18nNamespace);
 
+  const { lang, t } = await getTranslation(request, handle.i18nNamespace);
   const formData = await request.formData();
   const action = formData.get('action');
   const nameMaxLength = 100;

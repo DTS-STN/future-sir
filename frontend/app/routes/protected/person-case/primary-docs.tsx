@@ -1,14 +1,14 @@
 import { useId, useState } from 'react';
 
-import { data, useFetcher } from 'react-router';
 import type { RouteHandle } from 'react-router';
+import { data, useFetcher } from 'react-router';
 
 import { faExclamationCircle, faXmark } from '@fortawesome/free-solid-svg-icons';
 import type { SessionData } from 'express-session';
 import { useTranslation } from 'react-i18next';
 import * as v from 'valibot';
 
-import type { Route, Info } from './+types/primary-docs';
+import type { Info, Route } from './+types/primary-docs';
 
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
@@ -19,19 +19,13 @@ import { PageTitle } from '~/components/page-title';
 import { Progress } from '~/components/progress';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
-import { getFixedT } from '~/i18n-config.server';
+import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/layout';
-import { getLanguage } from '~/utils/i18n-utils';
 
 type PrimaryDocumentsSessionData = NonNullable<SessionData['inPersonSINCase']['primaryDocuments']>;
 
-/**
- * Valid current status in Canada for proof of concept
- */
 const VALID_CURRENT_STATUS = ['canadian-citizen-born-outside-canada'];
-/**
- * Valid document type for proof of concept
- */
+
 const VALID_DOCTYPE = ['certificate-of-canadian-citizenship', 'certificate-of-registration-of-birth-abroad'];
 
 export const handle = {
@@ -40,7 +34,7 @@ export const handle = {
 
 export async function loader({ context, request }: Route.LoaderArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
-  const t = await getFixedT(request, handle.i18nNamespace);
+  const { t } = await getTranslation(request, handle.i18nNamespace);
 
   return {
     documentTitle: t('protected:primary-identity-document.page-title'),
@@ -54,9 +48,8 @@ export function meta({ data }: Route.MetaArgs) {
 
 export async function action({ context, request }: Route.ActionArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
-  const lang = getLanguage(request);
-  const t = await getFixedT(request, handle.i18nNamespace);
 
+  const { lang, t } = await getTranslation(request, handle.i18nNamespace);
   const formData = await request.formData();
   const action = formData.get('action');
 

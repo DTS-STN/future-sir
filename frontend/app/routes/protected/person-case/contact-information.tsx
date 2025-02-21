@@ -1,7 +1,7 @@
 import { useId } from 'react';
 
-import { data, useFetcher } from 'react-router';
 import type { RouteHandle, SessionData } from 'react-router';
+import { data, useFetcher } from 'react-router';
 
 import { useTranslation } from 'react-i18next';
 import * as v from 'valibot';
@@ -19,9 +19,8 @@ import { InputRadios } from '~/components/input-radios';
 import { InputSelect } from '~/components/input-select';
 import { PageTitle } from '~/components/page-title';
 import { AppError } from '~/errors/app-error';
-import { getFixedT } from '~/i18n-config.server';
+import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/layout';
-import { getLanguage } from '~/utils/i18n-utils';
 
 type ContactInformationSessionData = NonNullable<SessionData['inPersonSINCase']['contactInformation']>;
 
@@ -33,8 +32,7 @@ export const handle = {
 
 export async function loader({ context, request }: Route.LoaderArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
-  const lang = getLanguage(request);
-  const t = await getFixedT(request, handle.i18nNamespace);
+  const { lang, t } = await getTranslation(request, handle.i18nNamespace);
 
   return {
     documentTitle: t('protected:contact-information.page-title'),
@@ -49,9 +47,8 @@ export function meta({ data }: Route.MetaArgs) {
 
 export async function action({ context, request }: Route.ActionArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
-  const lang = getLanguage(request);
-  const t = await getFixedT(request, handle.i18nNamespace);
 
+  const { lang, t } = await getTranslation(request, handle.i18nNamespace);
   const formData = await request.formData();
   const action = formData.get('action');
 
