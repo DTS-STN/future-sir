@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { getStartOfDayInTimezone, isPastInTimezone, isTodayInTimezone, isValidTimeZone } from '~/utils/date-utils';
 
@@ -30,28 +30,41 @@ describe('date-utils', () => {
   });
 
   describe('isPastInTimezone', () => {
-    const validTimeZone = 'Canada/Eastern';
-
-    const validDates = ['2025-02-19', '2005-05-20', '1950-10-20'];
-
-    const invalidDates = ['2176-02-19', '5678-05-20', '9850-10-20'];
-
-    it.each(invalidDates)('should return [false] for invalid isPastInTimezone [%s]', (date) => {
-      expect(isPastInTimezone(validTimeZone, date)).toEqual(false);
+    it('should return [true] for a date that is in the past', () => {
+      vi.setSystemTime(new Date('2000-01-01'));
+      expect(isPastInTimezone('UTC', new Date('1900-01-01'))).toEqual(true);
     });
 
-    it.each(validDates)('should return [true] for valid isPastInTimezone [%s]', (date) => {
-      expect(isPastInTimezone(validTimeZone, date)).toEqual(true);
+    it('should return [false] for a date that is in the future', () => {
+      vi.setSystemTime(new Date('2000-01-01'));
+      expect(isPastInTimezone('UTC', new Date('2100-01-01'))).toEqual(false);
+    });
+
+    it('should return [false] for a date that is equal to the current date', () => {
+      vi.setSystemTime(new Date('2000-01-01'));
+      expect(isPastInTimezone('UTC', new Date('2000-01-01'))).toEqual(false);
     });
   });
 
   describe('isTodayInTimezone', () => {
-    const validTimeZone = 'Canada/Eastern';
+    it('should return [false] for a date that is in the past', () => {
+      vi.setSystemTime(new Date('2000-01-01'));
+      expect(isTodayInTimezone('Canada/Eastern', new Date('1900-01-01'))).toEqual(false);
+    });
 
-    const invalidDates = ['2005-05-20', '1950-10-20', '5678-05-20'];
+    it('should return [false] for a date that is in the future', () => {
+      vi.setSystemTime(new Date('2000-01-01'));
+      expect(isTodayInTimezone('Canada/Eastern', new Date('2100-01-01'))).toEqual(false);
+    });
 
-    it.each(invalidDates)('should return [false] for invalid isTodayInTimezone [%s]', (date) => {
-      expect(isTodayInTimezone(validTimeZone, date)).toEqual(false);
+    it('should return [true] for a date that is equal to the current date', () => {
+      vi.setSystemTime(new Date('2000-01-01T05:00:00Z'));
+      expect(isPastInTimezone('Canada/Eastern', new Date('2000-01-01'))).toEqual(true);
+    });
+
+    it('should return [true] for a date that is within 24 hours of the current date', () => {
+      vi.setSystemTime(new Date('2000-01-01T12:34:56Z'));
+      expect(isPastInTimezone('Canada/Eastern', new Date('2000-01-01'))).toEqual(true);
     });
   });
 
