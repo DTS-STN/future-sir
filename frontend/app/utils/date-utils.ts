@@ -57,8 +57,7 @@ export function getLocalizedMonths(
 
 /**
  * Checks if a given string is a valid time zone.
- *
- * see: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+ * @see https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
  *
  * @param timeZone - The time zone string to validate.
  * @returns `true` if the time zone is valid, `false` if it is not
@@ -84,9 +83,8 @@ export function isValidTimeZone(timeZone: string): boolean {
  * @returns `true` if the string is a valid ISO 8601 date string (YYYY-MM-DD), `false` otherwise.
  * @throws TypeError - If the input `date` is not a string.
  *
- *
  * @example
- * ```javascript
+ * ``` typescript
  * const validDate = "2023-05-20";
  * const invalidDate = "20-05-2023";
  *
@@ -103,26 +101,26 @@ export function isValidDateString(date: string): boolean {
  *
  * This function determines whether the provided date is before the start of the current day
  * in the given timezone. It accepts the date as a number (Unix timestamp in milliseconds),
- * a string (parsable by the Date constructor), or a Date object.  It uses `getStartOfDayInTimezone`
+ * a string (parsable by the Date constructor), or a Date object. It uses `getStartOfDayInTimezone`
  * to get the start of the current day in the specified timezone and `isBefore`
  * from date-fns library to perform the comparison.
  *
  * @param timezone - The IANA time zone name (e.g., 'America/New_York', 'Europe/London').
  * @param date - The date to be validated. Can be a Unix timestamp (milliseconds),
- *   a date string, or a Date object.
+ *               a date string, or a Date object.
  * @returns `true` if the date is in the past in the specified timezone, `false` otherwise.
  * @throws TypeError - If the input `date` is not a valid date representation that can be parsed,
- *   or if the `timezone` string is not a valid IANA time zone name, or if `getStartOfDayInTimezone`
- *   or `isBefore` throw an error.
+ *         or if the `timezone` string is not a valid IANA time zone name, or if `getStartOfDayInTimezone`
+ *         or `isBefore` throw an error.
  *
  * @example
- * ```javascript
+ * ``` typescript
  * const validDateInPaste = "2023-05-20";
  * const invalidDateInFuture = "2078-05-20";
  * const timezone = 'Canada/Eastern';
  *
  * console.log(isPastInTimezone(timezone, validDateInPaste)); // true
- * console.log(isPastInTimezone(timezone,invalidDateInFuture)); // false
+ * console.log(isPastInTimezone(timezone, invalidDateInFuture)); // false
  * ```
  */
 export function isPastInTimezone(timezone: string, date: number | string | Date): boolean {
@@ -134,20 +132,20 @@ export function isPastInTimezone(timezone: string, date: number | string | Date)
  *
  * This function determines whether the provided date falls on the current date
  * when considering the given timezone. It accepts the date as a number (Unix timestamp in milliseconds),
- * a string (parsable by the Date constructor), or a Date object.   It uses `getStartOfDayInTimezone`
+ * a string (parsable by the Date constructor), or a Date object. It uses `getStartOfDayInTimezone`
  * to get the start of the current day in the specified timezone and `isToday`
  * from date-fns library to perform the comparison.
  *
  * @param timezone - The IANA time zone name (e.g., 'America/New_York', 'Europe/London').
  * @param date - The date to be validated. Can be a Unix timestamp (milliseconds),
- *   a date string, or a Date object.
+ *               a date string, or a Date object.
  * @returns `true` if the date is today in the specified timezone, `false` otherwise.
  * @throws TypeError - If the input `date` is not a valid date representation that can be parsed,
- *   or if the `timezone` string is not a valid IANA time zone name, or if `getStartOfDayInTimezone`
- *   or `isToday` throw an error.
+ *         or if the `timezone` string is not a valid IANA time zone name, or if `getStartOfDayInTimezone`
+ *         or `isToday` throw an error.
  *
  * @example
- * ```javascript
+ * ``` typescript
  * const validDate = new Date();
  * const invalidDateInFuture = "2078-05-20";
  * const timezone = 'Canada/Eastern';
@@ -164,22 +162,22 @@ export function isTodayInTimezone(timezone: string, date: number | string | Date
  * Checks if a given date is in the past or present (today) within a specified timezone.
  *
  * This function determines whether the provided date falls on or before the current date
- * when considering the given timezone.  It accepts the date as a number (Unix timestamp in milliseconds),
+ * when considering the given timezone. It accepts the date as a number (Unix timestamp in milliseconds),
  * a string (parsable by the Date constructor), or a Date object.
  *
  * @param timeZone - The IANA time zone name (e.g., 'America/New_York', 'Europe/London').
  * @param date - The date to be validated. Can be a Unix timestamp (milliseconds),
- *   a date string, or a Date object.
+ *               a date string, or a Date object.
  * @returns `true` if the date is in the past or today in the specified timezone, `false` otherwise.
  * @throws TypeError - If the input `date` is not a valid date representation that can be parsed,
- *   or if the `timezone` string is not a valid IANA time zone name.
- *
+ *         or if the `timezone` string is not a valid IANA time zone name.
  *
  * @example
- * ```javascript
+ * ``` typescript
  * const validDateInPaste = "2023-05-20";
  * const invalidDateInFuture = "2078-05-20";
  * const timezone = 'Canada/Eastern';
+ *
  * console.log(isDateInPastOrTodayInTimeZone(timezone, validDateInPaste)); // true
  * console.log(isDateInPastOrTodayInTimeZone(timezone, invalidDateInFuture)); // false
  * ```
@@ -192,15 +190,16 @@ export function isDateInPastOrTodayInTimeZone(timezone: string, date: number | s
  * Returns the start of the day in the specified timezone.
  *
  * This function takes a date (or timestamp) and a timezone, and returns a new Date object
- * representing the start of the day (midnight) in that timezone.  If no date is provided,
+ * representing the start of the day (midnight) in that timezone. If no date is provided,
  * the current date and time are used.
  *
  * @param timezone - The IANA timezone string (e.g., 'America/New_York', 'Europe/London').
- * @param date- Optional date or timestamp to use. If not provided, the current date and time are used.
- *                                      Can be a number (milliseconds since epoch), a string (parsable by `new Date()`), or a Date object.
+ * @param date - Optional date or timestamp to use. If not provided, the current date and time are used.
+ *               Can be a number (milliseconds since epoch), a string (parsable by `new Date()`), or a Date object.
  * @returns A new Date object representing the start of the day in the specified timezone.
  *
  * @example
+ * ``` typescript
  * // Get the start of today in New York
  * const startOfTodayNY = getStartOfDayInTimezone('America/New_York');
  *
@@ -211,6 +210,7 @@ export function isDateInPastOrTodayInTimeZone(timezone: string, date: number | s
  * // Get the start of the day using a timestamp
  * const timestamp = 1700000000000; // Example timestamp
  * const startOfDayWithTimestamp = getStartOfDayInTimezone('America/Los_Angeles', timestamp);
+ * ```
  */
 export function getStartOfDayInTimezone(timezone: string, date?: number | string | Date): Date {
   const targetDate = new Date(date ?? Date.now());
@@ -248,15 +248,13 @@ export function toISODateString(year: number, month: number, day: number): strin
  *
  * This function accepts a date as a number (Unix timestamp in milliseconds),
  * a string (parsable by the Date constructor), or a Date object and returns
- * a string representing the date in the "YYYY-MM-DD" format.  It leverages
+ * a string representing the date in the "YYYY-MM-DD" format. It leverages
  * the `formatISO` function from date-fns library
  * with the `representation: 'date'` option.
  *
- * @param {number | string | Date} date - The date to be formatted.  Can be
- *   a Unix timestamp (milliseconds), a date string, or a Date object.
- * @returns {string} An ISO 8601 date string in the format "YYYY-MM-DD".
- * @throws {TypeError} If the input `date` is not a valid date representation
- *   that can be parsed by `formatISO`.
+ * @param date - The date to be formatted. Can be a Unix timestamp (milliseconds), a date string, or a Date object.
+ * @returns An ISO 8601 date string in the format "YYYY-MM-DD".
+ * @throws {TypeError} If the input `date` is not a valid date representation that can be parsed by `formatISO`.
  */
 export function formatISODate(date: number | string | Date): string {
   return formatISO(date, { representation: 'date' });
