@@ -3,13 +3,12 @@ import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-proto';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-proto';
 import { CompressionAlgorithm } from '@opentelemetry/otlp-exporter-base';
 import { Resource } from '@opentelemetry/resources';
-import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
+import { AggregationTemporality, PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
 import { NodeSDK } from '@opentelemetry/sdk-node';
 import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';
 import { ATTR_DEPLOYMENT_ENVIRONMENT_NAME } from '@opentelemetry/semantic-conventions/incubating';
 import { describe, expect, it, vi } from 'vitest';
 
-vi.mock('@opentelemetry/sdk-node');
 vi.mock('@opentelemetry/resources');
 vi.mock('@opentelemetry/sdk-metrics');
 vi.mock('@opentelemetry/auto-instrumentations-node');
@@ -26,6 +25,14 @@ vi.mock('~/.server/environment', () => ({
     OTEL_AUTH_HEADER: { value: () => 'Api-Key Sleep-Token' },
   },
 }));
+
+vi.mock('@opentelemetry/sdk-node', () => {
+  const NodeSDK = vi.fn();
+  NodeSDK.prototype.start = vi.fn();
+  NodeSDK.prototype.shutdown = vi.fn(() => Promise.resolve());
+
+  return { NodeSDK };
+});
 
 describe('NodeSDK', () => {
   it('should create a NodeSDK instance with the correct configuration', async () => {
@@ -56,6 +63,7 @@ describe('NodeSDK', () => {
       url: 'http://metrics.example.com/',
       compression: CompressionAlgorithm.GZIP,
       headers: { authorization: 'Api-Key Sleep-Token' },
+      temporalityPreference: AggregationTemporality.DELTA,
     });
   });
 
