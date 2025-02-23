@@ -1,9 +1,33 @@
-import type { Span } from '@opentelemetry/api';
-import { SpanStatusCode, trace } from '@opentelemetry/api';
+import type { Attributes, Context, Counter, Span } from '@opentelemetry/api';
+import { metrics, SpanStatusCode, trace } from '@opentelemetry/api';
+import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';
+import { ATTR_DEPLOYMENT_ENVIRONMENT_NAME } from '@opentelemetry/semantic-conventions/incubating';
 
+import { serverEnvironment } from '~/.server/environment';
 import { isAppError } from '~/errors/app-error';
 
-export const DEFAULT_TRACER_NAME = 'future-sir';
+/**
+ * Returns an OpenTelemetry counter with the given name and some default attributes added.
+ */
+export function createCounter(name: string): Counter {
+  const counter = metrics
+    .getMeter(serverEnvironment.OTEL_SERVICE_NAME, serverEnvironment.OTEL_SERVICE_VERSION)
+    .createCounter(name);
+
+  const baseAttributes = {
+    // add some base attributes to all metrics so we can split by them in the metrics dashboard
+    // (for some reason, OpenTelemetry doesn't add these attributes automatically)
+    [ATTR_SERVICE_NAME]: serverEnvironment.OTEL_SERVICE_NAME,
+    [ATTR_SERVICE_VERSION]: serverEnvironment.OTEL_SERVICE_VERSION,
+    [ATTR_DEPLOYMENT_ENVIRONMENT_NAME]: serverEnvironment.OTEL_ENVIRONMENT_NAME,
+  };
+
+  return {
+    add: (value: number, attributes?: Attributes, context?: Context) => {
+      return counter.add(value, { ...baseAttributes, ...attributes }, context);
+    },
+  };
+}
 
 /**
  * Records an exception in the given span.
@@ -36,12 +60,8 @@ export function handleSpanException(error: unknown, span?: Span) {
  * If an error occurs, it will be recorded in the span.
  * Route errors are excluded from span recording.
  */
-export async function withSpan<T>(
-  spanName: string,
-  fn: (span: Span) => Promise<T> | T,
-  tracerName = DEFAULT_TRACER_NAME,
-): Promise<T> {
-  const tracer = trace.getTracer(tracerName);
+export async function withSpan<T>(spanName: string, fn: (span: Span) => Promise<T> | T): Promise<T> {
+  const tracer = trace.getTracer(serverEnvironment.OTEL_SERVICE_NAME, serverEnvironment.OTEL_SERVICE_VERSION);
   const span = tracer.startSpan(spanName);
 
   try {

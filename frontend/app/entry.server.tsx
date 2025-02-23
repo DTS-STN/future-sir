@@ -6,15 +6,15 @@ import type { ActionFunctionArgs, AppLoadContext, EntryContext, LoaderFunctionAr
 import { ServerRouter } from 'react-router';
 
 import { trace } from '@opentelemetry/api';
-// Import Valibot translations
-// https://valibot.dev/guides/internationalization/
+// see: https://valibot.dev/guides/internationalization/
 import '@valibot/i18n/fr';
 import { isbot } from 'isbot';
 import { PassThrough } from 'node:stream';
 import { I18nextProvider } from 'react-i18next';
 
 import { LogFactory } from '~/.server/logging';
-import { handleSpanException } from '~/.server/utils/instrumentation-utils';
+import { createCounter, handleSpanException } from '~/.server/utils/instrumentation-utils';
+import { isAppError } from '~/errors/app-error';
 import { initI18next } from '~/i18n-config.server';
 import { getLanguage } from '~/utils/i18n-utils';
 
@@ -92,6 +92,36 @@ export default async function handleRequest(
 export function handleError(error: unknown, { context, params, request }: LoaderFunctionArgs | ActionFunctionArgs) {
   if (!request.signal.aborted) {
     log.error('Uncaught error while handling request:', error);
+
+    createCounter('server.errors.total').add(1, {
+      error_class: getErrorClassName(error),
+      error_code: getErrorCode(error),
+    });
+
     handleSpanException(error, trace.getActiveSpan());
+  }
+}
+
+/**
+ * Retrieves the class name of an error object.
+ *
+ * @param error - The error object whose class name is to be retrieved. It can be of any type.
+ * @returns The class name of the error object if it is an object and has a constructor property, otherwise undefined.
+ */
+function getErrorClassName(error: unknown): string | undefined {
+  if (error && typeof error === 'object' && 'constructor' in error) {
+    return error.constructor.name;
+  }
+}
+
+/**
+ * Retrieves the error code of an error object.
+ *
+ * @param error - The error object whose error code is to be retrieved. It can be of any type.
+ * @returns The error code of the error object if it is an AppError, otherwise undefined.
+ */
+function getErrorCode(error: unknown): string | undefined {
+  if (isAppError(error)) {
+    return error.errorCode;
   }
 }
