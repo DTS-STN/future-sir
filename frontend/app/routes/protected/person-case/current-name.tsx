@@ -161,7 +161,7 @@ export async function action({ context, request }: Route.ActionArgs) {
       }
 
       (context.session.inPersonSINCase ??= {}).currentNameInfo = parseResult.output;
-      throw i18nRedirect('routes/protected/request.tsx', request);
+      throw i18nRedirect('routes/protected/person-case/personal-info.tsx', request);
     }
 
     default: {

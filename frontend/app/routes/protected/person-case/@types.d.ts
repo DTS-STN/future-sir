@@ -33,6 +33,12 @@ declare module 'express-session' {
         registrationNumber: string;
         document: File;
       };
+      personalInformation: {
+        firstNamePreviouslyUsed?: string[];
+        lastNameAtBirth: string;
+        lastNamePreviouslyUsed?: string[];
+        gender: string;
+      };
       previousSin: {
         hasPreviousSin: string;
         socialInsuranceNumber?: string;
