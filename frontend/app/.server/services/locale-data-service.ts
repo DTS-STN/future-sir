@@ -29,32 +29,31 @@ export function getLocalizedCountries(locale: Language = 'en'): readonly Localiz
   }));
 }
 
-type ProvinceTerritoryState = Readonly<{
+type ProvinceTerritory = Readonly<{
   id: string;
-  countryId: string;
   nameEn: string;
   nameFr: string;
 }>;
 
-export function getProvincesTerritoriesStates(): readonly ProvinceTerritoryState[] {
-  return provinceTerritoryStateData.value.map((region) => ({
-    id: region.esdc_provinceterritorystateid,
-    countryId: region._esdc_countryid_value,
-    nameEn: region.esdc_nameenglish,
-    nameFr: region.esdc_namefrench,
-  }));
+export function getProvincesTerritories(): readonly ProvinceTerritory[] {
+  const { PP_CANADA_COUNTRY_CODE } = serverEnvironment;
+  return provinceTerritoryStateData.value
+    .filter((region) => region._esdc_countryid_value === PP_CANADA_COUNTRY_CODE)
+    .map((region) => ({
+      id: region.esdc_provinceterritorystateid,
+      nameEn: region.esdc_nameenglish,
+      nameFr: region.esdc_namefrench,
+    }));
 }
 
-type LocalizedProvinceTerritoryState = Readonly<{
+type LocalizedProvinceTerritory = Readonly<{
   id: string;
-  countryId: string;
   name: string;
 }>;
 
-export function getLocalizedProvincesTerritoriesStates(locale: Language = 'en'): readonly LocalizedProvinceTerritoryState[] {
-  return getProvincesTerritoriesStates().map((region) => ({
+export function getLocalizedProvincesTerritoriesStates(locale: Language = 'en'): readonly LocalizedProvinceTerritory[] {
+  return getProvincesTerritories().map((region) => ({
     id: region.id,
-    countryId: region.countryId,
     name: region[locale === 'en' ? 'nameEn' : 'nameFr'],
   }));
 }

@@ -240,7 +240,8 @@
     "address-help-message": "Include apartment number (if applicable), street number, street name. For example: 123 Main St. Suite 4B",
     "postal-code-label": "Postal code",
     "city-label": "City, town, or village",
-    "province-label": "Province, state, or region",
+    "canada-province-label": "Province or territory",
+    "other-country-province-label": "Province, state, or region",
     "error-messages": {
       "preferred-language-required": "Please select a preferred language",
       "primary-phone-required": "Please enter a primary phone number",
