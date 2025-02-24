@@ -1,4 +1,6 @@
+import { serverEnvironment } from '~/.server/environment';
 import countryData from '~/.server/resources/countries.json';
+import preferredLanguageData from '~/.server/resources/preferred-language.json';
 import provinceTerritoryStateData from '~/.server/resources/province-territory-state.json';
 
 type Country = Readonly<{
@@ -54,5 +56,35 @@ export function getLocalizedProvincesTerritoriesStates(locale: Language = 'en'):
     id: region.id,
     countryId: region.countryId,
     name: region[locale === 'en' ? 'nameEn' : 'nameFr'],
+  }));
+}
+
+type PreferredLanguage = Readonly<{
+  id: string;
+  nameEn: string;
+  nameFr: string;
+}>;
+
+// TODO: throw AppError if `.find` fails?
+export function getPreferredLanguages(): readonly PreferredLanguage[] {
+  const { PP_ENGLISH_LANGUAGE_CODE, PP_FRENCH_LANGUAGE_CODE } = serverEnvironment;
+  return (
+    preferredLanguageData.value.at(0)?.OptionSet.Options.map((obj) => ({
+      id: obj.Value.toString(),
+      nameEn: obj.Label.LocalizedLabels.find((lbl) => lbl.LanguageCode === PP_ENGLISH_LANGUAGE_CODE)?.Label ?? '',
+      nameFr: obj.Label.LocalizedLabels.find((lbl) => lbl.LanguageCode === PP_FRENCH_LANGUAGE_CODE)?.Label ?? '',
+    })) ?? []
+  );
+}
+
+type LocalizedPreferredLanguage = Readonly<{
+  id: string;
+  name: string;
+}>;
+
+export function getLocalizedPreferredLanguages(locale: Language = 'en'): LocalizedPreferredLanguage[] {
+  return getPreferredLanguages().map((obj) => ({
+    id: obj.id,
+    name: obj[locale === 'en' ? 'nameEn' : 'nameFr'],
   }));
 }

@@ -13,6 +13,8 @@ import {
   getLocalizedCountries,
   getLocalizedProvincesTerritoriesStates,
   getProvincesTerritoriesStates,
+  getPreferredLanguages,
+  getLocalizedPreferredLanguages,
 } from '~/.server/services/locale-data-service';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
@@ -29,8 +31,6 @@ import { handle as parentHandle } from '~/routes/protected/layout';
 
 type ContactInformationSessionData = NonNullable<SessionData['inPersonSINCase']['contactInformation']>;
 
-const VALID_LANGUAGES = ['english', 'french'] as const;
-
 export const handle = {
   i18nNamespace: [...parentHandle.i18nNamespace, 'protected'],
 } as const satisfies RouteHandle;
@@ -42,6 +42,7 @@ export async function loader({ context, request }: Route.LoaderArgs) {
   return {
     documentTitle: t('protected:contact-information.page-title'),
     defaultFormValues: context.session.inPersonSINCase?.contactInformation,
+    localizedpreferredLanguages: getLocalizedPreferredLanguages(lang),
     localizedCountries: getLocalizedCountries(lang),
     localizedProvincesTerritoriesStates: getLocalizedProvincesTerritoriesStates(lang),
   };
@@ -67,7 +68,7 @@ export async function action({ context, request }: Route.ActionArgs) {
       // TODO beef up validation
       const schema = v.object({
         preferredLanguage: v.picklist(
-          VALID_LANGUAGES,
+          getPreferredLanguages().map(({ id }) => id),
           t('protected:contact-information.error-messages.preferred-language-required'),
         ),
         primaryPhoneNumber: v.pipe(
@@ -134,10 +135,10 @@ export default function ContactInformation({ loaderData, actionData, params }: R
   const isSubmitting = fetcher.state !== 'idle';
   const errors = fetcher.data?.errors;
 
-  const languageOptions = VALID_LANGUAGES.map((value) => ({
-    value: value,
-    children: t(`protected:contact-information.preferred-language-options.${value}`),
-    defaultChecked: value === loaderData.defaultFormValues?.preferredLanguage,
+  const languageOptions = loaderData.localizedpreferredLanguages.map(({ id, name }) => ({
+    value: id,
+    children: name,
+    defaultChecked: id === loaderData.defaultFormValues?.preferredLanguage,
   }));
 
   const countryOptions = [{ id: 'select-option', name: '' }, ...loaderData.localizedCountries].map(({ id, name }) => ({

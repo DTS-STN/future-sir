@@ -232,10 +232,6 @@
     "correspondence": "Correspondence",
     "select-option": "Select option",
     "preferred-language-label": "Preferred language of correspondence",
-    "preferred-language-options": {
-      "french": "French",
-      "english": "English"
-    },
     "primary-phone-label": "Primary phone number",
     "secondary-phone-label": "Secondary phone number",
     "email-label": "Email address",
