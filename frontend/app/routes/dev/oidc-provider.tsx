@@ -1,6 +1,6 @@
 import { redirect } from 'react-router';
 
-import type { KeyLike } from 'jose';
+import type { KeyObject } from 'jose';
 import { exportJWK, importPKCS8, importSPKI, SignJWT } from 'jose';
 import { randomUUID } from 'node:crypto';
 import { setTimeout } from 'node:timers';
@@ -13,8 +13,8 @@ import { serverEnvironment } from '~/.server/environment';
 type AuthCode = string;
 
 type KeyPair = {
-  privateKey: KeyLike;
-  publicKey: KeyLike;
+  privateKey: CryptoKey | KeyObject;
+  publicKey: CryptoKey | KeyObject;
 };
 
 type OidcConfig = {
