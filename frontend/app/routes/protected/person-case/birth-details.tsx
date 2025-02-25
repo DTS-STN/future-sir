@@ -66,7 +66,7 @@ export async function action({ context, request }: Route.ActionArgs) {
 
   switch (action) {
     case 'back': {
-      throw i18nRedirect('routes/protected/index.tsx', request);
+      throw i18nRedirect('routes/protected/person-case/personal-info.tsx', request);
     }
 
     case 'next': {

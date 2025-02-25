@@ -130,6 +130,14 @@ export const i18nRoutes = [
         },
       },
       {
+        id: 'PROT-0008',
+        file: 'routes/protected/person-case/personal-info.tsx',
+        paths: {
+          en: '/en/protected/person-case/personal-information',
+          fr: '/fr/protege/cas-personnel/informations-personnelles',
+        },
+      },
+      {
         id: 'PROT-0009',
         file: 'routes/protected/person-case/birth-details.tsx',
         paths: {

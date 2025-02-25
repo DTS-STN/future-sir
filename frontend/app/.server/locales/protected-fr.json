@@ -213,6 +213,36 @@
       "citizenship-certificate": "Certificat de citoyenneté canadienne contenant le nom de famille à enregistrer"
     }
   },
+  "personal-information": {
+    "page-title": "Détails personnels",
+    "add-name": "Ajoutez le nom",
+    "name-added-aria-label": "Nom ajouté\u00a0: {{name}}, Activez pour supprimer le nom",
+    "removed-name-sr-message": "Nom supprimé\u00a0: {{name}}",
+    "first-name-previously-used": {
+      "help-message-primary": "Tapez un nom dans le champ et appuyez sur Entrée ou cliquez sur «\u00a0Ajouter un nom\u00a0» pour l'enregistrer.",
+      "label": "Autres prénoms précédemment utilisés"
+    },
+    "last-name-at-birth": {
+      "format": "Le nom de famille doit contenir uniquement des lettres.",
+      "label": "Nom de famille à la naissance",
+      "max-length": "Le nom de famille doit contenir au maximum {{maximum}} caractère(s).",
+      "required": "Le nom de famille est requis."
+    },
+    "last-name-previously-used": {
+      "help-message-primary": "Tapez un nom dans le champ et appuyez sur Entrée ou cliquez sur «\u00a0Ajouter un nom\u00a0» pour l'enregistrer.",
+      "label": "Autres noms de famille précédemment utilisés"
+    },
+    "gender": {
+      "label": "Genre",
+      "help-message-primary": "Celui-ci est pré-rempli à partir de la pièce d'identité principale du demandeur et peut être modifié.",
+      "required": "Le genre est requis.",
+      "options": {
+        "female": "Femme",
+        "male": "Homme",
+        "other": "Autre"
+      }
+    }
+  },
   "previous-sin": {
     "page-title": "NAS précédent",
     "has-previous-sin-label": "Le demandeur a-t-il déjà eu un NAS?",
