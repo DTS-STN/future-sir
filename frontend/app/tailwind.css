@@ -354,6 +354,9 @@
   option {
     color: var(--color-black);
   }
+  option:disabled {
+    color: var(--color-gray-400);
+  }
 }
 
 @layer components {
