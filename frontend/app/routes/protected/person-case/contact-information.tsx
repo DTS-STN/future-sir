@@ -13,10 +13,10 @@ import { serverEnvironment } from '~/.server/environment';
 import {
   getCountries,
   getLocalizedCountries,
-  getLocalizedProvincesTerritoriesStates,
-  getProvincesTerritories,
-  getPreferredLanguages,
   getLocalizedPreferredLanguages,
+  getLocalizedProvincesTerritoriesStates,
+  getPreferredLanguages,
+  getProvincesTerritories,
 } from '~/.server/services/locale-data-service';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
@@ -145,11 +145,8 @@ export async function action({ context, request }: Route.ActionArgs) {
         return data({ errors: v.flatten<typeof schema>(parseResult.issues).nested }, { status: 400 });
       }
 
-      context.session.inPersonSINCase ??= {};
-      context.session.inPersonSINCase.contactInformation = parseResult.output;
-
-      // TODO: change to proper route
-      throw i18nRedirect('routes/protected/person-case/primary-docs.tsx', request);
+      (context.session.inPersonSINCase ??= {}).contactInformation = parseResult.output;
+      throw i18nRedirect('routes/protected/person-case/primary-docs.tsx', request); // TODO: change to proper route
     }
 
     default: {
