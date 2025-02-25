@@ -46,7 +46,7 @@ const VALID_DOC_TYPES: string[] = [
   'replace-imm1442',
   'birth-certificate',
   'citizenship-certificate',
-];
+] as const;
 
 export const handle = {
   i18nNamespace: [...parentHandle.i18nNamespace, 'protected'],
@@ -78,9 +78,9 @@ export async function action({ context, request }: Route.ActionArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
 
   const { lang, t } = await getTranslation(request, handle.i18nNamespace);
+
   const formData = await request.formData();
   const action = formData.get('action');
-  const nameMaxLength = 100;
 
   switch (action) {
     case 'back': {
@@ -91,23 +91,21 @@ export async function action({ context, request }: Route.ActionArgs) {
       const schema = v.variant(
         'preferredSameAsDocumentName',
         [
-          v.object({
-            preferredSameAsDocumentName: v.literal(true),
-          }),
+          v.object({ preferredSameAsDocumentName: v.literal(true) }),
           v.object({
             preferredSameAsDocumentName: v.literal(false),
             firstName: v.pipe(
               v.string(t('protected:current-name.first-name-error.required-error')),
               v.trim(),
               v.nonEmpty(t('protected:current-name.first-name-error.required-error')),
-              v.maxLength(nameMaxLength, t('protected:current-name.first-name-error.max-length-error')),
+              v.maxLength(100, t('protected:current-name.first-name-error.max-length-error')),
               v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:current-name.first-name-error.format-error')),
             ),
             middleName: v.optional(
               v.pipe(
                 v.string(t('protected:current-name.middle-name-error.required-error')),
                 v.trim(),
-                v.maxLength(nameMaxLength, t('protected:current-name.middle-name-error.max-length-error')),
+                v.maxLength(100, t('protected:current-name.middle-name-error.max-length-error')),
                 v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:current-name.middle-name-error.format-error')),
               ),
             ),
@@ -115,15 +113,13 @@ export async function action({ context, request }: Route.ActionArgs) {
               v.string(t('protected:current-name.last-name-error.required-error')),
               v.trim(),
               v.nonEmpty(t('protected:current-name.last-name-error.required-error')),
-              v.maxLength(nameMaxLength, t('protected:current-name.last-name-error.max-length-error')),
+              v.maxLength(100, t('protected:current-name.last-name-error.max-length-error')),
               v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:current-name.last-name-error.format-error')),
             ),
             supportingDocuments: v.variant(
               'required',
               [
-                v.object({
-                  required: v.literal(false),
-                }),
+                v.object({ required: v.literal(false) }),
                 v.object({
                   required: v.literal(true),
                   documentTypes: v.pipe(
@@ -144,12 +140,16 @@ export async function action({ context, request }: Route.ActionArgs) {
       ) satisfies v.GenericSchema<CurrentNameSessionData>;
 
       const input = {
-        preferredSameAsDocumentName: formData.get('same-name') ? formData.get('same-name') === REQUIRE_OPTIONS.yes : undefined,
+        preferredSameAsDocumentName: formData.get('same-name')
+          ? formData.get('same-name') === REQUIRE_OPTIONS.yes //
+          : undefined,
         firstName: String(formData.get('first-name')),
         middleName: trimToUndefined(String(formData.get('middle-name'))),
         lastName: String(formData.get('last-name')),
         supportingDocuments: {
-          required: formData.get('docs-required') ? formData.get('docs-required') === REQUIRE_OPTIONS.yes : undefined,
+          required: formData.get('docs-required')
+            ? formData.get('docs-required') === REQUIRE_OPTIONS.yes //
+            : undefined,
           documentTypes: formData.getAll('doc-type').map(String),
         },
       } satisfies PartialDeep<v.InferInput<typeof schema>>;
@@ -160,9 +160,7 @@ export async function action({ context, request }: Route.ActionArgs) {
         return data({ errors: v.flatten<typeof schema>(parseResult.issues).nested }, { status: 400 });
       }
 
-      context.session.inPersonSINCase ??= {};
-      context.session.inPersonSINCase.currentNameInfo = parseResult.output;
-
+      (context.session.inPersonSINCase ??= {}).currentNameInfo = parseResult.output;
       throw i18nRedirect('routes/protected/request.tsx', request);
     }
 
@@ -174,15 +172,16 @@ export async function action({ context, request }: Route.ActionArgs) {
 
 export default function CurrentName({ loaderData, actionData, params }: Route.ComponentProps) {
   const { t } = useTranslation(handle.i18nNamespace);
-  const [sameName, setSameName] = useState<boolean | undefined>(
-    loaderData.defaultFormValues.currentNameInfo?.preferredSameAsDocumentName,
-  );
-  const [requireDoc, setRequireDoc] = useState<boolean | undefined>(
+
+  const [sameName, setSameName] = useState(loaderData.defaultFormValues.currentNameInfo?.preferredSameAsDocumentName);
+  const [requireDoc, setRequireDoc] = useState(
     loaderData.defaultFormValues.currentNameInfo?.preferredSameAsDocumentName === false &&
       loaderData.defaultFormValues.currentNameInfo.supportingDocuments.required,
   );
+
   const fetcherKey = useId();
   const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
+
   const isSubmitting = fetcher.state !== 'idle';
   const errors = fetcher.data?.errors;
 
