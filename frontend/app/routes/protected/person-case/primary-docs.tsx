@@ -12,6 +12,8 @@ import * as v from 'valibot';
 import type { Info, Route } from './+types/primary-docs';
 
 import { serverEnvironment } from '~/.server/environment';
+import type { LocalizedGender } from '~/.server/services/locale-data-service';
+import { getGenders, getLocalizedGenders } from '~/.server/services/locale-data-service';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
@@ -37,10 +39,6 @@ const VALID_CURRENT_STATUS = ['canadian-citizen-born-outside-canada'];
  * Valid document type for proof of concept
  */
 const VALID_DOCTYPES = ['certificate-of-canadian-citizenship'];
-/**
- * Valid gender for primary identification document
- */
-const VALID_GENDERS = ['female', 'male', 'other'];
 
 const timezone = serverEnvironment.BASE_TIMEZONE;
 
@@ -50,11 +48,12 @@ export const handle = {
 
 export async function loader({ context, request }: Route.LoaderArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
-  const { t } = await getTranslation(request, handle.i18nNamespace);
+  const { t, lang } = await getTranslation(request, handle.i18nNamespace);
 
   return {
     documentTitle: t('protected:primary-identity-document.page-title'),
     defaultFormValues: context.session.inPersonSINCase?.primaryDocuments,
+    localizedGenders: getLocalizedGenders(lang),
   };
 }
 
@@ -170,7 +169,10 @@ export async function action({ context, request }: Route.ActionArgs) {
                   t('protected:primary-identity-document.date-of-birth.invalid-future-date'),
                 ),
               ),
-              gender: v.picklist(VALID_GENDERS, t('protected:primary-identity-document.gender.required')),
+              gender: v.picklist(
+                getGenders().map(({ id }) => id),
+                t('protected:primary-identity-document.gender.required'),
+              ),
               citizenshipDateYear: v.pipe(
                 v.number(t('protected:primary-identity-document.citizenship-date.required-year')),
                 v.integer(t('protected:primary-identity-document.citizenship-date.invalid-year')),
@@ -309,6 +311,7 @@ export default function PrimaryDocs({ loaderData, actionData, params }: Route.Co
             )}
             {currentStatus && documentType && (
               <PrimaryDocsFields
+                genders={loaderData.localizedGenders}
                 currentStatus={currentStatus}
                 defaultValues={loaderData.defaultFormValues}
                 documentType={documentType}
@@ -442,6 +445,7 @@ function DocumentType({ currentStatus, defaultValue, errorMessage, onChange }: D
 }
 
 interface PrimaryDocsFieldsProps {
+  genders: LocalizedGender[];
   currentStatus?: string;
   defaultValues?: {
     citizenshipDate: string;
@@ -456,14 +460,19 @@ interface PrimaryDocsFieldsProps {
   errors?: Record<string, [string, ...string[]] | undefined>;
 }
 
-function PrimaryDocsFields({ currentStatus, defaultValues, errors, documentType }: PrimaryDocsFieldsProps): JSX.Element {
+function PrimaryDocsFields({
+  genders,
+  currentStatus,
+  defaultValues,
+  errors,
+  documentType,
+}: PrimaryDocsFieldsProps): JSX.Element {
   const { t } = useTranslation(handle.i18nNamespace);
-  const genders = ['female', 'male', 'other'] as const;
 
-  const genderOptions = genders.map((value) => ({
-    value: value,
-    children: t(`protected:primary-identity-document.gender.options.${value}` as const),
-    defaultChecked: value === defaultValues?.gender,
+  const genderOptions = genders.map(({ id, name }) => ({
+    value: id,
+    children: name,
+    defaultChecked: name === defaultValues?.gender,
   }));
 
   return (
