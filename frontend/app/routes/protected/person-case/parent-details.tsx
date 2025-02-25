@@ -14,8 +14,8 @@ import { serverEnvironment } from '~/.server/environment';
 import {
   getCountries,
   getLocalizedCountries,
-  getLocalizedProvincesTerritoriesStates,
-  getProvincesTerritories,
+  getLocalizedProvinces,
+  getProvinces,
 } from '~/.server/services/locale-data-service';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
@@ -50,7 +50,7 @@ export async function loader({ context, request }: Route.LoaderArgs) {
   return {
     documentTitle: t('protected:parent-details.page-title'),
     localizedCountries: getLocalizedCountries(lang),
-    localizedProvincesTerritoriesStates: getLocalizedProvincesTerritoriesStates(lang),
+    localizedProvincesTerritoriesStates: getLocalizedProvinces(lang),
     PP_CANADA_COUNTRY_CODE,
     defaultFormValues: sessionData.map((details) =>
       details.unavailable
@@ -116,7 +116,7 @@ export async function action({ context, request }: Route.ActionArgs) {
                     v.object({
                       country: v.literal(PP_CANADA_COUNTRY_CODE, t('protected:parent-details.country-error.invalid-country')),
                       province: v.picklist(
-                        getProvincesTerritories().map(({ id }) => id),
+                        getProvinces().map(({ id }) => id),
                         t('protected:parent-details.province-error.required-province'),
                       ),
                       city: v.pipe(

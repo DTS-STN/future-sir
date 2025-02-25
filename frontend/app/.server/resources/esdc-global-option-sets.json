@@ -1,0 +1,2299 @@
+[
+  {
+    "name": "esdc_languageofcorrespondence",
+    "parentOptionSetName": null,
+    "displayNameEn": "Language of Correspondence",
+    "displayNameFr": "Langue de correspondence",
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "English",
+        "labelFr": "anglais"
+      },
+      {
+        "value": 564190001,
+        "labelEn": "French",
+        "labelFr": "français"
+      }
+    ]
+  },
+  {
+    "name": "esdc_yesnooptionchoices",
+    "parentOptionSetName": null,
+    "displayNameEn": "Yes No Option Choices",
+    "displayNameFr": "Choix de l'option Oui Non",
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "No",
+        "labelFr": "Non"
+      },
+      {
+        "value": 564190001,
+        "labelEn": "Yes",
+        "labelFr": "Oui"
+      }
+    ]
+  },
+  {
+    "name": "esdc_applicantsecondarydocumentchoices",
+    "parentOptionSetName": null,
+    "displayNameEn": "Applicant Secondary Document Choices",
+    "displayNameFr": "Choix du document secondaire du demandeur",
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "a passport (Canadian or foreign)",
+        "labelFr": "Un passeport (canadien ou étranger)"
+      },
+      {
+        "value": 564190001,
+        "labelEn": "a Canadian provincial or territorial ID card or driver's license",
+        "labelFr": "Une carte d'identité provinciale ou territoriale canadienne ou un permis de conduire."
+      },
+      {
+        "value": 564190002,
+        "labelEn": "any other Canadian government issued ID",
+        "labelFr": "Toute autre pièce d'identité délivrée par le gouvernement canadien"
+      }
+    ]
+  },
+  {
+    "name": "esdc_prprimarydocumentchoices",
+    "parentOptionSetName": null,
+    "displayNameEn": "Permanent Resident Primary Document",
+    "displayNameFr": null,
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "Permanent Resident Card",
+        "labelFr": "Carte de résident permanent"
+      },
+      {
+        "value": 564190001,
+        "labelEn": "Confirmation of Permanent Residence",
+        "labelFr": "Confirmation de résidence permanente"
+      },
+      {
+        "value": 564190002,
+        "labelEn": "Record of Landing",
+        "labelFr": "Fiche relative au droit d'établissement"
+      },
+      {
+        "value": 564190003,
+        "labelEn": "Verification of Landing",
+        "labelFr": "Vérification du droit d'établissement"
+      },
+      {
+        "value": 564190004,
+        "labelEn": "Status Verification",
+        "labelFr": "Vérification du statut"
+      }
+    ]
+  },
+  {
+    "name": "esdc_trprimarydocumentchoices",
+    "parentOptionSetName": null,
+    "displayNameEn": "Temporary Resident Primary Document",
+    "displayNameFr": null,
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "Work Permit",
+        "labelFr": "Permis de travail"
+      },
+      {
+        "value": 564190001,
+        "labelEn": "Study Permit",
+        "labelFr": "Permis d'études"
+      },
+      {
+        "value": 564190002,
+        "labelEn": "Visitor Record",
+        "labelFr": "Fiche de visiteur"
+      },
+      {
+        "value": 564190003,
+        "labelEn": "Diplomatic Identity Card",
+        "labelFr": "Carte d'identité diplomatique + Permission de travailler"
+      }
+    ]
+  },
+  {
+    "name": "esdc_officetype",
+    "parentOptionSetName": null,
+    "displayNameEn": "Office Type",
+    "displayNameFr": null,
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "SCC",
+        "labelFr": null
+      },
+      {
+        "value": 564190001,
+        "labelEn": "SCCPS",
+        "labelFr": null
+      },
+      {
+        "value": 564190002,
+        "labelEn": "Consolidated Site",
+        "labelFr": null
+      },
+      {
+        "value": 564190003,
+        "labelEn": "Scheduled Outreach",
+        "labelFr": null
+      },
+      {
+        "value": 564190004,
+        "labelEn": "Other",
+        "labelFr": null
+      }
+    ]
+  },
+  {
+    "name": "esdc_casetypeglobal",
+    "parentOptionSetName": null,
+    "displayNameEn": "Case Type",
+    "displayNameFr": "Type de cas",
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "00 - Return Notice",
+        "labelFr": "00 - Retour de Notice"
+      },
+      {
+        "value": 564190001,
+        "labelEn": "01 - Verification",
+        "labelFr": "01 - Vérification"
+      },
+      {
+        "value": 564190002,
+        "labelEn": "02 - Correspondence",
+        "labelFr": "02 - Correspondance"
+      },
+      {
+        "value": 564190003,
+        "labelEn": "03 - Errors",
+        "labelFr": "03 - Erreurs"
+      },
+      {
+        "value": 564190004,
+        "labelEn": "04 - Never received confirmation of SIN",
+        "labelFr": "04 - Confirmation de NAS jamais reçu"
+      },
+      {
+        "value": 564190005,
+        "labelEn": "05 - Duplicates",
+        "labelFr": "05 - Duplicata"
+      },
+      {
+        "value": 564190006,
+        "labelEn": "06 - Multiples",
+        "labelFr": "06 - Multiples"
+      },
+      {
+        "value": 564190007,
+        "labelEn": "07 - Change of status/Reinstatements",
+        "labelFr": "07 - Changement de status/Rétablissements"
+      },
+      {
+        "value": 564190008,
+        "labelEn": "08 - Deceased Reversals",
+        "labelFr": "08 - Contre-passations décédé "
+      },
+      {
+        "value": 564190009,
+        "labelEn": "09 - Investigations - Dormant",
+        "labelFr": "09 - Enquêtes – Dormant"
+      },
+      {
+        "value": 564190010,
+        "labelEn": "10 - Investigation",
+        "labelFr": "10 - Enquêtes"
+      },
+      {
+        "value": 564190011,
+        "labelEn": "11 - Investigation sent to NIDS by error",
+        "labelFr": "11 - Enquête envoyé au SNID par erreur (Devrait être SINSIR / NASRAS)"
+      },
+      {
+        "value": 564190012,
+        "labelEn": "12 - Privacy Requests (Info Source)",
+        "labelFr": "12 - Demandes de protection des renseignements personels"
+      },
+      {
+        "value": 564190013,
+        "labelEn": "13 - QM SINRA",
+        "labelFr": "13 - CQ - ARNAS"
+      },
+      {
+        "value": 564190014,
+        "labelEn": "14 - Date of birth",
+        "labelFr": "14 - Date de naissance"
+      },
+      {
+        "value": 564190015,
+        "labelEn": "15 - Undeliverable",
+        "labelFr": "15 - Non distribuable"
+      },
+      {
+        "value": 564190016,
+        "labelEn": "16 - SN003",
+        "labelFr": "16 - SN003"
+      },
+      {
+        "value": 564190017,
+        "labelEn": "17 - Affidavit",
+        "labelFr": "17 - Affidavit"
+      },
+      {
+        "value": 564190018,
+        "labelEn": "18 - Sex code",
+        "labelFr": "18 - Code sexe"
+      },
+      {
+        "value": 564190019,
+        "labelEn": "19 - Public trustee",
+        "labelFr": "19 - Curateur public"
+      },
+      {
+        "value": 564190020,
+        "labelEn": "20 - SARP",
+        "labelFr": "20 - PEDN"
+      },
+      {
+        "value": 564190021,
+        "labelEn": "21 - SCC referrals - Dormant",
+        "labelFr": "21 - Référer CSC - Dormant"
+      },
+      {
+        "value": 564190022,
+        "labelEn": "22 - Department of Justice project (DOJ)",
+        "labelFr": "22 - Projet du ministère de la justice (DOJ)"
+      },
+      {
+        "value": 564190023,
+        "labelEn": "23 - Kits",
+        "labelFr": "23 - Trousse (NAS2120)"
+      },
+      {
+        "value": 564190024,
+        "labelEn": "24 - Canada Student Loan Program (CSLP)",
+        "labelFr": "24 - Programme Canadien de prêts aux étudiants (PCPE)"
+      },
+      {
+        "value": 564190025,
+        "labelEn": "25 - Mobile Outreach Clinic",
+        "labelFr": "25 - Cliniques mobiles de sensibilisation"
+      },
+      {
+        "value": 564190026,
+        "labelEn": "26 - Alternate names",
+        "labelFr": "26 - Ajouts de d’autres noms"
+      },
+      {
+        "value": 564190027,
+        "labelEn": "27- Lost document",
+        "labelFr": "27 - Document perdu"
+      },
+      {
+        "value": 564190063,
+        "labelEn": "28 - Uncategorized",
+        "labelFr": "28 - Non catégorisé"
+      },
+      {
+        "value": 564190028,
+        "labelEn": "29 - Return refund",
+        "labelFr": "29 - Retour de remboursement"
+      },
+      {
+        "value": 564190029,
+        "labelEn": "30 - ATIP-20yrs+deceased",
+        "labelFr": "30 - AIPRP – 20 ans + décédé"
+      },
+      {
+        "value": 564190030,
+        "labelEn": "31 - Fail Validation - REF - Immigration",
+        "labelFr": "31 - Validation échouée - Immigration"
+      },
+      {
+        "value": 564190031,
+        "labelEn": "32 - Fail Validation - ADJ - Provincial",
+        "labelFr": "32 - Validation échouée - Provincial"
+      },
+      {
+        "value": 564190032,
+        "labelEn": "33 - Indigenous project",
+        "labelFr": "33 - Projet autochtones "
+      },
+      {
+        "value": 564190033,
+        "labelEn": "34 - POA pilot project",
+        "labelFr": "34 - Projet pilote procuration (POA) "
+      },
+      {
+        "value": 564190034,
+        "labelEn": "50-GD Mailbox CRA",
+        "labelFr": "50 - Boîte générique ARC"
+      },
+      {
+        "value": 564190035,
+        "labelEn": "51-GD Mailbox CBSA",
+        "labelFr": "51 - Boîte générique ASFC"
+      },
+      {
+        "value": 564190036,
+        "labelEn": "52-GD Mailbox Job Bank",
+        "labelFr": "52 - Boîte générique Guichet Emploi"
+      },
+      {
+        "value": 564190037,
+        "labelEn": "60 - Fax (urgent or priority)",
+        "labelFr": "60 - Télécopieur (urgent ou priorité)"
+      },
+      {
+        "value": 564190038,
+        "labelEn": "61 - SCC Referrals",
+        "labelFr": "61 - Centre Service Canada (Référé CSC)"
+      },
+      {
+        "value": 564190039,
+        "labelEn": "62 - Raw mail",
+        "labelFr": "62 - Courriers brute"
+      },
+      {
+        "value": 564190040,
+        "labelEn": "63 - Rejects",
+        "labelFr": "63 - Rejetés"
+      },
+      {
+        "value": 564190041,
+        "labelEn": "64 - Seasonal Agricultural Workers Program (SAWP)",
+        "labelFr": "64 - Programme des travailleurs agricole saisonnier (PTAS)"
+      },
+      {
+        "value": 564190042,
+        "labelEn": "67 - Raw mail - Dormant",
+        "labelFr": "67 - Courriers brute - Dormant"
+      },
+      {
+        "value": 564190043,
+        "labelEn": "69 - CPP or RRQ",
+        "labelFr": "69 - RPC OU RRQ"
+      },
+      {
+        "value": 564190044,
+        "labelEn": "70 - SIN @ Birth",
+        "labelFr": "70 - NAS a la naissance"
+      },
+      {
+        "value": 564190045,
+        "labelEn": "71 - Seized SIN'S - CBSA",
+        "labelFr": "71 - NAS saisis - ASFC"
+      },
+      {
+        "value": 564190046,
+        "labelEn": "72 - RRQ Callbacks",
+        "labelFr": "72 - Retour d’appels – RRQ"
+      },
+      {
+        "value": 564190047,
+        "labelEn": "73 - MP enquiries",
+        "labelFr": "73 - Demande – Député fédérale"
+      },
+      {
+        "value": 564190048,
+        "labelEn": "74 - ATIP 20 years or less",
+        "labelFr": "74 - AIPRR 20 ans et moins"
+      },
+      {
+        "value": 564190049,
+        "labelEn": "75 - OCS Complaints",
+        "labelFr": "75 - Plaintes – BSC "
+      },
+      {
+        "value": 564190050,
+        "labelEn": "76 - ICO referrals",
+        "labelFr": "76 - Référer - AEC"
+      },
+      {
+        "value": 564190051,
+        "labelEn": "77 -  Death Notifications",
+        "labelFr": "77 - Avis de décès"
+      },
+      {
+        "value": 564190052,
+        "labelEn": "78 - SN008 (Reject to CIC)",
+        "labelFr": "78 - SN008 (Rejet a CIC)"
+      },
+      {
+        "value": 564190053,
+        "labelEn": "79 - Deceased 5",
+        "labelFr": "79 - Décès 5"
+      },
+      {
+        "value": 564190054,
+        "labelEn": "80 - Deceased 3",
+        "labelFr": "80 - Décès 3"
+      },
+      {
+        "value": 564190055,
+        "labelEn": "81 - Deceased 1, 2, 4",
+        "labelFr": "81 - Décès 1, 2, 4"
+      },
+      {
+        "value": 564190056,
+        "labelEn": "99 - Legacy Reason Unknown",
+        "labelFr": "99 - Ancien - Raison inconnue"
+      },
+      {
+        "value": 564190057,
+        "labelEn": "100 - eSIN Regular",
+        "labelFr": "100 - NASe Régulier"
+      },
+      {
+        "value": 564190058,
+        "labelEn": "101 - eSIN Dormant",
+        "labelFr": "101 - NASe Dormant"
+      },
+      {
+        "value": 564190059,
+        "labelEn": "102 - eSIN Failed Validation – Immigration",
+        "labelFr": "102 - Validation échouer NASe - Immigration"
+      },
+      {
+        "value": 564190060,
+        "labelEn": "103 - eSIN Failed Validation – Provincial",
+        "labelFr": "103 - Validation échouer NASe – Provincial"
+      },
+      {
+        "value": 564190061,
+        "labelEn": "104 - eSIN Investigations",
+        "labelFr": "104 - Enquêtes  - NASe"
+      },
+      {
+        "value": 564190062,
+        "labelEn": "105 - eSIN Investigations Dormant",
+        "labelFr": "105 - Enquêtes  Dormant - NASe"
+      },
+      {
+        "value": 564190064,
+        "labelEn": "106 - Children Services",
+        "labelFr": "106 - Services à l’enfance"
+      }
+    ]
+  },
+  {
+    "name": "esdc_primarydocumentrejectionreasons",
+    "parentOptionSetName": null,
+    "displayNameEn": "Primary Document Rejection Reasons",
+    "displayNameFr": "Motifs de rejet du demandeur- document d’identité principal",
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "The applicant’s primary identity document was not provided",
+        "labelFr": "Le document d'identité principal du demandeur n'a pas été fourni"
+      },
+      {
+        "value": 564190001,
+        "labelEn": "The applicant’s primary identity document does not authorize client to work in Canada",
+        "labelFr": "Le document d'identité principal du demandeur n'autorise pas à travailler au Canada"
+      },
+      {
+        "value": 564190002,
+        "labelEn": "Both sides of the applicant’s primary identity document were not provided",
+        "labelFr": "Les deux côtés du document d’identité principal du demandeur n’ont pas été fournis"
+      },
+      {
+        "value": 564190003,
+        "labelEn": "The applicant’s electronic Confirmation of Permanent Residence is not signed/dated by hand",
+        "labelFr": "La confirmation de résidence permanente électronique du demandeur n’est pas signée/datée à la main"
+      },
+      {
+        "value": 564190004,
+        "labelEn": "The applicant’s primary identity document is damaged",
+        "labelFr": "Le document d’identité principal du demandeur est endommagé"
+      },
+      {
+        "value": 564190005,
+        "labelEn": "The applicant’s primary identity document was not scanned properly",
+        "labelFr": "Le document d’identité principal du demandeur n’a pas été numérisé correctement"
+      },
+      {
+        "value": 564190006,
+        "labelEn": "The applicant’s primary identity document is damaged and only one side was provided",
+        "labelFr": "Le document d’identité principal du demandeur est endommagé et un seul côté du document a été fourni"
+      },
+      {
+        "value": 564190007,
+        "labelEn": "The applicant’s primary identity document is not acceptable",
+        "labelFr": "Le document d’identité principal du demandeur n’est pas acceptable"
+      },
+      {
+        "value": 564190008,
+        "labelEn": "The applicant’s primary identity document is expired",
+        "labelFr": "Le document d’identité principal du demandeur est expiré"
+      },
+      {
+        "value": 564190009,
+        "labelEn": "The applicant’s primary identity document was not a copy of an original document",
+        "labelFr": "Le document d’identité principal du demandeur n’est pas une copie du document original"
+      },
+      {
+        "value": 564190010,
+        "labelEn": "The applicant’s Québec birth certificate prior to 1994 is not acceptable",
+        "labelFr": "Un certificat de naissance du Québec émis avant 1994  n’est pas acceptable"
+      },
+      {
+        "value": 564190012,
+        "labelEn": "The applicant's work authorization letter was not provided with the diplomatic card",
+        "labelFr": "La lettre d'autorisation de travail du demandeur n'a pas été fournie avec la carte diplomatique "
+      },
+      {
+        "value": 564190013,
+        "labelEn": "The applicant’s given name and family name on the primary identity document are not in the same order as on the SIN application. Contact Immigration, Refugees, and Citizenship Canada (IRCC) to have the document corrected.",
+        "labelFr": "Le prénom et nom de famille figurant sur le document d’identité principal du demandeur ne sont pas dans le même ordre que sur la demande de NAS. Communiquez avec Immigration, Réfugiés et Citoyenneté Canada (IRCC) afin de faire corriger le document."
+      },
+      {
+        "value": 564190014,
+        "labelEn": "The applicant's foreign birth certificate and/or document confirming eligibility for a pension or benefits from the Government of Canada or Retraite Québec is not acceptable",
+        "labelFr": "Le certificat de naissance étranger du demandeur et/ou le document confirmant l'admissibilité à une pension ou à des prestations du gouvernement du Canada ou de Retraite Québec n'est pas acceptables"
+      },
+      {
+        "value": 564190015,
+        "labelEn": "The applicant's foreign birth certificate was not provided",
+        "labelFr": "Le certificat de naissance étranger du demandeur n'a pas été fourni"
+      },
+      {
+        "value": 564190016,
+        "labelEn": "The applicant's document confirming eligibility for a pension or benefits from the Government of Canada or Retraite Québec was not provided",
+        "labelFr": "Le document du demandeur confirmant son l'admissibilité à une pension ou à des prestations du gouvernement du Canada ou de Retraite Québec n'a pas été fournie"
+      },
+      {
+        "value": 564190017,
+        "labelEn": "The applicant's foreign birth certificate needs to be translated in either English or French",
+        "labelFr": "Le certificat de naissance étranger du demandeur doit être traduit en anglais ou en français"
+      },
+      {
+        "value": 564190011,
+        "labelEn": "The digital copy of the applicant’s primary identity document could not be opened",
+        "labelFr": "La copie numérique du document d’identité principal du demandeur n'a pas pu être ouverte"
+      }
+    ]
+  },
+  {
+    "name": "esdc_secondarydocumentrejectionreasons",
+    "parentOptionSetName": null,
+    "displayNameEn": "Secondary Document Rejection Reasons",
+    "displayNameFr": "Motifs de rejet du demandeur- document secondaire",
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "The applicant’s secondary document was not provided",
+        "labelFr": "Le document secondaire n’a pas été fourni"
+      },
+      {
+        "value": 564190001,
+        "labelEn": "The applicant’s secondary document is expired",
+        "labelFr": "Le document secondaire est expiré"
+      },
+      {
+        "value": 564190002,
+        "labelEn": "The applicant’s secondary document is damaged",
+        "labelFr": "Le document secondaire est endommagé"
+      },
+      {
+        "value": 564190005,
+        "labelEn": "The applicant’s secondary document is not acceptable",
+        "labelFr": "Le document secondaire n'est pas acceptable"
+      },
+      {
+        "value": 564190006,
+        "labelEn": "The applicant’s secondary document was not a digital copy of an original document",
+        "labelFr": "Le document secondaire du demandeur n’est pas une copie numérique du document original"
+      },
+      {
+        "value": 564190003,
+        "labelEn": "The applicant’s secondary document was not scanned properly",
+        "labelFr": "Le document secondaire n’a pas été numérisé correctement"
+      },
+      {
+        "value": 564190004,
+        "labelEn": "The digital copy of the applicant’s secondary document could not be opened",
+        "labelFr": "La copie numérique du document secondaire n'a pas pu être ouverte"
+      },
+      {
+        "value": 564190007,
+        "labelEn": "The date of birth on the applicant’s secondary document does not match the one on their primary identity document",
+        "labelFr": "La date de naissance sur le document secondaire du demandeur ne correspond pas à celle sur leur document d'identité principal"
+      }
+    ]
+  },
+  {
+    "name": "esdc_proofofaddressrejectionreasons",
+    "parentOptionSetName": null,
+    "displayNameEn": "Proof of Address Rejection Reasons",
+    "displayNameFr": "Motifs de reject de la preuve d’adresse",
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "The applicant’s proof of address was not provided",
+        "labelFr": "La preuve d’adresse n’a pas été fournie"
+      },
+      {
+        "value": 564190001,
+        "labelEn": "The applicant’s proof of address is not acceptable",
+        "labelFr": "La preuve d’adresse n’est pas acceptable"
+      },
+      {
+        "value": 564190002,
+        "labelEn": "The applicant’s proof of address did not include the full name",
+        "labelFr": "Le nom n’apparait pas sur la preuve d’adresse"
+      },
+      {
+        "value": 564190003,
+        "labelEn": "The applicant’s proof of address did not match the address on the application",
+        "labelFr": "La preuve d’adresse ne correspond pas à l'adresse sur la demande"
+      },
+      {
+        "value": 564190004,
+        "labelEn": "The applicant’s proof of address needs to be translated in either French or English",
+        "labelFr": "La preuve d’adresse doit être traduite en anglais ou en français"
+      },
+      {
+        "value": 564190005,
+        "labelEn": "The Organization/Employer/Institution did not sign the applicant’s proof of address letter",
+        "labelFr": "L'organisation/ l'employeur/l'institution n’a pas signé la lettre de preuve d’adresse"
+      },
+      {
+        "value": 564190006,
+        "labelEn": "The applicant’s proof of address was not scanned properly",
+        "labelFr": "La preuve d’adresse n’a pas été numérisée correctement"
+      },
+      {
+        "value": 564190007,
+        "labelEn": "The applicant’s envelope is not an acceptable proof of address",
+        "labelFr": "Une enveloppe n’est pas une preuve d’adresse acceptable"
+      },
+      {
+        "value": 564190009,
+        "labelEn": "The applicant’s proof of address was not a digital copy of an original document",
+        "labelFr": "La preuve d’adresse du demandeur n’est pas une copie numérique du document original"
+      },
+      {
+        "value": 564190008,
+        "labelEn": "The digital copy of the applicant’s proof of address could not be opened",
+        "labelFr": "La copie numérique de la preuve d’adresse n'a pas pu être ouverte"
+      }
+    ]
+  },
+  {
+    "name": "esdc_supportingdocumentsrejectionreasons",
+    "parentOptionSetName": null,
+    "displayNameEn": "Supporting Documents Rejection Reasons",
+    "displayNameFr": "Motifs de rejet du demandeur- pièce justificative",
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "The applicant’s supporting document was not provided",
+        "labelFr": "Une pièce justificative n'a pas été fournie"
+      },
+      {
+        "value": 564190001,
+        "labelEn": "The applicant’s supporting document is not acceptable",
+        "labelFr": "La pièce justificative n'est pas acceptable"
+      },
+      {
+        "value": 564190002,
+        "labelEn": "The applicant’s supporting document is damaged",
+        "labelFr": "La pièce justificative est endommagée"
+      },
+      {
+        "value": 564190003,
+        "labelEn": "The applicant’s supporting document needs to be translated in either English or French",
+        "labelFr": "La pièce justificative doit être traduite en français ou en anglais"
+      },
+      {
+        "value": 564190004,
+        "labelEn": "The applicant’s supporting document was not scanned properly",
+        "labelFr": "La pièce justificative n'a pas été numérisée correctement"
+      },
+      {
+        "value": 564190006,
+        "labelEn": "The applicant's supporting document was not a digital copy of an original document",
+        "labelFr": "La pièce justificative du demandeur n'est pas une copie numérique du document original"
+      },
+      {
+        "value": 564190005,
+        "labelEn": "The applicant’s digital copy of the supporting document could not be opened",
+        "labelFr": "La copie numérique de la pièce justificative n'a pas pu être ouverte"
+      }
+    ]
+  },
+  {
+    "name": "esdc_deathcertificaterejectionreasons",
+    "parentOptionSetName": null,
+    "displayNameEn": "Death Certificate Rejection Reasons",
+    "displayNameFr": "Motifs de rejet du demandeur- le certificat de décès de la personne décédée",
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "The deceased applicant’s death certificate was not provided",
+        "labelFr": "Le certificat de décès de la personne décédée n'a pas été fourni"
+      },
+      {
+        "value": 564190001,
+        "labelEn": "The deceased applicant’s death certificate is not acceptable",
+        "labelFr": "Le certificat de décès de la personne décédée n’est pas acceptable"
+      },
+      {
+        "value": 564190002,
+        "labelEn": "The deceased applicant’s death certificate needs to be translated in English or French",
+        "labelFr": "Le certificat de décès de la personne décédée doit être traduit en français ou en anglais"
+      },
+      {
+        "value": 564190003,
+        "labelEn": "The deceased applicant’s death certificate was not scanned properly",
+        "labelFr": "Le certificat de décès de la personne décédée n'a pas été numérisé correctement"
+      },
+      {
+        "value": 564190004,
+        "labelEn": "The deceased applicant’s death certificate is damaged",
+        "labelFr": "Le certificat de décès de la personne décédée est endommagée"
+      },
+      {
+        "value": 564190005,
+        "labelEn": "The digital copy of the deceased applicant’s death certificate could not be opened",
+        "labelFr": "La copie numérique du certificat de décès de la personne décédée n'a pas pu être ouverte"
+      }
+    ]
+  },
+  {
+    "name": "esdc_prmdocumentptlglrrejectionreasons",
+    "parentOptionSetName": null,
+    "displayNameEn": "Prm Document PT/LG/LR Rejection Reasons",
+    "displayNameFr": "Motifs de rejet du représentant- document d’identité principal – parent/ tuteur légal/représentant légal",
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "The representative’s primary identity document was not provided",
+        "labelFr": "Le document d’identité principal du représentant n'a pas été fourni"
+      },
+      {
+        "value": 564190001,
+        "labelEn": "Both sides of the representative’s primary identity document were not provided",
+        "labelFr": "Les deux côtés du document d’identité principal du représentant n’ont pas été fournis"
+      },
+      {
+        "value": 564190002,
+        "labelEn": "The representative’s electronic Confirmation of Permanent Residence is not signed/dated by hand",
+        "labelFr": "La confirmation de résidence permanente électronique du représentant n’est pas signée/datée à la main"
+      },
+      {
+        "value": 564190003,
+        "labelEn": "The representative’s primary identity document is damaged",
+        "labelFr": "Le document d’identité principal du représentant est endommagé"
+      },
+      {
+        "value": 564190004,
+        "labelEn": "The representative’s primary identity document was not scanned properly",
+        "labelFr": "Le document d’identité principal du représentant n’a pas été numérisé correctement"
+      },
+      {
+        "value": 564190005,
+        "labelEn": "The representative’s primary identity document is damaged and only one side was provided",
+        "labelFr": "Le document d’identité principal du représentant est endommagé et un seul côté du document a été fourni"
+      },
+      {
+        "value": 564190006,
+        "labelEn": "The representative’s primary identity document is not acceptable",
+        "labelFr": "Le document d’identité principal du représentant n’est pas acceptable"
+      },
+      {
+        "value": 564190007,
+        "labelEn": "The representative’s primary identity document is expired",
+        "labelFr": "Le document d’identité principal du représentant est expiré"
+      },
+      {
+        "value": 564190008,
+        "labelEn": "The representative’s primary identity document was not a copy of an original document",
+        "labelFr": "Le document d’identité principal du représentant n’est pas une copie du document original"
+      },
+      {
+        "value": 564190009,
+        "labelEn": "The representative’s Québec birth certificate prior to 1994 is not acceptable",
+        "labelFr": "Un certificat de naissance du Québec émis avant 1994  n’est pas acceptable"
+      },
+      {
+        "value": 564190011,
+        "labelEn": "The representative’s work authorization letter was not provided with the diplomatic card",
+        "labelFr": "La lettre d'autorisation de travail du représentant n'a pas été fournie avec la carte diplomatique"
+      },
+      {
+        "value": 564190010,
+        "labelEn": "The digital copy of the representative’s primary identity document could not be opened",
+        "labelFr": "La copie numérique du document d’identité principal du représentant n’a pas pu être ouverte"
+      }
+    ]
+  },
+  {
+    "name": "esdc_guardianshipdocumentrejectionreasons",
+    "parentOptionSetName": null,
+    "displayNameEn": "Guardianship Document Rejection Reasons",
+    "displayNameFr": "Motifs de rejet du document du TL confirmant la tutelle légale",
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "The legal guardianship document was not provided",
+        "labelFr": "Le document confirmant la tutelle légale n'a pas été fourni"
+      },
+      {
+        "value": 564190001,
+        "labelEn": "The legal guardianship document is damaged",
+        "labelFr": "Le document confirmant la tutelle légale est endommagé"
+      },
+      {
+        "value": 564190002,
+        "labelEn": "The legal guardianship document is not acceptable",
+        "labelFr": "Le document confirmant la tutelle légale n’est pas acceptable"
+      },
+      {
+        "value": 564190003,
+        "labelEn": "The legal guardianship document was not scanned properly",
+        "labelFr": "Le document confirmant la tutelle légale n'a pas été numérisé correctement"
+      },
+      {
+        "value": 564190004,
+        "labelEn": "The digital copy of the legal guardianship document could not be opened",
+        "labelFr": "La copie numérique du document confirmant la tutelle légale n'a pas pu être ouverte"
+      }
+    ]
+  },
+  {
+    "name": "esdc_photoidentificationrejectionreasons",
+    "parentOptionSetName": null,
+    "displayNameEn": "LR's Identification Rejection Reasons",
+    "displayNameFr": "Motifs de rejet du représentant légal- pièce d’identité",
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "The representative’s photo identification was not provided",
+        "labelFr": "La pièce d’identité du représentant avec photo n’a pas été fournie"
+      },
+      {
+        "value": 564190001,
+        "labelEn": "The representative’s photo identification is not acceptable",
+        "labelFr": "La pièce d’identité du représentant avec photo n’est pas acceptable"
+      },
+      {
+        "value": 564190002,
+        "labelEn": "The representative’s photo identification was not scanned properly",
+        "labelFr": "La pièce d'identité du représentant avec photo n'a pas été numérisée correctement"
+      },
+      {
+        "value": 564190003,
+        "labelEn": "The representative’s photo identification is damaged",
+        "labelFr": "La pièce d’identité du représentant avec photo est endommagée"
+      },
+      {
+        "value": 564190004,
+        "labelEn": "The representative’s photo identification is expired",
+        "labelFr": "La pièce d’identité du représentant avec photo est expirée"
+      },
+      {
+        "value": 564190005,
+        "labelEn": "The digital copy of the representative’s photo identification could not be opened",
+        "labelFr": "La copie numérique de la pièce d’identité du représentant avec photo n'a pas pu être ouverte"
+      }
+    ]
+  },
+  {
+    "name": "esdc_lrconfirmingdocumentrejectionreasons",
+    "parentOptionSetName": null,
+    "displayNameEn": "LR Confirming Document Rejection Reasons",
+    "displayNameFr": "Motifs de rejet du représentant légal- le document légal confirmant la représentation légale",
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "The document confirming legal representation was not provided",
+        "labelFr": "Le document légal confirmant la représentation légale n’a pas été fourni"
+      },
+      {
+        "value": 564190001,
+        "labelEn": "The document confirming legal representation is not acceptable",
+        "labelFr": "Le document légal confirmant la représentation légale n’est pas acceptable"
+      },
+      {
+        "value": 564190002,
+        "labelEn": "The document confirming legal representation was not scanned properly",
+        "labelFr": "Le document légal confirmant la représentation légale n'a pas été numérisé correctement"
+      },
+      {
+        "value": 564190003,
+        "labelEn": "The document confirming legal representation is damaged",
+        "labelFr": "Le document légal confirmant la représentation légale est endommagé"
+      },
+      {
+        "value": 564190004,
+        "labelEn": "The digital copy of the document confirming legal representation could not be opened",
+        "labelFr": "La copie numérique du document légal confirmant la représentation légale n'a pas pu être ouverte"
+      }
+    ]
+  },
+  {
+    "name": "esdc_letterofauthorizationrejectionreasons",
+    "parentOptionSetName": null,
+    "displayNameEn": "Letter of Authorization Rejection Reasons",
+    "displayNameFr": "Motifs de rejet du représentant légal- la lettre d'autorisation délivrée sur du papier à en-tête de l’agence",
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "The Letter of Authorization issued by the Agency was not provided",
+        "labelFr": "La lettre d'autorisation délivrée sur du papier à en-tête de l'agence n’a pas été fournie"
+      },
+      {
+        "value": 564190001,
+        "labelEn": "The Letter of Authorization issued by the Agency is not acceptable",
+        "labelFr": "La lettre d'autorisation délivrée sur du papier à en-tête de l'agence n’est pas acceptable"
+      },
+      {
+        "value": 564190002,
+        "labelEn": "The Letter of Authorization issued by the Agency was not scanned properly",
+        "labelFr": "La lettre d'autorisation délivrée sur du papier à en-tête de l'agence n'a pas été numérisée correctement"
+      },
+      {
+        "value": 564190003,
+        "labelEn": "The Letter of Authorization issued by the Agency is damaged",
+        "labelFr": "La lettre d'autorisation délivrée sur du papier à en-tête de l'agence est endommagée"
+      },
+      {
+        "value": 564190004,
+        "labelEn": "The digital copy of the Letter of Authorization issued by the Agency could not be opened",
+        "labelFr": "La copie numérique de la lettre d'autorisation délivrée sur du papier à en-tête de l'agence n'a pas pu être ouverte"
+      }
+    ]
+  },
+  {
+    "name": "esdc_escalationagentregions",
+    "parentOptionSetName": null,
+    "displayNameEn": "Escalation Agent Regions",
+    "displayNameFr": null,
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "Atlantic",
+        "labelFr": "Atlantique"
+      },
+      {
+        "value": 564190001,
+        "labelEn": "Ontario",
+        "labelFr": "Ontario"
+      },
+      {
+        "value": 564190002,
+        "labelEn": "Quebec",
+        "labelFr": "Québec"
+      },
+      {
+        "value": 564190003,
+        "labelEn": "Western and Territories",
+        "labelFr": "l'Ouest canadien et territoires"
+      }
+    ]
+  },
+  {
+    "name": "esdc_sinissuedconfirmedmscaoption",
+    "parentOptionSetName": null,
+    "displayNameEn": "SIN Issued Confirmed MSCA Option",
+    "displayNameFr": null,
+    "options": [
+      {
+        "value": 564190012,
+        "labelEn": "Applicant is an individual residing outside of Canada with no legal status in Canada",
+        "labelFr": "Le demandeur est une personne résident à l’extérieur du Canada sans statut légal au Canada"
+      },
+      {
+        "value": 564190013,
+        "labelEn": "Applicant is an individual born outside of Canada who is registered under the Indian Act",
+        "labelFr": "Le demandeur est un individu née à l’extérieur du Canada qui est inscrit conformément à la loi sur les indiens"
+      },
+      {
+        "value": 564190000,
+        "labelEn": "Primary document is a Diplomatic ID Card",
+        "labelFr": "Le document principal est une carte d'identité diplomatique"
+      },
+      {
+        "value": 564190014,
+        "labelEn": "Primary document is a PR card with an with an 8-digit Identification number ",
+        "labelFr": "Document principal est une carte RP comportant un numéro d'identification à 8 chiffres"
+      },
+      {
+        "value": 564190015,
+        "labelEn": "Client’s SIN is processed with a different name or DOB than what is on the eSIN application (but the differing information matches the information on the applicant’s documents)",
+        "labelFr": "le NAS d'un client est traité avec un nom ou une date de naissance différents de ceux qui figurent sur la demande de NASe (mais que les informations qui diffèrent correspondent à celles qui figurent sur les documents du demandeur)."
+      },
+      {
+        "value": 564190016,
+        "labelEn": "Primary document is Citizenship Certificate that does not contain the UCI (issued prior to January 31, 2012)",
+        "labelFr": "Document principal est un certificat de citoyenneté qui ne contient pas l'UIC (délivré avant le 31 janvier 2012)."
+      },
+      {
+        "value": 564190001,
+        "labelEn": "Primary document Is an IRCC document and was not able to be validated",
+        "labelFr": "Le document principal est un document d'IRCC et n'a pas pu être validé"
+      },
+      {
+        "value": 564190002,
+        "labelEn": "No parent’s family name is registered on the SIN record",
+        "labelFr": "Aucun nom de famille de parent n'est enregistré dans le dossier du NAS"
+      },
+      {
+        "value": 564190003,
+        "labelEn": "Applicant's DOB contains 00 or XX or **",
+        "labelFr": "La DDN du demandeur contient 00 ou XX ou **"
+      },
+      {
+        "value": 564190010,
+        "labelEn": "Applicant does not have a Given Name",
+        "labelFr": "Le demandeur n'a pas de prénom"
+      },
+      {
+        "value": 564190004,
+        "labelEn": "Returned UCI on the SN008 is different than the UCI provided",
+        "labelFr": "Le IUC qui se trouve sur le SN008 est différent du UCI fourni"
+      },
+      {
+        "value": 564190005,
+        "labelEn": "Applicant whose ID number needs to be delinked or modified to process the application",
+        "labelFr": "Le demandeur dont le numéro d'ID doit être délié ou modifié pour traiter la demande"
+      },
+      {
+        "value": 564190006,
+        "labelEn": "Temporary resident whose document will expire within 1 month",
+        "labelFr": "Résident temporaire dont le document expire dans un délai d'un mois"
+      },
+      {
+        "value": 564190011,
+        "labelEn": "Temporary resident whose application is processed after their document has expired ",
+        "labelFr": "Résident temporaire dont la demande est traitée après l'expiration de son document"
+      },
+      {
+        "value": 564190008,
+        "labelEn": "Other Reason - Applicant not eligible for MSCA at all - Mail only - Confirmed by regional BE",
+        "labelFr": "Autre raison - Le demandeur n'est pas éligible à l'MDSC - Courrier uniquement - Confirmé par BE régional"
+      },
+      {
+        "value": 564190009,
+        "labelEn": "Other Reason - Will be mailed but can register with SIN - Confirmed by regional BE",
+        "labelFr": "Autre raison - Sera envoyé par la poste mais peut s'inscrire avec le NAS - Confirmé par le BE régional"
+      },
+      {
+        "value": 564190007,
+        "labelEn": "None of the above",
+        "labelFr": "Aucun des éléments ci-dessus"
+      }
+    ]
+  },
+  {
+    "name": "esdc_sinconfirmationreceivingmethod",
+    "parentOptionSetName": null,
+    "displayNameEn": "SIN Confirmation Receiving Method",
+    "displayNameFr": null,
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "Digitally by registering or signing into MSCA",
+        "labelFr": "Électroniquement en ouvrant une session ou en vous inscrivant à MDSC"
+      },
+      {
+        "value": 564190001,
+        "labelEn": "By mail",
+        "labelFr": "Par courrier"
+      },
+      {
+        "value": 564190002,
+        "labelEn": "By mail (not eligible for MSCA)",
+        "labelFr": "Par courrier (n’est pas eligible pour MDSC)"
+      }
+    ]
+  },
+  {
+    "name": "esdc_secondarydocumentsptlglrrejectionreasons",
+    "parentOptionSetName": null,
+    "displayNameEn": "Secondary Document PT/LG/LR Rejection Reasons",
+    "displayNameFr": "Motifs de rejet du représentant-  document secondaire- parent/ tuteur légal/représentant légal",
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "The representative’s secondary document was not provided",
+        "labelFr": "Le document secondaire du représentant n’a pas été fourni"
+      },
+      {
+        "value": 564190001,
+        "labelEn": "The representative’s secondary document is expired",
+        "labelFr": "Le document secondaire du représentant est expiré"
+      },
+      {
+        "value": 564190002,
+        "labelEn": "The representative’s secondary document is damaged",
+        "labelFr": "Le document secondaire du représentant est endommagé"
+      },
+      {
+        "value": 564190003,
+        "labelEn": "The representative’s secondary document was not scanned properly",
+        "labelFr": "Le document secondaire du représentant n’a pas été numérisé correctement"
+      },
+      {
+        "value": 564190005,
+        "labelEn": "The representative’s secondary document is not acceptable",
+        "labelFr": "Le document secondaire du représentant n’est pas acceptable"
+      },
+      {
+        "value": 564190006,
+        "labelEn": "The representative’s secondary document was not a digital copy of an original document",
+        "labelFr": "Le document secondaire du représentant n’est pas une copie numérique du document original"
+      },
+      {
+        "value": 564190004,
+        "labelEn": "The digital copy of the representative’s secondary document could not be opened",
+        "labelFr": "La copie numérique du document secondaire du représentant n’a pas pu être ouverte"
+      },
+      {
+        "value": 564190007,
+        "labelEn": "The date of birth on the representative’s secondary document does not match the one on their primary identity document",
+        "labelFr": "La date de naissance sur le document secondaire du représentant ne correspond pas à celle sur leur document d'identité principal"
+      }
+    ]
+  },
+  {
+    "name": "esdc_poaptlglrrejectionreasons",
+    "parentOptionSetName": null,
+    "displayNameEn": "PoA PT/LG/LR Rejection Reasons",
+    "displayNameFr": "Motifs de rejet du représentant-  preuve d’adresse- parent/ tuteur légal/représentant légal",
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "The representative’s proof of address was not provided",
+        "labelFr": "La preuve d’adresse du représentant n’a pas été fournie"
+      },
+      {
+        "value": 564190001,
+        "labelEn": "The representative’s proof of address is not acceptable",
+        "labelFr": "La preuve d’adresse du représentant n’est pas acceptable"
+      },
+      {
+        "value": 564190002,
+        "labelEn": "The representative’s proof of address did not include the full name",
+        "labelFr": "Le nom n’apparait pas sur la preuve d’adresse du représentant"
+      },
+      {
+        "value": 564190003,
+        "labelEn": "The representative’s proof of address did not match the address on application",
+        "labelFr": "La preuve d’adresse du représentant ne correspond pas à l'adresse sur la demande"
+      },
+      {
+        "value": 564190004,
+        "labelEn": "The representative’s proof of address needs to be translated in either French or English",
+        "labelFr": "La preuve d’adresse du représentant doit être traduite en anglais ou en français"
+      },
+      {
+        "value": 564190005,
+        "labelEn": "The Organization/Employer/Institution did not sign the representative’s proof of address letter",
+        "labelFr": "L'organisation/ l'employeur/l'institution n’a pas signé la lettre de preuve d'adresse du représentant"
+      },
+      {
+        "value": 564190006,
+        "labelEn": "The representative’s proof of address was not scanned properly",
+        "labelFr": "La preuve d’adresse du représentant n’a pas été numérisée correctement"
+      },
+      {
+        "value": 564190007,
+        "labelEn": "The representative’s envelope is not an acceptable proof of address",
+        "labelFr": "L'enveloppe du représentant n’est pas une preuve d'adresse acceptable"
+      },
+      {
+        "value": 564190009,
+        "labelEn": "The representative’s proof of address was not a digital copy of an original document",
+        "labelFr": "La preuve d’adresse du représentant n’est pas une copie numérique du document original"
+      },
+      {
+        "value": 564190008,
+        "labelEn": "The digital copy of the representative’s proof of address could not be opened",
+        "labelFr": "La copie numérique de la preuve d’adresse du représentant n'a pas pu être ouverte"
+      }
+    ]
+  },
+  {
+    "name": "esdc_suppdocumentsptlglrrejectionreasons",
+    "parentOptionSetName": null,
+    "displayNameEn": "Supporting Document PT/LG/LR Rejection Reasons",
+    "displayNameFr": "Motifs de rejet du représentant-  pièce justificative- parent/ tuteur légal/représentant légal",
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "The representative’s supporting document was not provided",
+        "labelFr": "La pièce justificative du représentant n'a pas été fournie"
+      },
+      {
+        "value": 564190001,
+        "labelEn": "The representative’s supporting document is not acceptable",
+        "labelFr": "La pièce justificative du représentant n’est pas acceptable"
+      },
+      {
+        "value": 564190002,
+        "labelEn": "The representative’s supporting document is damaged",
+        "labelFr": "La pièce justificative du représentant est endommagée"
+      },
+      {
+        "value": 564190003,
+        "labelEn": "The representative’s supporting document needs to be translated in either English or French",
+        "labelFr": "La pièce justificative du représentant doit être traduite en français ou en anglais"
+      },
+      {
+        "value": 564190004,
+        "labelEn": "The representative’s supporting document was not scanned properly",
+        "labelFr": "La pièce justificative du représentant n'a pas été numérisée correctement"
+      },
+      {
+        "value": 564190006,
+        "labelEn": "The representative's supporting document was not a digital copy of an original document",
+        "labelFr": "La pièce justificative du représentant n'est pas une copie numérique du document original"
+      },
+      {
+        "value": 564190005,
+        "labelEn": "The digital copy of the  representative’s supporting document could not be opened",
+        "labelFr": "La copie numérique de la pièce justificative du représentant n'a pas pu être ouverte"
+      }
+    ]
+  },
+  {
+    "name": "esdc_parentalinformationrejectionreasons",
+    "parentOptionSetName": null,
+    "displayNameEn": "Parental Information Rejection Reasons",
+    "displayNameFr": "Motifs de rejet du demandeur- les informations parentales n’ont pas été fournies",
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "The applicant’s parent name(s) were not provided on the application",
+        "labelFr": "Les nom(s) des parents du demandeur n’ont pas été fournis sur la demande"
+      },
+      {
+        "value": 564190001,
+        "labelEn": "Some parts of the application were in non-Latin characters",
+        "labelFr": "Certaines parties de la demande étaient en caractères non latins"
+      },
+      {
+        "value": 564190002,
+        "labelEn": "The individual that certified the application was not the applicant",
+        "labelFr": "La personne qui a certifié la demande n’était pas le demandeur"
+      }
+    ]
+  },
+  {
+    "name": "esdc_trusteeapplicationtypes",
+    "parentOptionSetName": null,
+    "displayNameEn": "Trustee Application Types",
+    "displayNameFr": null,
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "Confirmation of SIN",
+        "labelFr": "Confirmation de NAS"
+      },
+      {
+        "value": 564190001,
+        "labelEn": "Additional data elements from the Social Insurance Registry",
+        "labelFr": "Éléments de données supplémentaires du Registre d'assurance sociale"
+      }
+    ]
+  },
+  {
+    "name": "esdc_sindataelements",
+    "parentOptionSetName": null,
+    "displayNameEn": "SIN Data Elements",
+    "displayNameFr": null,
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "Status in Canada",
+        "labelFr": null
+      },
+      {
+        "value": 564190001,
+        "labelEn": "Address",
+        "labelFr": null
+      },
+      {
+        "value": 564190002,
+        "labelEn": "Place of Birth",
+        "labelFr": null
+      },
+      {
+        "value": 564190003,
+        "labelEn": "Birth Registration Number / Unique Client Identifier",
+        "labelFr": null
+      },
+      {
+        "value": 564190004,
+        "labelEn": "Gender",
+        "labelFr": null
+      },
+      {
+        "value": 564190005,
+        "labelEn": "Twin, triplet, etc.",
+        "labelFr": null
+      },
+      {
+        "value": 564190006,
+        "labelEn": "Parent(s) Name(s)",
+        "labelFr": null
+      },
+      {
+        "value": 564190007,
+        "labelEn": "Telephone Number",
+        "labelFr": null
+      },
+      {
+        "value": 564190008,
+        "labelEn": "Applicant's Family Name at Birth",
+        "labelFr": null
+      },
+      {
+        "value": 564190009,
+        "labelEn": "All available data elements",
+        "labelFr": null
+      }
+    ]
+  },
+  {
+    "name": "esdc_incompletecasereason",
+    "parentOptionSetName": null,
+    "displayNameEn": "Incomplete Case Reason",
+    "displayNameFr": null,
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "Incomplete Case",
+        "labelFr": null
+      },
+      {
+        "value": 564190001,
+        "labelEn": "Logically Delete",
+        "labelFr": null
+      }
+    ]
+  },
+  {
+    "name": "esdc_ptcasedeactivatestatus",
+    "parentOptionSetName": null,
+    "displayNameEn": "PT Case Deactivate Status",
+    "displayNameFr": null,
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "SIN Issued",
+        "labelFr": "NAS émis"
+      },
+      {
+        "value": 564190001,
+        "labelEn": "SIN Confirmed",
+        "labelFr": "NAS confirmé"
+      },
+      {
+        "value": 564190005,
+        "labelEn": "SIN Confirmed and Additional Data Elements Provided",
+        "labelFr": "NAS confirmé et éléments de données supplémentaires fournis"
+      },
+      {
+        "value": 564190002,
+        "labelEn": "Additional Data Elements Provided",
+        "labelFr": "Éléments de données supplémentaires fournis"
+      },
+      {
+        "value": 564190003,
+        "labelEn": "Unable to Positively Identify the Individual",
+        "labelFr": "Incapable d'identifier positivement l'individu"
+      },
+      {
+        "value": 564190004,
+        "labelEn": "Mandatory Requirement(s) not met",
+        "labelFr": "Exigence(s) obligatoire(s) non satisfaite(s)"
+      },
+      {
+        "value": 564190006,
+        "labelEn": "Duplicates",
+        "labelFr": "Duplicatas"
+      },
+      {
+        "value": 564190007,
+        "labelEn": "Update required in the SIR",
+        "labelFr": "Mise à jour requise dans le RAS"
+      },
+      {
+        "value": 564190008,
+        "labelEn": "Limit exceeded",
+        "labelFr": "Limite dépassée"
+      },
+      {
+        "value": 564190009,
+        "labelEn": "Pending - BESS",
+        "labelFr": "En attente- SSEO"
+      },
+      {
+        "value": 564190010,
+        "labelEn": "Escalate to Tier II SIN",
+        "labelFr": "Acheminé au NAS niveau II"
+      }
+    ]
+  },
+  {
+    "name": "esdc_csmandatorynotmetintakestatus",
+    "parentOptionSetName": null,
+    "displayNameEn": "CS - Mandatory Not Met Intake Status",
+    "displayNameFr": null,
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "Primary Identity Document",
+        "labelFr": "Document d'identité principal"
+      },
+      {
+        "value": 564190001,
+        "labelEn": "Supporting Document",
+        "labelFr": "Pièce justificative"
+      },
+      {
+        "value": 564190002,
+        "labelEn": "Attestation of Legal Authority",
+        "labelFr": "L'attestation de l'autorité légale"
+      }
+    ]
+  },
+  {
+    "name": "esdc_csprimarydocnotmetreasons",
+    "parentOptionSetName": null,
+    "displayNameEn": "CS - Primary Doc Not Met Reasons",
+    "displayNameFr": null,
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "The primary identity document was not provided.",
+        "labelFr": "Le document d'identité principal n'a pas été fourni."
+      },
+      {
+        "value": 564190001,
+        "labelEn": "The primary identity document is not an acceptable document.",
+        "labelFr": "Le document d'identité principal fourni n'est pas un document acceptable. "
+      },
+      {
+        "value": 564190002,
+        "labelEn": "The primary identity document is illegible.",
+        "labelFr": "Le document d'identité principale est illisible."
+      },
+      {
+        "value": 564190003,
+        "labelEn": "The primary identity document is expired.",
+        "labelFr": "Le document d'identité principal est expiré."
+      },
+      {
+        "value": 564190004,
+        "labelEn": "The primary identity document could not be validated. Please contact the Vital Statistics Office or Immigration, Refugees and Citizenship Canada to resolve the issue.",
+        "labelFr": "Le document d'identité principal n’a pas pu être validé.   Veuillez communiquer avec le Bureau de statistiques de l'état civil ou avec Immigration, Réfugiés et Citoyenneté Canada pour résoudre le problème."
+      },
+      {
+        "value": 564190005,
+        "labelEn": "Both sides of the primary identity document were not provided.",
+        "labelFr": "Les deux côtés du document d'identité principal n'ont pas été fournis."
+      }
+    ]
+  },
+  {
+    "name": "esdc_cssupportingdocnotmetreasons",
+    "parentOptionSetName": null,
+    "displayNameEn": "CS - Supporting Doc Not Met Reasons",
+    "displayNameFr": null,
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "The supporting document was not provided.",
+        "labelFr": "La pièce justificative n'a pas été fournie."
+      },
+      {
+        "value": 564190001,
+        "labelEn": "The supporting document is not an acceptable document.",
+        "labelFr": "La pièce justificative n’est pas acceptable."
+      },
+      {
+        "value": 564190002,
+        "labelEn": "The supporting document is illegible.",
+        "labelFr": "La pièce justificative est illisible."
+      }
+    ]
+  },
+  {
+    "name": "esdc_registermoreparentchoices",
+    "parentOptionSetName": null,
+    "displayNameEn": "Register more parent choices",
+    "displayNameFr": "Choix d'enregistrer plus de un parent",
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "I wish to register one more parent",
+        "labelFr": "Je veux enregistrer un autre parent"
+      },
+      {
+        "value": 564190001,
+        "labelEn": "I wish to register 2 more parents",
+        "labelFr": "Je veux enregistrer 2 autres parents"
+      }
+    ]
+  },
+  {
+    "name": "esdc_internalurgency",
+    "parentOptionSetName": null,
+    "displayNameEn": "Internal Urgency",
+    "displayNameFr": "Urgence Interne",
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "Normal",
+        "labelFr": "Normal"
+      },
+      {
+        "value": 564190001,
+        "labelEn": "Urgent",
+        "labelFr": "Urgent"
+      }
+    ]
+  },
+  {
+    "name": "esdc_coprtraveldocumentchoice",
+    "parentOptionSetName": null,
+    "displayNameEn": "COPR Travel Document Choice",
+    "displayNameFr": "Choix du document de la Confirmation de résidence permanente",
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "a valid travel document (for example, a foreign passport)",
+        "labelFr": "Un document de voyage valide (par exemple, un passeport étranger)"
+      },
+      {
+        "value": 564190001,
+        "labelEn": "a valid photo identification issued by a provincial or territorial authority (for example, a driver’s license)",
+        "labelFr": "Une pièce d'identité valide avec photo délivrée par une autorité provinciale ou territoriale (par exemple, un permis de conduire)"
+      }
+    ]
+  },
+  {
+    "name": "esdc_reasonforpriorityrequest",
+    "parentOptionSetName": null,
+    "displayNameEn": "Reason for Priority Request",
+    "displayNameFr": "Raison de la demande prioritaire",
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "Document about to expire",
+        "labelFr": "Document sur le point d'expirer"
+      },
+      {
+        "value": 564190001,
+        "labelEn": "Employment",
+        "labelFr": "Emploi"
+      },
+      {
+        "value": 564190002,
+        "labelEn": "Financial Assistance",
+        "labelFr": "Assistance financière"
+      },
+      {
+        "value": 564190003,
+        "labelEn": "Less than 2 documents",
+        "labelFr": "Moins de 2 documents"
+      }
+    ]
+  },
+  {
+    "name": "esdc_csattestationnotmetreasons",
+    "parentOptionSetName": null,
+    "displayNameEn": "CS - Attestation Not Met Reasons",
+    "displayNameFr": null,
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "The wrong template of the attestation of legal authority was provided.",
+        "labelFr": "Le mauvais gabarit de l’attestation de l'autorité légale a été utilisé."
+      },
+      {
+        "value": 564190001,
+        "labelEn": "The name of the employee on the attestation of legal authority does not match the name of the requestor on the application.",
+        "labelFr": "Le nom de l'employé sur l'attestation de l'autorité légale ne correspond pas au nom du demandeur sur la demande."
+      },
+      {
+        "value": 564190002,
+        "labelEn": "The client’s name or date of birth on the attestation of legal authority is different from the application.",
+        "labelFr": "Le nom ou la date de naissance du client sur l'attestation de l'autorité légale est différent de celui dans la demande."
+      },
+      {
+        "value": 564190003,
+        "labelEn": "The requestor’s signature is missing or unacceptable on the attestation of legal authority.",
+        "labelFr": "La signature du demandeur sur l'attestation de l'autorité légale est manquante ou n'est pas acceptable."
+      },
+      {
+        "value": 564190004,
+        "labelEn": "One or more sections of the attestation of legal authority are incomplete.",
+        "labelFr": "Une ou plusieurs sections sont incomplètes dans l’attestation de l'autorité légale."
+      }
+    ]
+  },
+  {
+    "name": "esdc_closecasesinraotions",
+    "parentOptionSetName": null,
+    "displayNameEn": "Close Case SINRA Options",
+    "displayNameFr": null,
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "By Mail",
+        "labelFr": "Par courrier"
+      },
+      {
+        "value": 564190001,
+        "labelEn": "Digital only",
+        "labelFr": "Par voie électronique"
+      }
+    ]
+  },
+  {
+    "name": "esdc_childrenservicerequesttype",
+    "parentOptionSetName": null,
+    "displayNameEn": "Children Service Request Type",
+    "displayNameFr": null,
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "First Time SIN",
+        "labelFr": "Première demande de NAS"
+      },
+      {
+        "value": 564190001,
+        "labelEn": "Confirmation of SIN",
+        "labelFr": "Confirmation de NAS"
+      }
+    ]
+  },
+  {
+    "name": "esdc_sinissuedconfirmagenttype",
+    "parentOptionSetName": null,
+    "displayNameEn": "SIN Issued Confirm Agent Type",
+    "displayNameFr": null,
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "CSB",
+        "labelFr": null
+      },
+      {
+        "value": 564190001,
+        "labelEn": "SIN-SIR",
+        "labelFr": null
+      }
+    ]
+  },
+  {
+    "name": "esdc_typeofapplicationtosubmit",
+    "parentOptionSetName": null,
+    "displayNameEn": "Type of application to submit",
+    "displayNameFr": "Type d'application a soumettre",
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "Request a first Social Insurance Number",
+        "labelFr": "Première demande de numéro d’assurance sociale (NAS)"
+      },
+      {
+        "value": 564190001,
+        "labelEn": "Update or correct a SIN record",
+        "labelFr": "Mise à jour ou correction du dossier de NAS"
+      },
+      {
+        "value": 564190002,
+        "labelEn": "Request the confirmation of an existing SIN",
+        "labelFr": "Confirmation de NAS"
+      },
+      {
+        "value": 564190003,
+        "labelEn": "Register a legal change of name",
+        "labelFr": "Changement de nom légal"
+      },
+      {
+        "value": 564190004,
+        "labelEn": "Change the status on a SIN record",
+        "labelFr": "Changement de statut"
+      },
+      {
+        "value": 564190005,
+        "labelEn": "Extend the expiry date of a 900-series SIN",
+        "labelFr": "Changement de date d’expiration (NAS série 900)"
+      },
+      {
+        "value": 564190006,
+        "labelEn": "Other",
+        "labelFr": "Autre"
+      }
+    ]
+  },
+  {
+    "name": "esdc_applicantgender",
+    "parentOptionSetName": null,
+    "displayNameEn": "Applicant gender",
+    "displayNameFr": "Genre du demandeur",
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "Female",
+        "labelFr": "Femme"
+      },
+      {
+        "value": 564190001,
+        "labelEn": "Male",
+        "labelFr": "Homme"
+      },
+      {
+        "value": 564190002,
+        "labelEn": "X",
+        "labelFr": "X"
+      }
+    ]
+  },
+  {
+    "name": "esdc_applicationsubmissionscenarios",
+    "parentOptionSetName": null,
+    "displayNameEn": "Application submission scenarios",
+    "displayNameFr": "Scénarios de soumission des demandes",
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "You are applying for yourself",
+        "labelFr": "Vous présentez une demande pour vous-même."
+      },
+      {
+        "value": 564190001,
+        "labelEn": "You are a parent applying on behalf of a minor or dependent adult",
+        "labelFr": "Vous êtes un parent qui présente une demande au nom d'un mineur ou d'un adulte à charge."
+      },
+      {
+        "value": 564190002,
+        "labelEn": "You are a legal guardian applying on behalf of a minor or dependent adult",
+        "labelFr": "Vous êtes un tuteur légal qui présente une demande au nom d'un mineur ou d'un adulte à charge."
+      },
+      {
+        "value": 564190003,
+        "labelEn": "You are a legal representative (court-appointed lawyer or individual) applying on behalf of someone else",
+        "labelFr": "Vous êtes un représentant légal (avocat ou personne désignée par un tribunal) qui présente une demande au nom d'une autre personne."
+      },
+      {
+        "value": 564190004,
+        "labelEn": "You are a provincial/territorial employee applying on behalf of someone for whom you have legal authority",
+        "labelFr": "Vous êtes un employé provincial/territorial qui présente une demande au nom d'une personne pour laquelle vous avez une autorité légale."
+      },
+      {
+        "value": 564190005,
+        "labelEn": "You are a legal representative of an estate requesting a confirmation of SIN for a deceased person",
+        "labelFr": "Vous êtes le représentant légal d'une succession et vous voulez obtenir la confirmation du NAS d'une personne décédée."
+      }
+    ]
+  },
+  {
+    "name": "esdc_applicantprimarydocumentchoices",
+    "parentOptionSetName": null,
+    "displayNameEn": "Applicant Primary Document Choices",
+    "displayNameFr": "Choix de document d'identité principal du demandeur",
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "Birth Certificate issued by the vital statistics agency in the province or territory of birth",
+        "labelFr": "Certificat de naissance délivré par le bureau de l'état civil de la province ou du territoire de votre naissance"
+      },
+      {
+        "value": 564190001,
+        "labelEn": "Certificate of Canadian Citizenship issued by IRCC or CIC",
+        "labelFr": "Certificat de citoyenneté canadienne émis par IRCC ou CIC"
+      },
+      {
+        "value": 564190002,
+        "labelEn": "Certificate of Registration of Birth Abroad issued by CIC before 1977",
+        "labelFr": "Certificat d'inscription d'une naissance à l'étranger émis par IRCC avant 1977"
+      },
+      {
+        "value": 564190003,
+        "labelEn": "Permanent Resident card issued by IRCC or CIC",
+        "labelFr": "Carte de résident permanent délivrée par IRCC ou CIC"
+      },
+      {
+        "value": 564190004,
+        "labelEn": "Confirmation of Permanent Residence (COPR) issued by IRCC",
+        "labelFr": "Confirmation de résidence permanente (CORP) délivrée par IRCC"
+      },
+      {
+        "value": 564190005,
+        "labelEn": "Record of Landing issued by CIC before June 28, 2002",
+        "labelFr": "Fiche d’atterrissage délivrée par IRCC ou CIC"
+      },
+      {
+        "value": 564190006,
+        "labelEn": "Verification of Landing issued by IRCC or CIC",
+        "labelFr": "Vérification de l’atterrissage délivrée par IRCC ou CIC"
+      },
+      {
+        "value": 564190007,
+        "labelEn": "Status Verification issued by IRCC or CIC",
+        "labelFr": "Vérification du statut délivrée par l’IRCC ou le CIC"
+      },
+      {
+        "value": 564190008,
+        "labelEn": "Work permit issued by IRCC",
+        "labelFr": "Permis de travail délivrée par l'IRCC "
+      },
+      {
+        "value": 564190009,
+        "labelEn": "Study permit issued by IRCC which indicates the permit holder \"may accept employment\" or \"may work\" in Canada",
+        "labelFr": "Permis d'études émis par IRCC qui indique que le titulaire du permis « peut accepter un emploi\" ou \"peut travailler\" au Canada"
+      },
+      {
+        "value": 564190010,
+        "labelEn": "Visitor record issued by IRCC showing that you are authorized to work in Canada",
+        "labelFr": "Fiche de visiteur délivrée par IRCC montrant que vous êtes autorisé à travailler au Canada"
+      },
+      {
+        "value": 564190011,
+        "labelEn": "Diplomatic identity card and a work authorization issued by Department of Foreign Affairs, Trade and Development",
+        "labelFr": "Carte d'identité diplomatique et autorisation de travail délivrée par le ministère des Affaires étrangères, du Commerce et du Développement."
+      }
+    ]
+  },
+  {
+    "name": "esdc_internalsincaseabandonreason",
+    "parentOptionSetName": null,
+    "displayNameEn": "SIN Case Abandon Reasons",
+    "displayNameFr": "Raison d'abandon de la demande NAS",
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "Duplicate",
+        "labelFr": "Duplicata"
+      },
+      {
+        "value": 564190001,
+        "labelEn": "Rejects other than Missing Documentations",
+        "labelFr": "Rejets autre que document manquant"
+      },
+      {
+        "value": 564190002,
+        "labelEn": "Dormant SIN Questionnaire Sent",
+        "labelFr": "Questionnaire sur le NAS dormant envoyé"
+      },
+      {
+        "value": 564190003,
+        "labelEn": "In-person - Duplicate",
+        "labelFr": "Duplicata, En personne"
+      },
+      {
+        "value": 564190004,
+        "labelEn": "Mail - Duplicate",
+        "labelFr": "Duplicata, Courrier"
+      }
+    ]
+  },
+  {
+    "name": "esdc_internalmissingdocsincaseclosereason",
+    "parentOptionSetName": null,
+    "displayNameEn": "Missing Documentation Case Close Reasons",
+    "displayNameFr": "Documentation manquante Raisons de la fermeture du dossier",
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "Applicant- Primary identity document",
+        "labelFr": "Demandeur - Document principale d'identification"
+      },
+      {
+        "value": 564190001,
+        "labelEn": "Applicant- Secondary document",
+        "labelFr": "Demandeur - Document secondaire"
+      },
+      {
+        "value": 564190002,
+        "labelEn": "Applicant- Proof of address",
+        "labelFr": "Demandeur - Preuve d'adresse"
+      },
+      {
+        "value": 564190003,
+        "labelEn": "Applicant- Supporting document",
+        "labelFr": "Demandeur - Pièce justificative"
+      },
+      {
+        "value": 564190004,
+        "labelEn": "Applicant- Parental Information not provided",
+        "labelFr": "Demandeur - Les informations parentales n’ont pas été fournies"
+      },
+      {
+        "value": 564190009,
+        "labelEn": "Applicant- Deceased applicant’s death certificate",
+        "labelFr": "Demandeur - Certificat de décès du demandeur décédé"
+      },
+      {
+        "value": 564190005,
+        "labelEn": "Representative- Primary Identity Document – Parent/Legal Guardian/Legal Representative",
+        "labelFr": "Représentant- Document d’identité principal – parent/ tuteur légal/représentant légal"
+      },
+      {
+        "value": 564190006,
+        "labelEn": "Representative- Secondary Document- Parent/Legal Guardian/Legal Representative",
+        "labelFr": "Représentant- Document secondaire- Parent/tuteur légal/représentant légal"
+      },
+      {
+        "value": 564190007,
+        "labelEn": "Representative- Proof of address- Parent/Legal Guardian/Legal Representative",
+        "labelFr": "Représentant- Preuve d'adresse- Parent/tuteur légal/représentant légal"
+      },
+      {
+        "value": 564190008,
+        "labelEn": "Representative- Supporting document- Parent/Legal Guardian/Legal Representative",
+        "labelFr": "Représentant-  Pièce justificative- parent/ tuteur légal/représentant légal"
+      },
+      {
+        "value": 564190010,
+        "labelEn": "Legal Guardian’s guardianship document",
+        "labelFr": "Document de tutelle du tuteur légal"
+      },
+      {
+        "value": 564190011,
+        "labelEn": "Legal Representative’s identification",
+        "labelFr": "Identification du représentant légal"
+      },
+      {
+        "value": 564190012,
+        "labelEn": "Legal Representative’s document confirming legal representation",
+        "labelFr": "Document du représentant légal confirmant la représentation légale"
+      },
+      {
+        "value": 564190013,
+        "labelEn": "Legal Representative’s Letter of Authorization issued by the Agency",
+        "labelFr": "Lettre d'autorisation du représentant légal délivrée par l'Agence"
+      },
+      {
+        "value": 564190014,
+        "labelEn": "Other",
+        "labelFr": "Autre"
+      }
+    ]
+  },
+  {
+    "name": "esdc_applicantsexatbirth",
+    "parentOptionSetName": null,
+    "displayNameEn": "Applicant Sex At Birth",
+    "displayNameFr": null,
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "Female",
+        "labelFr": null
+      },
+      {
+        "value": 564190001,
+        "labelEn": "Male",
+        "labelFr": null
+      }
+    ]
+  },
+  {
+    "name": "esdc_sincaseintakechannel",
+    "parentOptionSetName": null,
+    "displayNameEn": "SIN Case Intake Channel",
+    "displayNameFr": null,
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "In Person (FSIR)",
+        "labelFr": null
+      },
+      {
+        "value": 564190001,
+        "labelEn": "SIN@Entry",
+        "labelFr": null
+      },
+      {
+        "value": 564190002,
+        "labelEn": "By Mail",
+        "labelFr": null
+      },
+      {
+        "value": 564190003,
+        "labelEn": "Online Portal",
+        "labelFr": null
+      }
+    ]
+  },
+  {
+    "name": "esdc_sinflags",
+    "parentOptionSetName": null,
+    "displayNameEn": " SIN Flags",
+    "displayNameFr": "Indicateur de NAS",
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "Dormant - EI",
+        "labelFr": "Dormant-AE"
+      },
+      {
+        "value": 564190001,
+        "labelEn": "Dormant - CSLP",
+        "labelFr": "Dormant - PCPE"
+      },
+      {
+        "value": 564190002,
+        "labelEn": "Dormant Other",
+        "labelFr": "Dormant-autre"
+      },
+      {
+        "value": 564190004,
+        "labelEn": "Deceased ",
+        "labelFr": "Décédé"
+      },
+      {
+        "value": 564190005,
+        "labelEn": "Frozen ",
+        "labelFr": "Gelé"
+      },
+      {
+        "value": 564190006,
+        "labelEn": "Fraud",
+        "labelFr": "Fraude"
+      },
+      {
+        "value": 564190007,
+        "labelEn": "Other",
+        "labelFr": "Autre"
+      }
+    ]
+  },
+  {
+    "name": "esdc_sinintakestatus",
+    "parentOptionSetName": null,
+    "displayNameEn": "SIN Intake Status",
+    "displayNameFr": "Statut des dossiers de NAS",
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "Abandoned ",
+        "labelFr": "Abandonné"
+      },
+      {
+        "value": 564190001,
+        "labelEn": "Escalation to Investigation",
+        "labelFr": "Acheminé aux opérations d’intégrité"
+      },
+      {
+        "value": 564190002,
+        "labelEn": "Escalation to Tier II SIN",
+        "labelFr": "Acheminé au NAS niveau II"
+      },
+      {
+        "value": 564190004,
+        "labelEn": "Closed – SIN Issued/ Confirmed",
+        "labelFr": "Fermé - NAS émis/ confirmé"
+      },
+      {
+        "value": 564190006,
+        "labelEn": "Closed – SIN Issued / Confirmed – MSCA – SIN only",
+        "labelFr": "Fermé – NAS émis / confirmé – MDSC – NAS seulement"
+      },
+      {
+        "value": 564190005,
+        "labelEn": "Closed – Missing documentation/Information",
+        "labelFr": "Fermé - Documents/ renseignements manquants"
+      },
+      {
+        "value": 100000000,
+        "labelEn": "Closed - Rejected by SIN/SIR-ACS Letter sent",
+        "labelFr": "Fermé – Rejeté par NAS/RAS – Lettre SCA envoyé"
+      },
+      {
+        "value": 564190007,
+        "labelEn": "Closed – Less than 2 documents displayed",
+        "labelFr": "Fermé – moins de deux documents affichés"
+      },
+      {
+        "value": 564190003,
+        "labelEn": "Pending",
+        "labelFr": "En attente"
+      }
+    ]
+  },
+  {
+    "name": "esdc_didtheapplicanteverhadasinnumber",
+    "parentOptionSetName": null,
+    "displayNameEn": "Did the Applicant Ever Had a SIN Number? ",
+    "displayNameFr": "Le demandeur a-t-il déjà eu un numéro d'assurance sociale?",
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "Yes",
+        "labelFr": "Oui"
+      },
+      {
+        "value": 564190001,
+        "labelEn": "No",
+        "labelFr": "Non"
+      },
+      {
+        "value": 564190002,
+        "labelEn": "Unknown (Don't Recall)",
+        "labelFr": "Inconnu"
+      }
+    ]
+  },
+  {
+    "name": "esdc_applicantstatusincanada",
+    "parentOptionSetName": null,
+    "displayNameEn": "Applicant Status in Canada",
+    "displayNameFr": "Statut du demandeur au Canada ",
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "Canadian Citizen",
+        "labelFr": "Citoyen canadien"
+      },
+      {
+        "value": 564190001,
+        "labelEn": "Registered Indian",
+        "labelFr": "Indien inscrit"
+      },
+      {
+        "value": 564190002,
+        "labelEn": "Permanent Resident ",
+        "labelFr": "Résident permanent"
+      },
+      {
+        "value": 564190003,
+        "labelEn": "Temporary Resident",
+        "labelFr": "Résident temporaire"
+      },
+      {
+        "value": 564190004,
+        "labelEn": "Other",
+        "labelFr": "Autre"
+      },
+      {
+        "value": 564190005,
+        "labelEn": "Individual residing outside Canada with no legal status in Canada",
+        "labelFr": "Personne résidant à l'extérieur du Canada et n'ayant aucun statut légal au Canada"
+      },
+      {
+        "value": 564190007,
+        "labelEn": "Individual born outside Canada who is registered under the Indian Act",
+        "labelFr": "Individu née à l'extérieur du Canada qui est incrit conformément à la loi sur les Indiens"
+      },
+      {
+        "value": 564190006,
+        "labelEn": "None of the above",
+        "labelFr": "Aucun de ces choix"
+      }
+    ]
+  },
+  {
+    "name": "esdc_officesize",
+    "parentOptionSetName": null,
+    "displayNameEn": "Office Size",
+    "displayNameFr": null,
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "Small",
+        "labelFr": "Petit"
+      },
+      {
+        "value": 564190001,
+        "labelEn": "Medium",
+        "labelFr": "Moyen"
+      },
+      {
+        "value": 564190002,
+        "labelEn": "Large",
+        "labelFr": "Grand"
+      },
+      {
+        "value": 564190003,
+        "labelEn": "Extra-Large",
+        "labelFr": "Extra-Grand"
+      },
+      {
+        "value": 564190004,
+        "labelEn": "Extra-Extra-Large",
+        "labelFr": "Extra-Extra-Grand"
+      },
+      {
+        "value": 564190005,
+        "labelEn": "N/A",
+        "labelFr": "N/A"
+      }
+    ]
+  },
+  {
+    "name": "esdc_closedmissingdocumentation",
+    "parentOptionSetName": null,
+    "displayNameEn": "Closed – Missing documentation",
+    "displayNameFr": null,
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "Primary Identity Document (PID)",
+        "labelFr": null
+      },
+      {
+        "value": 564190001,
+        "labelEn": "Secondary Document",
+        "labelFr": null
+      },
+      {
+        "value": 564190002,
+        "labelEn": "Proof of address",
+        "labelFr": null
+      },
+      {
+        "value": 564190003,
+        "labelEn": "Supporting documentation",
+        "labelFr": null
+      },
+      {
+        "value": 564190004,
+        "labelEn": "Other",
+        "labelFr": null
+      }
+    ]
+  },
+  {
+    "name": "esdc_relationshipofreptoapplicant",
+    "parentOptionSetName": null,
+    "displayNameEn": "Relationship of Rep to Applicant ",
+    "displayNameFr": null,
+    "options": [
+      {
+        "value": 564190000,
+        "labelEn": "Parent",
+        "labelFr": "Parent"
+      },
+      {
+        "value": 564190001,
+        "labelEn": "Legal Guardian",
+        "labelFr": "Tuteur légal"
+      },
+      {
+        "value": 564190002,
+        "labelEn": "Legal Representative",
+        "labelFr": "Représentant légal"
+      }
+    ]
+  }
+]

@@ -17,6 +17,7 @@ export const ErrorCodes = {
 
   // i18n error codes
   NO_LANGUAGE_FOUND: 'I18N-0001',
+  MISSING_TRANSLATION_KEY: 'I18N-0002',
 
   // instance error codes
   NO_FACTORY_PROVIDED: 'INST-0001',
@@ -34,6 +35,9 @@ export const ErrorCodes = {
   // dev-only error codes
   TEST_ERROR_CODE: 'DEV-0001',
 
-  // i18n error codes
-  MISSING_TRANSLATION_KEY: 'I18N-0001',
+  // service error codes
+  NO_OPTION_SET_FOUND: 'SVC-0001',
+  NO_COUNTRY_FOUND: 'SVC-0002',
+  NO_PROVINCE_FOUND: 'SVC-0003',
+  NO_GENDER_FOUND: 'SVC-0004',
 } as const;

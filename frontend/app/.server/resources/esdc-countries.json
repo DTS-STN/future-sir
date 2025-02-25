@@ -1,0 +1,1423 @@
+[
+  {
+    "id": "f8914e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "CA",
+    "name": "Canada|Canada",
+    "nameEn": "Canada",
+    "nameFr": "Canada"
+  },
+  {
+    "id": "fa914e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "US",
+    "name": "United States|États-Unis d'Amérique",
+    "nameEn": "United States",
+    "nameFr": "États-Unis d'Amérique"
+  },
+  {
+    "id": "fc914e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "AF",
+    "name": "Afghanistan|Afghanistan",
+    "nameEn": "Afghanistan",
+    "nameFr": "Afghanistan"
+  },
+  {
+    "id": "fe914e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "AL",
+    "name": "Albania|Albanie",
+    "nameEn": "Albania",
+    "nameFr": "Albanie"
+  },
+  {
+    "id": "00924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "DZ",
+    "name": "Algeria|Algérie",
+    "nameEn": "Algeria",
+    "nameFr": "Algérie"
+  },
+  {
+    "id": "02924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "AD",
+    "name": "Andorra|Andorre",
+    "nameEn": "Andorra",
+    "nameFr": "Andorre"
+  },
+  {
+    "id": "04924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "AO",
+    "name": "Angola|Angola",
+    "nameEn": "Angola",
+    "nameFr": "Angola"
+  },
+  {
+    "id": "06924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "AG",
+    "name": "Antigua and Barbuda|Antigua et Barbuda",
+    "nameEn": "Antigua and Barbuda",
+    "nameFr": "Antigua et Barbuda"
+  },
+  {
+    "id": "08924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "AR",
+    "name": "Argentina|Argentine",
+    "nameEn": "Argentina",
+    "nameFr": "Argentine"
+  },
+  {
+    "id": "0a924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "AM",
+    "name": "Armenia|Arménie",
+    "nameEn": "Armenia",
+    "nameFr": "Arménie"
+  },
+  {
+    "id": "0c924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "AU",
+    "name": "Australia|Australie",
+    "nameEn": "Australia",
+    "nameFr": "Australie"
+  },
+  {
+    "id": "0e924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "AT",
+    "name": "Austria|Autriche",
+    "nameEn": "Austria",
+    "nameFr": "Autriche"
+  },
+  {
+    "id": "10924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "AZ",
+    "name": "Azerbaijan|Azerbaïdjan",
+    "nameEn": "Azerbaijan",
+    "nameFr": "Azerbaïdjan"
+  },
+  {
+    "id": "12924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "BS",
+    "name": "The Bahamas|Bahamas",
+    "nameEn": "The Bahamas",
+    "nameFr": "Bahamas"
+  },
+  {
+    "id": "14924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "BH",
+    "name": "Bahrain|Bahreïn",
+    "nameEn": "Bahrain",
+    "nameFr": "Bahreïn"
+  },
+  {
+    "id": "16924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "BD",
+    "name": "Bangladesh|Bangladesh",
+    "nameEn": "Bangladesh",
+    "nameFr": "Bangladesh"
+  },
+  {
+    "id": "18924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "BB",
+    "name": "Barbados|Barbade",
+    "nameEn": "Barbados",
+    "nameFr": "Barbade"
+  },
+  {
+    "id": "1a924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "BY",
+    "name": "Belarus|Bélarus",
+    "nameEn": "Belarus",
+    "nameFr": "Bélarus"
+  },
+  {
+    "id": "1c924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "BE",
+    "name": "Belgium|Belgique",
+    "nameEn": "Belgium",
+    "nameFr": "Belgique"
+  },
+  {
+    "id": "1e924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "BZ",
+    "name": "Belize|Belize",
+    "nameEn": "Belize",
+    "nameFr": "Belize"
+  },
+  {
+    "id": "20924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "BJ",
+    "name": "Benin|Bénin, République Populaire de",
+    "nameEn": "Benin",
+    "nameFr": "Bénin, République Populaire de"
+  },
+  {
+    "id": "22924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "BT",
+    "name": "Bhutan|Bhoutan",
+    "nameEn": "Bhutan",
+    "nameFr": "Bhoutan"
+  },
+  {
+    "id": "24924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "BO",
+    "name": "Bolivia|Bolivie",
+    "nameEn": "Bolivia",
+    "nameFr": "Bolivie"
+  },
+  {
+    "id": "26924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "BA",
+    "name": "Bosnia and Herzegovina|Bosnie et Herzégovine",
+    "nameEn": "Bosnia and Herzegovina",
+    "nameFr": "Bosnie et Herzégovine"
+  },
+  {
+    "id": "28924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "BW",
+    "name": "Botswana|Botswana, République du",
+    "nameEn": "Botswana",
+    "nameFr": "Botswana, République du"
+  },
+  {
+    "id": "2a924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "BR",
+    "name": "Brazil|Brésil",
+    "nameEn": "Brazil",
+    "nameFr": "Brésil"
+  },
+  {
+    "id": "2c924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "BN",
+    "name": "Brunei|Brunéi ",
+    "nameEn": "Brunei",
+    "nameFr": "Brunéi "
+  },
+  {
+    "id": "2e924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "BG",
+    "name": "Bulgaria|Bulgarie",
+    "nameEn": "Bulgaria",
+    "nameFr": "Bulgarie"
+  },
+  {
+    "id": "30924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "BF",
+    "name": "Burkina Faso|Burkina Faso",
+    "nameEn": "Burkina Faso",
+    "nameFr": "Burkina Faso"
+  },
+  {
+    "id": "32924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "BI",
+    "name": "Burundi|Burundi",
+    "nameEn": "Burundi",
+    "nameFr": "Burundi"
+  },
+  {
+    "id": "34924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "CV",
+    "name": "Cabo Verde|Cap-Vert, Île du",
+    "nameEn": "Cabo Verde",
+    "nameFr": "Cap-Vert, Île du"
+  },
+  {
+    "id": "36924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "KH",
+    "name": "Cambodia|Cambodge",
+    "nameEn": "Cambodia",
+    "nameFr": "Cambodge"
+  },
+  {
+    "id": "38924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "CM",
+    "name": "Cameroon|Cameroun",
+    "nameEn": "Cameroon",
+    "nameFr": "Cameroun"
+  },
+  {
+    "id": "3a924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "CF",
+    "name": "Central African Republic|Centrafricaine, République",
+    "nameEn": "Central African Republic",
+    "nameFr": "Centrafricaine, République"
+  },
+  {
+    "id": "3c924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "TD",
+    "name": "Chad|Tchad, République du ",
+    "nameEn": "Chad",
+    "nameFr": "Tchad, République du "
+  },
+  {
+    "id": "3e924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "CL",
+    "name": "Chile|Chili",
+    "nameEn": "Chile",
+    "nameFr": "Chili"
+  },
+  {
+    "id": "40924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "CN",
+    "name": "China|Chine, République Populaire de ",
+    "nameEn": "China",
+    "nameFr": "Chine, République Populaire de "
+  },
+  {
+    "id": "42924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "CO",
+    "name": "Colombia|Colombie",
+    "nameEn": "Colombia",
+    "nameFr": "Colombie"
+  },
+  {
+    "id": "44924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "KM",
+    "name": "Comoros|Comores",
+    "nameEn": "Comoros",
+    "nameFr": "Comores"
+  },
+  {
+    "id": "46924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "CD",
+    "name": "Congo, Democratic Republic of the|Congo, République Démocratique du ",
+    "nameEn": "Congo, Democratic Republic of the",
+    "nameFr": "Congo, République Démocratique du "
+  },
+  {
+    "id": "48924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "CG",
+    "name": "Congo, Republic of the|Congo, République du ",
+    "nameEn": "Congo, Republic of the",
+    "nameFr": "Congo, République du "
+  },
+  {
+    "id": "4a924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "CR",
+    "name": "Costa Rica|Costa Rica",
+    "nameEn": "Costa Rica",
+    "nameFr": "Costa Rica"
+  },
+  {
+    "id": "4c924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "CI",
+    "name": "Côte d’Ivoire|Côte-d'Ivoire, République de la ",
+    "nameEn": "Côte d’Ivoire",
+    "nameFr": "Côte-d'Ivoire, République de la "
+  },
+  {
+    "id": "4e924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "HR",
+    "name": "Croatia|Croatie",
+    "nameEn": "Croatia",
+    "nameFr": "Croatie"
+  },
+  {
+    "id": "50924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "CU",
+    "name": "Cuba|Cuba",
+    "nameEn": "Cuba",
+    "nameFr": "Cuba"
+  },
+  {
+    "id": "52924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "CY",
+    "name": "Cyprus|Chypre",
+    "nameEn": "Cyprus",
+    "nameFr": "Chypre"
+  },
+  {
+    "id": "54924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "CZ",
+    "name": "Czech Republic|Tchèque, République",
+    "nameEn": "Czech Republic",
+    "nameFr": "Tchèque, République"
+  },
+  {
+    "id": "56924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "DK",
+    "name": "Denmark|Denmark",
+    "nameEn": "Denmark",
+    "nameFr": "Denmark"
+  },
+  {
+    "id": "58924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "DJ",
+    "name": "Djibouti|Djibouti, République de",
+    "nameEn": "Djibouti",
+    "nameFr": "Djibouti, République de"
+  },
+  {
+    "id": "5a924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "DM",
+    "name": "Dominica, Commonwealth of|Dominique, Commonwealth de la",
+    "nameEn": "Dominica, Commonwealth of",
+    "nameFr": "Dominique, Commonwealth de la"
+  },
+  {
+    "id": "5c924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "DO",
+    "name": "Dominican Republic|République Dominicaine",
+    "nameEn": "Dominican Republic",
+    "nameFr": "République Dominicaine"
+  },
+  {
+    "id": "5e924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "TL",
+    "name": "East Timor (Timor-Leste)|Timor Oriental (Timor-Leste)",
+    "nameEn": "East Timor (Timor-Leste)",
+    "nameFr": "Timor Oriental (Timor-Leste)"
+  },
+  {
+    "id": "60924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "EC",
+    "name": "Ecuador|Équateur",
+    "nameEn": "Ecuador",
+    "nameFr": "Équateur"
+  },
+  {
+    "id": "62924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "EG",
+    "name": "Egypt|Égypte",
+    "nameEn": "Egypt",
+    "nameFr": "Égypte"
+  },
+  {
+    "id": "64924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "SV",
+    "name": "El Salvador|El Salvador",
+    "nameEn": "El Salvador",
+    "nameFr": "El Salvador"
+  },
+  {
+    "id": "66924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "GQ",
+    "name": "Equatorial Guinea|Guinée Équatoriale",
+    "nameEn": "Equatorial Guinea",
+    "nameFr": "Guinée Équatoriale"
+  },
+  {
+    "id": "68924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "ER",
+    "name": "Eritrea|Érythrée",
+    "nameEn": "Eritrea",
+    "nameFr": "Érythrée"
+  },
+  {
+    "id": "6a924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "EE",
+    "name": "Estonia|Estonie",
+    "nameEn": "Estonia",
+    "nameFr": "Estonie"
+  },
+  {
+    "id": "6c924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "SZ",
+    "name": "Eswatini|Eswatini",
+    "nameEn": "Eswatini",
+    "nameFr": "Eswatini"
+  },
+  {
+    "id": "6e924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "ET",
+    "name": "Ethiopia|Éthiopie",
+    "nameEn": "Ethiopia",
+    "nameFr": "Éthiopie"
+  },
+  {
+    "id": "70924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "FJ",
+    "name": "Fiji|Fidji",
+    "nameEn": "Fiji",
+    "nameFr": "Fidji"
+  },
+  {
+    "id": "72924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "FI",
+    "name": "Finland|Finlande",
+    "nameEn": "Finland",
+    "nameFr": "Finlande"
+  },
+  {
+    "id": "74924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "FR",
+    "name": "France|France",
+    "nameEn": "France",
+    "nameFr": "France"
+  },
+  {
+    "id": "76924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "GM",
+    "name": "The Gambia|Gambie",
+    "nameEn": "The Gambia",
+    "nameFr": "Gambie"
+  },
+  {
+    "id": "78924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "GA",
+    "name": "Gabon|Gabon, République du ",
+    "nameEn": "Gabon",
+    "nameFr": "Gabon, République du "
+  },
+  {
+    "id": "7a924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "GE",
+    "name": "Georgia|Géorgie",
+    "nameEn": "Georgia",
+    "nameFr": "Géorgie"
+  },
+  {
+    "id": "7c924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "DE",
+    "name": "Germany|Allemagne",
+    "nameEn": "Germany",
+    "nameFr": "Allemagne"
+  },
+  {
+    "id": "7e924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "GH",
+    "name": "Ghana|Ghana",
+    "nameEn": "Ghana",
+    "nameFr": "Ghana"
+  },
+  {
+    "id": "80924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "GR",
+    "name": "Greece|Grèce",
+    "nameEn": "Greece",
+    "nameFr": "Grèce"
+  },
+  {
+    "id": "82924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "GD",
+    "name": "Grenada|Grenade",
+    "nameEn": "Grenada",
+    "nameFr": "Grenade"
+  },
+  {
+    "id": "84924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "GT",
+    "name": "Guatemala|Guatemala",
+    "nameEn": "Guatemala",
+    "nameFr": "Guatemala"
+  },
+  {
+    "id": "86924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "GN",
+    "name": "Guinea|Guinée",
+    "nameEn": "Guinea",
+    "nameFr": "Guinée"
+  },
+  {
+    "id": "88924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "GW",
+    "name": "Guinea-Bissau|Guinée-Bissau",
+    "nameEn": "Guinea-Bissau",
+    "nameFr": "Guinée-Bissau"
+  },
+  {
+    "id": "8a924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "GY",
+    "name": "Guyana|Guyane",
+    "nameEn": "Guyana",
+    "nameFr": "Guyane"
+  },
+  {
+    "id": "8c924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "HT",
+    "name": "Haiti|Haïti ",
+    "nameEn": "Haiti",
+    "nameFr": "Haïti "
+  },
+  {
+    "id": "8e924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "HN",
+    "name": "Honduras|Honduras",
+    "nameEn": "Honduras",
+    "nameFr": "Honduras"
+  },
+  {
+    "id": "90924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "HU",
+    "name": "Hungary|Hongrie",
+    "nameEn": "Hungary",
+    "nameFr": "Hongrie"
+  },
+  {
+    "id": "92924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "IS",
+    "name": "Iceland|Islande",
+    "nameEn": "Iceland",
+    "nameFr": "Islande"
+  },
+  {
+    "id": "94924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "IN",
+    "name": "India|Inde",
+    "nameEn": "India",
+    "nameFr": "Inde"
+  },
+  {
+    "id": "96924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "ID",
+    "name": "Indonesia|Indonésie, République d'",
+    "nameEn": "Indonesia",
+    "nameFr": "Indonésie, République d'"
+  },
+  {
+    "id": "98924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "IR",
+    "name": "Iran|Iran",
+    "nameEn": "Iran",
+    "nameFr": "Iran"
+  },
+  {
+    "id": "9a924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "IQ",
+    "name": "Iraq|Irak",
+    "nameEn": "Iraq",
+    "nameFr": "Irak"
+  },
+  {
+    "id": "9c924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "IE",
+    "name": "Ireland|Irlande, République d'",
+    "nameEn": "Ireland",
+    "nameFr": "Irlande, République d'"
+  },
+  {
+    "id": "9e924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "IL",
+    "name": "Israel|Israël",
+    "nameEn": "Israel",
+    "nameFr": "Israël"
+  },
+  {
+    "id": "a0924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "IT",
+    "name": "Italy|Italie",
+    "nameEn": "Italy",
+    "nameFr": "Italie"
+  },
+  {
+    "id": "a2924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "JM",
+    "name": "Jamaica|JamaÏque",
+    "nameEn": "Jamaica",
+    "nameFr": "JamaÏque"
+  },
+  {
+    "id": "a4924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "JP",
+    "name": "Japan|Japon",
+    "nameEn": "Japan",
+    "nameFr": "Japon"
+  },
+  {
+    "id": "a6924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "JO",
+    "name": "Jordan|Jordanie",
+    "nameEn": "Jordan",
+    "nameFr": "Jordanie"
+  },
+  {
+    "id": "a8924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "KZ",
+    "name": "Kazakhstan|Kazakhstan",
+    "nameEn": "Kazakhstan",
+    "nameFr": "Kazakhstan"
+  },
+  {
+    "id": "aa924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "KE",
+    "name": "Kenya|Kenya",
+    "nameEn": "Kenya",
+    "nameFr": "Kenya"
+  },
+  {
+    "id": "ac924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "KI",
+    "name": "Kiribati|Kiribati",
+    "nameEn": "Kiribati",
+    "nameFr": "Kiribati"
+  },
+  {
+    "id": "ae924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "KP",
+    "name": "Korea, North|Corée du Nord",
+    "nameEn": "Korea, North",
+    "nameFr": "Corée du Nord"
+  },
+  {
+    "id": "b0924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "KR",
+    "name": "Korea, South|Corée du Sud",
+    "nameEn": "Korea, South",
+    "nameFr": "Corée du Sud"
+  },
+  {
+    "id": "b2924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "XK",
+    "name": "Kosovo|Kosovo, République du ",
+    "nameEn": "Kosovo",
+    "nameFr": "Kosovo, République du "
+  },
+  {
+    "id": "b4924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "KW",
+    "name": "Kuwait|Kuweit",
+    "nameEn": "Kuwait",
+    "nameFr": "Kuweit"
+  },
+  {
+    "id": "b6924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "KG",
+    "name": "Kyrgyzstan|Kirghizistan",
+    "nameEn": "Kyrgyzstan",
+    "nameFr": "Kirghizistan"
+  },
+  {
+    "id": "b8924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "LA",
+    "name": "Laos|Laos",
+    "nameEn": "Laos",
+    "nameFr": "Laos"
+  },
+  {
+    "id": "ba924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "LV",
+    "name": "Latvia|Lettonie",
+    "nameEn": "Latvia",
+    "nameFr": "Lettonie"
+  },
+  {
+    "id": "bc924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "LB",
+    "name": "Lebanon|Liban",
+    "nameEn": "Lebanon",
+    "nameFr": "Liban"
+  },
+  {
+    "id": "be924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "LS",
+    "name": "Lesotho|Lesotho",
+    "nameEn": "Lesotho",
+    "nameFr": "Lesotho"
+  },
+  {
+    "id": "c0924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "LR",
+    "name": "Liberia|Libéria",
+    "nameEn": "Liberia",
+    "nameFr": "Libéria"
+  },
+  {
+    "id": "c2924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "LY",
+    "name": "Libya|Libye",
+    "nameEn": "Libya",
+    "nameFr": "Libye"
+  },
+  {
+    "id": "c4924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "LI",
+    "name": "Liechtenstein|Liechtenstein",
+    "nameEn": "Liechtenstein",
+    "nameFr": "Liechtenstein"
+  },
+  {
+    "id": "c6924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "LT",
+    "name": "Lithuania|Lituanie",
+    "nameEn": "Lithuania",
+    "nameFr": "Lituanie"
+  },
+  {
+    "id": "c8924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "LU",
+    "name": "Luxembourg|Luxembourg",
+    "nameEn": "Luxembourg",
+    "nameFr": "Luxembourg"
+  },
+  {
+    "id": "ca924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "MG",
+    "name": "Madagascar|Madagascar",
+    "nameEn": "Madagascar",
+    "nameFr": "Madagascar"
+  },
+  {
+    "id": "cc924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "MW",
+    "name": "Malawi|Malawi",
+    "nameEn": "Malawi",
+    "nameFr": "Malawi"
+  },
+  {
+    "id": "ce924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "MY",
+    "name": "Malaysia|Malaisie",
+    "nameEn": "Malaysia",
+    "nameFr": "Malaisie"
+  },
+  {
+    "id": "d0924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "MV",
+    "name": "Maldives|Maldives, République des",
+    "nameEn": "Maldives",
+    "nameFr": "Maldives, République des"
+  },
+  {
+    "id": "d2924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "ML",
+    "name": "Mali|Mali, République du",
+    "nameEn": "Mali",
+    "nameFr": "Mali, République du"
+  },
+  {
+    "id": "d4924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "MT",
+    "name": "Malta|Malte",
+    "nameEn": "Malta",
+    "nameFr": "Malte"
+  },
+  {
+    "id": "d6924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "MH",
+    "name": "Marshall Islands|Îles Marshall, République des",
+    "nameEn": "Marshall Islands",
+    "nameFr": "Îles Marshall, République des"
+  },
+  {
+    "id": "d8924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "MR",
+    "name": "Mauritania|Mauritanie",
+    "nameEn": "Mauritania",
+    "nameFr": "Mauritanie"
+  },
+  {
+    "id": "da924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "MU",
+    "name": "Mauritius|Maurice (Île)",
+    "nameEn": "Mauritius",
+    "nameFr": "Maurice (Île)"
+  },
+  {
+    "id": "dc924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "MX",
+    "name": "Mexico|Mexique",
+    "nameEn": "Mexico",
+    "nameFr": "Mexique"
+  },
+  {
+    "id": "de924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "FM",
+    "name": "Micronesia, Federated States of|Micronésie, États fédérées de ",
+    "nameEn": "Micronesia, Federated States of",
+    "nameFr": "Micronésie, États fédérées de "
+  },
+  {
+    "id": "e0924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "MD",
+    "name": "Moldova|Moldavie",
+    "nameEn": "Moldova",
+    "nameFr": "Moldavie"
+  },
+  {
+    "id": "e2924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "MC",
+    "name": "Monaco|Monaco",
+    "nameEn": "Monaco",
+    "nameFr": "Monaco"
+  },
+  {
+    "id": "e4924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "MN",
+    "name": "Mongolia|Mongolie",
+    "nameEn": "Mongolia",
+    "nameFr": "Mongolie"
+  },
+  {
+    "id": "e6924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "ME",
+    "name": "Montenegro|Monténégro, République de",
+    "nameEn": "Montenegro",
+    "nameFr": "Monténégro, République de"
+  },
+  {
+    "id": "e8924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "MA",
+    "name": "Morocco|Maroc",
+    "nameEn": "Morocco",
+    "nameFr": "Maroc"
+  },
+  {
+    "id": "ea924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "MZ",
+    "name": "Mozambique|Mozambique",
+    "nameEn": "Mozambique",
+    "nameFr": "Mozambique"
+  },
+  {
+    "id": "ec924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "MM",
+    "name": "Myanmar (Burma)|Myanmar (Birmanie)",
+    "nameEn": "Myanmar (Burma)",
+    "nameFr": "Myanmar (Birmanie)"
+  },
+  {
+    "id": "ee924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "NA",
+    "name": "Namibia|Namibie",
+    "nameEn": "Namibia",
+    "nameFr": "Namibie"
+  },
+  {
+    "id": "f0924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "NR",
+    "name": "Nauru|Nauru",
+    "nameEn": "Nauru",
+    "nameFr": "Nauru"
+  },
+  {
+    "id": "f2924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "NP",
+    "name": "Nepal|Népal",
+    "nameEn": "Nepal",
+    "nameFr": "Népal"
+  },
+  {
+    "id": "f4924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "NL",
+    "name": "Netherlands|Pays-Bas",
+    "nameEn": "Netherlands",
+    "nameFr": "Pays-Bas"
+  },
+  {
+    "id": "f6924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "NZ",
+    "name": "New Zealand|Nouvelle-Zélande",
+    "nameEn": "New Zealand",
+    "nameFr": "Nouvelle-Zélande"
+  },
+  {
+    "id": "f8924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "NI",
+    "name": "Nicaragua|Nicaragua",
+    "nameEn": "Nicaragua",
+    "nameFr": "Nicaragua"
+  },
+  {
+    "id": "fa924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "NE",
+    "name": "Niger|Niger, République du",
+    "nameEn": "Niger",
+    "nameFr": "Niger, République du"
+  },
+  {
+    "id": "fc924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "NG",
+    "name": "Nigeria|Nigéria",
+    "nameEn": "Nigeria",
+    "nameFr": "Nigéria"
+  },
+  {
+    "id": "fe924e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "MK",
+    "name": "North Macedonia|Macédoine du Nord",
+    "nameEn": "North Macedonia",
+    "nameFr": "Macédoine du Nord"
+  },
+  {
+    "id": "00934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "NO",
+    "name": "Norway|Norvège",
+    "nameEn": "Norway",
+    "nameFr": "Norvège"
+  },
+  {
+    "id": "02934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "OM",
+    "name": "Oman|Oman",
+    "nameEn": "Oman",
+    "nameFr": "Oman"
+  },
+  {
+    "id": "04934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "PK",
+    "name": "Pakistan|Pakistan",
+    "nameEn": "Pakistan",
+    "nameFr": "Pakistan"
+  },
+  {
+    "id": "06934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "PW",
+    "name": "Palau|Palau",
+    "nameEn": "Palau",
+    "nameFr": "Palau"
+  },
+  {
+    "id": "08934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "PA",
+    "name": "Panama|Panama, République du ",
+    "nameEn": "Panama",
+    "nameFr": "Panama, République du "
+  },
+  {
+    "id": "0a934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "PG",
+    "name": "Papua New Guinea|Papouasie-Nouvelle-Guinée",
+    "nameEn": "Papua New Guinea",
+    "nameFr": "Papouasie-Nouvelle-Guinée"
+  },
+  {
+    "id": "0c934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "PY",
+    "name": "Paraguay|Paraguay",
+    "nameEn": "Paraguay",
+    "nameFr": "Paraguay"
+  },
+  {
+    "id": "0e934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "PE",
+    "name": "Peru|Pérou",
+    "nameEn": "Peru",
+    "nameFr": "Pérou"
+  },
+  {
+    "id": "10934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "PH",
+    "name": "Philippines|Philippines",
+    "nameEn": "Philippines",
+    "nameFr": "Philippines"
+  },
+  {
+    "id": "12934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "PL",
+    "name": "Poland|Pologne",
+    "nameEn": "Poland",
+    "nameFr": "Pologne"
+  },
+  {
+    "id": "14934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "PT",
+    "name": "Portugal|Portugal",
+    "nameEn": "Portugal",
+    "nameFr": "Portugal"
+  },
+  {
+    "id": "16934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "QA",
+    "name": "Qatar|Qatar",
+    "nameEn": "Qatar",
+    "nameFr": "Qatar"
+  },
+  {
+    "id": "18934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "RO",
+    "name": "Romania|Roumanie",
+    "nameEn": "Romania",
+    "nameFr": "Roumanie"
+  },
+  {
+    "id": "1a934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "RU",
+    "name": "Russia|Russie",
+    "nameEn": "Russia",
+    "nameFr": "Russie"
+  },
+  {
+    "id": "1c934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "RW",
+    "name": "Rwanda|Rwanda",
+    "nameEn": "Rwanda",
+    "nameFr": "Rwanda"
+  },
+  {
+    "id": "1e934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "KN",
+    "name": "Saint Kitts and Nevis|Saint Kitts et Nevis",
+    "nameEn": "Saint Kitts and Nevis",
+    "nameFr": "Saint Kitts et Nevis"
+  },
+  {
+    "id": "20934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "LC",
+    "name": "Saint Lucia|Sainte-Lucie",
+    "nameEn": "Saint Lucia",
+    "nameFr": "Sainte-Lucie"
+  },
+  {
+    "id": "22934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "VC",
+    "name": "Saint Vincent and the Grenadines|Saint-Vincent-et-les-Grenadines",
+    "nameEn": "Saint Vincent and the Grenadines",
+    "nameFr": "Saint-Vincent-et-les-Grenadines"
+  },
+  {
+    "id": "24934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "WS",
+    "name": "Samoa|Samoa occidentales",
+    "nameEn": "Samoa",
+    "nameFr": "Samoa occidentales"
+  },
+  {
+    "id": "26934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "SM",
+    "name": "San Marino|Saint-Marin",
+    "nameEn": "San Marino",
+    "nameFr": "Saint-Marin"
+  },
+  {
+    "id": "28934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "ST",
+    "name": "Sao Tome and Principe|Sao Tomé-et-Principe",
+    "nameEn": "Sao Tome and Principe",
+    "nameFr": "Sao Tomé-et-Principe"
+  },
+  {
+    "id": "2a934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "SA",
+    "name": "Saudi Arabia|Arabie Saoudite",
+    "nameEn": "Saudi Arabia",
+    "nameFr": "Arabie Saoudite"
+  },
+  {
+    "id": "2c934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "SN",
+    "name": "Senegal|Sénégal",
+    "nameEn": "Senegal",
+    "nameFr": "Sénégal"
+  },
+  {
+    "id": "2e934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "RS",
+    "name": "Serbia|Serbie, République de",
+    "nameEn": "Serbia",
+    "nameFr": "Serbie, République de"
+  },
+  {
+    "id": "30934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "SC",
+    "name": "Seychelles|Seychelles",
+    "nameEn": "Seychelles",
+    "nameFr": "Seychelles"
+  },
+  {
+    "id": "32934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "SL",
+    "name": "Sierra Leone|Sierra Leone",
+    "nameEn": "Sierra Leone",
+    "nameFr": "Sierra Leone"
+  },
+  {
+    "id": "34934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "SG",
+    "name": "Singapore|Singapour",
+    "nameEn": "Singapore",
+    "nameFr": "Singapour"
+  },
+  {
+    "id": "36934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "SK",
+    "name": "Slovakia|Slovaque, République",
+    "nameEn": "Slovakia",
+    "nameFr": "Slovaque, République"
+  },
+  {
+    "id": "38934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "SI",
+    "name": "Slovenia|Slovénie",
+    "nameEn": "Slovenia",
+    "nameFr": "Slovénie"
+  },
+  {
+    "id": "3a934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "SB",
+    "name": "Solomon Islands|Salomon, Ïles",
+    "nameEn": "Solomon Islands",
+    "nameFr": "Salomon, Ïles"
+  },
+  {
+    "id": "3c934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "SO",
+    "name": "Somalia|Somalie, République de",
+    "nameEn": "Somalia",
+    "nameFr": "Somalie, République de"
+  },
+  {
+    "id": "3e934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "ZA",
+    "name": "South Africa|Afrique du Sud, République d'",
+    "nameEn": "South Africa",
+    "nameFr": "Afrique du Sud, République d'"
+  },
+  {
+    "id": "40934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "ES",
+    "name": "Spain|Espagne",
+    "nameEn": "Spain",
+    "nameFr": "Espagne"
+  },
+  {
+    "id": "42934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "LK",
+    "name": "Sri Lanka|Sri Lanka",
+    "nameEn": "Sri Lanka",
+    "nameFr": "Sri Lanka"
+  },
+  {
+    "id": "44934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "SD",
+    "name": "Sudan|Soudan, République du",
+    "nameEn": "Sudan",
+    "nameFr": "Soudan, République du"
+  },
+  {
+    "id": "46934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "SS",
+    "name": "Sudan, South|Soudan du Sud, République du",
+    "nameEn": "Sudan, South",
+    "nameFr": "Soudan du Sud, République du"
+  },
+  {
+    "id": "48934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "SR",
+    "name": "Suriname|Suriname",
+    "nameEn": "Suriname",
+    "nameFr": "Suriname"
+  },
+  {
+    "id": "4a934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "SE",
+    "name": "Sweden|Suède",
+    "nameEn": "Sweden",
+    "nameFr": "Suède"
+  },
+  {
+    "id": "4c934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "CH",
+    "name": "Switzerland|Suisse",
+    "nameEn": "Switzerland",
+    "nameFr": "Suisse"
+  },
+  {
+    "id": "4e934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "SY",
+    "name": "Syria|Syrie",
+    "nameEn": "Syria",
+    "nameFr": "Syrie"
+  },
+  {
+    "id": "50934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "TW",
+    "name": "Taiwan|Taïwan",
+    "nameEn": "Taiwan",
+    "nameFr": "Taïwan"
+  },
+  {
+    "id": "52934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "TJ",
+    "name": "Tajikistan|Tadjikistan",
+    "nameEn": "Tajikistan",
+    "nameFr": "Tadjikistan"
+  },
+  {
+    "id": "54934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "TZ",
+    "name": "Tanzania|Tanzanie, République Unie de",
+    "nameEn": "Tanzania",
+    "nameFr": "Tanzanie, République Unie de"
+  },
+  {
+    "id": "56934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "TH",
+    "name": "Thailand|Thaïlande",
+    "nameEn": "Thailand",
+    "nameFr": "Thaïlande"
+  },
+  {
+    "id": "58934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "TG",
+    "name": "Togo|Togo, République de",
+    "nameEn": "Togo",
+    "nameFr": "Togo, République de"
+  },
+  {
+    "id": "5a934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "TO",
+    "name": "Tonga|Tonga",
+    "nameEn": "Tonga",
+    "nameFr": "Tonga"
+  },
+  {
+    "id": "5c934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "TT",
+    "name": "Trinidad and Tobago|Trinité-et-Tobago",
+    "nameEn": "Trinidad and Tobago",
+    "nameFr": "Trinité-et-Tobago"
+  },
+  {
+    "id": "5e934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "TN",
+    "name": "Tunisia|Tunisie",
+    "nameEn": "Tunisia",
+    "nameFr": "Tunisie"
+  },
+  {
+    "id": "60934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "TR",
+    "name": "Turkey|Turquie",
+    "nameEn": "Turkey",
+    "nameFr": "Turquie"
+  },
+  {
+    "id": "62934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "TM",
+    "name": "Turkmenistan|Turkménistan",
+    "nameEn": "Turkmenistan",
+    "nameFr": "Turkménistan"
+  },
+  {
+    "id": "64934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "TV",
+    "name": "Tuvalu|Tuvalu",
+    "nameEn": "Tuvalu",
+    "nameFr": "Tuvalu"
+  },
+  {
+    "id": "66934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "UG",
+    "name": "Uganda|Ouganda",
+    "nameEn": "Uganda",
+    "nameFr": "Ouganda"
+  },
+  {
+    "id": "68934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "UA",
+    "name": "Ukraine|Ukraine",
+    "nameEn": "Ukraine",
+    "nameFr": "Ukraine"
+  },
+  {
+    "id": "6a934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "AE",
+    "name": "United Arab Emirates|Émirats arabes unis",
+    "nameEn": "United Arab Emirates",
+    "nameFr": "Émirats arabes unis"
+  },
+  {
+    "id": "6c934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "GB",
+    "name": "United Kingdom|Royaume-Uni",
+    "nameEn": "United Kingdom",
+    "nameFr": "Royaume-Uni"
+  },
+  {
+    "id": "6e934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "UY",
+    "name": "Uruguay|Uruguay",
+    "nameEn": "Uruguay",
+    "nameFr": "Uruguay"
+  },
+  {
+    "id": "70934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "UZ",
+    "name": "Uzbekistan|Ouzbékistan",
+    "nameEn": "Uzbekistan",
+    "nameFr": "Ouzbékistan"
+  },
+  {
+    "id": "72934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "VU",
+    "name": "Vanuatu|Vanuatu",
+    "nameEn": "Vanuatu",
+    "nameFr": "Vanuatu"
+  },
+  {
+    "id": "74934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "VA",
+    "name": "Vatican City|Vatican",
+    "nameEn": "Vatican City",
+    "nameFr": "Vatican"
+  },
+  {
+    "id": "76934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "VE",
+    "name": "Venezuela|Venezuela",
+    "nameEn": "Venezuela",
+    "nameFr": "Venezuela"
+  },
+  {
+    "id": "78934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "VN",
+    "name": "Vietnam|Viet Nam, République Socialiste du ",
+    "nameEn": "Vietnam",
+    "nameFr": "Viet Nam, République Socialiste du "
+  },
+  {
+    "id": "7a934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "YE",
+    "name": "Yemen|Yémen, République du ",
+    "nameEn": "Yemen",
+    "nameFr": "Yémen, République du "
+  },
+  {
+    "id": "7c934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "ZM",
+    "name": "Zambia|Zambie",
+    "nameEn": "Zambia",
+    "nameFr": "Zambie"
+  },
+  {
+    "id": "7e934e7c-2c95-ea11-a812-000d3a0c2b5d",
+    "alphaCode": "ZW",
+    "name": "Zimbabwe|Zimbabwe",
+    "nameEn": "Zimbabwe",
+    "nameFr": "Zimbabwe"
+  },
+  {
+    "id": "b7b23171-6cb1-ea11-a812-000d3a0c94a6",
+    "alphaCode": "--",
+    "name": "Other|Autre",
+    "nameEn": "Other",
+    "nameFr": "Autre"
+  },
+  {
+    "id": "0633a528-b5a6-eb11-9441-000d3ae9908a",
+    "alphaCode": "MF",
+    "name": "Saint-Martin",
+    "nameEn": "Saint-Martin",
+    "nameFr": "Saint-Martin"
+  },
+  {
+    "id": "0c33a528-b5a6-eb11-9441-000d3ae9908a",
+    "alphaCode": "AS",
+    "name": "Samoa, American|Samoa américaines",
+    "nameEn": "Samoa, American",
+    "nameFr": "Samoa américaines"
+  },
+  {
+    "id": "2070ba69-562b-ec11-b6e6-0022483c17cb",
+    "alphaCode": "AW",
+    "name": "Aruba|Aruba",
+    "nameEn": "Aruba",
+    "nameFr": "Aruba"
+  },
+  {
+    "id": "5a5c517c-562b-ec11-b6e6-0022483c17cb",
+    "alphaCode": "CW",
+    "name": "Curaçao|Curaçao",
+    "nameEn": "Curaçao",
+    "nameFr": "Curaçao"
+  },
+  {
+    "id": "843c8e88-562b-ec11-b6e6-0022483c17cb",
+    "alphaCode": "SX",
+    "name": "St. Maarten|St. Maarten",
+    "nameEn": "St. Maarten",
+    "nameFr": "St. Maarten"
+  },
+  {
+    "id": "a58cb740-fec1-ee11-9079-6045bd60d673",
+    "alphaCode": "UW",
+    "name": "Unknown|Inconnue",
+    "nameEn": "Unknown",
+    "nameFr": "Inconnue"
+  }
+]
