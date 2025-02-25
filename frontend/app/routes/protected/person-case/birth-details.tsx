@@ -1,14 +1,14 @@
 import { useId, useState } from 'react';
 
-import { data, useFetcher } from 'react-router';
 import type { RouteHandle } from 'react-router';
+import { data, useFetcher } from 'react-router';
 
 import { faExclamationCircle, faXmark } from '@fortawesome/free-solid-svg-icons';
 import type { SessionData } from 'express-session';
 import { useTranslation } from 'react-i18next';
 import * as v from 'valibot';
 
-import type { Route, Info } from './+types/birth-details';
+import type { Info, Route } from './+types/birth-details';
 
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
@@ -22,9 +22,8 @@ import { PageTitle } from '~/components/page-title';
 import { Progress } from '~/components/progress';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
-import { getFixedT } from '~/i18n-config.server';
+import { getFixedT, getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/layout';
-import { getLanguage } from '~/utils/i18n-utils';
 import { REGEX_PATTERNS } from '~/utils/regex-utils';
 import { trimToUndefined } from '~/utils/string-utils';
 
@@ -39,8 +38,8 @@ export const handle = {
 
 export async function loader({ context, request }: Route.LoaderArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
-
   const t = await getFixedT(request, handle.i18nNamespace);
+
   const birthDetails = context.session.inPersonSINCase?.birthDetails;
 
   return {
@@ -60,13 +59,10 @@ export function meta({ data }: Route.MetaArgs) {
 
 export async function action({ context, request }: Route.ActionArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
-  const lang = getLanguage(request);
-  const t = await getFixedT(request, handle.i18nNamespace);
+  const { lang, t } = await getTranslation(request, handle.i18nNamespace);
 
   const formData = await request.formData();
   const action = formData.get('action');
-  const maxStringLength = 100;
-  const canadaCountryCode = 'CAN';
 
   switch (action) {
     case 'back': {
@@ -78,19 +74,19 @@ export async function action({ context, request }: Route.ActionArgs) {
         'country',
         [
           v.object({
-            country: v.literal(canadaCountryCode, t('protected:birth-details.country.invalid-country')),
+            country: v.literal('CAN', t('protected:birth-details.country.invalid-country')),
             province: v.pipe(
               v.string(t('protected:birth-details.province.required-province')),
               v.trim(),
               v.nonEmpty(t('protected:birth-details.province.required-province')),
-              v.maxLength(maxStringLength, t('protected:birth-details.province.invalid-province')),
+              v.maxLength(100, t('protected:birth-details.province.invalid-province')),
               v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:birth-details.province.invalid-province')),
             ),
             city: v.pipe(
               v.string(t('protected:birth-details.city.required-city')),
               v.trim(),
               v.nonEmpty(t('protected:birth-details.city.required-city')),
-              v.maxLength(maxStringLength, t('protected:birth-details.city.invalid-city')),
+              v.maxLength(100, t('protected:birth-details.city.invalid-city')),
               v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:birth-details.city.invalid-city')),
             ),
             fromMultipleBirth: v.boolean(t('protected:birth-details.from-multiple.required-from-multiple')),
@@ -99,7 +95,7 @@ export async function action({ context, request }: Route.ActionArgs) {
             country: v.pipe(
               v.string(t('protected:birth-details.country.required-country')),
               v.nonEmpty(t('protected:birth-details.country.required-country')),
-              v.excludes(canadaCountryCode, t('protected:birth-details.country.invalid-country')),
+              v.excludes('CAN', t('protected:birth-details.country.invalid-country')),
               v.picklist(COUNTRIES, t('protected:birth-details.country.invalid-country')),
             ),
             province: v.optional(
@@ -107,7 +103,7 @@ export async function action({ context, request }: Route.ActionArgs) {
                 v.string(t('protected:birth-details.province.required-province')),
                 v.trim(),
                 v.nonEmpty(t('protected:birth-details.province.required-province')),
-                v.maxLength(maxStringLength, t('protected:birth-details.province.invalid-province')),
+                v.maxLength(100, t('protected:birth-details.province.invalid-province')),
                 v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:birth-details.province.invalid-province')),
               ),
             ),
@@ -116,7 +112,7 @@ export async function action({ context, request }: Route.ActionArgs) {
                 v.string(t('protected:birth-details.city.required-city')),
                 v.trim(),
                 v.nonEmpty(t('protected:birth-details.city.required-city')),
-                v.maxLength(maxStringLength, t('protected:birth-details.city.invalid-city')),
+                v.maxLength(100, t('protected:birth-details.city.invalid-city')),
                 v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:birth-details.city.invalid-city')),
               ),
             ),
@@ -130,7 +126,9 @@ export async function action({ context, request }: Route.ActionArgs) {
         country: formData.get('country') as string,
         province: trimToUndefined(formData.get('province') as string),
         city: trimToUndefined(formData.get('city') as string),
-        fromMultipleBirth: formData.get('from-multiple') ? formData.get('from-multiple') === REQUIRE_OPTIONS.yes : undefined,
+        fromMultipleBirth: formData.get('from-multiple')
+          ? formData.get('from-multiple') === REQUIRE_OPTIONS.yes //
+          : undefined,
       } satisfies Partial<v.InferInput<typeof schema>>;
 
       const parseResult = v.safeParse(schema, input, { lang });
@@ -139,9 +137,7 @@ export async function action({ context, request }: Route.ActionArgs) {
         return data({ errors: v.flatten<typeof schema>(parseResult.issues).nested }, { status: 400 });
       }
 
-      context.session.inPersonSINCase ??= {};
-      context.session.inPersonSINCase.birthDetails = parseResult.output;
-
+      (context.session.inPersonSINCase ??= {}).birthDetails = parseResult.output;
       throw i18nRedirect('routes/protected/request.tsx', request);
     }
 
@@ -153,15 +149,15 @@ export async function action({ context, request }: Route.ActionArgs) {
 
 export default function BirthDetails({ loaderData, actionData, params }: Route.ComponentProps) {
   const { t } = useTranslation(handle.i18nNamespace);
-  const [country, setCountry] = useState<string | undefined>(loaderData.defaultFormValues.country);
-  const [fromMultipleBirth, setFromMultipleBirth] = useState<boolean | undefined>(
-    loaderData.defaultFormValues.fromMultipleBirth,
-  );
+
+  const [country, setCountry] = useState(loaderData.defaultFormValues.country);
+  const [fromMultipleBirth, setFromMultipleBirth] = useState(loaderData.defaultFormValues.fromMultipleBirth);
+
   const fetcherKey = useId();
   const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
+
   const isSubmitting = fetcher.state !== 'idle';
   const errors = fetcher.data?.errors;
-  const canadaCountryCode = 'CAN';
 
   const countryOptions = (['select-option', ...COUNTRIES] as const).map((value) => ({
     value: value === 'select-option' ? '' : value,
@@ -216,7 +212,7 @@ export default function BirthDetails({ loaderData, actionData, params }: Route.C
                   label={t('protected:birth-details.province.label')}
                   name="province"
                   defaultValue={loaderData.defaultFormValues.province}
-                  required={country == canadaCountryCode}
+                  required={country === 'CAN'}
                   type="text"
                   className="w-full rounded-sm sm:w-104"
                 />
@@ -225,7 +221,7 @@ export default function BirthDetails({ loaderData, actionData, params }: Route.C
                   label={t('protected:birth-details.city.label')}
                   name="city"
                   defaultValue={loaderData.defaultFormValues.city}
-                  required={country == canadaCountryCode}
+                  required={country === 'CAN'}
                   type="text"
                   className="w-full rounded-sm sm:w-104"
                 />

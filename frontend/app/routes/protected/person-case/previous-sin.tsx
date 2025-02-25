@@ -23,7 +23,11 @@ import { formatSin, isValidSin, sinInputPatternFormat } from '~/utils/sin-utils'
 
 type PreviousSinSessionData = NonNullable<SessionData['inPersonSINCase']['previousSin']>;
 
-const VALID_HAS_PREVIOUS_SIN_OPTIONS = { yes: 'yes', no: 'no', unknown: 'unknown' } as const;
+const VALID_HAS_PREVIOUS_SIN_OPTIONS = {
+  yes: 'yes',
+  no: 'no',
+  unknown: 'unknown',
+} as const;
 
 export const handle = {
   i18nNamespace: [...parentHandle.i18nNamespace, 'protected'],
@@ -98,9 +102,7 @@ export async function action({ context, request }: Route.ActionArgs) {
         return data({ errors: v.flatten<typeof schema>(parseResult.issues).nested }, { status: 400 });
       }
 
-      context.session.inPersonSINCase ??= {};
-      context.session.inPersonSINCase.previousSin = parseResult.output;
-
+      (context.session.inPersonSINCase ??= {}).previousSin = parseResult.output;
       throw i18nRedirect('routes/protected/person-case/contact-information.tsx', request);
     }
 
@@ -112,21 +114,20 @@ export async function action({ context, request }: Route.ActionArgs) {
 
 export default function PreviousSin({ loaderData, actionData, params }: Route.ComponentProps) {
   const { t } = useTranslation(handle.i18nNamespace);
+
+  const [hasPreviousSin, setHasPreviousSin] = useState(loaderData.defaultFormValues?.hasPreviousSin);
+
   const fetcherKey = useId();
   const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
+
   const isSubmitting = fetcher.state !== 'idle';
   const errors = fetcher.data?.errors;
-
-  const [hasPreviousSin, setHasPreviousSin] = useState<string | undefined>(loaderData.defaultFormValues?.hasPreviousSin);
-  function handleHasPreviousSinChanged(event: ChangeEvent<HTMLInputElement>) {
-    setHasPreviousSin(event.target.value);
-  }
 
   const hasPreviousSinOptions = Object.values(VALID_HAS_PREVIOUS_SIN_OPTIONS).map((value) => ({
     value: value,
     children: t(`protected:previous-sin.has-previous-sin-options.${value}`),
     defaultChecked: value === loaderData.defaultFormValues?.hasPreviousSin,
-    onChange: handleHasPreviousSinChanged,
+    onChange: ({ target }: ChangeEvent<HTMLInputElement>) => setHasPreviousSin(target.value),
   }));
 
   return (
