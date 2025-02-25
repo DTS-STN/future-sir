@@ -18,7 +18,7 @@ export default defineConfig({
     baseURL: `http://localhost:3000/`,
   },
   webServer: {
-    command: 'tsx --import ./app/.server/opentelemetry.ts ./app/.server/express/server.ts',
+    command: 'tsx --import ./app/.server/telemetry.ts ./app/.server/express/server.ts',
     reuseExistingServer: !process.env.CI,
     url: `http://localhost:3000/`,
   },
