@@ -1,5 +1,6 @@
 import { serverEnvironment } from '~/.server/environment';
 import countryData from '~/.server/resources/countries.json';
+import genderData from '~/.server/resources/genders.json';
 import preferredLanguageData from '~/.server/resources/preferred-language.json';
 import provinceTerritoryStateData from '~/.server/resources/province-territory-state.json';
 
@@ -83,6 +84,36 @@ type LocalizedPreferredLanguage = Readonly<{
 
 export function getLocalizedPreferredLanguages(locale: Language = 'en'): LocalizedPreferredLanguage[] {
   return getPreferredLanguages().map((obj) => ({
+    id: obj.id,
+    name: obj[locale === 'en' ? 'nameEn' : 'nameFr'],
+  }));
+}
+
+type Gender = Readonly<{
+  id: string;
+  nameEn: string;
+  nameFr: string;
+}>;
+
+// TODO: throw AppError if `.find` fails?
+export function getGenders(): readonly Gender[] {
+  const { PP_ENGLISH_LANGUAGE_CODE, PP_FRENCH_LANGUAGE_CODE } = serverEnvironment;
+  return (
+    genderData.value.at(0)?.OptionSet.Options.map((obj) => ({
+      id: obj.Value.toString(),
+      nameEn: obj.Label.LocalizedLabels.find((lbl) => lbl.LanguageCode === PP_ENGLISH_LANGUAGE_CODE)?.Label ?? '',
+      nameFr: obj.Label.LocalizedLabels.find((lbl) => lbl.LanguageCode === PP_FRENCH_LANGUAGE_CODE)?.Label ?? '',
+    })) ?? []
+  );
+}
+
+export type LocalizedGender = Readonly<{
+  id: string;
+  name: string;
+}>;
+
+export function getLocalizedGenders(locale: Language = 'en'): LocalizedGender[] {
+  return getGenders().map((obj) => ({
     id: obj.id,
     name: obj[locale === 'en' ? 'nameEn' : 'nameFr'],
   }));
