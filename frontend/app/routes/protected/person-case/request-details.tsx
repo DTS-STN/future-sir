@@ -98,7 +98,7 @@ export async function action({ context, request }: Route.ActionArgs) {
   }
 }
 
-export default function CreateRequest({ loaderData, actionData, params }: Route.ComponentProps) {
+export default function RequestDetails({ loaderData, actionData, params }: Route.ComponentProps) {
   const { t } = useTranslation(handle.i18nNamespace);
   const fetcherKey = useId();
   const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });

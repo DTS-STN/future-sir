@@ -137,6 +137,35 @@
       "invalid": "Le document d'identité principal est invalide."
     }
   },
+  "secondary-identity-document": {
+    "document-type": {
+      "title": "Type de document",
+      "required": "Le type de document est requis.",
+      "invalid": "Le type de document est invalide.",
+      "options": {
+        "passport": "Passeport (canadien ou étranger)",
+        "id-card": "Carte d'identité ou permis de conduire provincial ou territorial canadien",
+        "other-id": "Toute autre pièce d'identité délivrée par le gouvernement canadien"
+      }
+    },
+    "expiry-date": {
+      "title": "Date d'expiration",
+      "required": "La date d'expiration est requise.",
+      "invalid": "La date d'expiration est invalide.",
+      "required-year": "L'année d'expiration est requise.",
+      "invalid-year": "L'année d'expiration est invalide.",
+      "required-month": "Le mois d'expiration est requis.",
+      "invalid-month": "Le mois d'expiration est invalide.",
+      "required-day": "Le jour d'expiration est requis.",
+      "invalid-day": "Le jour d'expiration est invalide."
+    },
+    "upload-document": {
+      "title": "Téléversez le document secondaire",
+      "required": "Le document secondaire est requis.",
+      "invalid": "Le document secondaire est invalide."
+    },
+    "page-title": "Document d'identité secondaire"
+  },
   "request-details": {
     "page-title": "Demandeur",
     "select-scenario": "Sélectionnez le scénario qui décrit le mieux la situation du client",

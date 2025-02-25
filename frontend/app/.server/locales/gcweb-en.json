@@ -104,5 +104,9 @@
   "input-option": {
     "yes": "Yes",
     "no": "No"
+  },
+  "input-file": {
+    "choose-file": "Choose File",
+    "no-file": "No file chosen"
   }
 }
