@@ -68,9 +68,7 @@ export async function action({ context, request }: Route.ActionArgs) {
         return data({ errors: v.flatten<typeof schema>(parseResult.issues).nested }, { status: 400 });
       }
 
-      context.session.inPersonSINCase ??= {};
-      context.session.inPersonSINCase.privacyStatement = parseResult.output;
-
+      (context.session.inPersonSINCase ??= {}).privacyStatement = parseResult.output;
       throw i18nRedirect('routes/protected/person-case/request-details.tsx', request);
     }
 

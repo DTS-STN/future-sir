@@ -248,10 +248,8 @@ export async function action({ context, request }: Route.ActionArgs) {
         return data({ errors: v.flatten(parseResult.issues).nested }, { status: 400 });
       }
 
-      context.session.inPersonSINCase ??= {};
-      context.session.inPersonSINCase.primaryDocuments = parseResult.output;
-
-      throw i18nRedirect('routes/protected/request.tsx', request); //TODO: change it to redirect to file="routes/protected/person-case/secondary-docs.tsx"
+      (context.session.inPersonSINCase ??= {}).primaryDocuments = parseResult.output;
+      throw i18nRedirect('routes/protected/request.tsx', request); // TODO: change it to redirect to file="routes/protected/person-case/secondary-docs.tsx"
     }
     default: {
       throw new AppError(`Unrecognized action: ${action}`, ErrorCodes.UNRECOGNIZED_ACTION);
