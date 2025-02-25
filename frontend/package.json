@@ -66,7 +66,7 @@
     "react-phone-number-input": "^3.4.12",
     "react-router": "^7.2.0",
     "source-map-support": "^0.5.21",
-    "tailwind-merge": "^3.0.1",
+    "tailwind-merge": "^3.0.2",
     "valibot": "^1.0.0-rc.1",
     "validator": "^13.12.0",
     "winston": "^3.17.0",
