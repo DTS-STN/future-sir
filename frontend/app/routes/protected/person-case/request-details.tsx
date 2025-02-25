@@ -1,8 +1,9 @@
 import { useId } from 'react';
 
-import type { RouteHandle, SessionData } from 'react-router';
+import type { RouteHandle } from 'react-router';
 import { data, useFetcher } from 'react-router';
 
+import type { SessionData } from 'express-session';
 import { useTranslation } from 'react-i18next';
 import * as v from 'valibot';
 
@@ -19,7 +20,7 @@ import { AppError } from '~/errors/app-error';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/layout';
 
-type RequestDetailsSessionData = NonNullable<SessionData['inPersonSINCase']['privacyStatement']>;
+type RequestDetailsSessionData = NonNullable<SessionData['inPersonSINCase']['requestDetails']>;
 
 const VALID_REQUESTS = [
   'first-time',
