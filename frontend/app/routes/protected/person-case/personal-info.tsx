@@ -9,7 +9,7 @@ import type { SessionData } from 'express-session';
 import { useTranslation } from 'react-i18next';
 import * as v from 'valibot';
 
-import type { Route, Info } from './+types/personal-info';
+import type { Info, Route } from './+types/personal-info';
 
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
@@ -20,6 +20,7 @@ import { InputRadios } from '~/components/input-radios';
 import { PageTitle } from '~/components/page-title';
 import { Progress } from '~/components/progress';
 import { AppError } from '~/errors/app-error';
+import { ErrorCodes } from '~/errors/error-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/layout';
 import { REGEX_PATTERNS } from '~/utils/regex-utils';
@@ -94,14 +95,12 @@ export async function action({ context, request }: Route.ActionArgs) {
         return data({ errors: v.flatten<typeof schema>(parseResult.issues).nested }, { status: 400 });
       }
 
-      context.session.inPersonSINCase ??= {};
-      context.session.inPersonSINCase.personalInformation = parseResult.output;
-
+      (context.session.inPersonSINCase ??= {}).personalInformation = parseResult.output;
       throw i18nRedirect('routes/protected/person-case/birth-details.tsx', request);
     }
 
     default: {
-      throw new AppError(`Unrecognized action: ${action}`);
+      throw new AppError(`Unrecognized action: ${action}`, ErrorCodes.UNRECOGNIZED_ACTION);
     }
   }
 }

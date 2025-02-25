@@ -18,6 +18,7 @@ import { InputCheckbox } from '~/components/input-checkbox';
 import { PageTitle } from '~/components/page-title';
 import { Progress } from '~/components/progress';
 import { AppError } from '~/errors/app-error';
+import { ErrorCodes } from '~/errors/error-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/layout';
 
@@ -73,7 +74,7 @@ export async function action({ context, request }: Route.ActionArgs) {
     }
 
     default: {
-      throw new AppError(`Unrecognized action: ${action}`);
+      throw new AppError(`Unrecognized action: ${action}`, ErrorCodes.UNRECOGNIZED_ACTION);
     }
   }
 }

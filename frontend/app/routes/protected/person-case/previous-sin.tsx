@@ -18,6 +18,7 @@ import { InputPatternField } from '~/components/input-pattern-field';
 import { InputRadios } from '~/components/input-radios';
 import { PageTitle } from '~/components/page-title';
 import { AppError } from '~/errors/app-error';
+import { ErrorCodes } from '~/errors/error-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/layout';
 import { formatSin, isValidSin, sinInputPatternFormat } from '~/utils/sin-utils';
@@ -108,7 +109,7 @@ export async function action({ context, request }: Route.ActionArgs) {
     }
 
     default: {
-      throw new AppError(`Unrecognized action: ${action}`);
+      throw new AppError(`Unrecognized action: ${action}`, ErrorCodes.UNRECOGNIZED_ACTION);
     }
   }
 }
