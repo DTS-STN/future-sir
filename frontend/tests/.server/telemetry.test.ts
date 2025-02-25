@@ -36,7 +36,7 @@ vi.mock('@opentelemetry/sdk-node', () => {
 
 describe('NodeSDK', () => {
   it('should create a NodeSDK instance with the correct configuration', async () => {
-    await import('~/.server/opentelemetry');
+    await import('~/.server/telemetry');
 
     expect(NodeSDK).toHaveBeenCalledWith({
       resource: expect.any(Resource),
@@ -47,7 +47,7 @@ describe('NodeSDK', () => {
   });
 
   it('should configure the Resource with correct attributes', async () => {
-    await import('~/.server/opentelemetry');
+    await import('~/.server/telemetry');
 
     expect(Resource).toHaveBeenCalledWith({
       [ATTR_SERVICE_NAME]: 'service',
@@ -57,7 +57,7 @@ describe('NodeSDK', () => {
   });
 
   it('should configure the OTLPMetricExporter correctly', async () => {
-    await import('~/.server/opentelemetry');
+    await import('~/.server/telemetry');
 
     expect(OTLPMetricExporter).toHaveBeenCalledWith({
       url: 'http://metrics.example.com/',
@@ -68,7 +68,7 @@ describe('NodeSDK', () => {
   });
 
   it('should configure the OTLPTraceExporter correctly', async () => {
-    await import('~/.server/opentelemetry');
+    await import('~/.server/telemetry');
 
     expect(OTLPTraceExporter).toHaveBeenCalledWith({
       url: 'http://traces.example.com',
@@ -78,7 +78,7 @@ describe('NodeSDK', () => {
   });
 
   it('should configure auto-instrumentations with Winston disabled', async () => {
-    await import('~/.server/opentelemetry');
+    await import('~/.server/telemetry');
 
     expect(getNodeAutoInstrumentations).toHaveBeenCalledWith({
       '@opentelemetry/instrumentation-winston': { enabled: false },
@@ -86,7 +86,7 @@ describe('NodeSDK', () => {
   });
 
   it('should start the NodeSDK', async () => {
-    await import('~/.server/opentelemetry');
+    await import('~/.server/telemetry');
 
     const instance = vi.mocked(NodeSDK).mock.instances[0];
     expect(instance.start).toHaveBeenCalled();

@@ -13,7 +13,7 @@ import { PassThrough } from 'node:stream';
 import { I18nextProvider } from 'react-i18next';
 
 import { LogFactory } from '~/.server/logging';
-import { createCounter, handleSpanException } from '~/.server/utils/instrumentation-utils';
+import { createCounter, handleSpanException } from '~/.server/utils/telemetry-utils';
 import { isAppError } from '~/errors/app-error';
 import { initI18next } from '~/i18n-config.server';
 import { getLanguage } from '~/utils/i18n-utils';

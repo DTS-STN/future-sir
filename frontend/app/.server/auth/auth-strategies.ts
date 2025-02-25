@@ -4,7 +4,7 @@ import type { AuthorizationServer, Client, ClientAuth, IDToken } from 'oauth4web
 import * as oauth from 'oauth4webapi';
 
 import { LogFactory } from '~/.server/logging';
-import { withSpan } from '~/.server/utils/instrumentation-utils';
+import { withSpan } from '~/.server/utils/telemetry-utils';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 

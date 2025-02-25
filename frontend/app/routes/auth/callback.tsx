@@ -5,7 +5,7 @@ import type { Route } from './+types/callback';
 import type { AuthenticationStrategy } from '~/.server/auth/auth-strategies';
 import { AzureADAuthenticationStrategy, LocalAuthenticationStrategy } from '~/.server/auth/auth-strategies';
 import { serverEnvironment } from '~/.server/environment';
-import { withSpan } from '~/.server/utils/instrumentation-utils';
+import { withSpan } from '~/.server/utils/telemetry-utils';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 
