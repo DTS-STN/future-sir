@@ -28,6 +28,7 @@ import { InputRadios } from '~/components/input-radios';
 import { InputSelect } from '~/components/input-select';
 import { PageTitle } from '~/components/page-title';
 import { AppError } from '~/errors/app-error';
+import { ErrorCodes } from '~/errors/error-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/layout';
 
@@ -150,7 +151,7 @@ export async function action({ context, request }: Route.ActionArgs) {
     }
 
     default: {
-      throw new AppError(`Unrecognized action: ${action}`);
+      throw new AppError(`Unrecognized action: ${action}`, ErrorCodes.UNRECOGNIZED_ACTION);
     }
   }
 }
