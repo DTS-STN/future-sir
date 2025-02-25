@@ -12,6 +12,27 @@
     "no-cases": "No cases are currently assigned to you.",
     "coming-soon": "Coming soon"
   },
+  "countries": {
+    "select-option": "Select option",
+    "CAN": "Canada",
+    "FRA": "France"
+  },
+  "provinces": {
+    "select-option": "Select option",
+    "AB": "Alberta",
+    "BC": "British Columbia",
+    "MB": "Manitoba",
+    "NB": "New Brunswick",
+    "NL": "Newfoundland and Labrador",
+    "NT": "Northwest Territories",
+    "NS": "Nova Scotia",
+    "NU": "Nunavut",
+    "ON": "Ontario",
+    "PE": "Prince Edward Island",
+    "QC": "Quebec",
+    "SK": "Saskatchewan",
+    "YT": "Yukon"
+  },
   "in-person": {
     "title": "In-person SIN request",
     "description": "Process an application or amendment"
@@ -334,6 +355,40 @@
       "label": "Is the applicant part of a multiple birth (twin, triplet, etc.)?",
       "required-from-multiple": "Is applicant from multiple birth is required.",
       "invalid-from-multiple": "Is applicant from multiple birth is invalid."
+    }
+  },
+  "parent-details": {
+    "page-title": "Parents/legal guardians",
+    "section-title": "Parent/legal guardian",
+    "details-unavailable": "Parent/legal guardian details unavailable",
+    "given-name": "Given name(s)",
+    "last-name": "Last name at birth",
+    "country": "Country of birth",
+    "province": "Province, state, or region of birth",
+    "city": "City, town, or village of birth",
+    "add-parent": "Add a parent/legal guardian",
+    "remove": "Remove",
+    "given-name-error": {
+      "format-error": "Given name must not contain any digits.",
+      "max-length-error": "Given name must contain at most {{maximum}} character(s).",
+      "required-error": "Given name is required."
+    },
+    "last-name-error": {
+      "format-error": "Last name must not contain any digits.",
+      "max-length-error": "Last name must contain at most {{maximum}} character(s).",
+      "required-error": "Last name is required."
+    },
+    "country-error": {
+      "required-country": "Country of birth is required.",
+      "invalid-country": "Country of birth is invalid."
+    },
+    "province-error": {
+      "required-province": "Province, state, or region of birth is required.",
+      "invalid-province": "Province, state, or region of birth is invalid."
+    },
+    "city-error": {
+      "required-city": "City, town, or village of birth is required.",
+      "invalid-city": "City, town, or village of birth is invalid."
     }
   }
 }

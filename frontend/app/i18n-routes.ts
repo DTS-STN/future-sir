@@ -152,6 +152,14 @@ export const i18nRoutes = [
       },
       {
         id: 'PROT-0011',
+        file: 'routes/protected/person-case/parent-details.tsx',
+        paths: {
+          en: '/en/protected/person-case/parent-details',
+          fr: '/fr/protege/cas-personnel/details-des-parents',
+        },
+      },
+      {
+        id: 'PROT-0012',
         file: 'routes/protected/person-case/previous-sin.tsx',
         paths: {
           en: '/en/protected/person-case/previous-sin',
@@ -159,7 +167,7 @@ export const i18nRoutes = [
         },
       },
       {
-        id: 'PROT-0012',
+        id: 'PROT-0013',
         file: 'routes/protected/person-case/contact-information.tsx',
         paths: {
           en: '/en/protected/person-case/contact-information',
