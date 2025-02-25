@@ -116,7 +116,6 @@ jobs:
   pr-status-check:
     needs: [check-changes, build-frontend, test-frontend]
     runs-on: ubuntu-latest
-    if: always()
     steps:
       - name: Aggregate job statuses
         run: |
