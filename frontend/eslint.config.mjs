@@ -76,6 +76,18 @@ export default tseslint.config(
       '@typescript-eslint/require-await': 'error',
       'import/consistent-type-specifier-style': ['error', 'prefer-top-level'],
       'no-param-reassign': 'error',
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: 'react-router',
+              importNames: ['SessionData'],
+              message: "Please use the SessionData import from 'express-session' instead.",
+            },
+          ],
+        },
+      ],
     },
     settings: {
       'import/resolver': {
