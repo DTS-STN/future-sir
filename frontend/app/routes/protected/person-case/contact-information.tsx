@@ -1,8 +1,9 @@
 import { useId, useState } from 'react';
 
-import type { RouteHandle, SessionData } from 'react-router';
+import type { RouteHandle } from 'react-router';
 import { data, useFetcher } from 'react-router';
 
+import type { SessionData } from 'express-session';
 import { useTranslation } from 'react-i18next';
 import * as v from 'valibot';
 
@@ -127,8 +128,10 @@ export async function action({ context, request }: Route.ActionArgs) {
       const input = {
         preferredLanguage: formData.get('preferredLanguage') as string,
         primaryPhoneNumber: formData.get('primaryPhoneNumber') as string,
-        secondaryPhoneNumber: formData.get('secondaryPhoneNumber') ? formData.get('secondaryPhoneNumber') : undefined,
-        emailAddress: formData.get('emailAddress') ? formData.get('emailAddress') : undefined,
+        secondaryPhoneNumber: formData.get('secondaryPhoneNumber')
+          ? (formData.get('secondaryPhoneNumber') as string)
+          : undefined,
+        emailAddress: formData.get('emailAddress') ? (formData.get('emailAddress') as string) : undefined,
         country: formData.get('country') as string,
         address: formData.get('address') as string,
         postalCode: formData.get('postalCode') as string,

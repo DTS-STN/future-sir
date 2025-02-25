@@ -1,9 +1,10 @@
 import type { ChangeEvent } from 'react';
 import { useId, useState } from 'react';
 
-import type { RouteHandle, SessionData } from 'react-router';
+import type { RouteHandle } from 'react-router';
 import { data, useFetcher } from 'react-router';
 
+import type { SessionData } from 'express-session';
 import { useTranslation } from 'react-i18next';
 import * as v from 'valibot';
 
@@ -92,7 +93,7 @@ export async function action({ context, request }: Route.ActionArgs) {
         hasPreviousSin: formData.get('hasPreviousSin') as string,
         socialInsuranceNumber:
           formData.get('hasPreviousSin') === VALID_HAS_PREVIOUS_SIN_OPTIONS.yes
-            ? formData.get('socialInsuranceNumber')
+            ? (formData.get('socialInsuranceNumber') as string)
             : undefined,
       } satisfies Partial<PreviousSinSessionData>;
 
