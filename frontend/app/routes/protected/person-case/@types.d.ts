@@ -1,5 +1,7 @@
 import 'express-session';
 
+import type { ServerEnvironment } from '~/.server/environment';
+
 declare module 'express-session' {
   interface SessionData {
     inPersonSINCase: Partial<{
@@ -55,7 +57,7 @@ declare module 'express-session' {
         province: string;
       };
       birthDetails:
-        | { country: 'CAN'; province: string; city: string; fromMultipleBirth: boolean }
+        | { country: ServerEnvironment['PP_CANADA_COUNTRY_CODE']; province: string; city: string; fromMultipleBirth: boolean }
         | { country: string; province?: string; city?: string; fromMultipleBirth: boolean };
     }>;
   }

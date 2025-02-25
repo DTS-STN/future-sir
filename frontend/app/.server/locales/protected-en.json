@@ -285,6 +285,7 @@
   },
   "birth-details": {
     "page-title": "Birth details",
+    "select-option": "Select option",
     "country": {
       "label": "Country of birth",
       "required-country": "Country of birth is required.",
@@ -304,11 +305,6 @@
       "label": "Is the applicant part of a multiple birth (twin, triplet, etc.)?",
       "required-from-multiple": "Is applicant from multiple birth is required.",
       "invalid-from-multiple": "Is applicant from multiple birth is invalid."
-    },
-    "countries": {
-      "select-option": "Select option",
-      "CAN": "Canada",
-      "FRA": "France"
     }
   }
 }

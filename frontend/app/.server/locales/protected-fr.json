@@ -286,6 +286,7 @@
   },
   "birth-details": {
     "page-title": "Détails de naissance",
+    "select-option": "Sélectionner une option",
     "country": {
       "label": "Pays de naissance",
       "required-country": "Le pays de naissance est requis.",
@@ -305,11 +306,6 @@
       "label": "Le demandeur fait-il partie d'une naissance multiple (jumeau, triplé, etc.)?",
       "required-from-multiple": "Il est requis de savoir si le demandeur fait partie d'une naissance multiple.",
       "invalid-from-multiple": "Le statut de naissance multiple du demandeur est invalide."
-    },
-    "countries": {
-      "select-option": "Sélectionner une option",
-      "CAN": "Canada",
-      "FRA": "France"
     }
   }
 }
