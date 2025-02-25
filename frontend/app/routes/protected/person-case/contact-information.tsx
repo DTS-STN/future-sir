@@ -1,4 +1,4 @@
-import { useId } from 'react';
+import { useId, useState } from 'react';
 
 import type { RouteHandle, SessionData } from 'react-router';
 import { data, useFetcher } from 'react-router';
@@ -8,11 +8,12 @@ import * as v from 'valibot';
 
 import type { Info, Route } from './+types/contact-information';
 
+import { serverEnvironment } from '~/.server/environment';
 import {
   getCountries,
   getLocalizedCountries,
   getLocalizedProvincesTerritoriesStates,
-  getProvincesTerritoriesStates,
+  getProvincesTerritories,
   getPreferredLanguages,
   getLocalizedPreferredLanguages,
 } from '~/.server/services/locale-data-service';
@@ -38,6 +39,7 @@ export const handle = {
 export async function loader({ context, request }: Route.LoaderArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
   const { lang, t } = await getTranslation(request, handle.i18nNamespace);
+  const { PP_CANADA_COUNTRY_CODE } = serverEnvironment;
 
   return {
     documentTitle: t('protected:contact-information.page-title'),
@@ -45,6 +47,7 @@ export async function loader({ context, request }: Route.LoaderArgs) {
     localizedpreferredLanguages: getLocalizedPreferredLanguages(lang),
     localizedCountries: getLocalizedCountries(lang),
     localizedProvincesTerritoriesStates: getLocalizedProvincesTerritoriesStates(lang),
+    PP_CANADA_COUNTRY_CODE,
   };
 }
 
@@ -56,6 +59,7 @@ export async function action({ context, request }: Route.ActionArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
 
   const { lang, t } = await getTranslation(request, handle.i18nNamespace);
+  const { PP_CANADA_COUNTRY_CODE } = serverEnvironment;
   const formData = await request.formData();
   const action = formData.get('action');
 
@@ -65,37 +69,60 @@ export async function action({ context, request }: Route.ActionArgs) {
     }
 
     case 'next': {
-      // TODO beef up validation
-      const schema = v.object({
-        preferredLanguage: v.picklist(
-          getPreferredLanguages().map(({ id }) => id),
-          t('protected:contact-information.error-messages.preferred-language-required'),
-        ),
-        primaryPhoneNumber: v.pipe(
-          v.string(),
-          v.trim(),
-          v.nonEmpty(t('protected:contact-information.error-messages.primary-phone-required')),
-        ),
-        secondaryPhoneNumber: v.optional(v.pipe(v.string(), v.trim())),
-        emailAddress: v.optional(
-          v.pipe(v.string(), v.trim(), v.email(t('protected:contact-information.error-messages.email-address-invalid-format'))),
-        ),
-        country: v.picklist(
-          getCountries().map(({ id }) => id),
-          t('protected:contact-information.error-messages.country-required'),
-        ),
-        address: v.pipe(v.string(), v.trim(), v.nonEmpty(t('protected:contact-information.error-messages.address-required'))),
-        postalCode: v.pipe(
-          v.string(),
-          v.trim(),
-          v.nonEmpty(t('protected:contact-information.error-messages.postal-code-required')),
-        ),
-        city: v.pipe(v.string(), v.trim(), v.nonEmpty(t('protected:contact-information.error-messages.city-required'))),
-        province: v.picklist(
-          getProvincesTerritoriesStates().map(({ id }) => id),
-          t('protected:contact-information.error-messages.province-required'),
-        ),
-      }) satisfies v.GenericSchema<ContactInformationSessionData>;
+      const schema = v.intersect([
+        v.object({
+          preferredLanguage: v.picklist(
+            getPreferredLanguages().map(({ id }) => id),
+            t('protected:contact-information.error-messages.preferred-language-required'),
+          ),
+          primaryPhoneNumber: v.pipe(
+            v.string(),
+            v.trim(),
+            v.nonEmpty(t('protected:contact-information.error-messages.primary-phone-required')),
+          ),
+          secondaryPhoneNumber: v.optional(v.pipe(v.string(), v.trim())),
+          emailAddress: v.optional(
+            v.pipe(
+              v.string(),
+              v.trim(),
+              v.email(t('protected:contact-information.error-messages.email-address-invalid-format')),
+            ),
+          ),
+          country: v.picklist(
+            getCountries().map(({ id }) => id),
+            t('protected:contact-information.error-messages.country-required'),
+          ),
+          address: v.pipe(v.string(), v.trim(), v.nonEmpty(t('protected:contact-information.error-messages.address-required'))),
+          postalCode: v.pipe(
+            v.string(),
+            v.trim(),
+            v.nonEmpty(t('protected:contact-information.error-messages.postal-code-required')),
+          ),
+          city: v.pipe(v.string(), v.trim(), v.nonEmpty(t('protected:contact-information.error-messages.city-required'))),
+          province: v.pipe(
+            v.string(),
+            v.trim(),
+            v.nonEmpty(t('protected:contact-information.error-messages.province-required')),
+          ),
+        }),
+        v.variant('country', [
+          v.object({
+            country: v.literal(PP_CANADA_COUNTRY_CODE),
+            province: v.picklist(
+              getProvincesTerritories().map(({ id }) => id),
+              t('protected:contact-information.error-messages.province-required'),
+            ),
+          }),
+          v.object({
+            country: v.string(),
+            province: v.pipe(
+              v.string(),
+              v.trim(),
+              v.nonEmpty(t('protected:contact-information.error-messages.province-required')),
+            ),
+          }),
+        ]),
+      ]) satisfies v.GenericSchema<ContactInformationSessionData>;
 
       const input = {
         preferredLanguage: formData.get('preferredLanguage') as string,
@@ -135,6 +162,8 @@ export default function ContactInformation({ loaderData, actionData, params }: R
   const isSubmitting = fetcher.state !== 'idle';
   const errors = fetcher.data?.errors;
 
+  const [country, setCountry] = useState<string | undefined>(loaderData.defaultFormValues?.country);
+
   const languageOptions = loaderData.localizedpreferredLanguages.map(({ id, name }) => ({
     value: id,
     children: name,
@@ -154,7 +183,6 @@ export default function ContactInformation({ loaderData, actionData, params }: R
     children: id === 'select-option' ? t('protected:contact-information.select-option') : name,
   }));
 
-  // TODO conditionally render different address fields if Canada is selected as a country
   return (
     <div className="max-w-prose">
       <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:contact-information.page-title')}</PageTitle>
@@ -208,42 +236,58 @@ export default function ContactInformation({ loaderData, actionData, params }: R
               options={countryOptions}
               errorMessage={errors?.country?.at(0)}
               defaultValue={loaderData.defaultFormValues?.country}
+              onChange={({ target }) => setCountry(target.value)}
               required
             />
-            <InputField
-              id="address"
-              label={t('protected:contact-information.address-label')}
-              helpMessagePrimary={t('protected:contact-information.address-help-message')}
-              name="address"
-              className="w-full"
-              errorMessage={errors?.address?.at(0)}
-              defaultValue={loaderData.defaultFormValues?.address}
-            />
-            <InputField
-              id="postal-code"
-              label={t('protected:contact-information.postal-code-label')}
-              name="postalCode"
-              errorMessage={errors?.postalCode?.at(0)}
-              defaultValue={loaderData.defaultFormValues?.postalCode}
-            />
-            <InputField
-              id="city"
-              label={t('protected:contact-information.city-label')}
-              name="city"
-              className="w-full"
-              errorMessage={errors?.city?.at(0)}
-              defaultValue={loaderData.defaultFormValues?.city}
-            />
-            <InputSelect
-              className="w-max rounded-sm"
-              id="province"
-              label={t('protected:contact-information.province-label')}
-              name="province"
-              options={provinceTerritoryStateOptions}
-              errorMessage={errors?.province?.at(0)}
-              defaultValue={loaderData.defaultFormValues?.province}
-              required
-            />
+            {country && (
+              <>
+                <InputField
+                  id="address"
+                  label={t('protected:contact-information.address-label')}
+                  helpMessagePrimary={t('protected:contact-information.address-help-message')}
+                  name="address"
+                  className="w-full"
+                  errorMessage={errors?.address?.at(0)}
+                  defaultValue={loaderData.defaultFormValues?.address}
+                />
+                <InputField
+                  id="postal-code"
+                  label={t('protected:contact-information.postal-code-label')}
+                  name="postalCode"
+                  errorMessage={errors?.postalCode?.at(0)}
+                  defaultValue={loaderData.defaultFormValues?.postalCode}
+                />
+                <InputField
+                  id="city"
+                  label={t('protected:contact-information.city-label')}
+                  name="city"
+                  className="w-full"
+                  errorMessage={errors?.city?.at(0)}
+                  defaultValue={loaderData.defaultFormValues?.city}
+                />
+                {country === loaderData.PP_CANADA_COUNTRY_CODE ? (
+                  <InputSelect
+                    className="w-max rounded-sm"
+                    id="province"
+                    label={t('protected:contact-information.canada-province-label')}
+                    name="province"
+                    options={provinceTerritoryStateOptions}
+                    errorMessage={errors?.province?.at(0)}
+                    defaultValue={loaderData.defaultFormValues?.province}
+                    required
+                  />
+                ) : (
+                  <InputField
+                    id="province"
+                    label={t('protected:contact-information.other-country-province-label')}
+                    name="province"
+                    className="w-full"
+                    errorMessage={errors?.province?.at(0)}
+                    defaultValue={loaderData.defaultFormValues?.province}
+                  />
+                )}
+              </>
+            )}
           </div>
           <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
             <Button name="action" value="next" variant="primary" id="continue-button" disabled={isSubmitting}>
