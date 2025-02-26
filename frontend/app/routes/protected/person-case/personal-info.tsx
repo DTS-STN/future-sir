@@ -11,6 +11,7 @@ import * as v from 'valibot';
 
 import type { Info, Route } from './+types/personal-info';
 
+import { getGenders, getLocalizedGenders } from '~/.server/services/locale-data-service';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
@@ -27,15 +28,13 @@ import { REGEX_PATTERNS } from '~/utils/regex-utils';
 
 type PersonalInformationSessionData = NonNullable<SessionData['inPersonSINCase']['personalInformation']>;
 
-const VALID_GENDERS = ['female', 'male', 'other'];
-
 export const handle = {
   i18nNamespace: [...parentHandle.i18nNamespace, 'protected'],
 } as const satisfies RouteHandle;
 
 export async function loader({ context, request }: Route.LoaderArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
-  const { t } = await getTranslation(request, handle.i18nNamespace);
+  const { t, lang } = await getTranslation(request, handle.i18nNamespace);
 
   return {
     documentTitle: t('protected:personal-information.page-title'),
@@ -45,6 +44,7 @@ export async function loader({ context, request }: Route.LoaderArgs) {
       lastNamePreviouslyUsed: context.session.inPersonSINCase?.personalInformation?.lastNamePreviouslyUsed ?? [],
       gender: context.session.inPersonSINCase?.personalInformation?.gender,
     },
+    localizedGenders: getLocalizedGenders(lang),
   };
 }
 
@@ -79,7 +79,10 @@ export async function action({ context, request }: Route.ActionArgs) {
           v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:personal-information.last-name-at-birth.format')),
         ),
         lastNamePreviouslyUsed: v.optional(v.array(v.string())),
-        gender: v.picklist(VALID_GENDERS, t('protected:personal-information.gender.required')),
+        gender: v.picklist(
+          getGenders().map(({ id }) => id),
+          t('protected:personal-information.gender.required'),
+        ),
       }) satisfies v.GenericSchema<PersonalInformationSessionData>;
 
       const input = {
@@ -119,12 +122,10 @@ export default function PersonalInformation({ loaderData, params }: Route.Compon
   const [lastNames, setLastNames] = useState(loaderData.defaultFormValues.lastNamePreviouslyUsed);
   const [srAnnouncement, setSrAnnouncement] = useState('');
 
-  const GENDER = ['female', 'male', 'other'] as const;
-
-  const genderOptions = GENDER.map((value) => ({
-    value: value,
-    children: t(`protected:personal-information.gender.options.${value}` as const),
-    defaultChecked: value === loaderData.defaultFormValues.gender,
+  const genderOptions = loaderData.localizedGenders.map(({ id, name }) => ({
+    value: id,
+    children: name,
+    defaultChecked: id === loaderData.defaultFormValues.gender,
   }));
 
   function handleAddFirstName() {
