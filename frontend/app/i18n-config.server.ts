@@ -1,4 +1,4 @@
-import type { i18n, Namespace, TFunction } from 'i18next';
+import type { i18n, KeyPrefix, Namespace, TFunction } from 'i18next';
 import { createInstance } from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
@@ -14,13 +14,15 @@ import { getLanguage } from '~/utils/i18n-utils';
  *
  * @param languageOrRequest - The language code or Request object to get the language from.
  * @param namespace - The namespace to get the translation function for.
+ * @param keyPrefix - The key prefix to use for the translation function.
  * @returns A translation function for the given language and namespace.
  * @throws {AppError} If no language is found in the `languageOrRequest`.
  */
-export async function getFixedT<NS extends Namespace>(
+export async function getFixedT<NS extends Namespace, TKPrefix extends KeyPrefix<NS> = undefined>(
   languageOrRequest: Language | Request,
   namespace: NS,
-): Promise<TFunction<NS>> {
+  keyPrefix?: TKPrefix,
+): Promise<TFunction<NS, TKPrefix>> {
   const isRequest = languageOrRequest instanceof Request;
 
   const language = isRequest //
@@ -32,7 +34,7 @@ export async function getFixedT<NS extends Namespace>(
   }
 
   const i18n = await initI18next(language);
-  return i18n.getFixedT(language, namespace);
+  return i18n.getFixedT(language, namespace, keyPrefix);
 }
 
 /**
@@ -41,20 +43,22 @@ export async function getFixedT<NS extends Namespace>(
  *
  * @param languageOrRequest - The language code or Request object to get the language from.
  * @param namespace - The namespace to get the translation function for.
+ * @param keyPrefix - The key prefix to use for the translation function.
  * @returns A Promise resolving to an object containing the language code (`lang`) and a translation function (`t`) for the given namespace.
  * @throws {AppError} If no language is found in the `languageOrRequest`.
  */
-export async function getTranslation<NS extends Namespace>(
+export async function getTranslation<NS extends Namespace, TKPrefix extends KeyPrefix<NS> = undefined>(
   languageOrRequest: Language | Request,
   namespace: NS,
-): Promise<{ lang: Language; t: TFunction<NS> }> {
+  keyPrefix?: TKPrefix,
+): Promise<{ lang: Language; t: TFunction<NS, TKPrefix> }> {
   const lang = getLanguage(languageOrRequest);
 
   if (lang === undefined) {
     throw new AppError('No language found in request', ErrorCodes.NO_LANGUAGE_FOUND);
   }
 
-  return { lang, t: await getFixedT(languageOrRequest, namespace) };
+  return { lang, t: await getFixedT(languageOrRequest, namespace, keyPrefix) };
 }
 
 /**
@@ -78,6 +82,10 @@ export async function initI18next(language?: Language): Promise<i18n> {
     ns: namespaces,
     resources: i18nResources,
     interpolation: { escapeValue: false },
+    appendNamespaceToMissingKey: true,
+    parseMissingKeyHandler: (key) => {
+      throw new AppError(`Missing translation key: ${key}`, ErrorCodes.MISSING_TRANSLATION_KEY);
+    },
   });
 
   return i18n;

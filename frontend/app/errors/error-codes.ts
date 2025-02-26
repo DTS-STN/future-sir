@@ -33,4 +33,7 @@ export const ErrorCodes = {
 
   // dev-only error codes
   TEST_ERROR_CODE: 'DEV-0001',
+
+  // i18n error codes
+  MISSING_TRANSLATION_KEY: 'I18N-0001',
 } as const;
