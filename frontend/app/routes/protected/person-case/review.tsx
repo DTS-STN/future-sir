@@ -3,9 +3,10 @@ import { useId } from 'react';
 import type { RouteHandle } from 'react-router';
 import { useFetcher } from 'react-router';
 
+import type { SessionData } from 'express-session';
 import { useTranslation } from 'react-i18next';
 
-import type { Info, Route } from './+types/primary-docs';
+import type { Info, Route } from './+types/review';
 
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
@@ -24,22 +25,84 @@ export const handle = {
 export async function loader({ context, request }: Route.LoaderArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
   const { t } = await getTranslation(request, handle.i18nNamespace);
+  const inPersonSINCase = validateInPersonSINCaseSession(context.session, request);
+  return { documentTitle: t('protected:review.page-title'), inPersonSINCase };
+}
 
-  const primaryDocumentInfo = {
-    currentStatusInCanada: context.session.inPersonSINCase?.primaryDocuments?.currentStatusInCanada,
-    documentType: context.session.inPersonSINCase?.primaryDocuments?.documentType,
-    registrationNumber: context.session.inPersonSINCase?.primaryDocuments?.registrationNumber,
-    clientNumber: context.session.inPersonSINCase?.primaryDocuments?.clientNumber,
-    givenName: context.session.inPersonSINCase?.primaryDocuments?.givenName,
-    lastName: context.session.inPersonSINCase?.primaryDocuments?.lastName,
-    dateOfBirth: context.session.inPersonSINCase?.primaryDocuments?.dateOfBirth,
-    gender: context.session.inPersonSINCase?.primaryDocuments?.gender,
-    citizenshipDate: context.session.inPersonSINCase?.primaryDocuments?.citizenshipDate,
-  };
+/**
+ *
+ * @param session
+ * @param request
+ * @returns
+ */
+function validateInPersonSINCaseSession(
+  session: AppSession,
+  request: Request,
+): Required<NonNullable<SessionData['inPersonSINCase']>> {
+  const inPersonSINCase = session.inPersonSINCase;
+
+  if (inPersonSINCase === undefined) {
+    throw i18nRedirect('routes/protected/person-case/privacy-statement.tsx', request);
+  }
+
+  const {
+    currentNameInfo,
+    personalInformation,
+    previousSin,
+    primaryDocuments,
+    privacyStatement,
+    requestDetails,
+    secondaryDocument,
+    contactInformation,
+    birthDetails,
+  } = inPersonSINCase;
+
+  if (privacyStatement === undefined) {
+    throw i18nRedirect('routes/protected/index.tsx', request);
+  }
+
+  if (requestDetails === undefined) {
+    throw i18nRedirect('routes/protected/person-case/request-details.tsx', request);
+  }
+
+  if (primaryDocuments === undefined) {
+    throw i18nRedirect('routes/protected/person-case/primary-docs.tsx', request);
+  }
+
+  if (secondaryDocument === undefined) {
+    throw i18nRedirect('routes/protected/person-case/secondary-doc.tsx', request);
+  }
+
+  if (currentNameInfo === undefined) {
+    throw i18nRedirect('routes/protected/person-case/current-name.tsx', request);
+  }
+
+  if (birthDetails === undefined) {
+    throw i18nRedirect('routes/protected/person-case/birth-details.tsx', request);
+  }
+
+  if (personalInformation === undefined) {
+    throw i18nRedirect('routes/protected/person-case/personal-info.tsx', request);
+  }
+
+  if (previousSin === undefined) {
+    throw i18nRedirect('routes/protected/person-case/previous-sin.tsx', request);
+  }
+
+  if (contactInformation === undefined) {
+    throw i18nRedirect('routes/protected/person-case/contact-information.tsx', request);
+  }
 
   return {
-    documentTitle: t('protected:review.page-title'),
-    primaryDocumentInfo: context.session.inPersonSINCase?.primaryDocuments ? primaryDocumentInfo : undefined,
+    birthDetails,
+    contactInformation,
+    currentNameInfo,
+    personalInformation,
+    previousSin,
+    primaryDocuments,
+    privacyStatement,
+    requestDetails,
+    secondaryDocument,
   };
 }
 
@@ -49,6 +112,7 @@ export function meta({ data }: Route.MetaArgs) {
 
 export async function action({ context, request }: Route.ActionArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
+  // const inPersonSINCase = validateInPersonSINCaseSession(context.session, request);
 
   const formData = await request.formData();
   const action = formData.get('action');
@@ -68,6 +132,7 @@ export async function action({ context, request }: Route.ActionArgs) {
 }
 
 export default function Review({ loaderData, actionData, params }: Route.ComponentProps) {
+  const { inPersonSINCase } = loaderData;
   const { t } = useTranslation(handle.i18nNamespace);
   const fetcherKey = useId();
   const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
@@ -85,42 +150,40 @@ export default function Review({ loaderData, actionData, params }: Route.Compone
               <dl>
                 <DescriptionListItem term={t('protected:primary-identity-document.current-status-in-canada.title')}>
                   <p>
-                    {loaderData.primaryDocumentInfo?.currentStatusInCanada
-                      ? t(
-                          `protected:primary-identity-document.current-status-in-canada.options.${loaderData.primaryDocumentInfo.currentStatusInCanada}` as 'protected:primary-identity-document.current-status-in-canada.options.select-option',
-                        )
-                      : ''}
+                    {/* TODO: Code Table Value  */}
+                    {t(
+                      `protected:primary-identity-document.current-status-in-canada.options.${inPersonSINCase.primaryDocuments.currentStatusInCanada}` as 'protected:primary-identity-document.current-status-in-canada.options.select-option',
+                    )}
                   </p>
                 </DescriptionListItem>
                 <DescriptionListItem term={t('protected:primary-identity-document.document-type.title')}>
                   <p>
-                    {loaderData.primaryDocumentInfo?.documentType
-                      ? t(
-                          `protected:primary-identity-document.document-type.options.${loaderData.primaryDocumentInfo.documentType}` as 'protected:primary-identity-document.document-type.options.select-option',
-                        )
-                      : ''}
+                    {/* TODO: Code Table Value  */}
+                    {t(
+                      `protected:primary-identity-document.document-type.options.${inPersonSINCase.primaryDocuments.documentType}` as 'protected:primary-identity-document.document-type.options.select-option',
+                    )}
                   </p>
                 </DescriptionListItem>
                 <DescriptionListItem term={t('protected:primary-identity-document.registration-number.label')}>
-                  <p>{loaderData.primaryDocumentInfo?.registrationNumber}</p>
+                  <p>{inPersonSINCase.primaryDocuments.registrationNumber}</p>
                 </DescriptionListItem>
                 <DescriptionListItem term={t('protected:primary-identity-document.client-number.label')}>
-                  <p>{loaderData.primaryDocumentInfo?.clientNumber}</p>
+                  <p>{inPersonSINCase.primaryDocuments.clientNumber}</p>
                 </DescriptionListItem>
                 <DescriptionListItem term={t('protected:primary-identity-document.given-name.label')}>
-                  <p>{loaderData.primaryDocumentInfo?.givenName}</p>
+                  <p>{inPersonSINCase.primaryDocuments.givenName}</p>
                 </DescriptionListItem>
                 <DescriptionListItem term={t('protected:primary-identity-document.last-name.label')}>
-                  <p>{loaderData.primaryDocumentInfo?.lastName}</p>
+                  <p>{inPersonSINCase.primaryDocuments.lastName}</p>
                 </DescriptionListItem>
                 <DescriptionListItem term={t('protected:primary-identity-document.date-of-birth.label')}>
-                  <p>{loaderData.primaryDocumentInfo?.dateOfBirth}</p>
+                  <p>{inPersonSINCase.primaryDocuments.dateOfBirth}</p>
                 </DescriptionListItem>
                 <DescriptionListItem term={t('protected:primary-identity-document.gender.label')}>
-                  <p>{loaderData.primaryDocumentInfo?.gender}</p>
+                  <p>{inPersonSINCase.primaryDocuments.gender}</p>
                 </DescriptionListItem>
                 <DescriptionListItem term={t('protected:primary-identity-document.citizenship-date.label')}>
-                  <p>{loaderData.primaryDocumentInfo?.citizenshipDate}</p>
+                  <p>{inPersonSINCase.primaryDocuments.citizenshipDate}</p>
                 </DescriptionListItem>
               </dl>
             </section>
