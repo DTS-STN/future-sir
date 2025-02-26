@@ -61,10 +61,12 @@ type LocalizedProvinceTerritory = Readonly<{
 }>;
 
 export function getLocalizedProvincesTerritoriesStates(locale: Language = 'en'): readonly LocalizedProvinceTerritory[] {
-  return getProvincesTerritories().map((region) => ({
-    id: region.id,
-    name: region[locale === 'en' ? 'nameEn' : 'nameFr'],
-  }));
+  return getProvincesTerritories()
+    .map((region) => ({
+      id: region.id,
+      name: region[locale === 'en' ? 'nameEn' : 'nameFr'],
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name, locale, { sensitivity: 'base' }));
 }
 
 type PreferredLanguage = Readonly<{

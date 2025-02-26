@@ -11,7 +11,12 @@ import * as v from 'valibot';
 import type { Info, Route } from './+types/birth-details';
 
 import { serverEnvironment } from '~/.server/environment';
-import { getCountries, getLocalizedCountries } from '~/.server/services/locale-data-service';
+import {
+  getCountries,
+  getLocalizedCountries,
+  getLocalizedProvincesTerritoriesStates,
+  getProvincesTerritories,
+} from '~/.server/services/locale-data-service';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
@@ -47,6 +52,7 @@ export async function loader({ context, request }: Route.LoaderArgs) {
   return {
     documentTitle: t('protected:primary-identity-document.page-title'),
     localizedCountries: getLocalizedCountries(lang),
+    localizedProvincesTerritoriesStates: getLocalizedProvincesTerritoriesStates(lang),
     PP_CANADA_COUNTRY_CODE,
     defaultFormValues: {
       country: birthDetails?.country,
@@ -79,12 +85,9 @@ export async function action({ context, request }: Route.ActionArgs) {
         [
           v.object({
             country: v.literal(PP_CANADA_COUNTRY_CODE, t('protected:birth-details.country.invalid-country')),
-            province: v.pipe(
-              v.string(t('protected:birth-details.province.required-province')),
-              v.trim(),
-              v.nonEmpty(t('protected:birth-details.province.required-province')),
-              v.maxLength(100, t('protected:birth-details.province.invalid-province')),
-              v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:birth-details.province.invalid-province')),
+            province: v.picklist(
+              getProvincesTerritories().map(({ id }) => id),
+              t('protected:birth-details.province.required-province'),
             ),
             city: v.pipe(
               v.string(t('protected:birth-details.city.required-city')),
@@ -171,6 +174,14 @@ export default function BirthDetails({ loaderData, actionData, params }: Route.C
     children: id === 'select-option' ? t('protected:birth-details.select-option') : name,
   }));
 
+  const provinceTerritoryStateOptions = [
+    { id: 'select-option', name: '' },
+    ...loaderData.localizedProvincesTerritoriesStates,
+  ].map(({ id, name }) => ({
+    value: id === 'select-option' ? '' : id,
+    children: id === 'select-option' ? t('protected:contact-information.select-option') : name,
+  }));
+
   const fromMultipleBirthOptions: InputRadiosProps['options'] = [
     {
       children: t('gcweb:input-option.yes'),
@@ -214,15 +225,28 @@ export default function BirthDetails({ loaderData, actionData, params }: Route.C
             />
             {country && (
               <>
-                <InputField
-                  errorMessage={errors?.province?.at(0)}
-                  label={t('protected:birth-details.province.label')}
-                  name="province"
-                  defaultValue={loaderData.defaultFormValues.province}
-                  required={country === loaderData.PP_CANADA_COUNTRY_CODE}
-                  type="text"
-                  className="w-full rounded-sm sm:w-104"
-                />
+                {country === loaderData.PP_CANADA_COUNTRY_CODE ? (
+                  <InputSelect
+                    className="w-max rounded-sm"
+                    id="province"
+                    label={t('protected:birth-details.province.label')}
+                    name="province"
+                    options={provinceTerritoryStateOptions}
+                    errorMessage={errors?.province?.at(0)}
+                    defaultValue={loaderData.defaultFormValues.province}
+                    required
+                  />
+                ) : (
+                  <InputField
+                    errorMessage={errors?.province?.at(0)}
+                    label={t('protected:birth-details.province.label')}
+                    name="province"
+                    defaultValue={loaderData.defaultFormValues.province}
+                    required={country === loaderData.PP_CANADA_COUNTRY_CODE}
+                    type="text"
+                    className="w-full rounded-sm sm:w-104"
+                  />
+                )}
                 <InputField
                   errorMessage={errors?.city?.at(0)}
                   label={t('protected:birth-details.city.label')}
