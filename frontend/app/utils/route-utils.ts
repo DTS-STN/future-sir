@@ -1,3 +1,5 @@
+import { matchPath } from 'react-router';
+
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import type { I18nPageRoute, I18nRoute, I18nRouteFile } from '~/i18n-routes';
@@ -39,19 +41,13 @@ export function findRouteByPath(pathname: string, routes: I18nRoute[]): I18nPage
   for (const route of routes) {
     if (isI18nLayoutRoute(route)) {
       const matchingChildRoute = findRouteByPath(pathname, route.children);
-
-      if (matchingChildRoute) {
-        return matchingChildRoute;
-      }
+      if (matchingChildRoute) return matchingChildRoute;
     }
 
     if (isI18nPageRoute(route)) {
-      const enMatches = normalizedPathname === normalizePath(route.paths.en);
-      const frMatches = normalizedPathname === normalizePath(route.paths.fr);
-
-      if (enMatches || frMatches) {
-        return route;
-      }
+      const enMatches = matchPath(normalizePath(route.paths.en), normalizedPathname);
+      const frMatches = matchPath(normalizePath(route.paths.fr), normalizedPathname);
+      if (enMatches || frMatches) return route;
     }
   }
 }
