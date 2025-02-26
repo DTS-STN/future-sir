@@ -392,5 +392,9 @@
       "required-city": "La ville, la commune ou le village de naissance est requis.",
       "invalid-city": "La ville, la commune ou le village de naissance est invalide."
     }
+  },
+  "review": {
+    "page-title": "Review",
+    "read-carefully": "Veuillez examiner les informations ci-dessous pour en vérifier l'exactitude avant de créer le dossier."
   }
 }
