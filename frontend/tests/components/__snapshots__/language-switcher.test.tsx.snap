@@ -5,10 +5,10 @@ exports[`LanguageSwitcher > should render a LanguageSwitcher with the correct pr
   <a
     class="underline text-white hover:text-blue-100 focus:text-blue-200 sm:text-lg"
     data-discover="true"
-    href="/en/public"
-    lang="en"
+    href="/fr/00000000-0000-0000-0000-000000000000?foo=bar"
+    lang="fr"
   >
-    English
+    Français
   </a>
 </div>
 `;
