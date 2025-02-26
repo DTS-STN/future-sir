@@ -53,7 +53,7 @@
     "i18next-fetch-backend": "^6.0.0",
     "ioredis": "^5.5.0",
     "isbot": "^5.1.23",
-    "jose": "^6.0.7",
+    "jose": "^6.0.8",
     "minimatch": "^10.0.1",
     "morgan": "^1.10.0",
     "oauth4webapi": "^3.3.0",
