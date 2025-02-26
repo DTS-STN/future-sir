@@ -479,7 +479,7 @@ function PrimaryDocsFields({
   const genderOptions = genders.map(({ id, name }) => ({
     value: id,
     children: name,
-    defaultChecked: name === defaultValues?.gender,
+    defaultChecked: id === defaultValues?.gender,
   }));
 
   return (
