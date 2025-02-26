@@ -25,6 +25,7 @@ is determined by the `AUTH_DEFAULT_PROVIDER` environment variable.
 
 The following environment variables are used to configure authentication:
 
+- `ENABLE_DEVMODE_OIDC`: enables the local mock OIDC provider. This is off by default when `NODE_ENV=production`.
 - `AUTH_DEFAULT_PROVIDER`: specifies the default authentication provider. Valid values are `azuread` and `local`.
 - `AZUREAD_ISSUER_URL`: the issuer URL for Azure AD.
 - `AZUREAD_CLIENT_ID`: the client ID for Azure AD.
