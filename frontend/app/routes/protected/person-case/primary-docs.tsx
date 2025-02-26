@@ -61,6 +61,14 @@ export function meta({ data }: Route.MetaArgs) {
   return [{ title: data.documentTitle }];
 }
 
+function toDateString(year: number, month: number, day: number): string {
+  try {
+    return toISODateString(year, month, day);
+  } catch {
+    return '';
+  }
+}
+
 export async function action({ context, request }: Route.ActionArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
 
@@ -218,12 +226,12 @@ export async function action({ context, request }: Route.ActionArgs) {
       const dateOfBirthYear = Number(formData.get('dateOfBirthYear'));
       const dateOfBirthMonth = Number(formData.get('dateOfBirthMonth'));
       const dateOfBirthDay = Number(formData.get('dateOfBirthDay'));
-      const dateOfBirth = toISODateString(dateOfBirthYear, dateOfBirthMonth, dateOfBirthDay);
+      const dateOfBirth = toDateString(dateOfBirthYear, dateOfBirthMonth, dateOfBirthDay);
 
       const citizenshipDateYear = Number(formData.get('citizenshipDateYear'));
       const citizenshipDateMonth = Number(formData.get('citizenshipDateMonth'));
       const citizenshipDateDay = Number(formData.get('citizenshipDateDay'));
-      const citizenshipDate = toISODateString(citizenshipDateYear, citizenshipDateMonth, citizenshipDateDay);
+      const citizenshipDate = toDateString(citizenshipDateYear, citizenshipDateMonth, citizenshipDateDay);
 
       const input = {
         currentStatusInCanada: String(formData.get('currentStatusInCanada')),
