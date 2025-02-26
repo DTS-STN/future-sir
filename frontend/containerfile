@@ -117,4 +117,4 @@ COPY --from=runtime-deps --chown=node:node /home/node/node_modules/ ./node_modul
 COPY --from=build --chown=node:node /home/node/build/ ./build/
 
 USER node
-CMD ["node", "--import", "./build/server/opentelemetry.js", "./build/server/server.js"]
+CMD ["node", "--import", "./build/server/telemetry.js", "./build/server/server.js"]
