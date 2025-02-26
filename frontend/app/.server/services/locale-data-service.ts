@@ -24,10 +24,18 @@ type LocalizedCountry = Readonly<{
 }>;
 
 export function getLocalizedCountries(locale: Language = 'en'): readonly LocalizedCountry[] {
-  return getCountries().map((country) => ({
+  const { PP_CANADA_COUNTRY_CODE } = serverEnvironment;
+  const countries = getCountries().map((country) => ({
     id: country.id,
     name: country[locale === 'en' ? 'nameEn' : 'nameFr'],
   }));
+  return countries
+    .filter((country) => country.id === PP_CANADA_COUNTRY_CODE)
+    .concat(
+      countries
+        .filter((country) => country.id !== PP_CANADA_COUNTRY_CODE)
+        .sort((a, b) => a.name.localeCompare(b.name, locale, { sensitivity: 'base' })),
+    );
 }
 
 type ProvinceTerritory = Readonly<{
