@@ -241,8 +241,6 @@ export function getStartOfDayInTimezone(timezone: string, date?: number | string
  * @returns An ISO 8601 date string in the format "YYYY-MM-DD".
  */
 export function toISODateString(year: number, month: number, day: number): string {
-  if (isNaN(year) || isNaN(month) || isNaN(day)) return '';
-  if (!dateExists(year, month - 1, day)) return '';
   return formatISODate(`${year}-${month}-${day}`);
 }
 
