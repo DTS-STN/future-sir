@@ -78,7 +78,10 @@ export async function action({ context, request }: Route.ActionArgs) {
   const nameMaxLength = 100;
   const registrationNumberLength = 8;
   const clientNumberLength = 10;
+  /*
+  TODO: Enable file upload
   const maxImageSizeBits = 1024 * 1024 * 15; //Max image size is 15 MB
+  */
 
   switch (action) {
     case 'back': {
@@ -209,6 +212,7 @@ export async function action({ context, request }: Route.ActionArgs) {
                   t('protected:primary-identity-document.citizenship-date.invalid'),
                 ),
               ),
+              /* TODO: Enable file upload
               document: v.pipe(
                 v.file(t('protected:primary-identity-document.upload-document.required')),
                 v.mimeType(
@@ -217,6 +221,7 @@ export async function action({ context, request }: Route.ActionArgs) {
                 ),
                 v.maxSize(maxImageSizeBits),
               ),
+              */
             }),
           ],
           t('protected:primary-identity-document.document-type.required'),
@@ -249,7 +254,10 @@ export async function action({ context, request }: Route.ActionArgs) {
         citizenshipDateMonth: citizenshipDateMonth,
         citizenshipDateDay: citizenshipDateDay,
         citizenshipDate: citizenshipDate,
+        /*
+        TODO: Enable file upload
         document: formData.get('document') as File,
+        */
       } satisfies Partial<v.InferInput<typeof schema>>;
 
       const parseResult = v.safeParse(schema, input, { lang });
@@ -567,12 +575,16 @@ function PrimaryDocsFields({
             }}
           />
           <InputFile
+            disabled
             accept=".jpg,.png,.heic"
             id="primary-document-id"
             name="document"
             label={t('protected:primary-identity-document.upload-document.label')}
             required
+            /*
+            TODO: Enable file upload
             errorMessage={errors?.document?.at(0)}
+            */
           />
         </>
       )}
