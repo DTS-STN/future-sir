@@ -20,7 +20,6 @@ import { InputSelect } from '~/components/input-select';
 import { PageTitle } from '~/components/page-title';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
-import { useLanguage } from '~/hooks/use-language';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/layout';
 import { REGEX_PATTERNS } from '~/utils/regex-utils';
@@ -31,24 +30,33 @@ type ParentDetailsSessionData = NonNullable<SessionData['inPersonSINCase']['pare
 const COUNTRIES = ['CAN', 'FRA'] as const;
 const PROVINCES = ['AB', 'BC', 'MB', 'NB', 'NL', 'NT', 'NS', 'NU', 'ON', 'PE', 'QC', 'SK', 'YT'] as const;
 
+const COUNTRY_CODE_CANADA = 'CAN';
+const MAX_PARENTS = 4;
+
 export const handle = {
   i18nNamespace: [...parentHandle.i18nNamespace, 'protected'],
 } as const satisfies RouteHandle;
 
 export async function loader({ context, request }: Route.LoaderArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
+
   const { t } = await getTranslation(request, handle.i18nNamespace);
+  const sessionData = context.session.inPersonSINCase?.parentDetails ?? [];
+
   return {
     documentTitle: t('protected:parent-details.page-title'),
-    defaultFormValues:
-      context.session.inPersonSINCase?.parentDetails?.map((details) => ({
-        unavailable: details.unavailable,
-        givenName: !details.unavailable ? details.givenName : undefined,
-        lastName: !details.unavailable ? details.lastName : undefined,
-        country: !details.unavailable ? details.birthLocation.country : undefined,
-        province: !details.unavailable ? details.birthLocation.province : undefined,
-        city: !details.unavailable ? details.birthLocation.city : undefined,
-      })) ?? [],
+    defaultFormValues: sessionData.map((details) =>
+      details.unavailable
+        ? { unavailable: true }
+        : {
+            unavailable: false,
+            givenName: details.givenName,
+            lastName: details.lastName,
+            country: details.birthLocation.country,
+            province: details.birthLocation.province,
+            city: details.birthLocation.city,
+          },
+    ),
   };
 }
 
@@ -63,8 +71,6 @@ export async function action({ context, request }: Route.ActionArgs) {
   const formData = await request.formData();
   const action = formData.get('action');
   const maxStringLength = 100;
-  const maxParents = 4;
-  const canadaCountryCode = 'CAN';
 
   switch (action) {
     case 'back': {
@@ -100,7 +106,7 @@ export async function action({ context, request }: Route.ActionArgs) {
                   'country',
                   [
                     v.object({
-                      country: v.literal(canadaCountryCode, t('protected:parent-details.country-error.invalid-country')),
+                      country: v.literal(COUNTRY_CODE_CANADA, t('protected:parent-details.country-error.invalid-country')),
                       province: v.pipe(
                         v.string(t('protected:parent-details.province-error.required-province')),
                         v.trim(),
@@ -120,7 +126,7 @@ export async function action({ context, request }: Route.ActionArgs) {
                       country: v.pipe(
                         v.string(t('protected:parent-details.country-error.required-country')),
                         v.nonEmpty(t('protected:parent-details.country-error.required-country')),
-                        v.excludes(canadaCountryCode, t('protected:parent-details.country-error.invalid-country')),
+                        v.excludes(COUNTRY_CODE_CANADA, t('protected:parent-details.country-error.invalid-country')),
                         v.picklist(COUNTRIES, t('protected:parent-details.country-error.invalid-country')),
                       ),
                       province: v.optional(
@@ -152,11 +158,11 @@ export async function action({ context, request }: Route.ActionArgs) {
           t('protected:parent-details.details-unavailable'),
         ),
         v.minLength(1),
-        v.maxLength(maxParents),
+        v.maxLength(MAX_PARENTS),
       ) satisfies v.GenericSchema<ParentDetailsSessionData>;
 
       const parentAmount = Number(formData.get('parent-amount')) || 0;
-      const inputLength = Math.min(parentAmount, maxParents);
+      const inputLength = Math.min(parentAmount, MAX_PARENTS);
 
       const input = Array.from({ length: inputLength }).map((_, i) => ({
         unavailable: Boolean(formData.get(`${i}-unavailable`)),
@@ -187,8 +193,10 @@ export async function action({ context, request }: Route.ActionArgs) {
 
 export default function CreateRequest({ loaderData, actionData, params }: Route.ComponentProps) {
   const { t } = useTranslation(handle.i18nNamespace);
+
   const fetcherKey = useId();
   const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
+
   const isSubmitting = fetcher.state !== 'idle';
   const errors = fetcher.data?.errors;
   const defaultFormValues = loaderData.defaultFormValues;
@@ -231,16 +239,17 @@ function ParentInformation({ defaultFormValues, errors }: ParentInformationProps
   const { t } = useTranslation(handle.i18nNamespace);
   const { idList, addId, removeId } = useIdList(Math.max(defaultFormValues.length, 1));
 
-  const maxParents = 4;
-  const canAddParent = idList.length < maxParents;
+  const canAddParent = idList.length < MAX_PARENTS;
 
-  const onAddParent = () => {
+  function onAddParent() {
     if (canAddParent) addId();
-  };
-  const onRemoveParent = (index: number) => {
-    defaultFormValues.splice(index, 1); //Remove autofill for the removed parent
+  }
+
+  function onRemoveParent(index: number) {
+    // remove parent data from the form values
+    defaultFormValues.splice(index, 1);
     removeId(index);
-  };
+  }
 
   return (
     <>
@@ -252,7 +261,7 @@ function ParentInformation({ defaultFormValues, errors }: ParentInformationProps
             index={index}
             defaultValues={defaultFormValues[index]}
             errors={errors}
-            onClose={idList.length > 1 ? onRemoveParent : undefined}
+            onRemove={idList.length > 1 ? onRemoveParent : undefined}
           />
         ))}
       </div>
@@ -269,31 +278,24 @@ interface ParentFormProps {
   index: number;
   defaultValues?: FormData;
   errors?: Record<string, [string, ...string[]] | undefined>;
-  onClose?: (index: number) => void;
+  onRemove?: (index: number) => void;
 }
 
-function ParentForm({ index, defaultValues, errors, onClose }: ParentFormProps) {
+function ParentForm({ index, defaultValues, errors, onRemove }: ParentFormProps) {
   const { t } = useTranslation(handle.i18nNamespace);
-  const { currentLanguage } = useLanguage();
+
   const [unavailable, setUnavailable] = useState(defaultValues?.unavailable);
   const [country, setCountry] = useState(defaultValues?.country);
-  const canadaCountryCode = 'CAN';
 
   const countryOptions = (['select-option', ...COUNTRIES] as const).map((value) => ({
     value: value === 'select-option' ? '' : value,
     children: t(`protected:countries.${value}`),
   }));
 
-  const provinceOptions = (['select-option', ...PROVINCES] as const)
-    .map((value) => ({
-      value: value === 'select-option' ? '' : value,
-      children: t(`protected:provinces.${value}`),
-    }))
-    .sort((left, right) => {
-      if (left.value === '') return -1; // sort empty string to the top
-      if (right.value === '') return 1; // sort empty string to the top
-      return left.children.localeCompare(right.children, currentLanguage);
-    });
+  const provinceOptions = (['select-option', ...PROVINCES] as const).map((value) => ({
+    value: value === 'select-option' ? '' : value,
+    children: t(`protected:provinces.${value}`),
+  }));
 
   return (
     <div className="space-y-6">
@@ -302,8 +304,8 @@ function ParentForm({ index, defaultValues, errors, onClose }: ParentFormProps) 
           {t('protected:parent-details.section-title')}
           <span className="ml-[0.5ch]">{index + 1}</span>
         </h2>
-        {onClose && (
-          <Button size="lg" type="button" variant="link" endIcon={faXmark} className="px-3" onClick={() => onClose(index)}>
+        {onRemove && (
+          <Button size="lg" type="button" variant="link" endIcon={faXmark} className="px-3" onClick={() => onRemove(index)}>
             {t('protected:parent-details.remove')}
           </Button>
         )}
@@ -349,7 +351,7 @@ function ParentForm({ index, defaultValues, errors, onClose }: ParentFormProps) 
             options={countryOptions}
             onChange={({ target }) => setCountry(target.value)}
           />
-          {country == canadaCountryCode ? (
+          {country == COUNTRY_CODE_CANADA ? (
             <InputSelect
               errorMessage={errors?.[`${index}.birthLocation.province`]?.at(0)}
               className="w-full rounded-sm sm:w-104"
@@ -376,7 +378,7 @@ function ParentForm({ index, defaultValues, errors, onClose }: ParentFormProps) 
             label={t('protected:parent-details.city')}
             name={`${index}-city`}
             defaultValue={defaultValues?.city}
-            required={country == canadaCountryCode}
+            required={country == COUNTRY_CODE_CANADA}
             type="text"
           />
         </>
@@ -386,10 +388,19 @@ function ParentForm({ index, defaultValues, errors, onClose }: ParentFormProps) 
 }
 
 /**
- * Handles a collection of unique ids.
+ * A custom hook that manages a collection of unique numeric IDs.
+ *
+ * Useful for dynamically adding/removing form elements or list items with stable identifiers.
+ *
+ * @param initialSize - The initial number of IDs to generate in the collection. Must be a non-negative integer.
+ *
+ * @returns An object containing:
+ *   - idList: An array of unique numeric IDs
+ *   - addId: Function that appends a new unique ID to the list
+ *   - removeId: Function that removes an ID at the specified index
  */
-function useIdList(size: number) {
-  const [idList, setIdList] = useState<number[]>(Array.from({ length: size }, (_, index) => index + 1));
+function useIdList(initialSize: number) {
+  const [idList, setIdList] = useState(Array.from({ length: initialSize }, (_, index) => index + 1));
 
   return {
     /**
@@ -401,7 +412,10 @@ function useIdList(size: number) {
      * Adds a new id to the id list
      */
     addId: () => {
-      setIdList((prev) => [...prev, (prev[prev.length - 1] ?? 0) + 1]);
+      setIdList((prev) => {
+        const nextId = (prev[prev.length - 1] ?? 0) + 1;
+        return [...prev, nextId];
+      });
     },
 
     /**
@@ -410,10 +424,9 @@ function useIdList(size: number) {
      * @param index - The index of the id to remove.
      */
     removeId: (index: number) => {
-      if (index >= idList.length) return;
-      setIdList((prev) => {
-        return [...prev.slice(0, index), ...prev.slice(index + 1)];
-      });
+      if (index < idList.length) {
+        setIdList((prev) => prev.filter((_, i) => i !== index));
+      }
     },
   };
 }
