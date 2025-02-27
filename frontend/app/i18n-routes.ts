@@ -174,6 +174,14 @@ export const i18nRoutes = [
           fr: '/fr/protege/cas-personnel/contact-information',
         },
       },
+      {
+        id: 'PROT-0014',
+        file: 'routes/protected/person-case/review.tsx',
+        paths: {
+          en: '/en/protected/person-case/review',
+          fr: '/fr/protege/cas-personnel/revision',
+        },
+      },
       //
       // XState-driven in-person flow (poc)
       //
