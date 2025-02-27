@@ -8,11 +8,12 @@ import { useTranslation } from 'react-i18next';
 
 import type { Info, Route } from './+types/review';
 
+import { applicantGenderService } from '~/.server/domain/person-case/services';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
-import { ButtonLink } from '~/components/button-link';
 import { DescriptionList, DescriptionListItem } from '~/components/description-list';
+import { InlineLink } from '~/components/links';
 import { PageTitle } from '~/components/page-title';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
@@ -29,10 +30,20 @@ export async function loader({ context, request }: Route.LoaderArgs) {
   const tabId = new URL(request.url).searchParams.get('tid');
   if (!tabId) throw new AppError('Missing tab id', ErrorCodes.MISSING_TAB_ID, { httpStatusCode: 400 });
 
-  const { t } = await getTranslation(request, handle.i18nNamespace);
+  const { t, lang } = await getTranslation(request, handle.i18nNamespace);
   const inPersonSINCase = validateInPersonSINCaseSession(context.session, tabId, request);
 
-  return { documentTitle: t('protected:review.page-title'), inPersonSINCase, tabId };
+  return {
+    documentTitle: t('protected:review.page-title'),
+    inPersonSINCase: {
+      ...inPersonSINCase,
+      primaryDocuments: {
+        ...inPersonSINCase.primaryDocuments,
+        genderName: applicantGenderService.getLocalizedApplicantGenderById(inPersonSINCase.primaryDocuments.gender, lang).name,
+      },
+    },
+    tabId,
+  };
 }
 
 function validateInPersonSINCaseSession(
@@ -176,13 +187,12 @@ export default function Review({ loaderData, actionData, params }: Route.Compone
       <div className="max-w-prose">
         <fetcher.Form method="post" noValidate>
           <p className="mb-8 text-lg">{t('protected:review.read-carefully')}</p>
-          <div className="space-y-10 divide-y border-y">
+          <div className="space-y-10">
             <section className="space-y-6">
-              <h2 className="font-lato mt-3 text-2xl font-bold">{t('protected:primary-identity-document.page-title')}</h2>
-              <DescriptionList>
+              <h2 className="font-lato text-2xl font-bold">{t('protected:primary-identity-document.page-title')}</h2>
+              <DescriptionList className="divide-y border-y">
                 <DescriptionListItem term={t('protected:primary-identity-document.current-status-in-canada.title')}>
                   <p>
-                    {/* TODO: Code Table Value  */}
                     {t(
                       `protected:primary-identity-document.current-status-in-canada.options.${inPersonSINCase.primaryDocuments.currentStatusInCanada}` as 'protected:primary-identity-document.current-status-in-canada.options.select-option',
                     )}
@@ -190,7 +200,6 @@ export default function Review({ loaderData, actionData, params }: Route.Compone
                 </DescriptionListItem>
                 <DescriptionListItem term={t('protected:primary-identity-document.document-type.title')}>
                   <p>
-                    {/* TODO: Code Table Value  */}
                     {t(
                       `protected:primary-identity-document.document-type.options.${inPersonSINCase.primaryDocuments.documentType}` as 'protected:primary-identity-document.document-type.options.select-option',
                     )}
@@ -212,7 +221,7 @@ export default function Review({ loaderData, actionData, params }: Route.Compone
                   <p>{inPersonSINCase.primaryDocuments.dateOfBirth}</p>
                 </DescriptionListItem>
                 <DescriptionListItem term={t('protected:primary-identity-document.gender.label')}>
-                  <p>{inPersonSINCase.primaryDocuments.gender}</p>
+                  <p>{inPersonSINCase.primaryDocuments.genderName}</p>
                 </DescriptionListItem>
                 <DescriptionListItem term={t('protected:primary-identity-document.citizenship-date.label')}>
                   <p>{inPersonSINCase.primaryDocuments.citizenshipDate}</p>
@@ -221,14 +230,89 @@ export default function Review({ loaderData, actionData, params }: Route.Compone
                   <p>{t('protected:review.choosen-file')}</p>
                 </DescriptionListItem>
               </DescriptionList>
-              <ButtonLink
-                file="routes/protected/person-case/primary-docs.tsx"
-                variant="link"
-                size="lg"
-                search={`tid=${loaderData.tabId}`}
-              >
+              <InlineLink file="routes/protected/person-case/primary-docs.tsx" search={`tid=${loaderData.tabId}`}>
                 {t('protected:review.edit-primary-identity-document')}
-              </ButtonLink>
+              </InlineLink>
+            </section>
+            <section className="space-y-6">
+              <h2 className="font-lato text-2xl font-bold">{t('protected:secondary-identity-document.page-title')}</h2>
+              <DescriptionList className="divide-y border-y">
+                <DescriptionListItem term={t('protected:secondary-identity-document.document-type.title')}>
+                  <p>
+                    {t(
+                      `protected:secondary-identity-document.document-type.options.${inPersonSINCase.secondaryDocument.documentType}` as 'protected:primary-identity-document.document-type.options.select-option',
+                    )}
+                  </p>
+                </DescriptionListItem>
+                <DescriptionListItem term={t('protected:secondary-identity-document.expiry-date.title')}>
+                  <p>{inPersonSINCase.secondaryDocument.expiryDate}</p>
+                </DescriptionListItem>
+                <DescriptionListItem term={t('protected:review.document-uploaded')}>
+                  <p>{t('protected:review.choosen-file')}</p>
+                </DescriptionListItem>
+              </DescriptionList>
+              <InlineLink file="routes/protected/person-case/secondary-doc.tsx" search={`tid=${loaderData.tabId}`}>
+                {t('protected:review.edit-secondary-identity-document')}
+              </InlineLink>
+            </section>
+            <section className="space-y-6">
+              <h2 className="font-lato text-2xl font-bold">{t('protected:review.sub-title-preferred-name')}</h2>
+              <DescriptionList className="divide-y border-y">
+                <DescriptionListItem term={t('protected:current-name.preferred-name.description')}>
+                  <p>
+                    {inPersonSINCase.currentNameInfo.preferredSameAsDocumentName
+                      ? t('protected:review.yes')
+                      : t('protected:review.no')}
+                  </p>
+                </DescriptionListItem>
+                <DescriptionListItem term={t('protected:current-name.preferred-name.first-name')}>
+                  <p>
+                    {inPersonSINCase.currentNameInfo.preferredSameAsDocumentName
+                      ? inPersonSINCase.primaryDocuments.givenName
+                      : inPersonSINCase.currentNameInfo.firstName}
+                  </p>
+                </DescriptionListItem>
+                <DescriptionListItem term={t('protected:current-name.preferred-name.middle-name')}>
+                  {inPersonSINCase.currentNameInfo.preferredSameAsDocumentName === false &&
+                    inPersonSINCase.currentNameInfo.middleName && <p>{inPersonSINCase.currentNameInfo.middleName}</p>}
+                </DescriptionListItem>
+                <DescriptionListItem term={t('protected:current-name.preferred-name.last-name')}>
+                  <p>
+                    {inPersonSINCase.currentNameInfo.preferredSameAsDocumentName
+                      ? inPersonSINCase.primaryDocuments.lastName
+                      : inPersonSINCase.currentNameInfo.lastName}
+                  </p>
+                </DescriptionListItem>
+
+                <h3 className="font-lato text-2xl font-bold">{t('protected:current-name.supporting-docs.title')}</h3>
+                <DescriptionListItem term={t('protected:current-name.supporting-docs.docs-required')}>
+                  <p>
+                    {inPersonSINCase.currentNameInfo.preferredSameAsDocumentName === false &&
+                    inPersonSINCase.currentNameInfo.supportingDocuments.required
+                      ? t('protected:review.yes')
+                      : t('protected:review.no')}
+                  </p>
+                </DescriptionListItem>
+                {inPersonSINCase.currentNameInfo.preferredSameAsDocumentName === false &&
+                  inPersonSINCase.currentNameInfo.supportingDocuments.required && (
+                    <DescriptionListItem term={t('protected:current-name.supporting-docs.title')}>
+                      {inPersonSINCase.currentNameInfo.supportingDocuments.documentTypes.length > 0 && (
+                        <ul className="ml-6 list-disc">
+                          {inPersonSINCase.currentNameInfo.supportingDocuments.documentTypes.map((value, index) => (
+                            <li key={index}>
+                              {t(
+                                `protected:current-name.doc-types.${value}` as 'protected:current-name.doc-types.marriage-document',
+                              )}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </DescriptionListItem>
+                  )}
+              </DescriptionList>
+              <InlineLink file="routes/protected/person-case/current-name.tsx" search={`tid=${loaderData.tabId}`}>
+                {t('protected:review.edit-current-name')}
+              </InlineLink>
             </section>
           </div>
           <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">

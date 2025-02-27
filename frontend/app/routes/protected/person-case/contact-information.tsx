@@ -148,9 +148,9 @@ export async function action({ context, request }: Route.ActionArgs) {
 
       (context.session.inPersonSINCase ??= {}).contactInformation = parseResult.output;
 
-      throw i18nRedirect('routes/protected/person-case/primary-docs.tsx', request, {
+      throw i18nRedirect('routes/protected/person-case/review.tsx', request, {
         search: new URLSearchParams({ tid: tabId }),
-      }); // TODO: change to proper route
+      });
     }
 
     default: {

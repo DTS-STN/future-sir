@@ -394,10 +394,15 @@
   },
   "review": {
     "page-title": "Review",
+    "sub-title-preferred-name": "Preferred name",
     "read-carefully": "Review information below for accuracy before creating case.",
     "document-uploaded": "Document uploaded",
     "choosen-file": "File_chosen.pdf",
-    "edit-primary-identity-document": "Edit primary identity document"
+    "yes": "Yes",
+    "no": "No",
+    "edit-primary-identity-document": "Edit primary identity document",
+    "edit-secondary-identity-document": "Edit secondary identity document",
+    "edit-current-name": "Edit current name"
   },
   "search-sin": {
     "page-title": "Search for a SIN",

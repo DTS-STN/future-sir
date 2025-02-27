@@ -395,10 +395,15 @@
   },
   "review": {
     "page-title": "Review",
+    "sub-title-preferred-name": "Nom préféré",
     "read-carefully": "Veuillez examiner les informations ci-dessous pour en vérifier l'exactitude avant de créer le dossier.",
     "document-uploaded": "Document téléchargé",
     "choosen-file": "Fichier_choisi.pdf",
-    "edit-primary-identity-document": "Modifier le document d'identité principal"
+    "yes": "Oui",
+    "no": "Non",
+    "edit-primary-identity-document": "Modifier le document d'identité principal",
+    "edit-secondary-identity-document": "Modifier le document d'identité secondaire",
+    "edit-current-name": "Modifier le nom actuel"
   },
   "search-sin": {
     "page-title": "Search for a SIN",
