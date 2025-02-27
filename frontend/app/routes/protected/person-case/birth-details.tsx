@@ -148,7 +148,7 @@ export async function action({ context, request }: Route.ActionArgs) {
       }
 
       (context.session.inPersonSINCase ??= {}).birthDetails = parseResult.output;
-      throw i18nRedirect('routes/protected/request.tsx', request);
+      throw i18nRedirect('routes/protected/person-case/parent-details.tsx', request);
     }
 
     default: {

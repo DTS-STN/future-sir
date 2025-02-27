@@ -58,8 +58,7 @@ export async function action({ context, request }: Route.ActionArgs) {
 
   switch (action) {
     case 'back': {
-      //TODO: replace with correct route
-      throw i18nRedirect('routes/protected/person-case/privacy-statement.tsx', request);
+      throw i18nRedirect('routes/protected/person-case/parent-details.tsx', request);
     }
 
     case 'next': {

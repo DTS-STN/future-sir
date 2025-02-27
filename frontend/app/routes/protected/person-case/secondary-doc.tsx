@@ -200,12 +200,12 @@ export default function SecondaryDoc({ loaderData, actionData, params }: Route.C
               errorMessage={errors?.document?.at(0)}
             />
           </div>
-          <div className="mt-8 flex flex-wrap items-center gap-3">
-            <Button name="action" value="back" id="back-button" disabled={isSubmitting}>
-              {t('protected:person-case.previous')}
-            </Button>
+          <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
             <Button name="action" value="next" variant="primary" id="continue-button" disabled={isSubmitting}>
               {t('protected:person-case.next')}
+            </Button>
+            <Button name="action" value="back" id="back-button" disabled={isSubmitting}>
+              {t('protected:person-case.previous')}
             </Button>
           </div>
         </fetcher.Form>
