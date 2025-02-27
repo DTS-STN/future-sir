@@ -11,7 +11,8 @@ import type { Info, Route } from './+types/review';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
-import { DescriptionListItem } from '~/components/description-list-item';
+import { ButtonLink } from '~/components/button-link';
+import { DescriptionList, DescriptionListItem } from '~/components/description-list';
 import { PageTitle } from '~/components/page-title';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
@@ -46,15 +47,16 @@ function validateInPersonSINCaseSession(
   }
 
   const {
+    birthDetails,
+    contactInformation,
     currentNameInfo,
+    parentDetails,
     personalInformation,
     previousSin,
     primaryDocuments,
     privacyStatement,
     requestDetails,
     secondaryDocument,
-    contactInformation,
-    birthDetails,
   } = inPersonSINCase;
 
   if (privacyStatement === undefined) {
@@ -77,12 +79,16 @@ function validateInPersonSINCaseSession(
     throw i18nRedirect('routes/protected/person-case/current-name.tsx', request);
   }
 
+  if (personalInformation === undefined) {
+    throw i18nRedirect('routes/protected/person-case/personal-info.tsx', request);
+  }
+
   if (birthDetails === undefined) {
     throw i18nRedirect('routes/protected/person-case/birth-details.tsx', request);
   }
 
-  if (personalInformation === undefined) {
-    throw i18nRedirect('routes/protected/person-case/personal-info.tsx', request);
+  if (parentDetails === undefined) {
+    throw i18nRedirect('routes/protected/person-case/parent-details.tsx', request);
   }
 
   if (previousSin === undefined) {
@@ -97,6 +103,7 @@ function validateInPersonSINCaseSession(
     birthDetails,
     contactInformation,
     currentNameInfo,
+    parentDetails,
     personalInformation,
     previousSin,
     primaryDocuments,
@@ -147,7 +154,7 @@ export default function Review({ loaderData, actionData, params }: Route.Compone
           <div className="space-y-10 divide-y border-y">
             <section className="space-y-6">
               <h2 className="font-lato mt-3 text-2xl font-bold">{t('protected:primary-identity-document.page-title')}</h2>
-              <dl>
+              <DescriptionList>
                 <DescriptionListItem term={t('protected:primary-identity-document.current-status-in-canada.title')}>
                   <p>
                     {/* TODO: Code Table Value  */}
@@ -185,7 +192,13 @@ export default function Review({ loaderData, actionData, params }: Route.Compone
                 <DescriptionListItem term={t('protected:primary-identity-document.citizenship-date.label')}>
                   <p>{inPersonSINCase.primaryDocuments.citizenshipDate}</p>
                 </DescriptionListItem>
-              </dl>
+                <DescriptionListItem term={t('protected:review.document-uploaded')}>
+                  <p>{t('protected:review.choosen-file')}</p>
+                </DescriptionListItem>
+              </DescriptionList>
+              <ButtonLink file="routes/protected/person-case/primary-docs.tsx" variant="link" size="lg">
+                {t('protected:review.edit-primary-identity-document')}
+              </ButtonLink>
             </section>
           </div>
           <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">

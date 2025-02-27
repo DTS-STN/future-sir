@@ -395,6 +395,9 @@
   },
   "review": {
     "page-title": "Review",
-    "read-carefully": "Veuillez examiner les informations ci-dessous pour en vérifier l'exactitude avant de créer le dossier."
+    "read-carefully": "Veuillez examiner les informations ci-dessous pour en vérifier l'exactitude avant de créer le dossier.",
+    "document-uploaded": "Document téléchargé",
+    "choosen-file": "Fichier_choisi.pdf",
+    "edit-primary-identity-document": "Modifier le document d'identité principal"
   }
 }

@@ -394,6 +394,9 @@
   },
   "review": {
     "page-title": "Review",
-    "read-carefully": "Review information below for accuracy before creating case."
+    "read-carefully": "Review information below for accuracy before creating case.",
+    "document-uploaded": "Document uploaded",
+    "choosen-file": "File_chosen.pdf",
+    "edit-primary-identity-document": "Edit primary identity document"
   }
 }
