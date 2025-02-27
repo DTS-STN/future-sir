@@ -281,7 +281,7 @@ interface ParentFormProps {
 
 function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
   const { t } = useTranslation(handle.i18nNamespace);
-  const defaultValues = loaderData.defaultFormValues[index];
+  const defaultValues = loaderData.defaultFormValues.at(index);
 
   const [unavailable, setUnavailable] = useState(defaultValues?.unavailable);
   const [country, setCountry] = useState(defaultValues?.country);
