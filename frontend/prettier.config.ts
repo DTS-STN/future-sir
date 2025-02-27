@@ -1,6 +1,5 @@
-/**
- * @type {import('prettier').Config}
- */
+import type { Config } from 'prettier';
+
 export default {
   plugins: ['@trivago/prettier-plugin-sort-imports', 'prettier-plugin-tailwindcss'],
   importOrder: ['^react(-dom/.*)?$', '^[@]?react-router(/.*)?', '<THIRD_PARTY_MODULES>', '^[\\.]', '^[~]'],
@@ -11,4 +10,4 @@ export default {
   singleQuote: true,
   tabWidth: 2,
   tailwindFunctions: ['clsx', 'cn'],
-};
+} satisfies Config;
