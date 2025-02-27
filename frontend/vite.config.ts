@@ -14,6 +14,9 @@ import { preserveImportMetaUrl } from './vite.server.config';
  * See vite.server.config.ts for the server build config.
  */
 export default defineConfig({
+  build: {
+    target: 'es2022',
+  },
   optimizeDeps: {
     entries: ['./app/entry.client.tsx', './app/root.tsx', './app/routes/**/*.tsx'],
   },
