@@ -12,6 +12,27 @@
     "no-cases": "Aucun dossier n'est actuellement assigné à vous.",
     "coming-soon": "Bientôt disponible"
   },
+  "countries": {
+    "select-option": "Sélectionner une option",
+    "CAN": "Canada",
+    "FRA": "France"
+  },
+  "provinces": {
+    "select-option": "Sélectionner une option",
+    "AB": "Alberta",
+    "BC": "Colombie-Britannique",
+    "MB": "Manitoba",
+    "NB": "Nouveau-Brunswick",
+    "NL": "Terre-Neuve-et-Labrador",
+    "NT": "Territoires du Nord-Ouest",
+    "NS": "Nouvelle-Écosse",
+    "NU": "Nunavut",
+    "ON": "Ontario",
+    "PE": "Île-du-Prince-Édouard",
+    "QC": "Québec",
+    "SK": "Saskatchewan",
+    "YT": "Yukon"
+  },
   "in-person": {
     "title": "Demande NAS en personne",
     "description": "Traiter une demande ou une modification"
@@ -335,6 +356,40 @@
       "label": "Le demandeur fait-il partie d'une naissance multiple (jumeau, triplé, etc.)?",
       "required-from-multiple": "Il est requis de savoir si le demandeur fait partie d'une naissance multiple.",
       "invalid-from-multiple": "Le statut de naissance multiple du demandeur est invalide."
+    }
+  },
+  "parent-details": {
+    "page-title": "Parents/tuteurs légaux",
+    "section-title": "Parent/tuteur légal",
+    "details-unavailable": "Informations sur le parent/tuteur légal non disponibles",
+    "given-name": "Prénom(s)",
+    "last-name": "Nom de naissance",
+    "country": "Pays de naissance",
+    "province": "Province, état ou région de naissance",
+    "city": "Ville, commune ou village de naissance",
+    "add-parent": "Ajouter un parent/tuteur légal",
+    "remove": "Supprimer",
+    "given-name-error": {
+      "format-error": "Le prénom ne doit pas contenir de chiffres.",
+      "max-length-error": "Le prénom ne doit pas contenir plus de {{maximum}} caractère(s).",
+      "required-error": "Le prénom est requis."
+    },
+    "last-name-error": {
+      "format-error": "Le nom de famille ne doit pas contenir de chiffres.",
+      "max-length-error": "Le nom de famille ne doit pas contenir plus de {{maximum}} caractère(s).",
+      "required-error": "Le nom de famille est requis."
+    },
+    "country-error": {
+      "required-country": "Le pays de naissance est requis.",
+      "invalid-country": "Le pays de naissance est invalide."
+    },
+    "province-error": {
+      "required-province": "La province, l'état ou la région de naissance est requis.",
+      "invalid-province": "La province, l'état ou la région de naissance est invalide."
+    },
+    "city-error": {
+      "required-city": "La ville, la commune ou le village de naissance est requis.",
+      "invalid-city": "La ville, la commune ou le village de naissance est invalide."
     }
   }
 }

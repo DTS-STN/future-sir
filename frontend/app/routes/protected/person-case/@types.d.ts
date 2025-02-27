@@ -64,6 +64,25 @@ declare module 'express-session' {
       birthDetails:
         | { country: ServerEnvironment['PP_CANADA_COUNTRY_CODE']; province: string; city: string; fromMultipleBirth: boolean }
         | { country: string; province?: string; city?: string; fromMultipleBirth: boolean };
+      parentDetails: (
+        | { unavailable: true }
+        | {
+            unavailable: false;
+            givenName: string;
+            lastName: string;
+            birthLocation:
+              | {
+                  country: 'CAN';
+                  province: string;
+                  city: string;
+                }
+              | {
+                  country: string;
+                  province?: string;
+                  city?: string;
+                };
+          }
+      )[];
     }>;
   }
 }
