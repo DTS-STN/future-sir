@@ -10,6 +10,13 @@ import * as v from 'valibot';
 
 import type { Info, Route } from './+types/parent-details';
 
+import { serverEnvironment } from '~/.server/environment';
+import {
+  getCountries,
+  getLocalizedCountries,
+  getLocalizedProvincesTerritoriesStates,
+  getProvincesTerritories,
+} from '~/.server/services/locale-data-service';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
@@ -27,10 +34,6 @@ import { trimToUndefined } from '~/utils/string-utils';
 
 type ParentDetailsSessionData = NonNullable<SessionData['inPersonSINCase']['parentDetails']>;
 
-const COUNTRIES = ['CAN', 'FRA'] as const;
-const PROVINCES = ['AB', 'BC', 'MB', 'NB', 'NL', 'NT', 'NS', 'NU', 'ON', 'PE', 'QC', 'SK', 'YT'] as const;
-
-const COUNTRY_CODE_CANADA = 'CAN';
 const MAX_PARENTS = 4;
 
 export const handle = {
@@ -40,11 +43,15 @@ export const handle = {
 export async function loader({ context, request }: Route.LoaderArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
 
-  const { t } = await getTranslation(request, handle.i18nNamespace);
+  const { t, lang } = await getTranslation(request, handle.i18nNamespace);
+  const { PP_CANADA_COUNTRY_CODE } = serverEnvironment;
   const sessionData = context.session.inPersonSINCase?.parentDetails ?? [];
 
   return {
     documentTitle: t('protected:parent-details.page-title'),
+    localizedCountries: getLocalizedCountries(lang),
+    localizedProvincesTerritoriesStates: getLocalizedProvincesTerritoriesStates(lang),
+    PP_CANADA_COUNTRY_CODE,
     defaultFormValues: sessionData.map((details) =>
       details.unavailable
         ? { unavailable: true }
@@ -68,6 +75,7 @@ export async function action({ context, request }: Route.ActionArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
 
   const { lang, t } = await getTranslation(request, handle.i18nNamespace);
+  const { PP_CANADA_COUNTRY_CODE } = serverEnvironment;
   const formData = await request.formData();
   const action = formData.get('action');
   const maxStringLength = 100;
@@ -106,13 +114,10 @@ export async function action({ context, request }: Route.ActionArgs) {
                   'country',
                   [
                     v.object({
-                      country: v.literal(COUNTRY_CODE_CANADA, t('protected:parent-details.country-error.invalid-country')),
-                      province: v.pipe(
-                        v.string(t('protected:parent-details.province-error.required-province')),
-                        v.trim(),
-                        v.nonEmpty(t('protected:parent-details.province-error.required-province')),
-                        v.maxLength(maxStringLength, t('protected:parent-details.province-error.invalid-province')),
-                        v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:parent-details.province-error.invalid-province')),
+                      country: v.literal(PP_CANADA_COUNTRY_CODE, t('protected:parent-details.country-error.invalid-country')),
+                      province: v.picklist(
+                        getProvincesTerritories().map(({ id }) => id),
+                        t('protected:parent-details.province-error.required-province'),
                       ),
                       city: v.pipe(
                         v.string(t('protected:parent-details.city-error.required-city')),
@@ -126,8 +131,11 @@ export async function action({ context, request }: Route.ActionArgs) {
                       country: v.pipe(
                         v.string(t('protected:parent-details.country-error.required-country')),
                         v.nonEmpty(t('protected:parent-details.country-error.required-country')),
-                        v.excludes(COUNTRY_CODE_CANADA, t('protected:parent-details.country-error.invalid-country')),
-                        v.picklist(COUNTRIES, t('protected:parent-details.country-error.invalid-country')),
+                        v.excludes(PP_CANADA_COUNTRY_CODE, t('protected:parent-details.country-error.invalid-country')),
+                        v.picklist(
+                          getCountries().map(({ id }) => id),
+                          t('protected:parent-details.country-error.invalid-country'),
+                        ),
                       ),
                       province: v.optional(
                         v.pipe(
@@ -199,14 +207,13 @@ export default function CreateRequest({ loaderData, actionData, params }: Route.
 
   const isSubmitting = fetcher.state !== 'idle';
   const errors = fetcher.data?.errors;
-  const defaultFormValues = loaderData.defaultFormValues;
 
   return (
     <>
       <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:parent-details.page-title')}</PageTitle>
       <FetcherErrorSummary fetcherKey={fetcherKey}>
         <fetcher.Form method="post" noValidate>
-          <ParentInformation defaultFormValues={defaultFormValues} errors={errors} />
+          <ParentInformation errors={errors} loaderData={loaderData} />
           <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
             <Button name="action" value="next" variant="primary" id="continue-button" disabled={isSubmitting}>
               {t('protected:person-case.next')}
@@ -221,23 +228,14 @@ export default function CreateRequest({ loaderData, actionData, params }: Route.
   );
 }
 
-type FormData = {
-  unavailable?: boolean;
-  givenName?: string;
-  lastName?: string;
-  country?: string;
-  province?: string;
-  city?: string;
-};
-
 interface ParentInformationProps {
-  defaultFormValues: FormData[];
+  loaderData: Route.ComponentProps['loaderData'];
   errors?: Record<string, [string, ...string[]] | undefined>;
 }
 
-function ParentInformation({ defaultFormValues, errors }: ParentInformationProps) {
+function ParentInformation({ loaderData, errors }: ParentInformationProps) {
   const { t } = useTranslation(handle.i18nNamespace);
-  const { idList, addId, removeId } = useIdList(Math.max(defaultFormValues.length, 1));
+  const { idList, addId, removeId } = useIdList(Math.max(loaderData.defaultFormValues.length, 1));
 
   const canAddParent = idList.length < MAX_PARENTS;
 
@@ -247,7 +245,7 @@ function ParentInformation({ defaultFormValues, errors }: ParentInformationProps
 
   function onRemoveParent(index: number) {
     // remove parent data from the form values
-    defaultFormValues.splice(index, 1);
+    loaderData.defaultFormValues.splice(index, 1);
     removeId(index);
   }
 
@@ -259,7 +257,7 @@ function ParentInformation({ defaultFormValues, errors }: ParentInformationProps
           <ParentForm
             key={id}
             index={index}
-            defaultValues={defaultFormValues[index]}
+            loaderData={loaderData}
             errors={errors}
             onRemove={idList.length > 1 ? onRemoveParent : undefined}
           />
@@ -276,26 +274,29 @@ function ParentInformation({ defaultFormValues, errors }: ParentInformationProps
 
 interface ParentFormProps {
   index: number;
-  defaultValues?: FormData;
+  loaderData: Route.ComponentProps['loaderData'];
   errors?: Record<string, [string, ...string[]] | undefined>;
   onRemove?: (index: number) => void;
 }
 
-function ParentForm({ index, defaultValues, errors, onRemove }: ParentFormProps) {
+function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
   const { t } = useTranslation(handle.i18nNamespace);
+  const defaultValues = loaderData.defaultFormValues[index];
 
-  const [unavailable, setUnavailable] = useState(defaultValues?.unavailable);
-  const [country, setCountry] = useState(defaultValues?.country);
+  const [unavailable, setUnavailable] = useState(defaultValues.unavailable);
+  const [country, setCountry] = useState(defaultValues.country);
 
-  const countryOptions = (['select-option', ...COUNTRIES] as const).map((value) => ({
-    value: value === 'select-option' ? '' : value,
-    children: t(`protected:countries.${value}`),
+  const countryOptions = [{ id: 'select-option', name: '' }, ...loaderData.localizedCountries].map(({ id, name }) => ({
+    value: id === 'select-option' ? '' : id,
+    children: id === 'select-option' ? t('protected:parent-details.select-option') : name,
   }));
 
-  const provinceOptions = (['select-option', ...PROVINCES] as const).map((value) => ({
-    value: value === 'select-option' ? '' : value,
-    children: t(`protected:provinces.${value}`),
-  }));
+  const provinceOptions = [{ id: 'select-option', name: '' }, ...loaderData.localizedProvincesTerritoriesStates].map(
+    ({ id, name }) => ({
+      value: id === 'select-option' ? '' : id,
+      children: id === 'select-option' ? t('protected:parent-details.select-option') : name,
+    }),
+  );
 
   return (
     <div className="space-y-6">
@@ -327,7 +328,7 @@ function ParentForm({ index, defaultValues, errors, onRemove }: ParentFormProps)
             errorMessage={errors?.[`${index}.givenName`]?.at(0)}
             label={t('protected:parent-details.given-name')}
             name={`${index}-given-name`}
-            defaultValue={defaultValues?.givenName}
+            defaultValue={defaultValues.givenName}
             required
             type="text"
             className="w-full rounded-sm sm:w-104"
@@ -336,7 +337,7 @@ function ParentForm({ index, defaultValues, errors, onRemove }: ParentFormProps)
             errorMessage={errors?.[`${index}.lastName`]?.at(0)}
             label={t('protected:parent-details.last-name')}
             name={`${index}-last-name`}
-            defaultValue={defaultValues?.lastName}
+            defaultValue={defaultValues.lastName}
             required
             type="text"
             className="w-full rounded-sm sm:w-104"
@@ -347,11 +348,11 @@ function ParentForm({ index, defaultValues, errors, onRemove }: ParentFormProps)
             id={`${index}-country-id`}
             name={`${index}-country`}
             label={t('protected:parent-details.country')}
-            defaultValue={defaultValues?.country}
+            defaultValue={defaultValues.country}
             options={countryOptions}
             onChange={({ target }) => setCountry(target.value)}
           />
-          {country == COUNTRY_CODE_CANADA ? (
+          {country == loaderData.PP_CANADA_COUNTRY_CODE ? (
             <InputSelect
               errorMessage={errors?.[`${index}.birthLocation.province`]?.at(0)}
               className="w-full rounded-sm sm:w-104"
@@ -359,7 +360,7 @@ function ParentForm({ index, defaultValues, errors, onRemove }: ParentFormProps)
               name={`${index}-province`}
               label={t('protected:parent-details.province')}
               required
-              defaultValue={defaultValues?.province}
+              defaultValue={defaultValues.province}
               options={provinceOptions}
             />
           ) : (
@@ -368,7 +369,7 @@ function ParentForm({ index, defaultValues, errors, onRemove }: ParentFormProps)
               className="w-full rounded-sm sm:w-104"
               label={t('protected:parent-details.province')}
               name={`${index}-province`}
-              defaultValue={defaultValues?.province}
+              defaultValue={defaultValues.province}
               type="text"
             />
           )}
@@ -377,8 +378,8 @@ function ParentForm({ index, defaultValues, errors, onRemove }: ParentFormProps)
             className="w-full rounded-sm sm:w-104"
             label={t('protected:parent-details.city')}
             name={`${index}-city`}
-            defaultValue={defaultValues?.city}
-            required={country == COUNTRY_CODE_CANADA}
+            defaultValue={defaultValues.city}
+            required={country == loaderData.PP_CANADA_COUNTRY_CODE}
             type="text"
           />
         </>

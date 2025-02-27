@@ -368,6 +368,7 @@
     "city": "City, town, or village of birth",
     "add-parent": "Add a parent/legal guardian",
     "remove": "Remove",
+    "select-option": "Select option",
     "given-name-error": {
       "format-error": "Given name must not contain any digits.",
       "max-length-error": "Given name must contain at most {{maximum}} character(s).",
