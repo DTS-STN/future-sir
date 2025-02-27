@@ -369,6 +369,7 @@
     "city": "Ville, commune ou village de naissance",
     "add-parent": "Ajouter un parent/tuteur légal",
     "remove": "Supprimer",
+    "select-option": "Sélectionner une option",
     "given-name-error": {
       "format-error": "Le prénom ne doit pas contenir de chiffres.",
       "max-length-error": "Le prénom ne doit pas contenir plus de {{maximum}} caractère(s).",
