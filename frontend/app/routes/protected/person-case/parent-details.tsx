@@ -283,8 +283,8 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
   const { t } = useTranslation(handle.i18nNamespace);
   const defaultValues = loaderData.defaultFormValues[index];
 
-  const [unavailable, setUnavailable] = useState(defaultValues.unavailable);
-  const [country, setCountry] = useState(defaultValues.country);
+  const [unavailable, setUnavailable] = useState(defaultValues?.unavailable);
+  const [country, setCountry] = useState(defaultValues?.country);
 
   const countryOptions = [{ id: 'select-option', name: '' }, ...loaderData.localizedCountries].map(({ id, name }) => ({
     value: id === 'select-option' ? '' : id,
@@ -328,7 +328,7 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
             errorMessage={errors?.[`${index}.givenName`]?.at(0)}
             label={t('protected:parent-details.given-name')}
             name={`${index}-given-name`}
-            defaultValue={defaultValues.givenName}
+            defaultValue={defaultValues?.givenName}
             required
             type="text"
             className="w-full rounded-sm sm:w-104"
@@ -337,7 +337,7 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
             errorMessage={errors?.[`${index}.lastName`]?.at(0)}
             label={t('protected:parent-details.last-name')}
             name={`${index}-last-name`}
-            defaultValue={defaultValues.lastName}
+            defaultValue={defaultValues?.lastName}
             required
             type="text"
             className="w-full rounded-sm sm:w-104"
@@ -348,7 +348,7 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
             id={`${index}-country-id`}
             name={`${index}-country`}
             label={t('protected:parent-details.country')}
-            defaultValue={defaultValues.country}
+            defaultValue={defaultValues?.country}
             options={countryOptions}
             onChange={({ target }) => setCountry(target.value)}
           />
@@ -360,7 +360,7 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
               name={`${index}-province`}
               label={t('protected:parent-details.province')}
               required
-              defaultValue={defaultValues.province}
+              defaultValue={defaultValues?.province}
               options={provinceOptions}
             />
           ) : (
@@ -369,7 +369,7 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
               className="w-full rounded-sm sm:w-104"
               label={t('protected:parent-details.province')}
               name={`${index}-province`}
-              defaultValue={defaultValues.province}
+              defaultValue={defaultValues?.province}
               type="text"
             />
           )}
@@ -378,7 +378,7 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
             className="w-full rounded-sm sm:w-104"
             label={t('protected:parent-details.city')}
             name={`${index}-city`}
-            defaultValue={defaultValues.city}
+            defaultValue={defaultValues?.city}
             required={country == loaderData.PP_CANADA_COUNTRY_CODE}
             type="text"
           />
