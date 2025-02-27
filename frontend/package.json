@@ -14,8 +14,8 @@
     "checks": "node --experimental-strip-types ./checks-runner.ts",
     "test": "vitest",
     "test:e2e": "playwright test",
-    "format:check": "prettier --cache --check .",
-    "format:write": "prettier --write .",
+    "format:check": "cross-env NODE_OPTIONS=--experimental-strip-types prettier --cache --check .",
+    "format:write": "cross-env NODE_OPTIONS=--experimental-strip-types prettier --write .",
     "lint:check": "eslint --cache ./",
     "typecheck": "react-router typegen && tsc"
   },
