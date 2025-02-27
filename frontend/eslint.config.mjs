@@ -1,11 +1,11 @@
 import { fixupConfigRules } from '@eslint/compat';
 import { FlatCompat } from '@eslint/eslintrc';
 import eslint from '@eslint/js';
-// @ts-expect-error types package doesn't exist for eslint-plugin-import
+// @ts-ignore types package doesn't exist for eslint-plugin-import
 import importPlugin from 'eslint-plugin-import';
 import jsxA11yPlugin from 'eslint-plugin-jsx-a11y';
 import reactPlugin from 'eslint-plugin-react';
-// @ts-expect-error types package doesn't exist for eslint-plugin-react-hooks
+// @ts-ignore types package doesn't exist for eslint-plugin-react-hooks
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
@@ -29,7 +29,7 @@ export default tseslint.config(
     languageOptions: {
       globals: {
         ...globals.browser,
-        ...globals.es2022,
+        ...globals.es2020,
         ...globals.node,
       },
       parserOptions: {
