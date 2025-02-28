@@ -319,3 +319,391 @@ export function getLocalizedApplicantGenderById(id: string, locale: Language = '
   }
   return gender;
 }
+
+type ApplicationSubmissionScenario = Readonly<{
+  id: string;
+  nameEn: string | null;
+  nameFr: string | null;
+}>;
+
+/**
+ * Retrieves a list of application submission scenarios.
+ *
+ * @returns An array of application submission scenario objects.
+ */
+export function getApplicationSubmissionScenarios(): readonly ApplicationSubmissionScenario[] {
+  const optionSet = getOptionSet('esdc_applicationsubmissionscenarios');
+  return optionSet.options.map((option) => ({
+    id: option.value.toString(),
+    nameEn: option.labelEn,
+    nameFr: option.labelFr,
+  }));
+}
+
+/**
+ * Retrieves a single application submission scenario by its ID.
+ *
+ * @param id The ID of the application submission scenario to retrieve.
+ * @returns The application submission scenario object if found.
+ * @throws {AppError} If the scenario is not found.
+ */
+export function getApplicationSubmissionScenarioById(id: string): ApplicationSubmissionScenario {
+  const scenario = getApplicationSubmissionScenarios().find((s) => s.id === id);
+  if (!scenario) {
+    throw new AppError(
+      `Application submission scenario with ID '${id}' not found.`,
+      ErrorCodes.NO_APPLICATION_SUBMISSION_SCENARIO_FOUND,
+    );
+  }
+  return scenario;
+}
+
+export type LocalizedApplicationSubmissionScenario = Readonly<{
+  id: string;
+  name: string | null;
+}>;
+
+/**
+ * Retrieves a list of application submission scenarios localized to the specified language.
+ *
+ * @param locale The language to localize the scenario names to (default: 'en').
+ * @returns An array of localized application submission scenario objects.
+ */
+export function getLocalizedApplicationSubmissionScenarios(locale: Language = 'en'): LocalizedApplicationSubmissionScenario[] {
+  return getApplicationSubmissionScenarios().map((option) => ({
+    id: option.id,
+    name: locale === 'fr' ? option.nameFr : option.nameEn,
+  }));
+}
+
+/**
+ * Retrieves a single localized application submission scenario by its ID.
+ *
+ * @param id The ID of the application submission scenario to retrieve.
+ * @param locale The language to localize the scenario name to (default: 'en').
+ * @returns The localized application submission scenario object if found.
+ * @throws {AppError} If the scenario is not found.
+ */
+export function getLocalizedApplicationSubmissionScenarioById(
+  id: string,
+  locale: Language = 'en',
+): LocalizedApplicationSubmissionScenario {
+  const scenario = getLocalizedApplicationSubmissionScenarios(locale).find((s) => s.id === id);
+  if (!scenario) {
+    throw new AppError(
+      `Localized application submission scenario with ID '${id}' not found.`,
+      ErrorCodes.NO_APPLICATION_SUBMISSION_SCENARIO_FOUND,
+    );
+  }
+  return scenario;
+}
+
+type TypeOfApplicationToSubmit = Readonly<{
+  id: string;
+  nameEn: string | null;
+  nameFr: string | null;
+}>;
+
+/**
+ * Retrieves a list of types of applications to submit.
+ *
+ * @returns An array of type of application to submit objects.
+ */
+export function getTypesOfApplicationToSubmit(): readonly TypeOfApplicationToSubmit[] {
+  const optionSet = getOptionSet('esdc_typeofapplicationtosubmit');
+  return optionSet.options.map((option) => ({
+    id: option.value.toString(),
+    nameEn: option.labelEn,
+    nameFr: option.labelFr,
+  }));
+}
+
+/**
+ * Retrieves a single type of application to submit by its ID.
+ *
+ * @param id The ID of the type of application to submit to retrieve.
+ * @returns The type of application to submit object if found.
+ * @throws {AppError} If the type is not found.
+ */
+export function getTypeOfApplicationToSubmitById(id: string): TypeOfApplicationToSubmit {
+  const type = getTypesOfApplicationToSubmit().find((t) => t.id === id);
+  if (!type) {
+    throw new AppError(
+      `Type of application to submit with ID '${id}' not found.`,
+      ErrorCodes.NO_TYPE_OF_APPLICATION_TO_SUBMIT_FOUND,
+    );
+  }
+  return type;
+}
+
+export type LocalizedTypeOfApplicationToSubmit = Readonly<{
+  id: string;
+  name: string | null;
+}>;
+
+/**
+ * Retrieves a list of types of applications to submit localized to the specified language.
+ *
+ * @param locale The language to localize the type names to (default: 'en').
+ * @returns An array of localized type of application to submit objects.
+ */
+export function getLocalizedTypesOfApplicationToSubmit(locale: Language = 'en'): LocalizedTypeOfApplicationToSubmit[] {
+  return getTypesOfApplicationToSubmit().map((option) => ({
+    id: option.id,
+    name: locale === 'fr' ? option.nameFr : option.nameEn,
+  }));
+}
+
+/**
+ * Retrieves a single localized type of application to submit by its ID.
+ *
+ * @param id The ID of the type of application to submit to retrieve.
+ * @param locale The language to localize the type name to (default: 'en').
+ * @returns The localized type of application to submit object if found.
+ * @throws {AppError} If the type is not found.
+ */
+export function getLocalizedTypeOfApplicationToSubmitById(
+  id: string,
+  locale: Language = 'en',
+): LocalizedTypeOfApplicationToSubmit {
+  const type = getLocalizedTypesOfApplicationToSubmit(locale).find((t) => t.id === id);
+  if (!type) {
+    throw new AppError(
+      `Localized type of application to submit with ID '${id}' not found.`,
+      ErrorCodes.NO_TYPE_OF_APPLICATION_TO_SUBMIT_FOUND,
+    );
+  }
+  return type;
+}
+
+type ApplicantPrimaryDocumentChoice = Readonly<{
+  id: string;
+  nameEn: string | null;
+  nameFr: string | null;
+}>;
+
+/**
+ * Retrieves a list of applicant primary document choices.
+ *
+ * @returns An array of applicant primary document choice objects.
+ */
+export function getApplicantPrimaryDocumentChoices(): readonly ApplicantPrimaryDocumentChoice[] {
+  const optionSet = getOptionSet('esdc_applicantprimarydocumentchoices');
+  return optionSet.options.map((option) => ({
+    id: option.value.toString(),
+    nameEn: option.labelEn,
+    nameFr: option.labelFr,
+  }));
+}
+
+/**
+ * Retrieves a single applicant primary document choice by its ID.
+ *
+ * @param id The ID of the applicant primary document choice to retrieve.
+ * @returns The applicant primary document choice object if found.
+ * @throws {AppError} If the choice is not found.
+ */
+export function getApplicantPrimaryDocumentChoiceById(id: string): ApplicantPrimaryDocumentChoice {
+  const choice = getApplicantPrimaryDocumentChoices().find((c) => c.id === id);
+  if (!choice) {
+    throw new AppError(
+      `Applicant primary document choice with ID '${id}' not found.`,
+      ErrorCodes.NO_APPLICANT_PRIMARY_DOCUMENT_CHOICE_FOUND,
+    );
+  }
+  return choice;
+}
+
+export type LocalizedApplicantPrimaryDocumentChoice = Readonly<{
+  id: string;
+  name: string | null;
+}>;
+
+/**
+ * Retrieves a list of applicant primary document choices localized to the specified language.
+ *
+ * @param locale The language to localize the choice names to (default: 'en').
+ * @returns An array of localized applicant primary document choice objects.
+ */
+export function getLocalizedApplicantPrimaryDocumentChoices(
+  locale: Language = 'en',
+): LocalizedApplicantPrimaryDocumentChoice[] {
+  return getApplicantPrimaryDocumentChoices().map((option) => ({
+    id: option.id,
+    name: locale === 'fr' ? option.nameFr : option.nameEn,
+  }));
+}
+
+/**
+ * Retrieves a single localized applicant primary document choice by its ID.
+ *
+ * @param id The ID of the applicant primary document choice to retrieve.
+ * @param locale The language to localize the choice name to (default: 'en').
+ * @returns The localized applicant primary document choice object if found.
+ * @throws {AppError} If the choice is not found.
+ */
+export function getLocalizedApplicantPrimaryDocumentChoiceById(
+  id: string,
+  locale: Language = 'en',
+): LocalizedApplicantPrimaryDocumentChoice {
+  const choice = getLocalizedApplicantPrimaryDocumentChoices(locale).find((c) => c.id === id);
+  if (!choice) {
+    throw new AppError(
+      `Localized applicant primary document choice with ID '${id}' not found.`,
+      ErrorCodes.NO_APPLICANT_PRIMARY_DOCUMENT_CHOICE_FOUND,
+    );
+  }
+  return choice;
+}
+
+type ApplicantSecondaryDocumentChoice = Readonly<{
+  id: string;
+  nameEn: string | null;
+  nameFr: string | null;
+}>;
+
+/**
+ * Retrieves a list of applicant secondary document choices.
+ *
+ * @returns An array of applicant secondary document choice objects.
+ */
+export function getApplicantSecondaryDocumentChoices(): readonly ApplicantSecondaryDocumentChoice[] {
+  const optionSet = getOptionSet('esdc_applicantsecondarydocumentchoices');
+  return optionSet.options.map((option) => ({
+    id: option.value.toString(),
+    nameEn: option.labelEn,
+    nameFr: option.labelFr,
+  }));
+}
+
+/**
+ * Retrieves a single applicant secondary document choice by its ID.
+ *
+ * @param id The ID of the applicant secondary document choice to retrieve.
+ * @returns The applicant secondary document choice object if found.
+ * @throws {AppError} If the choice is not found.
+ */
+export function getApplicantSecondaryDocumentChoiceById(id: string): ApplicantSecondaryDocumentChoice {
+  const choice = getApplicantSecondaryDocumentChoices().find((c) => c.id === id);
+  if (!choice) {
+    throw new AppError(
+      `Applicant secondary document choice with ID '${id}' not found.`,
+      ErrorCodes.NO_APPLICANT_SECONDARY_DOCUMENT_CHOICE_FOUND,
+    );
+  }
+  return choice;
+}
+
+export type LocalizedApplicantSecondaryDocumentChoice = Readonly<{
+  id: string;
+  name: string | null;
+}>;
+
+/**
+ * Retrieves a list of applicant secondary document choices localized to the specified language.
+ *
+ * @param locale The language to localize the choice names to (default: 'en').
+ * @returns An array of localized applicant secondary document choice objects.
+ */
+export function getLocalizedApplicantSecondaryDocumentChoices(
+  locale: Language = 'en',
+): LocalizedApplicantSecondaryDocumentChoice[] {
+  return getApplicantSecondaryDocumentChoices().map((option) => ({
+    id: option.id,
+    name: locale === 'fr' ? option.nameFr : option.nameEn,
+  }));
+}
+
+/**
+ * Retrieves a single localized applicant secondary document choice by its ID.
+ *
+ * @param id The ID of the applicant secondary document choice to retrieve.
+ * @param locale The language to localize the choice name to (default: 'en').
+ * @returns The localized applicant secondary document choice object if found.
+ * @throws {AppError} If the choice is not found.
+ */
+export function getLocalizedApplicantSecondaryDocumentChoiceById(
+  id: string,
+  locale: Language = 'en',
+): LocalizedApplicantSecondaryDocumentChoice {
+  const choice = getLocalizedApplicantSecondaryDocumentChoices(locale).find((c) => c.id === id);
+  if (!choice) {
+    throw new AppError(
+      `Localized applicant secondary document choice with ID '${id}' not found.`,
+      ErrorCodes.NO_APPLICANT_SECONDARY_DOCUMENT_CHOICE_FOUND,
+    );
+  }
+  return choice;
+}
+
+type ApplicantHadSinOption = Readonly<{
+  id: string;
+  nameEn: string | null;
+  nameFr: string | null;
+}>;
+
+/**
+ * Retrieves a list of applicant had SIN options.
+ *
+ * @returns An array of applicant had SIN option objects.
+ */
+export function getApplicantHadSinOptions(): readonly ApplicantHadSinOption[] {
+  const optionSet = getOptionSet('esdc_didtheapplicanteverhadasinnumber');
+  return optionSet.options.map((option) => ({
+    id: option.value.toString(),
+    nameEn: option.labelEn,
+    nameFr: option.labelFr,
+  }));
+}
+
+/**
+ * Retrieves a single applicant had SIN option by its ID.
+ *
+ * @param id The ID of the applicant had SIN option to retrieve.
+ * @returns The applicant had SIN option object if found.
+ * @throws {AppError} If the option is not found.
+ */
+export function getApplicantHadSinOptionById(id: string): ApplicantHadSinOption {
+  const option = getApplicantHadSinOptions().find((o) => o.id === id);
+  if (!option) {
+    throw new AppError(`Applicant had SIN option with ID '${id}' not found.`, ErrorCodes.NO_APPLICANT_HAD_SIN_OPTION_FOUND);
+  }
+  return option;
+}
+
+export type LocalizedApplicantHadSinOption = Readonly<{
+  id: string;
+  name: string | null;
+}>;
+
+/**
+ * Retrieves a list of applicant had SIN options localized to the specified language.
+ *
+ * @param locale The language to localize the option names to (default: 'en').
+ * @returns An array of localized applicant had SIN option objects.
+ */
+export function getLocalizedApplicantHadSinOptions(locale: Language = 'en'): LocalizedApplicantHadSinOption[] {
+  return getApplicantHadSinOptions().map((option) => ({
+    id: option.id,
+    name: locale === 'fr' ? option.nameFr : option.nameEn,
+  }));
+}
+
+/**
+ * Retrieves a single localized applicant had SIN option by its ID.
+ *
+ * @param id The ID of the applicant had SIN option to retrieve.
+ * @param locale The language to localize the option name to (default: 'en').
+ * @returns The localized applicant had SIN option object if found.
+ * @throws {AppError} If the option is not found.
+ */
+export function getLocalizedApplicantHadSinOptionById(id: string, locale: Language = 'en'): LocalizedApplicantHadSinOption {
+  const option = getLocalizedApplicantHadSinOptions(locale).find((o) => o.id === id);
+  if (!option) {
+    throw new AppError(
+      `Localized applicant had SIN option with ID '${id}' not found.`,
+      ErrorCodes.NO_APPLICANT_HAD_SIN_OPTION_FOUND,
+    );
+  }
+  return option;
+}
