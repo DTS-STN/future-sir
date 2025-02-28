@@ -10,6 +10,8 @@ import { useTranslation } from 'react-i18next';
 import type { Info, Route } from './+types/review';
 
 import { applicantGenderService } from '~/.server/domain/person-case/services';
+import { serverEnvironment } from '~/.server/environment';
+import { countryService, provinceService } from '~/.server/shared/services';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
@@ -34,6 +36,8 @@ export async function loader({ context, request }: Route.LoaderArgs) {
   const { t, lang } = await getTranslation(request, handle.i18nNamespace);
   const inPersonSINCase = validateInPersonSINCaseSession(context.session, tabId, request);
 
+  const { PP_CANADA_COUNTRY_CODE } = serverEnvironment;
+
   return {
     documentTitle: t('protected:review.page-title'),
     inPersonSINCase: {
@@ -41,6 +45,20 @@ export async function loader({ context, request }: Route.LoaderArgs) {
       primaryDocuments: {
         ...inPersonSINCase.primaryDocuments,
         genderName: applicantGenderService.getLocalizedApplicantGenderById(inPersonSINCase.primaryDocuments.gender, lang).name,
+      },
+      personalInformation: {
+        ...inPersonSINCase.personalInformation,
+        genderName: applicantGenderService.getLocalizedApplicantGenderById(inPersonSINCase.personalInformation.gender, lang)
+          .name,
+      },
+      birthDetails: {
+        ...inPersonSINCase.birthDetails,
+        countryName: countryService.getLocalizedCountryById(inPersonSINCase.birthDetails.country, lang).name,
+        provinceName: inPersonSINCase.birthDetails.province
+          ? inPersonSINCase.birthDetails.country !== PP_CANADA_COUNTRY_CODE
+            ? inPersonSINCase.birthDetails.province
+            : provinceService.getLocalizedProvinceById(inPersonSINCase.birthDetails.province, lang).name
+          : undefined,
       },
     },
     tabId,
@@ -189,6 +207,8 @@ export default function Review({ loaderData, actionData, params }: Route.Compone
         <fetcher.Form method="post" noValidate>
           <p className="mb-8 text-lg">{t('protected:review.read-carefully')}</p>
           <div className="space-y-10">
+            {/* Primary identity document */}
+
             <section className="space-y-6">
               <h2 className="font-lato text-2xl font-bold">{t('protected:primary-identity-document.page-title')}</h2>
               <DescriptionList className="divide-y border-y">
@@ -235,6 +255,9 @@ export default function Review({ loaderData, actionData, params }: Route.Compone
                 {t('protected:review.edit-primary-identity-document')}
               </InlineLink>
             </section>
+
+            {/* Secondary identity document */}
+
             <section className="space-y-6">
               <h2 className="font-lato text-2xl font-bold">{t('protected:secondary-identity-document.page-title')}</h2>
               <DescriptionList className="divide-y border-y">
@@ -256,6 +279,9 @@ export default function Review({ loaderData, actionData, params }: Route.Compone
                 {t('protected:review.edit-secondary-identity-document')}
               </InlineLink>
             </section>
+
+            {/* Preferred name */}
+
             <section className="space-y-6">
               <h2 className="font-lato text-2xl font-bold">{t('protected:review.sub-title-preferred-name')}</h2>
               <DescriptionList className="divide-y border-y">
@@ -299,8 +325,8 @@ export default function Review({ loaderData, actionData, params }: Route.Compone
                     <DescriptionListItem term={t('protected:current-name.supporting-docs.title')}>
                       {inPersonSINCase.currentNameInfo.supportingDocuments.documentTypes.length > 0 && (
                         <ul className="ml-6 list-disc">
-                          {inPersonSINCase.currentNameInfo.supportingDocuments.documentTypes.map((value, index) => (
-                            <li key={index}>{t(`protected:current-name.doc-types.${value}` as ResourceKey)}</li>
+                          {inPersonSINCase.currentNameInfo.supportingDocuments.documentTypes.map((value) => (
+                            <li key={value}>{t(`protected:current-name.doc-types.${value}` as ResourceKey)}</li>
                           ))}
                         </ul>
                       )}
@@ -309,6 +335,64 @@ export default function Review({ loaderData, actionData, params }: Route.Compone
               </DescriptionList>
               <InlineLink file="routes/protected/person-case/current-name.tsx" search={`tid=${loaderData.tabId}`}>
                 {t('protected:review.edit-current-name')}
+              </InlineLink>
+            </section>
+
+            {/* Personal details */}
+
+            <section className="space-y-6">
+              <h2 className="font-lato text-2xl font-bold">{t('protected:personal-information.page-title')}</h2>
+              <DescriptionList className="divide-y border-y">
+                <DescriptionListItem term={t('protected:personal-information.first-name-previously-used.label')}>
+                  {inPersonSINCase.personalInformation.firstNamePreviouslyUsed &&
+                    inPersonSINCase.personalInformation.firstNamePreviouslyUsed.length > 0 && (
+                      <ul className="ml-6 list-disc">
+                        {inPersonSINCase.personalInformation.firstNamePreviouslyUsed.map(
+                          (value, index) => value.length > 0 && <li key={`${index}-${value}`}>{value}</li>,
+                        )}
+                      </ul>
+                    )}
+                </DescriptionListItem>
+                <DescriptionListItem term={t('protected:personal-information.last-name-at-birth.label')}>
+                  <p>{inPersonSINCase.personalInformation.lastNameAtBirth}</p>
+                </DescriptionListItem>
+                <DescriptionListItem term={t('protected:personal-information.last-name-previously-used.label')}>
+                  {inPersonSINCase.personalInformation.lastNamePreviouslyUsed &&
+                    inPersonSINCase.personalInformation.lastNamePreviouslyUsed.length > 0 && (
+                      <ul className="ml-6 list-disc">
+                        {inPersonSINCase.personalInformation.lastNamePreviouslyUsed.map(
+                          (value, index) => value.length > 0 && <li key={`${index}-${value}`}>{value}</li>,
+                        )}
+                      </ul>
+                    )}
+                </DescriptionListItem>
+                <DescriptionListItem term={t('protected:personal-information.gender.label')}>
+                  <p>{inPersonSINCase.personalInformation.gender}</p>
+                </DescriptionListItem>
+              </DescriptionList>
+              <InlineLink file="routes/protected/person-case/personal-info.tsx">
+                {t('protected:review.edit-personal-details')}
+              </InlineLink>
+            </section>
+
+            {/* Birth details */}
+
+            <section className="space-y-6">
+              <h2 className="font-lato text-2xl font-bold">{t('protected:birth-details.page-title')}</h2>
+              <DescriptionList className="divide-y border-y">
+                <DescriptionListItem term={t('protected:review.birth-place')}>
+                  <p className="flex space-x-1">
+                    <span>{inPersonSINCase.birthDetails.city}</span>
+                    <span>{inPersonSINCase.birthDetails.provinceName}</span>
+                    <span>{inPersonSINCase.birthDetails.countryName}</span>
+                  </p>
+                </DescriptionListItem>
+                <DescriptionListItem term={t('protected:review.multiple-birth')}>
+                  <p>{inPersonSINCase.birthDetails.fromMultipleBirth ? t('protected:review.yes') : t('protected:review.no')}</p>
+                </DescriptionListItem>
+              </DescriptionList>
+              <InlineLink file="routes/protected/person-case/birth-details.tsx">
+                {t('protected:review.edit-birth-details')}
               </InlineLink>
             </section>
           </div>

@@ -7,7 +7,7 @@ export type PowerPlatform = Readonly<v.InferOutput<typeof powerPlatform>>;
 export const defaults = {
   PP_ENGLISH_LANGUAGE_CODE: '1033',
   PP_FRENCH_LANGUAGE_CODE: '1036',
-  PP_CANADA_COUNTRY_CODE: '0cf5389e-97ae-eb11-8236-000d3af4bfc3',
+  PP_CANADA_COUNTRY_CODE: 'f8914e7c-2c95-ea11-a812-000d3a0c2b5d',
 } as const;
 
 export const powerPlatform = v.object({
