@@ -253,6 +253,7 @@ export default function ContactInformation({ loaderData, actionData, params }: R
                   className="w-full"
                   errorMessage={errors?.address?.at(0)}
                   defaultValue={loaderData.defaultFormValues?.address}
+                  required
                 />
                 <InputField
                   id="postal-code"
@@ -260,6 +261,7 @@ export default function ContactInformation({ loaderData, actionData, params }: R
                   name="postalCode"
                   errorMessage={errors?.postalCode?.at(0)}
                   defaultValue={loaderData.defaultFormValues?.postalCode}
+                  required
                 />
                 <InputField
                   id="city"
@@ -268,6 +270,7 @@ export default function ContactInformation({ loaderData, actionData, params }: R
                   className="w-full"
                   errorMessage={errors?.city?.at(0)}
                   defaultValue={loaderData.defaultFormValues?.city}
+                  required
                 />
                 {country === loaderData.PP_CANADA_COUNTRY_CODE ? (
                   <InputSelect
@@ -288,6 +291,7 @@ export default function ContactInformation({ loaderData, actionData, params }: R
                     className="w-full"
                     errorMessage={errors?.province?.at(0)}
                     defaultValue={loaderData.defaultFormValues?.province}
+                    required
                   />
                 )}
               </>
