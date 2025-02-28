@@ -55,7 +55,10 @@ export async function action({ context, request }: Route.ActionArgs) {
 
   const formData = await request.formData();
   const action = formData.get('action');
+  /*
+  TODO: Enable file upload
   const maxImageSizeBits = 1024 * 1024 * 15; //Max image size is 15 MB
+  */
 
   switch (action) {
     case 'back': {
@@ -66,6 +69,8 @@ export async function action({ context, request }: Route.ActionArgs) {
 
       const schema = v.object({
         documentType: v.picklist(VALID_DOCTYPE, t('protected:secondary-identity-document.document-type.invalid')),
+        /*
+        TODO: Enable file upload
         document: v.pipe(
           v.file(t('protected:secondary-identity-document.upload-document.required')),
           v.mimeType(
@@ -74,6 +79,7 @@ export async function action({ context, request }: Route.ActionArgs) {
           ),
           v.maxSize(maxImageSizeBits),
         ),
+        */
         expiryYear: v.pipe(
           v.number(t('protected:secondary-identity-document.expiry-date.required-year')),
           v.integer(t('protected:secondary-identity-document.expiry-date.invalid-year')),
@@ -104,7 +110,10 @@ export async function action({ context, request }: Route.ActionArgs) {
       const expiryMonth = Number(formData.get('expiry-month'));
       const expiryDay = Number(formData.get('expiry-day'));
       const input = {
+        /*
+        TODO: Enable file upload
         document: formData.get('document') as File,
+        */
         documentType: String(formData.get('document-type')),
         expiryYear: expiryYear,
         expiryMonth: expiryMonth,
@@ -121,7 +130,10 @@ export async function action({ context, request }: Route.ActionArgs) {
       const resultOutput = parseResult.output;
       context.session.inPersonSINCase ??= {};
       context.session.inPersonSINCase.secondaryDocument = {
+        /*
+        TODO: Enable file upload
         document: resultOutput.document,
+        */
         documentType: resultOutput.documentType,
         expiryDate: resultOutput.expiryDate,
       };
@@ -192,12 +204,16 @@ export default function SecondaryDoc({ loaderData, actionData, params }: Route.C
               }}
             />
             <InputFile
+              disabled
               accept=".jpg,.png,.heic"
               id="document-id"
               name="document"
               label={t('protected:secondary-identity-document.upload-document.title')}
               required
+              /*
+              TODO: Enable file upload
               errorMessage={errors?.document?.at(0)}
+              */
             />
           </div>
           <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">

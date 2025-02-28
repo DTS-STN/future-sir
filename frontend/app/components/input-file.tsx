@@ -90,10 +90,10 @@ export function InputFile({
       <label
         htmlFor={ids.input}
         className={cn(
-          'block w-full cursor-pointer overflow-hidden rounded-lg border border-gray-500 px-3 py-2 whitespace-nowrap',
+          'block w-full cursor-pointer overflow-hidden rounded-lg border border-gray-500 px-3 py-2 whitespace-nowrap select-none',
           'peer-focus:border-blue-500 peer-focus:ring-1 peer-focus:ring-blue-500 peer-focus:outline-hidden',
           'sm:w-fit sm:pr-20 sm:pl-0',
-          'peer-disabled:pointer-events-none peer-disabled:bg-gray-100 peer-disabled:opacity-70',
+          'peer-disabled:pointer-events-none peer-disabled:bg-gray-100 peer-disabled:opacity-50',
           errorMessage && 'border-red-500 peer-focus:border-red-500 peer-focus:ring-red-500',
         )}
       >

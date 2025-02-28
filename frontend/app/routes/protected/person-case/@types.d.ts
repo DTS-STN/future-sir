@@ -33,7 +33,10 @@ declare module 'express-session' {
         givenName: string;
         lastName: string;
         registrationNumber: string;
+        /*
+        TODO: Enable file upload
         document: File;
+        */
       };
       personalInformation: {
         firstNamePreviouslyUsed?: string[];
@@ -43,7 +46,10 @@ declare module 'express-session' {
       };
       secondaryDocument: {
         documentType: string;
+        /*
+        TODO: Enable file upload
         document: File;
+        */
         expiryDate: string;
       };
       previousSin: {
