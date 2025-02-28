@@ -38,16 +38,16 @@ export function dateExists(year: number, month: number, day: number): boolean {
 }
 
 /**
- * Retrieve an array of months based on the provided locale and format.
- * @param locale - The locale to use for formatting the months.
+ * Retrieve an array of months based on the provided language and format.
+ * @param language - The language to use for formatting the months.
  * @param format - The format for displaying the months.
  * @returns An array containing objects with month index and formatted month text.
  */
 export function getLocalizedMonths(
-  locale: string,
+  language: Language,
   format: 'numeric' | '2-digit' | 'long' | 'short' | 'narrow' | undefined = 'long',
 ): { index: number; text: string }[] {
-  const formatter = new Intl.DateTimeFormat(locale, { month: format, timeZone: 'UTC' });
+  const formatter = new Intl.DateTimeFormat(language, { month: format, timeZone: 'UTC' });
 
   return Array.from({ length: 12 }, (_, i) => ({
     index: i + 1, // month index (1-based)

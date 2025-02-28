@@ -8,11 +8,11 @@ export function randomString(len: number, allowedChars = '0123456789abcdefghijkl
 
 /**
  * @param value - The whole number percentage (i.e. multiplied by 100) to be formatted
- * @param locale - The Canadian locale to be used for formatting
- * @returns - The number formatted as a percentage in the givenlocale
+ * @param language - The language to be used for formatting
+ * @returns - The number formatted as a percentage in the given language
  */
-export function formatPercent(value: number, locale: Language): string {
-  return Intl.NumberFormat(`${locale}-CA`, { style: 'percent' }).format(value / 100);
+export function formatPercent(value: number, language: Language): string {
+  return Intl.NumberFormat(`${language}-CA`, { style: 'percent' }).format(value / 100);
 }
 
 /**

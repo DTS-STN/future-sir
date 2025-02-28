@@ -71,16 +71,16 @@ type LocalizedCountry = Readonly<{
 /**
  * Retrieves a list of countries localized to the specified language.
  *
- * @param locale The language to localize the country names to (default: 'en').
+ * @param language The language to localize the country names to (default: 'en').
  * @returns An array of localized country objects.
  */
-export function getLocalizedCountries(locale: Language = 'en'): readonly LocalizedCountry[] {
+export function getLocalizedCountries(language: Language = 'en'): readonly LocalizedCountry[] {
   const { PP_CANADA_COUNTRY_CODE } = serverEnvironment;
 
   const countries = getCountries().map((country) => ({
     id: country.id,
     alphaCode: country.alphaCode,
-    name: locale === 'fr' ? country.nameFr : country.nameEn,
+    name: language === 'fr' ? country.nameFr : country.nameEn,
   }));
 
   return countries
@@ -88,7 +88,7 @@ export function getLocalizedCountries(locale: Language = 'en'): readonly Localiz
     .concat(
       countries
         .filter((country) => country.id !== PP_CANADA_COUNTRY_CODE)
-        .sort((a, b) => a.name.localeCompare(b.name, locale, { sensitivity: 'base' })),
+        .sort((a, b) => a.name.localeCompare(b.name, language, { sensitivity: 'base' })),
     );
 }
 
@@ -96,12 +96,12 @@ export function getLocalizedCountries(locale: Language = 'en'): readonly Localiz
  * Retrieves a single localized country by its ID.
  *
  * @param id The ID of the country to retrieve.
- * @param locale The language to localize the country name to (default: 'en').
+ * @param language The language to localize the country name to (default: 'en').
  * @returns The localized country object if found.
  * @throws {AppError} If the country is not found.
  */
-export function getLocalizedCountryById(id: string, locale: Language = 'en'): LocalizedCountry {
-  const country = getLocalizedCountries(locale).find((c) => c.id === id);
+export function getLocalizedCountryById(id: string, language: Language = 'en'): LocalizedCountry {
+  const country = getLocalizedCountries(language).find((c) => c.id === id);
   if (!country) {
     throw new AppError(`Localized country with ID '${id}' not found.`, ErrorCodes.NO_COUNTRY_FOUND);
   }
@@ -153,29 +153,29 @@ type LocalizedProvince = Readonly<{
 /**
  * Retrieves a list of provinces localized to the specified language.
  *
- * @param locale The language to localize the province names to (default: 'en').
+ * @param language The language to localize the province names to (default: 'en').
  * @returns An array of localized province objects.
  */
-export function getLocalizedProvinces(locale: Language = 'en'): readonly LocalizedProvince[] {
+export function getLocalizedProvinces(language: Language = 'en'): readonly LocalizedProvince[] {
   return getProvinces()
     .map((province) => ({
       id: province.id,
       alphaCode: province.alphaCode,
-      name: locale === 'fr' ? province.nameFr : province.nameEn,
+      name: language === 'fr' ? province.nameFr : province.nameEn,
     }))
-    .sort((a, b) => a.name.localeCompare(b.name, locale, { sensitivity: 'base' }));
+    .sort((a, b) => a.name.localeCompare(b.name, language, { sensitivity: 'base' }));
 }
 
 /**
  * Retrieves a single localized province by its ID.
  *
  * @param id The ID of the province to retrieve.
- * @param locale The language to localize the province name to (default: 'en').
+ * @param language The language to localize the province name to (default: 'en').
  * @returns The localized province object if found.
  * @throws {AppError} If the province is not found.
  */
-export function getLocalizedProvinceById(id: string, locale: Language = 'en'): LocalizedProvince {
-  const province = getLocalizedProvinces(locale).find((p) => p.id === id);
+export function getLocalizedProvinceById(id: string, language: Language = 'en'): LocalizedProvince {
+  const province = getLocalizedProvinces(language).find((p) => p.id === id);
   if (!province) {
     throw new AppError(`Localized province with ID '${id}' not found.`, ErrorCodes.NO_PROVINCE_FOUND);
   }
@@ -225,13 +225,13 @@ type LocalizedPreferredLanguage = Readonly<{
 /**
  * Retrieves a list of languages of correspondence localized to the specified language.
  *
- * @param locale The language to localize the language names to (default: 'en').
+ * @param language The language to localize the language names to (default: 'en').
  * @returns An array of localized language of correspondence objects.
  */
-export function getLocalizedLanguageOfCorrespondence(locale: Language = 'en'): LocalizedPreferredLanguage[] {
+export function getLocalizedLanguageOfCorrespondence(language: Language = 'en'): LocalizedPreferredLanguage[] {
   return getLanguagesOfCorrespondence().map((option) => ({
     id: option.id,
-    name: locale === 'fr' ? option.nameFr : option.nameEn,
+    name: language === 'fr' ? option.nameFr : option.nameEn,
   }));
 }
 
@@ -239,16 +239,19 @@ export function getLocalizedLanguageOfCorrespondence(locale: Language = 'en'): L
  * Retrieves a single localized language of correspondence by its ID.
  *
  * @param id The ID of the language of correspondence to retrieve.
- * @param locale The language to localize the language name to (default: 'en').
+ * @param language The language to localize the language name to (default: 'en').
  * @returns The localized language of correspondence object if found.
  * @throws {AppError} If the language of correspondence is not found.
  */
-export function getLocalizedLanguageOfCorrespondenceById(id: string, locale: Language = 'en'): LocalizedPreferredLanguage {
-  const language = getLocalizedLanguageOfCorrespondence(locale).find((l) => l.id === id);
-  if (!language) {
-    throw new AppError(`Localized language of correspondence with ID '${id}' not found.`, ErrorCodes.NO_LANGUAGE_FOUND);
+export function getLocalizedLanguageOfCorrespondenceById(id: string, language: Language = 'en'): LocalizedPreferredLanguage {
+  const languageOfCorrespondence = getLocalizedLanguageOfCorrespondence(language).find((l) => l.id === id);
+  if (!languageOfCorrespondence) {
+    throw new AppError(
+      `Localized language of correspondence with ID '${id}' not found.`,
+      ErrorCodes.NO_LANGUAGE_OF_CORRESPONDENCE_FOUND,
+    );
   }
-  return language;
+  return languageOfCorrespondence;
 }
 
 type ApplicantGender = Readonly<{
@@ -294,13 +297,13 @@ export type LocalizedApplicantGender = Readonly<{
 /**
  * Retrieves a list of applicant genders localized to the specified language.
  *
- * @param locale The language to localize the gender names to (default: 'en').
+ * @param language The language to localize the gender names to (default: 'en').
  * @returns An array of localized applicant gender objects.
  */
-export function getLocalizedApplicantGenders(locale: Language = 'en'): LocalizedApplicantGender[] {
+export function getLocalizedApplicantGenders(language: Language = 'en'): LocalizedApplicantGender[] {
   return getApplicantGenders().map((option) => ({
     id: option.id,
-    name: locale === 'fr' ? option.nameFr : option.nameEn,
+    name: language === 'fr' ? option.nameFr : option.nameEn,
   }));
 }
 
@@ -308,12 +311,12 @@ export function getLocalizedApplicantGenders(locale: Language = 'en'): Localized
  * Retrieves a single localized applicant gender by its ID.
  *
  * @param id The ID of the applicant gender to retrieve.
- * @param locale The language to localize the gender name to (default: 'en').
+ * @param language The language to localize the gender name to (default: 'en').
  * @returns The localized applicant gender object if found.
  * @throws {AppError} If the applicant gender is not found.
  */
-export function getLocalizedApplicantGenderById(id: string, locale: Language = 'en'): LocalizedApplicantGender {
-  const gender = getLocalizedApplicantGenders(locale).find((g) => g.id === id);
+export function getLocalizedApplicantGenderById(id: string, language: Language = 'en'): LocalizedApplicantGender {
+  const gender = getLocalizedApplicantGenders(language).find((g) => g.id === id);
   if (!gender) {
     throw new AppError(`Localized applicant gender with ID '${id}' not found.`, ErrorCodes.NO_GENDER_FOUND);
   }
