@@ -11,9 +11,9 @@ import * as v from 'valibot';
 
 import type { Info, Route } from './+types/primary-docs';
 
+import type { LocalizedApplicantGender } from '~/.server/domain/person-case/models';
+import { applicantGenderService } from '~/.server/domain/person-case/services';
 import { serverEnvironment } from '~/.server/environment';
-import type { LocalizedApplicantGender } from '~/.server/services/locale-data-service';
-import { getApplicantGenders, getLocalizedApplicantGenders } from '~/.server/services/locale-data-service';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
@@ -53,7 +53,7 @@ export async function loader({ context, request }: Route.LoaderArgs) {
   return {
     documentTitle: t('protected:primary-identity-document.page-title'),
     defaultFormValues: context.session.inPersonSINCase?.primaryDocuments,
-    localizedGenders: getLocalizedApplicantGenders(lang),
+    localizedGenders: applicantGenderService.getLocalizedApplicantGenders(lang),
   };
 }
 
@@ -188,7 +188,7 @@ export async function action({ context, request }: Route.ActionArgs) {
                 ),
               ),
               gender: v.picklist(
-                getApplicantGenders().map(({ id }) => id),
+                applicantGenderService.getApplicantGenders().map(({ id }) => id),
                 t('protected:primary-identity-document.gender.required'),
               ),
               citizenshipDateYear: v.pipe(

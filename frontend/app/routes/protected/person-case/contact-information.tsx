@@ -9,15 +9,9 @@ import * as v from 'valibot';
 
 import type { Info, Route } from './+types/contact-information';
 
+import { languageCorrespondenceService } from '~/.server/domain/person-case/services';
 import { serverEnvironment } from '~/.server/environment';
-import {
-  getCountries,
-  getLocalizedCountries,
-  getLocalizedLanguageOfCorrespondence,
-  getLocalizedProvinces,
-  getLanguagesOfCorrespondence,
-  getProvinces,
-} from '~/.server/services/locale-data-service';
+import { countryService, provinceService } from '~/.server/shared/services';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
@@ -46,9 +40,9 @@ export async function loader({ context, request }: Route.LoaderArgs) {
   return {
     documentTitle: t('protected:contact-information.page-title'),
     defaultFormValues: context.session.inPersonSINCase?.contactInformation,
-    localizedpreferredLanguages: getLocalizedLanguageOfCorrespondence(lang),
-    localizedCountries: getLocalizedCountries(lang),
-    localizedProvincesTerritoriesStates: getLocalizedProvinces(lang),
+    localizedpreferredLanguages: languageCorrespondenceService.getLocalizedLanguageOfCorrespondence(lang),
+    localizedCountries: countryService.getLocalizedCountries(lang),
+    localizedProvincesTerritoriesStates: provinceService.getLocalizedProvinces(lang),
     PP_CANADA_COUNTRY_CODE,
   };
 }
@@ -80,7 +74,7 @@ export async function action({ context, request }: Route.ActionArgs) {
       const schema = v.intersect([
         v.object({
           preferredLanguage: v.picklist(
-            getLanguagesOfCorrespondence().map(({ id }) => id),
+            languageCorrespondenceService.getLanguagesOfCorrespondence().map(({ id }) => id),
             t('protected:contact-information.error-messages.preferred-language-required'),
           ),
           primaryPhoneNumber: v.pipe(
@@ -97,7 +91,7 @@ export async function action({ context, request }: Route.ActionArgs) {
             ),
           ),
           country: v.picklist(
-            getCountries().map(({ id }) => id),
+            countryService.getCountries().map(({ id }) => id),
             t('protected:contact-information.error-messages.country-required'),
           ),
           address: v.pipe(v.string(), v.trim(), v.nonEmpty(t('protected:contact-information.error-messages.address-required'))),
@@ -117,7 +111,7 @@ export async function action({ context, request }: Route.ActionArgs) {
           v.object({
             country: v.literal(PP_CANADA_COUNTRY_CODE),
             province: v.picklist(
-              getProvinces().map(({ id }) => id),
+              provinceService.getProvinces().map(({ id }) => id),
               t('protected:contact-information.error-messages.province-required'),
             ),
           }),

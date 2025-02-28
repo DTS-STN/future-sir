@@ -11,12 +11,7 @@ import * as v from 'valibot';
 import type { Info, Route } from './+types/birth-details';
 
 import { serverEnvironment } from '~/.server/environment';
-import {
-  getCountries,
-  getLocalizedCountries,
-  getLocalizedProvinces,
-  getProvinces,
-} from '~/.server/services/locale-data-service';
+import { countryService, provinceService } from '~/.server/shared/services';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
@@ -51,8 +46,8 @@ export async function loader({ context, request }: Route.LoaderArgs) {
 
   return {
     documentTitle: t('protected:primary-identity-document.page-title'),
-    localizedCountries: getLocalizedCountries(lang),
-    localizedProvincesTerritoriesStates: getLocalizedProvinces(lang),
+    localizedCountries: countryService.getLocalizedCountries(lang),
+    localizedProvincesTerritoriesStates: provinceService.getLocalizedProvinces(lang),
     PP_CANADA_COUNTRY_CODE,
     defaultFormValues: {
       country: birthDetails?.country,
@@ -93,7 +88,7 @@ export async function action({ context, request }: Route.ActionArgs) {
           v.object({
             country: v.literal(PP_CANADA_COUNTRY_CODE, t('protected:birth-details.country.invalid-country')),
             province: v.picklist(
-              getProvinces().map(({ id }) => id),
+              provinceService.getProvinces().map(({ id }) => id),
               t('protected:birth-details.province.required-province'),
             ),
             city: v.pipe(
@@ -111,7 +106,7 @@ export async function action({ context, request }: Route.ActionArgs) {
               v.nonEmpty(t('protected:birth-details.country.required-country')),
               v.excludes(PP_CANADA_COUNTRY_CODE, t('protected:birth-details.country.invalid-country')),
               v.picklist(
-                getCountries().map(({ id }) => id),
+                countryService.getCountries().map(({ id }) => id),
                 t('protected:birth-details.country.invalid-country'),
               ),
             ),
