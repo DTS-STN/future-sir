@@ -8,6 +8,7 @@
     "./app/**/.client/**/*",
     "./app/**/.server/**/*",
     "./e2e/**/*",
+    "./scripts/**/*",
     "./server/**/*",
     "./tests/**/*",
     "./tests/**/.client/**/*",
@@ -16,7 +17,6 @@
     "./playwright.config.ts",
     "./prettier.config.mjs",
     "./react-router.config.ts",
-    "./checks-runner.ts",
     "./vite.config.ts",
     "./vite.server.config.ts",
     "./vitest.workspace.ts"

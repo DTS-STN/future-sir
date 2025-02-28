@@ -11,7 +11,7 @@ import * as v from 'valibot';
 
 import type { Info, Route } from './+types/personal-info';
 
-import { getGenders, getLocalizedGenders } from '~/.server/services/locale-data-service';
+import { getApplicantGenders, getLocalizedApplicantGenders } from '~/.server/services/locale-data-service';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
@@ -44,7 +44,7 @@ export async function loader({ context, request }: Route.LoaderArgs) {
       lastNamePreviouslyUsed: context.session.inPersonSINCase?.personalInformation?.lastNamePreviouslyUsed ?? [],
       gender: context.session.inPersonSINCase?.personalInformation?.gender,
     },
-    localizedGenders: getLocalizedGenders(lang),
+    localizedGenders: getLocalizedApplicantGenders(lang),
   };
 }
 
@@ -80,7 +80,7 @@ export async function action({ context, request }: Route.ActionArgs) {
         ),
         lastNamePreviouslyUsed: v.optional(v.array(v.string())),
         gender: v.picklist(
-          getGenders().map(({ id }) => id),
+          getApplicantGenders().map(({ id }) => id),
           t('protected:personal-information.gender.required'),
         ),
       }) satisfies v.GenericSchema<PersonalInformationSessionData>;

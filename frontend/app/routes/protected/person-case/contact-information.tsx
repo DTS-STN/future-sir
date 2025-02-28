@@ -13,10 +13,10 @@ import { serverEnvironment } from '~/.server/environment';
 import {
   getCountries,
   getLocalizedCountries,
-  getLocalizedPreferredLanguages,
-  getLocalizedProvincesTerritoriesStates,
-  getPreferredLanguages,
-  getProvincesTerritories,
+  getLocalizedLanguageOfCorrespondence,
+  getLocalizedProvinces,
+  getLanguagesOfCorrespondence,
+  getProvinces,
 } from '~/.server/services/locale-data-service';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
@@ -46,9 +46,9 @@ export async function loader({ context, request }: Route.LoaderArgs) {
   return {
     documentTitle: t('protected:contact-information.page-title'),
     defaultFormValues: context.session.inPersonSINCase?.contactInformation,
-    localizedpreferredLanguages: getLocalizedPreferredLanguages(lang),
+    localizedpreferredLanguages: getLocalizedLanguageOfCorrespondence(lang),
     localizedCountries: getLocalizedCountries(lang),
-    localizedProvincesTerritoriesStates: getLocalizedProvincesTerritoriesStates(lang),
+    localizedProvincesTerritoriesStates: getLocalizedProvinces(lang),
     PP_CANADA_COUNTRY_CODE,
   };
 }
@@ -74,7 +74,7 @@ export async function action({ context, request }: Route.ActionArgs) {
       const schema = v.intersect([
         v.object({
           preferredLanguage: v.picklist(
-            getPreferredLanguages().map(({ id }) => id),
+            getLanguagesOfCorrespondence().map(({ id }) => id),
             t('protected:contact-information.error-messages.preferred-language-required'),
           ),
           primaryPhoneNumber: v.pipe(
@@ -111,7 +111,7 @@ export async function action({ context, request }: Route.ActionArgs) {
           v.object({
             country: v.literal(PP_CANADA_COUNTRY_CODE),
             province: v.picklist(
-              getProvincesTerritories().map(({ id }) => id),
+              getProvinces().map(({ id }) => id),
               t('protected:contact-information.error-messages.province-required'),
             ),
           }),
