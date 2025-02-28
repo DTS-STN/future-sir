@@ -9,6 +9,7 @@ import type { Info, Route } from './+types/search-sin';
 
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { Button } from '~/components/button';
+import { DataTable } from '~/components/data-table';
 import { FetcherErrorSummary } from '~/components/error-summary';
 import { PageTitle } from '~/components/page-title';
 import { AppError } from '~/errors/app-error';
@@ -42,6 +43,19 @@ export function action({ context, request }: Route.ActionArgs) {
   if (!tabId) throw new AppError('Missing tab id', ErrorCodes.MISSING_TAB_ID, { httpStatusCode: 400 });
 
   //TODO: fetch and return mock table result data
+  const headers = ['Header 1', 'Header 2', 'Header 3', 'Header 4', 'Header 5'];
+  const data = [
+    ['Data 1-1', 'Data 1-2', 'Data 1-3', 'Data 1-4', 'Data 1-5'],
+    ['Data 2-1', 'Data 2-2', 'Data 2-3', 'Data 2-4', 'Data 2-5'],
+    ['Data 3-1', 'Data 3-2', 'Data 3-3', 'Data 3-4', 'Data 3-5'],
+    ['Data 4-1', 'Data 4-2', 'Data 4-3', 'Data 4-4', 'Data 4-5'],
+  ];
+  return {
+    tableResults: {
+      headers,
+      table: { data },
+    },
+  };
 }
 
 export default function SearchSin({ loaderData, actionData, params }: Route.ComponentProps) {
@@ -80,61 +94,12 @@ export default function SearchSin({ loaderData, actionData, params }: Route.Comp
               </div>
             </div>
 
-            <h3 className="font-lato mb-4 text-xl font-semibold">{t('protected:search-sin.matches')}</h3>
-            <div className="overflow-x-auto rounded-lg shadow">
-              {/* TODO: make reuseable table component */}
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-slate-600">
-                  <tr>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium tracking-wider text-white">
-                      Header 1
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium tracking-wider text-white">
-                      Header 2
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium tracking-wider text-white">
-                      Header 3
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium tracking-wider text-white">
-                      Header 4
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium tracking-wider text-white">
-                      Header 5
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200 bg-white">
-                  <tr className="bg-white">
-                    <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-900">Data 1-1</td>
-                    <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-900">Data 1-2</td>
-                    <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-900">Data 1-3</td>
-                    <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-900">Data 1-4</td>
-                    <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-900">Data 1-5</td>
-                  </tr>
-                  <tr className="bg-gray-50">
-                    <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-900">Data 2-1</td>
-                    <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-900">Data 2-2</td>
-                    <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-900">Data 2-3</td>
-                    <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-900">Data 2-4</td>
-                    <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-900">Data 2-5</td>
-                  </tr>
-                  <tr className="bg-white">
-                    <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-900">Data 3-1</td>
-                    <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-900">Data 3-2</td>
-                    <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-900">Data 3-3</td>
-                    <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-900">Data 3-4</td>
-                    <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-900">Data 3-5</td>
-                  </tr>
-                  <tr className="bg-gray-50">
-                    <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-900">Data 4-1</td>
-                    <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-900">Data 4-2</td>
-                    <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-900">Data 4-3</td>
-                    <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-900">Data 4-4</td>
-                    <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-900">Data 4-5</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+            {fetcher.data?.tableResults && (
+              <>
+                <h3 className="font-lato mb-4 text-xl font-semibold">{t('protected:search-sin.matches')}</h3>
+                <DataTable {...fetcher.data.tableResults} />
+              </>
+            )}
           </div>
           <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
             <Button name="action" value="search" variant="primary" id="search-button" disabled={isSubmitting}>
