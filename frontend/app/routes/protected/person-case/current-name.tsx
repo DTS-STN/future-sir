@@ -6,6 +6,7 @@ import { data, useFetcher } from 'react-router';
 
 import { faExclamationCircle, faXmark } from '@fortawesome/free-solid-svg-icons';
 import type { SessionData } from 'express-session';
+import type { ResourceKey } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import type { PartialDeep } from 'type-fest';
 import * as v from 'valibot';
@@ -230,7 +231,7 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
 
   const docTypes = VALID_DOC_TYPES.map((value) => ({
     value: value,
-    children: t(`protected:current-name.doc-types.${value}` as 'protected:current-name.doc-types.marriage-document'),
+    children: t(`protected:current-name.doc-types.${value}` as ResourceKey),
     defaultChecked:
       (loaderData.defaultFormValues?.preferredSameAsDocumentName === false &&
         loaderData.defaultFormValues.supportingDocuments.required &&

@@ -4,6 +4,7 @@ import type { RouteHandle } from 'react-router';
 import { useFetcher } from 'react-router';
 
 import type { SessionData } from 'express-session';
+import type { ResourceKey } from 'i18next';
 import { useTranslation } from 'react-i18next';
 
 import type { Info, Route } from './+types/review';
@@ -194,14 +195,14 @@ export default function Review({ loaderData, actionData, params }: Route.Compone
                 <DescriptionListItem term={t('protected:primary-identity-document.current-status-in-canada.title')}>
                   <p>
                     {t(
-                      `protected:primary-identity-document.current-status-in-canada.options.${inPersonSINCase.primaryDocuments.currentStatusInCanada}` as 'protected:primary-identity-document.current-status-in-canada.options.select-option',
+                      `protected:primary-identity-document.current-status-in-canada.options.${inPersonSINCase.primaryDocuments.currentStatusInCanada}` as ResourceKey,
                     )}
                   </p>
                 </DescriptionListItem>
                 <DescriptionListItem term={t('protected:primary-identity-document.document-type.title')}>
                   <p>
                     {t(
-                      `protected:primary-identity-document.document-type.options.${inPersonSINCase.primaryDocuments.documentType}` as 'protected:primary-identity-document.document-type.options.select-option',
+                      `protected:primary-identity-document.document-type.options.${inPersonSINCase.primaryDocuments.documentType}` as ResourceKey,
                     )}
                   </p>
                 </DescriptionListItem>
@@ -240,7 +241,7 @@ export default function Review({ loaderData, actionData, params }: Route.Compone
                 <DescriptionListItem term={t('protected:secondary-identity-document.document-type.title')}>
                   <p>
                     {t(
-                      `protected:secondary-identity-document.document-type.options.${inPersonSINCase.secondaryDocument.documentType}` as 'protected:primary-identity-document.document-type.options.select-option',
+                      `protected:secondary-identity-document.document-type.options.${inPersonSINCase.secondaryDocument.documentType}` as ResourceKey,
                     )}
                   </p>
                 </DescriptionListItem>
@@ -299,11 +300,7 @@ export default function Review({ loaderData, actionData, params }: Route.Compone
                       {inPersonSINCase.currentNameInfo.supportingDocuments.documentTypes.length > 0 && (
                         <ul className="ml-6 list-disc">
                           {inPersonSINCase.currentNameInfo.supportingDocuments.documentTypes.map((value, index) => (
-                            <li key={index}>
-                              {t(
-                                `protected:current-name.doc-types.${value}` as 'protected:current-name.doc-types.marriage-document',
-                              )}
-                            </li>
+                            <li key={index}>{t(`protected:current-name.doc-types.${value}` as ResourceKey)}</li>
                           ))}
                         </ul>
                       )}
