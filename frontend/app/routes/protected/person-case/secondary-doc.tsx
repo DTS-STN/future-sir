@@ -1,7 +1,7 @@
 import { useId } from 'react';
 
-import { data, useFetcher } from 'react-router';
 import type { RouteHandle } from 'react-router';
+import { data, useFetcher } from 'react-router';
 
 import { faExclamationCircle, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { isBefore } from 'date-fns';
@@ -9,7 +9,7 @@ import type { SessionData } from 'express-session';
 import { useTranslation } from 'react-i18next';
 import * as v from 'valibot';
 
-import type { Route, Info } from './+types/secondary-doc';
+import type { Info, Route } from './+types/secondary-doc';
 
 import { serverEnvironment } from '~/.server/environment';
 import { requireAuth } from '~/.server/utils/auth-utils';
@@ -51,6 +51,10 @@ export function meta({ data }: Route.MetaArgs) {
 
 export async function action({ context, request }: Route.ActionArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
+
+  const tabId = new URL(request.url).searchParams.get('tid');
+  if (!tabId) throw new AppError('Missing tab id', ErrorCodes.MISSING_TAB_ID, { httpStatusCode: 400 });
+
   const { lang, t } = await getTranslation(request, handle.i18nNamespace);
 
   const formData = await request.formData();
@@ -62,8 +66,11 @@ export async function action({ context, request }: Route.ActionArgs) {
 
   switch (action) {
     case 'back': {
-      throw i18nRedirect('routes/protected/person-case/primary-docs.tsx', request);
+      throw i18nRedirect('routes/protected/person-case/primary-docs.tsx', request, {
+        search: new URLSearchParams({ tid: tabId }),
+      });
     }
+
     case 'next': {
       const currentDate = getStartOfDayInTimezone(serverEnvironment.BASE_TIMEZONE);
 
@@ -127,18 +134,18 @@ export async function action({ context, request }: Route.ActionArgs) {
         return data({ errors: v.flatten<typeof schema>(parseResult.issues).nested }, { status: 400 });
       }
 
-      const resultOutput = parseResult.output;
-      context.session.inPersonSINCase ??= {};
-      context.session.inPersonSINCase.secondaryDocument = {
+      (context.session.inPersonSINCase ??= {}).secondaryDocument = {
         /*
         TODO: Enable file upload
-        document: resultOutput.document,
+        document: parseResult.output.document,
         */
-        documentType: resultOutput.documentType,
-        expiryDate: resultOutput.expiryDate,
+        documentType: parseResult.output.documentType,
+        expiryDate: parseResult.output.expiryDate,
       };
 
-      throw i18nRedirect('routes/protected/person-case/current-name.tsx', request);
+      throw i18nRedirect('routes/protected/person-case/current-name.tsx', request, {
+        search: new URLSearchParams({ tid: tabId }),
+      });
     }
     default: {
       throw new AppError(`Unrecognized action: ${action}`, ErrorCodes.UNRECOGNIZED_ACTION);

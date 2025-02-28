@@ -104,91 +104,105 @@ export const i18nRoutes = [
         paths: { en: '/en/protected/request', fr: '/fr/protege/requete' },
       },
       {
-        id: 'PROT-0004',
-        file: 'routes/protected/person-case/privacy-statement.tsx',
-        paths: {
-          en: '/en/protected/person-case/privacy-statement',
-          fr: '/fr/protege/cas-personnel/declaration-de-confidentialite',
-        },
-      },
-      {
-        id: 'PROT-0005',
-        file: 'routes/protected/person-case/primary-docs.tsx',
-        paths: { en: '/en/protected/person-case/primary-documents', fr: '/fr/protege/cas-personnel/documents-primaires' },
-      },
-      {
-        id: 'PROT-0006',
-        file: 'routes/protected/person-case/request-details.tsx',
-        paths: { en: '/en/protected/person-case/request-details', fr: '/fr/protege/cas-personnel/faire-une-demande' },
-      },
-      {
-        id: 'PROT-0007',
-        file: 'routes/protected/person-case/current-name.tsx',
-        paths: {
-          en: '/en/protected/person-case/current-name',
-          fr: '/fr/protege/cas-personnel/nom-actuel',
-        },
-      },
-      {
-        id: 'PROT-0008',
-        file: 'routes/protected/person-case/personal-info.tsx',
-        paths: {
-          en: '/en/protected/person-case/personal-information',
-          fr: '/fr/protege/cas-personnel/informations-personnelles',
-        },
-      },
-      {
-        id: 'PROT-0009',
-        file: 'routes/protected/person-case/secondary-doc.tsx',
-        paths: { en: '/en/protected/person-case/secondary-document', fr: '/fr/protege/cas-personnel/document-secondaire' },
-      },
-      {
-        id: 'PROT-0010',
-        file: 'routes/protected/person-case/birth-details.tsx',
-        paths: {
-          en: '/en/protected/person-case/birth-details',
-          fr: '/fr/protege/cas-personnel/details-de-naissance',
-        },
-      },
-      {
-        id: 'PROT-0011',
-        file: 'routes/protected/person-case/parent-details.tsx',
-        paths: {
-          en: '/en/protected/person-case/parent-details',
-          fr: '/fr/protege/cas-personnel/details-des-parents',
-        },
-      },
-      {
-        id: 'PROT-0012',
-        file: 'routes/protected/person-case/previous-sin.tsx',
-        paths: {
-          en: '/en/protected/person-case/previous-sin',
-          fr: '/fr/protege/cas-personnel/previous-sin',
-        },
-      },
-      {
-        id: 'PROT-0013',
-        file: 'routes/protected/person-case/contact-information.tsx',
-        paths: {
-          en: '/en/protected/person-case/contact-information',
-          fr: '/fr/protege/cas-personnel/contact-information',
-        },
-      },
-      {
-        id: 'PROT-0014',
-        file: 'routes/protected/person-case/review.tsx',
-        paths: {
-          en: '/en/protected/person-case/review',
-          fr: '/fr/protege/cas-personnel/revision',
-        },
-      },
-      {
-        id: 'PROT-0015',
-        file: 'routes/protected/person-case/search-sin.tsx',
-        paths: {
-          en: '/en/protected/person-case/search-sin',
-          fr: '/fr/protege/cas-personnel/search-sin',
-        },
+        file: 'routes/protected/person-case/layout.tsx',
+        children: [
+          {
+            id: 'PROT-0004',
+            file: 'routes/protected/person-case/privacy-statement.tsx',
+            paths: {
+              en: '/en/protected/person-case/privacy-statement',
+              fr: '/fr/protege/cas-personnel/declaration-de-confidentialite',
+            },
+          },
+          {
+            id: 'PROT-0005',
+            file: 'routes/protected/person-case/primary-docs.tsx',
+            paths: {
+              en: '/en/protected/person-case/primary-documents',
+              fr: '/fr/protege/cas-personnel/documents-primaires',
+            },
+          },
+          {
+            id: 'PROT-0006',
+            file: 'routes/protected/person-case/request-details.tsx',
+            paths: {
+              en: '/en/protected/person-case/request-details',
+              fr: '/fr/protege/cas-personnel/faire-une-demande',
+            },
+          },
+          {
+            id: 'PROT-0007',
+            file: 'routes/protected/person-case/current-name.tsx',
+            paths: {
+              en: '/en/protected/person-case/current-name',
+              fr: '/fr/protege/cas-personnel/nom-actuel',
+            },
+          },
+          {
+            id: 'PROT-0008',
+            file: 'routes/protected/person-case/personal-info.tsx',
+            paths: {
+              en: '/en/protected/person-case/personal-information',
+              fr: '/fr/protege/cas-personnel/informations-personnelles',
+            },
+          },
+          {
+            id: 'PROT-0009',
+            file: 'routes/protected/person-case/secondary-doc.tsx',
+            paths: {
+              en: '/en/protected/person-case/secondary-document',
+              fr: '/fr/protege/cas-personnel/document-secondaire',
+            },
+          },
+          {
+            id: 'PROT-0010',
+            file: 'routes/protected/person-case/birth-details.tsx',
+            paths: {
+              en: '/en/protected/person-case/birth-details',
+              fr: '/fr/protege/cas-personnel/details-de-naissance',
+            },
+          },
+          {
+            id: 'PROT-0011',
+            file: 'routes/protected/person-case/parent-details.tsx',
+            paths: {
+              en: '/en/protected/person-case/parent-details',
+              fr: '/fr/protege/cas-personnel/details-des-parents',
+            },
+          },
+          {
+            id: 'PROT-0012',
+            file: 'routes/protected/person-case/previous-sin.tsx',
+            paths: {
+              en: '/en/protected/person-case/previous-sin',
+              fr: '/fr/protege/cas-personnel/previous-sin',
+            },
+          },
+          {
+            id: 'PROT-0013',
+            file: 'routes/protected/person-case/contact-information.tsx',
+            paths: {
+              en: '/en/protected/person-case/contact-information',
+              fr: '/fr/protege/cas-personnel/contact-information',
+            },
+          },
+          {
+            id: 'PROT-0014',
+            file: 'routes/protected/person-case/review.tsx',
+            paths: {
+              en: '/en/protected/person-case/review',
+              fr: '/fr/protege/cas-personnel/revision',
+            },
+          },
+          {
+            id: 'PROT-0015',
+            file: 'routes/protected/person-case/search-sin.tsx',
+            paths: {
+              en: '/en/protected/person-case/search-sin',
+              fr: '/fr/protege/cas-personnel/search-sin',
+            },
+          },
+        ],
       },
       //
       // XState-driven in-person flow (poc)

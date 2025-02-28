@@ -72,9 +72,14 @@ function toDateString(year: number, month: number, day: number): string {
 export async function action({ context, request }: Route.ActionArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
 
+  const tabId = new URL(request.url).searchParams.get('tid');
+  if (!tabId) throw new AppError('Missing tab id', ErrorCodes.MISSING_TAB_ID, { httpStatusCode: 400 });
+
   const { lang, t } = await getTranslation(request, handle.i18nNamespace);
+
   const formData = await request.formData();
   const action = formData.get('action');
+
   const nameMaxLength = 100;
   const registrationNumberLength = 8;
   const clientNumberLength = 10;
@@ -85,7 +90,9 @@ export async function action({ context, request }: Route.ActionArgs) {
 
   switch (action) {
     case 'back': {
-      throw i18nRedirect('routes/protected/person-case/request-details.tsx', request);
+      throw i18nRedirect('routes/protected/person-case/request-details.tsx', request, {
+        search: new URLSearchParams({ tid: tabId }),
+      });
     }
 
     case 'next': {
@@ -268,7 +275,9 @@ export async function action({ context, request }: Route.ActionArgs) {
 
       (context.session.inPersonSINCase ??= {}).primaryDocuments = parseResult.output;
 
-      throw i18nRedirect('routes/protected/person-case/secondary-doc.tsx', request);
+      throw i18nRedirect('routes/protected/person-case/secondary-doc.tsx', request, {
+        search: new URLSearchParams({ tid: tabId }),
+      });
     }
     default: {
       throw new AppError(`Unrecognized action: ${action}`, ErrorCodes.UNRECOGNIZED_ACTION);

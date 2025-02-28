@@ -25,25 +25,27 @@ export const handle = {
 
 export async function loader({ context, request }: Route.LoaderArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
+
+  const tabId = new URL(request.url).searchParams.get('tid');
+  if (!tabId) throw new AppError('Missing tab id', ErrorCodes.MISSING_TAB_ID, { httpStatusCode: 400 });
+
   const { t } = await getTranslation(request, handle.i18nNamespace);
-  const inPersonSINCase = validateInPersonSINCaseSession(context.session, request);
-  return { documentTitle: t('protected:review.page-title'), inPersonSINCase };
+  const inPersonSINCase = validateInPersonSINCaseSession(context.session, tabId, request);
+
+  return { documentTitle: t('protected:review.page-title'), inPersonSINCase, tabId };
 }
 
-/**
- *
- * @param session
- * @param request
- * @returns
- */
 function validateInPersonSINCaseSession(
   session: AppSession,
+  tabId: string,
   request: Request,
 ): Required<NonNullable<SessionData['inPersonSINCase']>> {
   const inPersonSINCase = session.inPersonSINCase;
 
   if (inPersonSINCase === undefined) {
-    throw i18nRedirect('routes/protected/person-case/privacy-statement.tsx', request);
+    throw i18nRedirect('routes/protected/person-case/privacy-statement.tsx', request, {
+      search: new URLSearchParams({ tid: tabId }),
+    });
   }
 
   const {
@@ -60,43 +62,63 @@ function validateInPersonSINCaseSession(
   } = inPersonSINCase;
 
   if (privacyStatement === undefined) {
-    throw i18nRedirect('routes/protected/index.tsx', request);
+    throw i18nRedirect('routes/protected/index.tsx', request, {
+      search: new URLSearchParams({ tid: tabId }),
+    });
   }
 
   if (requestDetails === undefined) {
-    throw i18nRedirect('routes/protected/person-case/request-details.tsx', request);
+    throw i18nRedirect('routes/protected/person-case/request-details.tsx', request, {
+      search: new URLSearchParams({ tid: tabId }),
+    });
   }
 
   if (primaryDocuments === undefined) {
-    throw i18nRedirect('routes/protected/person-case/primary-docs.tsx', request);
+    throw i18nRedirect('routes/protected/person-case/primary-docs.tsx', request, {
+      search: new URLSearchParams({ tid: tabId }),
+    });
   }
 
   if (secondaryDocument === undefined) {
-    throw i18nRedirect('routes/protected/person-case/secondary-doc.tsx', request);
+    throw i18nRedirect('routes/protected/person-case/secondary-doc.tsx', request, {
+      search: new URLSearchParams({ tid: tabId }),
+    });
   }
 
   if (currentNameInfo === undefined) {
-    throw i18nRedirect('routes/protected/person-case/current-name.tsx', request);
+    throw i18nRedirect('routes/protected/person-case/current-name.tsx', request, {
+      search: new URLSearchParams({ tid: tabId }),
+    });
   }
 
   if (personalInformation === undefined) {
-    throw i18nRedirect('routes/protected/person-case/personal-info.tsx', request);
+    throw i18nRedirect('routes/protected/person-case/personal-info.tsx', request, {
+      search: new URLSearchParams({ tid: tabId }),
+    });
   }
 
   if (birthDetails === undefined) {
-    throw i18nRedirect('routes/protected/person-case/birth-details.tsx', request);
+    throw i18nRedirect('routes/protected/person-case/birth-details.tsx', request, {
+      search: new URLSearchParams({ tid: tabId }),
+    });
   }
 
   if (parentDetails === undefined) {
-    throw i18nRedirect('routes/protected/person-case/parent-details.tsx', request);
+    throw i18nRedirect('routes/protected/person-case/parent-details.tsx', request, {
+      search: new URLSearchParams({ tid: tabId }),
+    });
   }
 
   if (previousSin === undefined) {
-    throw i18nRedirect('routes/protected/person-case/previous-sin.tsx', request);
+    throw i18nRedirect('routes/protected/person-case/previous-sin.tsx', request, {
+      search: new URLSearchParams({ tid: tabId }),
+    });
   }
 
   if (contactInformation === undefined) {
-    throw i18nRedirect('routes/protected/person-case/contact-information.tsx', request);
+    throw i18nRedirect('routes/protected/person-case/contact-information.tsx', request, {
+      search: new URLSearchParams({ tid: tabId }),
+    });
   }
 
   return {
@@ -119,14 +141,17 @@ export function meta({ data }: Route.MetaArgs) {
 
 export async function action({ context, request }: Route.ActionArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
-  // const inPersonSINCase = validateInPersonSINCaseSession(context.session, request);
+  const tabId = new URL(request.url).searchParams.get('tid');
+  if (!tabId) throw new AppError('Missing tab id', ErrorCodes.MISSING_TAB_ID, { httpStatusCode: 400 });
 
   const formData = await request.formData();
   const action = formData.get('action');
 
   switch (action) {
     case 'back': {
-      throw i18nRedirect('routes/protected/person-case/contact-information.tsx', request);
+      throw i18nRedirect('routes/protected/person-case/contact-information.tsx', request, {
+        search: new URLSearchParams({ tid: tabId }),
+      });
     }
 
     case 'next': {
@@ -196,7 +221,12 @@ export default function Review({ loaderData, actionData, params }: Route.Compone
                   <p>{t('protected:review.choosen-file')}</p>
                 </DescriptionListItem>
               </DescriptionList>
-              <ButtonLink file="routes/protected/person-case/primary-docs.tsx" variant="link" size="lg">
+              <ButtonLink
+                file="routes/protected/person-case/primary-docs.tsx"
+                variant="link"
+                size="lg"
+                search={`tid=${loaderData.tabId}`}
+              >
                 {t('protected:review.edit-primary-identity-document')}
               </ButtonLink>
             </section>
