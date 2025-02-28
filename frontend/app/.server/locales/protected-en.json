@@ -398,5 +398,15 @@
     "document-uploaded": "Document uploaded",
     "choosen-file": "File_chosen.pdf",
     "edit-primary-identity-document": "Edit primary identity document"
+  },
+  "search-sin": {
+    "page-title": "Search for a SIN",
+    "search-information": "Search information",
+    "other-names": "Other first and middle names",
+    "date-of-birth": "Date of birth",
+    "parents-legal-guardians": "Parents/legal guardians",
+    "other-last-names": "Other last names",
+    "search": "Search",
+    "matches": "Matches"
   }
 }
