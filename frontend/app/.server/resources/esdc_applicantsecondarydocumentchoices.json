@@ -1,0 +1,23 @@
+{
+  "name": "esdc_applicantsecondarydocumentchoices",
+  "parentOptionSetName": null,
+  "displayNameEn": "Applicant Secondary Document Choices",
+  "displayNameFr": "Choix du document secondaire du demandeur",
+  "options": [
+    {
+      "value": 564190000,
+      "labelEn": "a passport (Canadian or foreign)",
+      "labelFr": "Un passeport (canadien ou étranger)"
+    },
+    {
+      "value": 564190001,
+      "labelEn": "a Canadian provincial or territorial ID card or driver's license",
+      "labelFr": "Une carte d'identité provinciale ou territoriale canadienne ou un permis de conduire."
+    },
+    {
+      "value": 564190002,
+      "labelEn": "any other Canadian government issued ID",
+      "labelFr": "Toute autre pièce d'identité délivrée par le gouvernement canadien"
+    }
+  ]
+}

@@ -2,7 +2,7 @@ import type {
   ApplicationSubmissionScenario,
   LocalizedApplicationSubmissionScenario,
 } from '~/.server/domain/person-case/models';
-import { getOptionSet } from '~/.server/domain/person-case/services/data-service';
+import esdcApplicationSubmissionScenariosData from '~/.server/resources/esdc_applicationsubmissionscenarios.json';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 
@@ -12,8 +12,7 @@ import { ErrorCodes } from '~/errors/error-codes';
  * @returns An array of application submission scenario objects.
  */
 export function getApplicationSubmissionScenarios(): readonly ApplicationSubmissionScenario[] {
-  const optionSet = getOptionSet('esdc_applicationsubmissionscenarios');
-  return optionSet.options.map((option) => ({
+  return esdcApplicationSubmissionScenariosData.options.map((option) => ({
     id: option.value.toString(),
     nameEn: option.labelEn,
     nameFr: option.labelFr,

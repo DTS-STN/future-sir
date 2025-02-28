@@ -1,0 +1,68 @@
+{
+  "name": "esdc_applicantprimarydocumentchoices",
+  "parentOptionSetName": null,
+  "displayNameEn": "Applicant Primary Document Choices",
+  "displayNameFr": "Choix de document d'identité principal du demandeur",
+  "options": [
+    {
+      "value": 564190000,
+      "labelEn": "Birth Certificate issued by the vital statistics agency in the province or territory of birth",
+      "labelFr": "Certificat de naissance délivré par le bureau de l'état civil de la province ou du territoire de votre naissance"
+    },
+    {
+      "value": 564190001,
+      "labelEn": "Certificate of Canadian Citizenship issued by IRCC or CIC",
+      "labelFr": "Certificat de citoyenneté canadienne émis par IRCC ou CIC"
+    },
+    {
+      "value": 564190002,
+      "labelEn": "Certificate of Registration of Birth Abroad issued by CIC before 1977",
+      "labelFr": "Certificat d'inscription d'une naissance à l'étranger émis par IRCC avant 1977"
+    },
+    {
+      "value": 564190003,
+      "labelEn": "Permanent Resident card issued by IRCC or CIC",
+      "labelFr": "Carte de résident permanent délivrée par IRCC ou CIC"
+    },
+    {
+      "value": 564190004,
+      "labelEn": "Confirmation of Permanent Residence (COPR) issued by IRCC",
+      "labelFr": "Confirmation de résidence permanente (CORP) délivrée par IRCC"
+    },
+    {
+      "value": 564190005,
+      "labelEn": "Record of Landing issued by CIC before June 28, 2002",
+      "labelFr": "Fiche d’atterrissage délivrée par IRCC ou CIC"
+    },
+    {
+      "value": 564190006,
+      "labelEn": "Verification of Landing issued by IRCC or CIC",
+      "labelFr": "Vérification de l’atterrissage délivrée par IRCC ou CIC"
+    },
+    {
+      "value": 564190007,
+      "labelEn": "Status Verification issued by IRCC or CIC",
+      "labelFr": "Vérification du statut délivrée par l’IRCC ou le CIC"
+    },
+    {
+      "value": 564190008,
+      "labelEn": "Work permit issued by IRCC",
+      "labelFr": "Permis de travail délivrée par l'IRCC "
+    },
+    {
+      "value": 564190009,
+      "labelEn": "Study permit issued by IRCC which indicates the permit holder \"may accept employment\" or \"may work\" in Canada",
+      "labelFr": "Permis d'études émis par IRCC qui indique que le titulaire du permis « peut accepter un emploi\" ou \"peut travailler\" au Canada"
+    },
+    {
+      "value": 564190010,
+      "labelEn": "Visitor record issued by IRCC showing that you are authorized to work in Canada",
+      "labelFr": "Fiche de visiteur délivrée par IRCC montrant que vous êtes autorisé à travailler au Canada"
+    },
+    {
+      "value": 564190011,
+      "labelEn": "Diplomatic identity card and a work authorization issued by Department of Foreign Affairs, Trade and Development",
+      "labelFr": "Carte d'identité diplomatique et autorisation de travail délivrée par le ministère des Affaires étrangères, du Commerce et du Développement."
+    }
+  ]
+}

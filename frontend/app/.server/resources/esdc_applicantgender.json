@@ -1,0 +1,23 @@
+{
+  "name": "esdc_applicantgender",
+  "parentOptionSetName": null,
+  "displayNameEn": "Applicant gender",
+  "displayNameFr": "Genre du demandeur",
+  "options": [
+    {
+      "value": 564190000,
+      "labelEn": "Female",
+      "labelFr": "Femme"
+    },
+    {
+      "value": 564190001,
+      "labelEn": "Male",
+      "labelFr": "Homme"
+    },
+    {
+      "value": 564190002,
+      "labelEn": "X",
+      "labelFr": "X"
+    }
+  ]
+}

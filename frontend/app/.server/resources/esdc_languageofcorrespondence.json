@@ -1,0 +1,18 @@
+{
+  "name": "esdc_languageofcorrespondence",
+  "parentOptionSetName": null,
+  "displayNameEn": "Language of Correspondence",
+  "displayNameFr": "Langue de correspondence",
+  "options": [
+    {
+      "value": 564190000,
+      "labelEn": "English",
+      "labelFr": "anglais"
+    },
+    {
+      "value": 564190001,
+      "labelEn": "French",
+      "labelFr": "français"
+    }
+  ]
+}

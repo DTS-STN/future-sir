@@ -1,0 +1,43 @@
+{
+  "name": "esdc_typeofapplicationtosubmit",
+  "parentOptionSetName": null,
+  "displayNameEn": "Type of application to submit",
+  "displayNameFr": "Type d'application a soumettre",
+  "options": [
+    {
+      "value": 564190000,
+      "labelEn": "Request a first Social Insurance Number",
+      "labelFr": "Première demande de numéro d’assurance sociale (NAS)"
+    },
+    {
+      "value": 564190001,
+      "labelEn": "Update or correct a SIN record",
+      "labelFr": "Mise à jour ou correction du dossier de NAS"
+    },
+    {
+      "value": 564190002,
+      "labelEn": "Request the confirmation of an existing SIN",
+      "labelFr": "Confirmation de NAS"
+    },
+    {
+      "value": 564190003,
+      "labelEn": "Register a legal change of name",
+      "labelFr": "Changement de nom légal"
+    },
+    {
+      "value": 564190004,
+      "labelEn": "Change the status on a SIN record",
+      "labelFr": "Changement de statut"
+    },
+    {
+      "value": 564190005,
+      "labelEn": "Extend the expiry date of a 900-series SIN",
+      "labelFr": "Changement de date d’expiration (NAS série 900)"
+    },
+    {
+      "value": 564190006,
+      "labelEn": "Other",
+      "labelFr": "Autre"
+    }
+  ]
+}

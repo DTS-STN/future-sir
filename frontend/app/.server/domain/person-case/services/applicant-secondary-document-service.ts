@@ -2,7 +2,7 @@ import type {
   ApplicantSecondaryDocumentChoice,
   LocalizedApplicantSecondaryDocumentChoice,
 } from '~/.server/domain/person-case/models';
-import { getOptionSet } from '~/.server/domain/person-case/services/data-service';
+import esdcApplicantSecondaryDocumentChoicesData from '~/.server/resources/esdc_applicantsecondarydocumentchoices.json';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 
@@ -12,8 +12,7 @@ import { ErrorCodes } from '~/errors/error-codes';
  * @returns An array of applicant secondary document choice objects.
  */
 export function getApplicantSecondaryDocumentChoices(): readonly ApplicantSecondaryDocumentChoice[] {
-  const optionSet = getOptionSet('esdc_applicantsecondarydocumentchoices');
-  return optionSet.options.map((option) => ({
+  return esdcApplicantSecondaryDocumentChoicesData.options.map((option) => ({
     id: option.value.toString(),
     nameEn: option.labelEn,
     nameFr: option.labelFr,

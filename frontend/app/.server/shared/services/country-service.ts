@@ -1,5 +1,5 @@
 import { serverEnvironment } from '~/.server/environment';
-import countriesData from '~/.server/resources/esdc-countries.json';
+import esdcCountriesData from '~/.server/resources/esdc_countries.json';
 import type { Country, LocalizedCountry } from '~/.server/shared/models';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
@@ -10,7 +10,7 @@ import { ErrorCodes } from '~/errors/error-codes';
  * @returns An array of country objects.
  */
 export function getCountries(): readonly Country[] {
-  return countriesData.map((country) => ({
+  return esdcCountriesData.map((country) => ({
     id: country.id,
     alphaCode: country.alphaCode,
     nameEn: country.nameEn,

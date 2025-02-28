@@ -1,5 +1,5 @@
 import type { LanguageOfCorrespondence, LocalizedPreferredLanguage } from '~/.server/domain/person-case/models';
-import { getOptionSet } from '~/.server/domain/person-case/services/data-service';
+import esdcLanguageOfCorrespondenceData from '~/.server/resources/esdc_languageofcorrespondence.json';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 
@@ -9,8 +9,7 @@ import { ErrorCodes } from '~/errors/error-codes';
  * @returns An array of language of correspondence objects.
  */
 export function getLanguagesOfCorrespondence(): readonly LanguageOfCorrespondence[] {
-  const optionSet = getOptionSet('esdc_languageofcorrespondence');
-  return optionSet.options.map((option) => ({
+  return esdcLanguageOfCorrespondenceData.options.map((option) => ({
     id: option.value.toString(),
     nameEn: option.labelEn,
     nameFr: option.labelFr,

@@ -1,4 +1,4 @@
-import provincesData from '~/.server/resources/esdc-provinces.json';
+import esdcProvincesData from '~/.server/resources/esdc_provinces.json';
 import type { LocalizedProvince, Province } from '~/.server/shared/models';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
@@ -9,7 +9,7 @@ import { ErrorCodes } from '~/errors/error-codes';
  * @returns An array of province objects.
  */
 export function getProvinces(): readonly Province[] {
-  return provincesData.map((province) => ({
+  return esdcProvincesData.map((province) => ({
     id: province.id,
     alphaCode: province.alphaCode,
     nameEn: province.nameEn,

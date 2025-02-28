@@ -1,5 +1,5 @@
 import type { ApplicantGender, LocalizedApplicantGender } from '~/.server/domain/person-case/models';
-import { getOptionSet } from '~/.server/domain/person-case/services/data-service';
+import esdcApplicantGenderData from '~/.server/resources/esdc_applicantgender.json';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 
@@ -9,8 +9,7 @@ import { ErrorCodes } from '~/errors/error-codes';
  * @returns An array of applicant gender objects.
  */
 export function getApplicantGenders(): readonly ApplicantGender[] {
-  const optionSet = getOptionSet('esdc_applicantgender');
-  return optionSet.options.map((option) => ({
+  return esdcApplicantGenderData.options.map((option) => ({
     id: option.value.toString(),
     nameEn: option.labelEn,
     nameFr: option.labelFr,
