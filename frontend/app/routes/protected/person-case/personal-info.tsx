@@ -54,6 +54,10 @@ export function meta({ data }: Route.MetaArgs) {
 
 export async function action({ context, request }: Route.ActionArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
+
+  const tabId = new URL(request.url).searchParams.get('tid');
+  if (!tabId) throw new AppError('Missing tab id', ErrorCodes.MISSING_TAB_ID, { httpStatusCode: 400 });
+
   const { lang, t } = await getTranslation(request, handle.i18nNamespace);
 
   const formData = await request.formData();
@@ -62,7 +66,9 @@ export async function action({ context, request }: Route.ActionArgs) {
 
   switch (action) {
     case 'back': {
-      throw i18nRedirect('routes/protected/person-case/current-name.tsx', request);
+      throw i18nRedirect('routes/protected/person-case/current-name.tsx', request, {
+        search: new URLSearchParams({ tid: tabId }),
+      });
     }
 
     case 'next': {
@@ -99,7 +105,10 @@ export async function action({ context, request }: Route.ActionArgs) {
       }
 
       (context.session.inPersonSINCase ??= {}).personalInformation = parseResult.output;
-      throw i18nRedirect('routes/protected/person-case/birth-details.tsx', request);
+
+      throw i18nRedirect('routes/protected/person-case/birth-details.tsx', request, {
+        search: new URLSearchParams({ tid: tabId }),
+      });
     }
 
     default: {

@@ -60,14 +60,20 @@ export function meta({ data }: Route.MetaArgs) {
 export async function action({ context, request }: Route.ActionArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
 
+  const tabId = new URL(request.url).searchParams.get('tid');
+  if (!tabId) throw new AppError('Missing tab id', ErrorCodes.MISSING_TAB_ID, { httpStatusCode: 400 });
+
   const { lang, t } = await getTranslation(request, handle.i18nNamespace);
+
   const { PP_CANADA_COUNTRY_CODE } = serverEnvironment;
   const formData = await request.formData();
   const action = formData.get('action');
 
   switch (action) {
     case 'back': {
-      throw i18nRedirect('routes/protected/person-case/previous-sin.tsx', request);
+      throw i18nRedirect('routes/protected/person-case/previous-sin.tsx', request, {
+        search: new URLSearchParams({ tid: tabId }),
+      });
     }
 
     case 'next': {
@@ -147,7 +153,10 @@ export async function action({ context, request }: Route.ActionArgs) {
       }
 
       (context.session.inPersonSINCase ??= {}).contactInformation = parseResult.output;
-      throw i18nRedirect('routes/protected/person-case/primary-docs.tsx', request); // TODO: change to proper route
+
+      throw i18nRedirect('routes/protected/person-case/primary-docs.tsx', request, {
+        search: new URLSearchParams({ tid: tabId }),
+      }); // TODO: change to proper route
     }
 
     default: {

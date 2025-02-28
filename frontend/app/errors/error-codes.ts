@@ -13,6 +13,7 @@ export const ErrorCodes = {
   MISSING_LANG_PARAM: 'CMP-0001',
 
   // form error codes
+  MISSING_TAB_ID: 'FRM-0000',
   UNRECOGNIZED_ACTION: 'FRM-0001',
 
   // i18n error codes

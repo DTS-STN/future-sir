@@ -11,6 +11,8 @@ import { requireAuth } from '~/.server/utils/auth-utils';
 import { Button } from '~/components/button';
 import { FetcherErrorSummary } from '~/components/error-summary';
 import { PageTitle } from '~/components/page-title';
+import { AppError } from '~/errors/app-error';
+import { ErrorCodes } from '~/errors/error-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/layout';
 
@@ -20,6 +22,7 @@ export const handle = {
 
 export async function loader({ context, request }: Route.LoaderArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
+
   const { t } = await getTranslation(request, handle.i18nNamespace);
 
   //TODO: fetch and return session data (names, dob, etc)
@@ -34,6 +37,9 @@ export function meta({ data }: Route.MetaArgs) {
 
 export function action({ context, request }: Route.ActionArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
+
+  const tabId = new URL(request.url).searchParams.get('tid');
+  if (!tabId) throw new AppError('Missing tab id', ErrorCodes.MISSING_TAB_ID, { httpStatusCode: 400 });
 
   //TODO: fetch and return mock table result data
 }
