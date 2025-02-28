@@ -27,7 +27,7 @@ export function getLanguagesOfCorrespondence(): readonly LanguageOfCorrespondenc
 export function getLanguageOfCorrespondenceById(id: string): LanguageOfCorrespondence {
   const languagesOfCorrespondence = getLanguagesOfCorrespondence().find((l) => l.id === id);
   if (!languagesOfCorrespondence) {
-    throw new AppError(`Language of correspondence with ID '${id}' not found.`, ErrorCodes.NO_LANGUAGE_FOUND);
+    throw new AppError(`Language of correspondence with ID '${id}' not found.`, ErrorCodes.NO_LANGUAGE_OF_CORRESPONDENCE_FOUND);
   }
   return languagesOfCorrespondence;
 }
@@ -56,7 +56,10 @@ export function getLocalizedLanguageOfCorrespondence(language: Language): Locali
 export function getLocalizedLanguageOfCorrespondenceById(id: string, language: Language): LocalizedPreferredLanguage {
   const languagesOfCorrespondence = getLocalizedLanguageOfCorrespondence(language).find((l) => l.id === id);
   if (!languagesOfCorrespondence) {
-    throw new AppError(`Localized language of correspondence with ID '${id}' not found.`, ErrorCodes.NO_LANGUAGE_FOUND);
+    throw new AppError(
+      `Localized language of correspondence with ID '${id}' not found.`,
+      ErrorCodes.NO_LANGUAGE_OF_CORRESPONDENCE_FOUND,
+    );
   }
   return languagesOfCorrespondence;
 }
