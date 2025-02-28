@@ -400,9 +400,13 @@
     "choosen-file": "File_chosen.pdf",
     "yes": "Yes",
     "no": "No",
+    "birth-place": "Birth place",
+    "multiple-birth": "Multiple birth",
     "edit-primary-identity-document": "Edit primary identity document",
     "edit-secondary-identity-document": "Edit secondary identity document",
-    "edit-current-name": "Edit current name"
+    "edit-current-name": "Edit current name",
+    "edit-personal-details": "Edit personal details",
+    "edit-birth-details": "Edit birth details"
   },
   "search-sin": {
     "page-title": "Search for a SIN",

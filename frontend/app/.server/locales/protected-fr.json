@@ -401,9 +401,13 @@
     "choosen-file": "Fichier_choisi.pdf",
     "yes": "Oui",
     "no": "Non",
+    "birth-place": "Lieu de naissance",
+    "multiple-birth": "Naissance multiple",
     "edit-primary-identity-document": "Modifier le document d'identité principal",
     "edit-secondary-identity-document": "Modifier le document d'identité secondaire",
-    "edit-current-name": "Modifier le nom actuel"
+    "edit-current-name": "Modifier le nom actuel",
+    "edit-personal-details": "Modifier les détails personnels",
+    "edit-birth-details": "Modifier les détails de naissance"
   },
   "search-sin": {
     "page-title": "Search for a SIN",

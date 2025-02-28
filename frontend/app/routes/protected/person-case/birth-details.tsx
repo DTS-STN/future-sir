@@ -45,7 +45,7 @@ export async function loader({ context, request }: Route.LoaderArgs) {
   const birthDetails = context.session.inPersonSINCase?.birthDetails;
 
   return {
-    documentTitle: t('protected:primary-identity-document.page-title'),
+    documentTitle: t('protected:birth-details.page-title'),
     localizedCountries: countryService.getLocalizedCountries(lang),
     localizedProvincesTerritoriesStates: provinceService.getLocalizedProvinces(lang),
     PP_CANADA_COUNTRY_CODE,
