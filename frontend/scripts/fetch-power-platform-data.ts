@@ -14,34 +14,87 @@ import * as v from 'valibot';
 interface Endpoint {
   name: string;
   description?: string;
+  disabled?: boolean;
   outputFile: string;
   pathname: string;
   query?: Record<string, string>;
   jsonFilter?: string; // Optional JMESPath filter
 }
 
+const optionSetJsonFilter = `{
+    name: Name,
+    parentOptionSetName: ParentOptionSetName,
+    displayNameEn: DisplayName.LocalizedLabels[?LanguageCode==\`1033\`].Label | [0],
+    displayNameFr: DisplayName.LocalizedLabels[?LanguageCode==\`1036\`].Label | [0],
+    options: Options[].{
+      value: Value,
+      labelEn: Label.LocalizedLabels[?LanguageCode==\`1033\`].Label | [0],
+      labelFr: Label.LocalizedLabels[?LanguageCode==\`1036\`].Label | [0]
+    }
+  }`;
+
 const endpoints: readonly Endpoint[] = [
   {
-    name: 'global-option-sets',
-    description: 'ESDC sets of options (values)',
+    name: 'esdc_globaloptionsetdefinitions',
+    description: 'ESDC Global sets of options (values)',
+    disabled: true,
     pathname: '/api/data/v9.2/GlobalOptionSetDefinitions',
-    outputFile: 'esdc-global-option-sets.json',
-    jsonFilter: `value[?starts_with(Name, 'esdc')].{
-      name: Name,
-      parentOptionSetName: ParentOptionSetName,
-      displayNameEn: DisplayName.LocalizedLabels[?LanguageCode==\`1033\`].Label | [0],
-      displayNameFr: DisplayName.LocalizedLabels[?LanguageCode==\`1036\`].Label | [0],
-      options: Options[].{
-        value: Value,
-        labelEn: Label.LocalizedLabels[?LanguageCode==\`1033\`].Label | [0],
-        labelFr: Label.LocalizedLabels[?LanguageCode==\`1036\`].Label | [0]
-      }
-    }`,
+    outputFile: 'esdc_globaloptionsetdefinitions.json',
+    jsonFilter: `value[?starts_with(Name, 'esdc')].${optionSetJsonFilter}`,
   },
   {
-    name: 'countries',
+    name: 'esdc_applicantgender',
+    description: 'ESDC Applicant genders',
+    pathname: "/api/data/v9.2/GlobalOptionSetDefinitions(Name='esdc_applicantgender')",
+    outputFile: 'esdc_applicantgender.json',
+    jsonFilter: optionSetJsonFilter,
+  },
+  {
+    name: 'esdc_applicantprimarydocumentchoices',
+    description: 'ESDC Applicant primary document choices',
+    pathname: "/api/data/v9.2/GlobalOptionSetDefinitions(Name='esdc_applicantprimarydocumentchoices')",
+    outputFile: 'esdc_applicantprimarydocumentchoices.json',
+    jsonFilter: optionSetJsonFilter,
+  },
+  {
+    name: 'esdc_applicantsecondarydocumentchoices',
+    description: 'ESDC Applicant secondary document choices',
+    pathname: "/api/data/v9.2/GlobalOptionSetDefinitions(Name='esdc_applicantsecondarydocumentchoices')",
+    outputFile: 'esdc_applicantsecondarydocumentchoices.json',
+    jsonFilter: optionSetJsonFilter,
+  },
+  {
+    name: 'esdc_didtheapplicanteverhadasinnumber',
+    description: 'ESDC Did the applicant ever had a sin number choices',
+    pathname: "/api/data/v9.2/GlobalOptionSetDefinitions(Name='esdc_didtheapplicanteverhadasinnumber')",
+    outputFile: 'esdc_didtheapplicanteverhadasinnumber.json',
+    jsonFilter: optionSetJsonFilter,
+  },
+  {
+    name: 'esdc_applicationsubmissionscenarios',
+    description: 'ESDC Application submission scenarios',
+    pathname: "/api/data/v9.2/GlobalOptionSetDefinitions(Name='esdc_applicationsubmissionscenarios')",
+    outputFile: 'esdc_applicationsubmissionscenarios.json',
+    jsonFilter: optionSetJsonFilter,
+  },
+  {
+    name: 'esdc_typeofapplicationtosubmit',
+    description: 'ESDC Types of application to submit',
+    pathname: "/api/data/v9.2/GlobalOptionSetDefinitions(Name='esdc_typeofapplicationtosubmit')",
+    outputFile: 'esdc_typeofapplicationtosubmit.json',
+    jsonFilter: optionSetJsonFilter,
+  },
+  {
+    name: 'esdc_languageofcorrespondence',
+    description: 'ESDC Languages of correspondence',
+    pathname: "/api/data/v9.2/GlobalOptionSetDefinitions(Name='esdc_languageofcorrespondence')",
+    outputFile: 'esdc_languageofcorrespondence.json',
+    jsonFilter: optionSetJsonFilter,
+  },
+  {
+    name: 'esdc_countries',
     description: 'ESDC Countries',
-    outputFile: 'esdc-countries.json',
+    outputFile: 'esdc_countries.json',
     pathname: '/api/data/v9.2/esdc_countries',
     query: {
       $filter: 'statuscode eq 1',
@@ -55,9 +108,9 @@ const endpoints: readonly Endpoint[] = [
     }`,
   },
   {
-    name: 'provinces',
+    name: 'esdc_provinces',
     description: 'ESDC Provinces',
-    outputFile: 'esdc-provinces.json',
+    outputFile: 'esdc_provinces.json',
     pathname: '/api/data/v9.2/esdc_provinces',
     query: {
       $filter: 'statuscode eq 1',
@@ -68,11 +121,14 @@ const endpoints: readonly Endpoint[] = [
       alphaCode: esdc_alphacode,
       name: esdc_name,
       nameEn: esdc_nameen,
-      nameFr: esdc_namefr,
-      statuscode: statuscode
+      nameFr: esdc_namefr
     }`,
   },
 ];
+
+const isEndpointEnabled = (endpoint: Endpoint): boolean => endpoint.disabled === undefined || endpoint.disabled === false;
+const enabledEndpoints = endpoints.filter(isEndpointEnabled);
+const enabledEndpointNames = enabledEndpoints.map((e) => e.name);
 
 // Define CLI options
 const program = new Command()
@@ -97,7 +153,7 @@ const configSchema = v.object({
   authClientId: v.pipe(v.string(), v.nonEmpty()),
   authClientSecret: v.pipe(v.string(), v.nonEmpty()),
   authTenantId: v.pipe(v.string(), v.nonEmpty()),
-  endpoints: v.optional(v.array(v.picklist(endpoints.map((e) => e.name)))),
+  endpoints: v.optional(v.array(v.picklist(enabledEndpointNames))),
   nonInteractive: v.fallback(v.boolean(), false),
   outputDir: v.fallback(v.string(), './app/.server/resources'),
   resourceUrl: v.pipe(v.string()),
@@ -114,7 +170,7 @@ class DataFetcher {
     this.spinner = ora();
 
     // Create a map for quick endpoint lookup by name
-    this.endpointMap = new Map(endpoints.map((endpoint) => [endpoint.name, endpoint]));
+    this.endpointMap = new Map(enabledEndpoints.map((endpoint) => [endpoint.name, endpoint]));
   }
 
   private ensureOutputDir(path: string): void {
@@ -248,17 +304,20 @@ class DataFetcher {
   private async selectEndpoints(): Promise<Endpoint[]> {
     const selected = await checkbox({
       message: 'Select endpoints to fetch:',
-      choices: endpoints.map((script) => ({
-        value: script.name,
-        name: script.name,
-        description: script.description,
-      })),
+      choices: this.endpointMap
+        .values()
+        .toArray()
+        .map((endpoint) => ({
+          value: endpoint.name,
+          name: endpoint.name,
+          description: endpoint.description,
+        })),
       loop: false,
       required: true,
       pageSize: 10,
     });
 
-    const selectedEndpoints = selected.map((name) => this.endpointMap.get(name)).filter((e) => e !== undefined);
+    const selectedEndpoints = selected.map((name) => this.endpointMap.get(name)).filter((endpoint) => endpoint !== undefined);
 
     if (selectedEndpoints.length === 0) {
       throw new Error('No endpoints selected');
@@ -271,7 +330,9 @@ class DataFetcher {
   private async getEndpointsToFetch(config: Config): Promise<Endpoint[]> {
     // If endpoints are specified via CLI option
     if (config.endpoints) {
-      const filteredEndpoints = config.endpoints.map((name) => this.endpointMap.get(name)).filter((e) => e !== undefined);
+      const filteredEndpoints = config.endpoints
+        .map((name) => this.endpointMap.get(name))
+        .filter((endpoint) => endpoint !== undefined);
 
       console.log(
         chalk.yellow(`Fetching ${filteredEndpoints.length} endpoints: ${filteredEndpoints.map((e) => e.name).join(', ')}`),
@@ -282,8 +343,8 @@ class DataFetcher {
 
     // Non-interactive mode - fetch all endpoints
     if (config.nonInteractive) {
-      console.log(chalk.yellow(`Fetching all ${endpoints.length} endpoints`));
-      return [...endpoints];
+      console.log(chalk.yellow(`Fetching all ${this.endpointMap.size} endpoints`));
+      return this.endpointMap.values().toArray();
     }
 
     // Interactive mode - prompt user to select endpoints

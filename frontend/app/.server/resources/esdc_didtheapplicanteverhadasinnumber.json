@@ -1,0 +1,23 @@
+{
+  "name": "esdc_didtheapplicanteverhadasinnumber",
+  "parentOptionSetName": null,
+  "displayNameEn": "Did the Applicant Ever Had a SIN Number? ",
+  "displayNameFr": "Le demandeur a-t-il déjà eu un numéro d'assurance sociale?",
+  "options": [
+    {
+      "value": 564190000,
+      "labelEn": "Yes",
+      "labelFr": "Oui"
+    },
+    {
+      "value": 564190001,
+      "labelEn": "No",
+      "labelFr": "Non"
+    },
+    {
+      "value": 564190002,
+      "labelEn": "Unknown (Don't Recall)",
+      "labelFr": "Inconnu"
+    }
+  ]
+}

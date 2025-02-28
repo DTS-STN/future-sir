@@ -1,5 +1,5 @@
 import type { LocalizedTypeOfApplicationToSubmit, TypeOfApplicationToSubmit } from '~/.server/domain/person-case/models';
-import { getOptionSet } from '~/.server/domain/person-case/services/data-service';
+import esdcTypeOfApplicationToSubmitData from '~/.server/resources/esdc_typeofapplicationtosubmit.json';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 
@@ -9,8 +9,7 @@ import { ErrorCodes } from '~/errors/error-codes';
  * @returns An array of type of application to submit objects.
  */
 export function getTypesOfApplicationToSubmit(): readonly TypeOfApplicationToSubmit[] {
-  const optionSet = getOptionSet('esdc_typeofapplicationtosubmit');
-  return optionSet.options.map((option) => ({
+  return esdcTypeOfApplicationToSubmitData.options.map((option) => ({
     id: option.value.toString(),
     nameEn: option.labelEn,
     nameFr: option.labelFr,

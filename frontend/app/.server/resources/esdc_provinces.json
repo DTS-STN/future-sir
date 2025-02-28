@@ -5,8 +5,7 @@
     "alphaCode": "AB",
     "name": "Alberta|Alberta",
     "nameEn": "Alberta",
-    "nameFr": "Alberta",
-    "statuscode": 1
+    "nameFr": "Alberta"
   },
   {
     "id": "845808d0-3195-ea11-a812-000d3a0c2b5d",
@@ -14,8 +13,7 @@
     "alphaCode": "BC",
     "name": "British Columbia|Colombie-Britannique",
     "nameEn": "British Columbia",
-    "nameFr": "Colombie-Britannique",
-    "statuscode": 1
+    "nameFr": "Colombie-Britannique"
   },
   {
     "id": "865808d0-3195-ea11-a812-000d3a0c2b5d",
@@ -23,8 +21,7 @@
     "alphaCode": "MB",
     "name": "Manitoba|Manitoba",
     "nameEn": "Manitoba",
-    "nameFr": "Manitoba",
-    "statuscode": 1
+    "nameFr": "Manitoba"
   },
   {
     "id": "885808d0-3195-ea11-a812-000d3a0c2b5d",
@@ -32,8 +29,7 @@
     "alphaCode": "NB",
     "name": "New Brunswick|Nouveau-Brunswick",
     "nameEn": "New Brunswick",
-    "nameFr": "Nouveau-Brunswick",
-    "statuscode": 1
+    "nameFr": "Nouveau-Brunswick"
   },
   {
     "id": "8a5808d0-3195-ea11-a812-000d3a0c2b5d",
@@ -41,8 +37,7 @@
     "alphaCode": "NL",
     "name": "Newfoundland and Labrador|Terre-Neuve et Labrador",
     "nameEn": "Newfoundland and Labrador",
-    "nameFr": "Terre-Neuve et Labrador",
-    "statuscode": 1
+    "nameFr": "Terre-Neuve et Labrador"
   },
   {
     "id": "8c5808d0-3195-ea11-a812-000d3a0c2b5d",
@@ -50,8 +45,7 @@
     "alphaCode": "NT",
     "name": "Northwest Territories|Territoires du Nord-Ouest",
     "nameEn": "Northwest Territories",
-    "nameFr": "Territoires du Nord-Ouest",
-    "statuscode": 1
+    "nameFr": "Territoires du Nord-Ouest"
   },
   {
     "id": "8e5808d0-3195-ea11-a812-000d3a0c2b5d",
@@ -59,8 +53,7 @@
     "alphaCode": "NS",
     "name": "Nova Scotia|Nouvelle-Écosse",
     "nameEn": "Nova Scotia",
-    "nameFr": "Nouvelle-Écosse",
-    "statuscode": 1
+    "nameFr": "Nouvelle-Écosse"
   },
   {
     "id": "905808d0-3195-ea11-a812-000d3a0c2b5d",
@@ -68,8 +61,7 @@
     "alphaCode": "NU",
     "name": "Nunavut|Nunavut",
     "nameEn": "Nunavut",
-    "nameFr": "Nunavut",
-    "statuscode": 1
+    "nameFr": "Nunavut"
   },
   {
     "id": "925808d0-3195-ea11-a812-000d3a0c2b5d",
@@ -77,8 +69,7 @@
     "alphaCode": "ON",
     "name": "Ontario|Ontario",
     "nameEn": "Ontario",
-    "nameFr": "Ontario",
-    "statuscode": 1
+    "nameFr": "Ontario"
   },
   {
     "id": "945808d0-3195-ea11-a812-000d3a0c2b5d",
@@ -86,8 +77,7 @@
     "alphaCode": "PE",
     "name": "Prince Edward Island|Île-du-Prince-Édouard",
     "nameEn": "Prince Edward Island",
-    "nameFr": "Île-du-Prince-Édouard",
-    "statuscode": 1
+    "nameFr": "Île-du-Prince-Édouard"
   },
   {
     "id": "965808d0-3195-ea11-a812-000d3a0c2b5d",
@@ -95,8 +85,7 @@
     "alphaCode": "QC",
     "name": "Quebec|Québec",
     "nameEn": "Quebec",
-    "nameFr": "Québec",
-    "statuscode": 1
+    "nameFr": "Québec"
   },
   {
     "id": "985808d0-3195-ea11-a812-000d3a0c2b5d",
@@ -104,8 +93,7 @@
     "alphaCode": "SK",
     "name": "Saskatchewan|Saskatchewan",
     "nameEn": "Saskatchewan",
-    "nameFr": "Saskatchewan",
-    "statuscode": 1
+    "nameFr": "Saskatchewan"
   },
   {
     "id": "9a5808d0-3195-ea11-a812-000d3a0c2b5d",
@@ -113,7 +101,6 @@
     "alphaCode": "YT",
     "name": "Yukon|Yukon",
     "nameEn": "Yukon",
-    "nameFr": "Yukon",
-    "statuscode": 1
+    "nameFr": "Yukon"
   }
 ]

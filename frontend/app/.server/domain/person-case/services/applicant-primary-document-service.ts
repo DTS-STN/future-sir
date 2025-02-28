@@ -2,7 +2,7 @@ import type {
   ApplicantPrimaryDocumentChoice,
   LocalizedApplicantPrimaryDocumentChoice,
 } from '~/.server/domain/person-case/models';
-import { getOptionSet } from '~/.server/domain/person-case/services/data-service';
+import esdcApplicantPrimaryDocumentChoicesData from '~/.server/resources/esdc_applicantprimarydocumentchoices.json';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 
@@ -12,8 +12,7 @@ import { ErrorCodes } from '~/errors/error-codes';
  * @returns An array of applicant primary document choice objects.
  */
 export function getApplicantPrimaryDocumentChoices(): readonly ApplicantPrimaryDocumentChoice[] {
-  const optionSet = getOptionSet('esdc_applicantprimarydocumentchoices');
-  return optionSet.options.map((option) => ({
+  return esdcApplicantPrimaryDocumentChoicesData.options.map((option) => ({
     id: option.value.toString(),
     nameEn: option.labelEn,
     nameFr: option.labelFr,

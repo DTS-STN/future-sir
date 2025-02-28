@@ -1,5 +1,5 @@
 import type { ApplicantHadSinOption, LocalizedApplicantHadSinOption } from '~/.server/domain/person-case/models';
-import { getOptionSet } from '~/.server/domain/person-case/services/data-service';
+import esdcDidTheApplicantEverHadaSinNumberData from '~/.server/resources/esdc_didtheapplicanteverhadasinnumber.json';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 
@@ -9,8 +9,7 @@ import { ErrorCodes } from '~/errors/error-codes';
  * @returns An array of applicant had SIN option objects.
  */
 export function getApplicantHadSinOptions(): readonly ApplicantHadSinOption[] {
-  const optionSet = getOptionSet('esdc_didtheapplicanteverhadasinnumber');
-  return optionSet.options.map((option) => ({
+  return esdcDidTheApplicantEverHadaSinNumberData.options.map((option) => ({
     id: option.value.toString(),
     nameEn: option.labelEn,
     nameFr: option.labelFr,

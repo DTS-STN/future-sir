@@ -1,0 +1,38 @@
+{
+  "name": "esdc_applicationsubmissionscenarios",
+  "parentOptionSetName": null,
+  "displayNameEn": "Application submission scenarios",
+  "displayNameFr": "Scénarios de soumission des demandes",
+  "options": [
+    {
+      "value": 564190000,
+      "labelEn": "You are applying for yourself",
+      "labelFr": "Vous présentez une demande pour vous-même."
+    },
+    {
+      "value": 564190001,
+      "labelEn": "You are a parent applying on behalf of a minor or dependent adult",
+      "labelFr": "Vous êtes un parent qui présente une demande au nom d'un mineur ou d'un adulte à charge."
+    },
+    {
+      "value": 564190002,
+      "labelEn": "You are a legal guardian applying on behalf of a minor or dependent adult",
+      "labelFr": "Vous êtes un tuteur légal qui présente une demande au nom d'un mineur ou d'un adulte à charge."
+    },
+    {
+      "value": 564190003,
+      "labelEn": "You are a legal representative (court-appointed lawyer or individual) applying on behalf of someone else",
+      "labelFr": "Vous êtes un représentant légal (avocat ou personne désignée par un tribunal) qui présente une demande au nom d'une autre personne."
+    },
+    {
+      "value": 564190004,
+      "labelEn": "You are a provincial/territorial employee applying on behalf of someone for whom you have legal authority",
+      "labelFr": "Vous êtes un employé provincial/territorial qui présente une demande au nom d'une personne pour laquelle vous avez une autorité légale."
+    },
+    {
+      "value": 564190005,
+      "labelEn": "You are a legal representative of an estate requesting a confirmation of SIN for a deceased person",
+      "labelFr": "Vous êtes le représentant légal d'une succession et vous voulez obtenir la confirmation du NAS d'une personne décédée."
+    }
+  ]
+}
