@@ -4,6 +4,7 @@ import type { RouteHandle } from 'react-router';
 import { data, useFetcher } from 'react-router';
 
 import type { SessionData } from 'express-session';
+import type { ResourceKey } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import * as v from 'valibot';
 
@@ -116,13 +117,13 @@ export default function RequestDetails({ loaderData, actionData, params }: Route
 
   const scenarioOptions = VALID_SCENARIOS.map((value) => ({
     value: value,
-    children: t(`protected:request-details.scenarios.${value}` as 'protected:request-details.scenarios.for-self'),
+    children: t(`protected:request-details.scenarios.${value}` as ResourceKey),
     defaultChecked: value === loaderData.defaultFormValues?.scenario,
   }));
 
   const requestOptions = ['select-option', ...VALID_REQUESTS].map((value) => ({
     value: value === 'select-option' ? '' : value,
-    children: t(`protected:request-details.requests.${value}` as 'protected:request-details.requests.select-option'),
+    children: t(`protected:request-details.requests.${value}` as ResourceKey),
   }));
 
   return (

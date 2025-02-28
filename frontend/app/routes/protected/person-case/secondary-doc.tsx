@@ -6,6 +6,7 @@ import { data, useFetcher } from 'react-router';
 import { faExclamationCircle, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { isBefore } from 'date-fns';
 import type { SessionData } from 'express-session';
+import type { ResourceKey } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import * as v from 'valibot';
 
@@ -163,9 +164,7 @@ export default function SecondaryDoc({ loaderData, actionData, params }: Route.C
 
   const docOptions = VALID_DOCTYPE.map((value) => ({
     value: value,
-    children: t(
-      `protected:secondary-identity-document.document-type.options.${value}` as 'protected:secondary-identity-document.document-type.options.passport',
-    ),
+    children: t(`protected:secondary-identity-document.document-type.options.${value}` as ResourceKey),
     defaultChecked: value === loaderData.defaultFormValues?.documentType,
   }));
 
