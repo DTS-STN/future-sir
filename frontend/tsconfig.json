@@ -14,6 +14,7 @@
     "./tests/**/.client/**/*",
     "./tests/**/.server/**/*",
     "./eslint.config.mjs",
+    "./openapi-ts.config.ts",
     "./playwright.config.ts",
     "./prettier.config.mjs",
     "./react-router.config.ts",
