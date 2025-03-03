@@ -350,7 +350,10 @@
     "edit-secondary-identity-document": "Modifier le document d'identité secondaire",
     "edit-current-name": "Modifier le nom actuel",
     "edit-personal-details": "Modifier les détails personnels",
-    "edit-birth-details": "Modifier les détails de naissance"
+    "edit-birth-details": "Modifier les détails de naissance",
+    "edit-parent-details": "Modifier les détails des parents",
+    "edit-previous-sin": "Modifier les NAS précédent",
+    "edit-contact-information": "Modifier les informations de contact"
   },
   "search-sin": {
     "page-title": "Search for a SIN",
