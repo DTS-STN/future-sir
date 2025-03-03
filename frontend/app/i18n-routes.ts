@@ -104,6 +104,14 @@ export const i18nRoutes = [
         paths: { en: '/en/protected/request', fr: '/fr/protege/requete' },
       },
       {
+        id: 'MCF-0001',
+        file: 'routes/protected/multi-channel/search-sin.tsx',
+        paths: {
+          en: '/en/protected/multi-channel/search-sin',
+          fr: '/fr/protege/multi-chaine/search-sin',
+        },
+      },
+      {
         file: 'routes/protected/person-case/layout.tsx',
         children: [
           {
@@ -192,14 +200,6 @@ export const i18nRoutes = [
             paths: {
               en: '/en/protected/person-case/review',
               fr: '/fr/protege/cas-personnel/revision',
-            },
-          },
-          {
-            id: 'PROT-0015',
-            file: 'routes/protected/person-case/search-sin.tsx',
-            paths: {
-              en: '/en/protected/person-case/search-sin',
-              fr: '/fr/protege/cas-personnel/search-sin',
             },
           },
         ],

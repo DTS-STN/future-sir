@@ -12,8 +12,6 @@ import { Button } from '~/components/button';
 import { DataTable } from '~/components/data-table';
 import { FetcherErrorSummary } from '~/components/error-summary';
 import { PageTitle } from '~/components/page-title';
-import { AppError } from '~/errors/app-error';
-import { ErrorCodes } from '~/errors/error-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/layout';
 
@@ -26,7 +24,7 @@ export async function loader({ context, request }: Route.LoaderArgs) {
 
   const { t } = await getTranslation(request, handle.i18nNamespace);
 
-  //TODO: fetch and return session data (names, dob, etc)
+  //TODO: fetch and return Interop data (names, dob, etc)
   return {
     documentTitle: t('protected:search-sin.page-title'),
   };
@@ -38,9 +36,6 @@ export function meta({ data }: Route.MetaArgs) {
 
 export function action({ context, request }: Route.ActionArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
-
-  const tabId = new URL(request.url).searchParams.get('tid');
-  if (!tabId) throw new AppError('Missing tab id', ErrorCodes.MISSING_TAB_ID, { httpStatusCode: 400 });
 
   //TODO: fetch and return mock table result data
   const headers = ['Header 1', 'Header 2', 'Header 3', 'Header 4', 'Header 5'];
