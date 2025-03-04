@@ -417,5 +417,13 @@
     "other-last-names": "Other last names",
     "search": "Search",
     "matches": "Matches"
+  },
+  "pid-verification": {
+    "page-title": "Validation result",
+    "status-passed": "Passed",
+    "validation-passed": "Validation passed",
+    "all-input-successful": "All inputs have been successfully validated and match the primary identity document.",
+    "next": "Next",
+    "previous": "Previous"
   }
 }
