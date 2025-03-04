@@ -6,12 +6,15 @@ import { data, useFetcher } from 'react-router';
 import { faExclamationCircle, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { isBefore } from 'date-fns';
 import type { SessionData } from 'express-session';
-import type { ResourceKey } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import * as v from 'valibot';
 
 import type { Info, Route } from './+types/secondary-doc';
 
+import {
+  getApplicantSecondaryDocumentChoices,
+  getLocalizedApplicantSecondaryDocumentChoices,
+} from '~/.server/domain/person-case/services/applicant-secondary-document-service';
 import { serverEnvironment } from '~/.server/environment';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
@@ -30,18 +33,17 @@ import { getStartOfDayInTimezone, toISODateString } from '~/utils/date-utils';
 
 type PrimaryDocumentsSessionData = NonNullable<SessionData['inPersonSINCase']['secondaryDocument']>;
 
-const VALID_DOCTYPE = ['passport', 'id-card', 'other-id'];
-
 export const handle = {
   i18nNamespace: [...parentHandle.i18nNamespace, 'protected'],
 } as const satisfies RouteHandle;
 
 export async function loader({ context, request }: Route.LoaderArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
-  const { t } = await getTranslation(request, handle.i18nNamespace);
+  const { t, lang } = await getTranslation(request, handle.i18nNamespace);
 
   return {
     documentTitle: t('protected:secondary-identity-document.page-title'),
+    localizedApplicantSecondaryDocumentChoices: getLocalizedApplicantSecondaryDocumentChoices(lang),
     defaultFormValues: context.session.inPersonSINCase?.secondaryDocument,
   };
 }
@@ -76,7 +78,10 @@ export async function action({ context, request }: Route.ActionArgs) {
       const currentDate = getStartOfDayInTimezone(serverEnvironment.BASE_TIMEZONE);
 
       const schema = v.object({
-        documentType: v.picklist(VALID_DOCTYPE, t('protected:secondary-identity-document.document-type.invalid')),
+        documentType: v.picklist(
+          getApplicantSecondaryDocumentChoices().map(({ id }) => id),
+          t('protected:secondary-identity-document.document-type.invalid'),
+        ),
         /*
         TODO: Enable file upload
         document: v.pipe(
@@ -162,10 +167,10 @@ export default function SecondaryDoc({ loaderData, actionData, params }: Route.C
   const isSubmitting = fetcher.state !== 'idle';
   const errors = fetcher.data?.errors;
 
-  const docOptions = VALID_DOCTYPE.map((value) => ({
-    value: value,
-    children: t(`protected:secondary-identity-document.document-type.options.${value}` as ResourceKey),
-    defaultChecked: value === loaderData.defaultFormValues?.documentType,
+  const docOptions = loaderData.localizedApplicantSecondaryDocumentChoices.map(({ id, name }) => ({
+    value: id,
+    children: name,
+    defaultChecked: id === loaderData.defaultFormValues?.documentType,
   }));
 
   return (
