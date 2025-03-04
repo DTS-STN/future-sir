@@ -4,7 +4,6 @@ import type { RouteHandle } from 'react-router';
 import { data, useFetcher } from 'react-router';
 
 import { faPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
-import type { SessionData } from 'express-session';
 import { useTranslation } from 'react-i18next';
 import * as v from 'valibot';
 
@@ -24,10 +23,9 @@ import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/layout';
+import type { ParentDetailsData } from '~/routes/protected/person-case/@types';
 import { REGEX_PATTERNS } from '~/utils/regex-utils';
 import { trimToUndefined } from '~/utils/string-utils';
-
-type ParentDetailsSessionData = NonNullable<SessionData['inPersonSINCase']['parentDetails']>;
 
 const MAX_PARENTS = 4;
 
@@ -38,16 +36,17 @@ export const handle = {
 export async function loader({ context, request }: Route.LoaderArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
 
+  const tabId = new URL(request.url).searchParams.get('tid') ?? '';
+  const parentDetails = (context.session.inPersonSinApplications ??= {})[tabId]?.parentDetails;
+
   const { t, lang } = await getTranslation(request, handle.i18nNamespace);
-  const { PP_CANADA_COUNTRY_CODE } = serverEnvironment;
-  const sessionData = context.session.inPersonSINCase?.parentDetails ?? [];
 
   return {
     documentTitle: t('protected:parent-details.page-title'),
     localizedCountries: countryService.getLocalizedCountries(lang),
     localizedProvincesTerritoriesStates: provinceService.getLocalizedProvinces(lang),
-    PP_CANADA_COUNTRY_CODE,
-    defaultFormValues: sessionData.map((details) =>
+    canadaCountryCode: serverEnvironment.PP_CANADA_COUNTRY_CODE,
+    defaultFormValues: (parentDetails ?? []).map((details) =>
       details.unavailable
         ? { unavailable: true }
         : {
@@ -71,10 +70,10 @@ export async function action({ context, request }: Route.ActionArgs) {
 
   const tabId = new URL(request.url).searchParams.get('tid');
   if (!tabId) throw new AppError('Missing tab id', ErrorCodes.MISSING_TAB_ID, { httpStatusCode: 400 });
+  const sessionData = ((context.session.inPersonSinApplications ??= {})[tabId] ??= {});
 
   const { lang, t } = await getTranslation(request, handle.i18nNamespace);
 
-  const { PP_CANADA_COUNTRY_CODE } = serverEnvironment;
   const formData = await request.formData();
   const action = formData.get('action');
   const maxStringLength = 100;
@@ -115,7 +114,10 @@ export async function action({ context, request }: Route.ActionArgs) {
                   'country',
                   [
                     v.object({
-                      country: v.literal(PP_CANADA_COUNTRY_CODE, t('protected:parent-details.country-error.invalid-country')),
+                      country: v.literal(
+                        serverEnvironment.PP_CANADA_COUNTRY_CODE,
+                        t('protected:parent-details.country-error.invalid-country'),
+                      ),
                       province: v.picklist(
                         provinceService.getProvinces().map(({ id }) => id),
                         t('protected:parent-details.province-error.required-province'),
@@ -132,7 +134,10 @@ export async function action({ context, request }: Route.ActionArgs) {
                       country: v.pipe(
                         v.string(t('protected:parent-details.country-error.required-country')),
                         v.nonEmpty(t('protected:parent-details.country-error.required-country')),
-                        v.excludes(PP_CANADA_COUNTRY_CODE, t('protected:parent-details.country-error.invalid-country')),
+                        v.excludes(
+                          serverEnvironment.PP_CANADA_COUNTRY_CODE,
+                          t('protected:parent-details.country-error.invalid-country'),
+                        ),
                         v.picklist(
                           countryService.getCountries().map(({ id }) => id),
                           t('protected:parent-details.country-error.invalid-country'),
@@ -168,7 +173,7 @@ export async function action({ context, request }: Route.ActionArgs) {
         ),
         v.minLength(1),
         v.maxLength(MAX_PARENTS),
-      ) satisfies v.GenericSchema<ParentDetailsSessionData>;
+      ) satisfies v.GenericSchema<ParentDetailsData>;
 
       const parentAmount = Number(formData.get('parent-amount')) || 0;
       const inputLength = Math.min(parentAmount, MAX_PARENTS);
@@ -182,7 +187,7 @@ export async function action({ context, request }: Route.ActionArgs) {
           province: trimToUndefined(String(formData.get(`${i}-province`))),
           city: trimToUndefined(String(formData.get(`${i}-city`))),
         },
-      })) satisfies ParentDetailsSessionData;
+      })) satisfies ParentDetailsData;
 
       const parseResult = v.safeParse(schema, input, { lang });
 
@@ -190,7 +195,7 @@ export async function action({ context, request }: Route.ActionArgs) {
         return data({ errors: v.flatten<typeof schema>(parseResult.issues).nested }, { status: 400 });
       }
 
-      (context.session.inPersonSINCase ??= {}).parentDetails = parseResult.output;
+      sessionData.parentDetails = parseResult.output;
 
       throw i18nRedirect('routes/protected/person-case/previous-sin.tsx', request, {
         search: new URLSearchParams({ tid: tabId }),
@@ -356,7 +361,7 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
             options={countryOptions}
             onChange={({ target }) => setCountry(target.value)}
           />
-          {country == loaderData.PP_CANADA_COUNTRY_CODE ? (
+          {country == loaderData.canadaCountryCode ? (
             <InputSelect
               errorMessage={errors?.[`${index}.birthLocation.province`]?.at(0)}
               className="w-full rounded-sm sm:w-104"
@@ -383,7 +388,7 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
             label={t('protected:parent-details.city')}
             name={`${index}-city`}
             defaultValue={defaultValues?.city}
-            required={country == loaderData.PP_CANADA_COUNTRY_CODE}
+            required={country == loaderData.canadaCountryCode}
             type="text"
           />
         </>
