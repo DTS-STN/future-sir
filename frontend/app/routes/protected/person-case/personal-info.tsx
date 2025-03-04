@@ -134,9 +134,9 @@ export default function PersonalInformation({ loaderData, params }: Route.Compon
   const isSubmitting = fetcher.state !== 'idle';
   const errors = fetcher.data?.errors;
 
-  const [firstName, setFirstName] = useState<string | undefined>(undefined);
+  const [firstName, setFirstName] = useState<string>('');
   const [firstNames, setFirstNames] = useState(loaderData.defaultFormValues.firstNamePreviouslyUsed);
-  const [lastName, setLastName] = useState<string | undefined>(undefined);
+  const [lastName, setLastName] = useState<string>('');
   const [lastNames, setLastNames] = useState(loaderData.defaultFormValues.lastNamePreviouslyUsed);
   const [srAnnouncement, setSrAnnouncement] = useState('');
 
@@ -149,7 +149,7 @@ export default function PersonalInformation({ loaderData, params }: Route.Compon
   }));
 
   function handleAddFirstName() {
-    if (firstName?.trim()) {
+    if (firstName.trim()) {
       setFirstNames((prev) => (!prev.includes(firstName.trim()) ? [...prev, firstName.trim()] : prev));
       setFirstName('');
     }
@@ -161,7 +161,7 @@ export default function PersonalInformation({ loaderData, params }: Route.Compon
   }
 
   function handleAddLastName() {
-    if (lastName?.trim()) {
+    if (lastName.trim()) {
       setLastNames((prev) => (!prev.includes(lastName.trim()) ? [...prev, lastName.trim()] : prev));
       setLastName('');
     }
