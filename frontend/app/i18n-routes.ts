@@ -212,6 +212,14 @@ export const i18nRoutes = [
           },
         ],
       },
+      {
+        id: 'PROT-0016',
+        file: 'routes/protected/multi-channel/sin-confirmation.tsx',
+        paths: {
+          en: '/en/protected/multi-channel/sin-confirmation',
+          fr: '/fr/protege/multi-canal/confirmation-de-nas',
+        },
+      },
       //
       // XState-driven in-person flow (poc)
       //

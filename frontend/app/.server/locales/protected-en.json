@@ -16,6 +16,9 @@
     "title": "In-person SIN request",
     "description": "Process an application or amendment"
   },
+  "first-time": {
+    "title": "First-time SIN request"
+  },
   "enquiry-only": {
     "title": "Enquiry only",
     "description": "Search for a SIN record"
@@ -381,5 +384,33 @@
     "next": "Next",
     "previous": "Previous",
     "matches": "Matches"
+  },
+  "sin-confirmation": {
+    "page-title": "SIN confirmation",
+    "print": "Print",
+    "finish": "Finish",
+    "protected-b": "PROTECTED B",
+    "social-insurance-number": "Social Insurance Number (SIN)",
+    "names-on-record": "Names on the SIN record",
+    "first-name": "First Name",
+    "middle-name": "Middle Name(s)",
+    "family-name": "Family Name(s)",
+    "address": "Address",
+    "protect-sin": {
+      "title": "Protect your SIN; it is confidential",
+      "description": "Keep any document containing your SIN in a safe place."
+    },
+    "use-of-sin": {
+      "title": "Use of your SIN",
+      "description": "You are required to provide your SIN to your employer within three days after the day you receive it. Also, some programs and/or services authenticate a person's identity using data on the SIN record; ensure you are using the names as shown above."
+    },
+    "sin-begin-9": {
+      "title": "If your SIN begins with the number 9",
+      "description": "You must present a valid proof of authorization to work in Canada to your employer. Your SIN record must be updated to reflect the most recent expiry date."
+    },
+    "more-information": {
+      "title": "For more information, visit our Web site:",
+      "description": "Canada.ca/social-insurance-number"
+    }
   }
 }

@@ -4,12 +4,13 @@ import { cn } from '~/utils/tailwind-utils';
 
 export type PageTitleProps = Omit<ComponentProps<'h1'>, 'id' | 'property'> & {
   subTitle?: string;
+  subTitleClassName?: string;
 };
 
-export function PageTitle({ children, className, subTitle, ...props }: PageTitleProps) {
+export function PageTitle({ children, className, subTitle, subTitleClassName, ...props }: PageTitleProps) {
   return (
     <div className="mt-10 mb-8">
-      {subTitle && <h2>{subTitle}</h2>}
+      {subTitle && <h2 className={subTitleClassName}>{subTitle}</h2>}
       <h1
         id="wb-cont"
         tabIndex={-1}
