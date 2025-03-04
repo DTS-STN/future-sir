@@ -3,7 +3,7 @@
 exports[`PageDetails > should render the pageid, app version, and date modified > expected html 1`] = `
 <div>
   <section
-    class="mt-16 mb-8"
+    class="mt-16 mb-8 print:hidden"
   >
     <h2
       class="sr-only"

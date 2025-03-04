@@ -37,6 +37,9 @@
     "title": "Demande NAS en personne",
     "description": "Traiter une demande ou une modification"
   },
+  "first-time": {
+    "title": "Demande NAS pour la première fois"
+  },
   "enquiry-only": {
     "title": "Demande uniquement",
     "description": "Rechercher un enregistrement SIN"
@@ -418,5 +421,10 @@
     "other-last-names": "Other last names",
     "search": "Search",
     "matches": "Matches"
+  },
+  "sin-confirmation": {
+    "title": "Confirmation du NAS",
+    "print": "Imprimer",
+    "finish": "Terminer"
   }
 }
