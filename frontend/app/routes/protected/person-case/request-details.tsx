@@ -4,12 +4,19 @@ import type { RouteHandle } from 'react-router';
 import { data, useFetcher } from 'react-router';
 
 import type { SessionData } from 'express-session';
-import type { ResourceKey } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import * as v from 'valibot';
 
 import type { Info, Route } from './+types/request-details';
 
+import {
+  getApplicationSubmissionScenarios,
+  getLocalizedApplicationSubmissionScenarios,
+} from '~/.server/domain/person-case/services/application-submission-scenario';
+import {
+  getLocalizedTypesOfApplicationToSubmit,
+  getTypesOfApplicationToSubmit,
+} from '~/.server/domain/person-case/services/application-type-service';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
@@ -24,34 +31,18 @@ import { handle as parentHandle } from '~/routes/protected/layout';
 
 type RequestDetailsSessionData = NonNullable<SessionData['inPersonSINCase']['requestDetails']>;
 
-const VALID_REQUESTS = [
-  'first-time',
-  'record-confirmation',
-  'name-change',
-  'expiry-extension',
-  'change-status',
-  'sin-confirmation',
-  'new-sin',
-] as const;
-
-const VALID_SCENARIOS = [
-  'for-self', //
-  'legal-guardian',
-  'legal-representative',
-  'as-employee',
-  'estate-representative',
-] as const;
-
 export const handle = {
   i18nNamespace: [...parentHandle.i18nNamespace, 'protected'],
 } as const satisfies RouteHandle;
 
 export async function loader({ context, request }: Route.LoaderArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
-  const { t } = await getTranslation(request, handle.i18nNamespace);
+  const { t, lang } = await getTranslation(request, handle.i18nNamespace);
 
   return {
     documentTitle: t('protected:request-details.page-title'),
+    localizedSubmissionScenarios: getLocalizedApplicationSubmissionScenarios(lang),
+    localizedTypeofApplicationToSubmit: getLocalizedTypesOfApplicationToSubmit(lang),
     defaultFormValues: context.session.inPersonSINCase?.requestDetails,
   };
 }
@@ -80,8 +71,14 @@ export async function action({ context, request }: Route.ActionArgs) {
 
     case 'next': {
       const schema = v.object({
-        scenario: v.picklist(VALID_SCENARIOS, t('protected:request-details.required-scenario')),
-        type: v.picklist(VALID_REQUESTS, t('protected:request-details.required-request')),
+        scenario: v.picklist(
+          getApplicationSubmissionScenarios().map(({ id }) => id),
+          t('protected:request-details.required-scenario'),
+        ),
+        type: v.picklist(
+          getTypesOfApplicationToSubmit().map(({ id }) => id),
+          t('protected:request-details.required-request'),
+        ),
       }) satisfies v.GenericSchema<RequestDetailsSessionData>;
 
       const input = {
@@ -115,16 +112,18 @@ export default function RequestDetails({ loaderData, actionData, params }: Route
   const isSubmitting = fetcher.state !== 'idle';
   const errors = fetcher.data?.errors;
 
-  const scenarioOptions = VALID_SCENARIOS.map((value) => ({
-    value: value,
-    children: t(`protected:request-details.scenarios.${value}` as ResourceKey),
-    defaultChecked: value === loaderData.defaultFormValues?.scenario,
+  const scenarioOptions = loaderData.localizedSubmissionScenarios.map(({ id, name }) => ({
+    value: id,
+    children: name,
+    defaultChecked: id === loaderData.defaultFormValues?.scenario,
   }));
 
-  const requestOptions = ['select-option', ...VALID_REQUESTS].map((value) => ({
-    value: value === 'select-option' ? '' : value,
-    children: t(`protected:request-details.requests.${value}` as ResourceKey),
-  }));
+  const requestOptions = [{ id: 'select-option', name: '' }, ...loaderData.localizedTypeofApplicationToSubmit].map(
+    ({ id, name }) => ({
+      value: id === 'select-option' ? '' : id,
+      children: id === 'select-option' ? t('protected:contact-information.select-option') : name,
+    }),
+  );
 
   return (
     <>
