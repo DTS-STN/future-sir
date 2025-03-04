@@ -47,7 +47,6 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
     documentTitle: t('protected:birth-details.page-title'),
     localizedCountries: countryService.getLocalizedCountries(lang),
     localizedProvincesTerritoriesStates: provinceService.getLocalizedProvinces(lang),
-    canadaCountryCode: serverEnvironment.PP_CANADA_COUNTRY_CODE,
     defaultFormValues: birthDetails,
   };
 }
@@ -224,7 +223,7 @@ export default function BirthDetails({ actionData, loaderData, matches, params }
             />
             {country && (
               <>
-                {country === loaderData.canadaCountryCode ? (
+                {country === globalThis.__appEnvironment.PP_CANADA_COUNTRY_CODE ? (
                   <InputSelect
                     className="w-max rounded-sm"
                     id="province"
@@ -241,7 +240,7 @@ export default function BirthDetails({ actionData, loaderData, matches, params }
                     label={t('protected:birth-details.province.label')}
                     name="province"
                     defaultValue={loaderData.defaultFormValues?.province}
-                    required={country === loaderData.canadaCountryCode}
+                    required={country === globalThis.__appEnvironment.PP_CANADA_COUNTRY_CODE}
                     type="text"
                     className="w-full rounded-sm sm:w-104"
                   />
@@ -251,7 +250,7 @@ export default function BirthDetails({ actionData, loaderData, matches, params }
                   label={t('protected:birth-details.city.label')}
                   name="city"
                   defaultValue={loaderData.defaultFormValues?.city}
-                  required={country === loaderData.canadaCountryCode}
+                  required={country === globalThis.__appEnvironment.PP_CANADA_COUNTRY_CODE}
                   type="text"
                   className="w-full rounded-sm sm:w-104"
                 />
