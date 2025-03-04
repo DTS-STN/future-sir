@@ -1,5 +1,8 @@
 import { defineConfig } from '@hey-api/openapi-ts';
 
+/**
+ * @see https://heyapi.dev/openapi-ts/configuration
+ */
 export default defineConfig({
   input: 'fsir-openapi.yml',
   output: {
