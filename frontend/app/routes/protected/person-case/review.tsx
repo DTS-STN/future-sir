@@ -22,6 +22,7 @@ import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/layout';
+import type { InPersonSinApplication } from '~/routes/protected/person-case/@types';
 
 export const handle = {
   i18nNamespace: [...parentHandle.i18nNamespace, 'protected'],
@@ -30,34 +31,35 @@ export const handle = {
 export async function loader({ context, request }: Route.LoaderArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
 
-  const tabId = new URL(request.url).searchParams.get('tid');
-  if (!tabId) throw new AppError('Missing tab id', ErrorCodes.MISSING_TAB_ID, { httpStatusCode: 400 });
+  const tabId = new URL(request.url).searchParams.get('tid') ?? '';
+  const sessionData = (context.session.inPersonSinApplications ??= {})[tabId];
+  const inPersonSinApplication = validateInPersonSINCaseSession(sessionData, tabId, request);
 
   const { t, lang } = await getTranslation(request, handle.i18nNamespace);
-  const inPersonSINCase = validateInPersonSINCaseSession(context.session, tabId, request);
-
-  const { PP_CANADA_COUNTRY_CODE } = serverEnvironment;
 
   return {
     documentTitle: t('protected:review.page-title'),
     inPersonSINCase: {
-      ...inPersonSINCase,
+      ...inPersonSinApplication,
       primaryDocuments: {
-        ...inPersonSINCase.primaryDocuments,
-        genderName: applicantGenderService.getLocalizedApplicantGenderById(inPersonSINCase.primaryDocuments.gender, lang).name,
-      },
-      personalInformation: {
-        ...inPersonSINCase.personalInformation,
-        genderName: applicantGenderService.getLocalizedApplicantGenderById(inPersonSINCase.personalInformation.gender, lang)
+        ...inPersonSinApplication.primaryDocuments,
+        genderName: applicantGenderService.getLocalizedApplicantGenderById(inPersonSinApplication.primaryDocuments.gender, lang)
           .name,
       },
+      personalInformation: {
+        ...inPersonSinApplication.personalInformation,
+        genderName: applicantGenderService.getLocalizedApplicantGenderById(
+          inPersonSinApplication.personalInformation.gender,
+          lang,
+        ).name,
+      },
       birthDetails: {
-        ...inPersonSINCase.birthDetails,
-        countryName: countryService.getLocalizedCountryById(inPersonSINCase.birthDetails.country, lang).name,
-        provinceName: inPersonSINCase.birthDetails.province
-          ? inPersonSINCase.birthDetails.country !== PP_CANADA_COUNTRY_CODE
-            ? inPersonSINCase.birthDetails.province
-            : provinceService.getLocalizedProvinceById(inPersonSINCase.birthDetails.province, lang).name
+        ...inPersonSinApplication.birthDetails,
+        countryName: countryService.getLocalizedCountryById(inPersonSinApplication.birthDetails.country, lang).name,
+        provinceName: inPersonSinApplication.birthDetails.province
+          ? inPersonSinApplication.birthDetails.country !== serverEnvironment.PP_CANADA_COUNTRY_CODE
+            ? inPersonSinApplication.birthDetails.province
+            : provinceService.getLocalizedProvinceById(inPersonSinApplication.birthDetails.province, lang).name
           : undefined,
       },
     },
@@ -66,13 +68,11 @@ export async function loader({ context, request }: Route.LoaderArgs) {
 }
 
 function validateInPersonSINCaseSession(
-  session: AppSession,
+  sessionData: InPersonSinApplication | undefined,
   tabId: string,
   request: Request,
-): Required<NonNullable<SessionData['inPersonSINCase']>> {
-  const inPersonSINCase = session.inPersonSINCase;
-
-  if (inPersonSINCase === undefined) {
+): Required<NonNullable<SessionData['inPersonSinApplications'][number]>> {
+  if (sessionData === undefined) {
     throw i18nRedirect('routes/protected/person-case/privacy-statement.tsx', request, {
       search: new URLSearchParams({ tid: tabId }),
     });
@@ -89,7 +89,7 @@ function validateInPersonSINCaseSession(
     privacyStatement,
     requestDetails,
     secondaryDocument,
-  } = inPersonSINCase;
+  } = sessionData;
 
   if (privacyStatement === undefined) {
     throw i18nRedirect('routes/protected/index.tsx', request, {

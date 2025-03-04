@@ -5,7 +5,6 @@ import { data, useFetcher } from 'react-router';
 
 import { faExclamationCircle, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { isBefore } from 'date-fns';
-import type { SessionData } from 'express-session';
 import { useTranslation } from 'react-i18next';
 import * as v from 'valibot';
 
@@ -29,9 +28,8 @@ import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/layout';
+import type { SecondaryDocumentData } from '~/routes/protected/person-case/@types';
 import { getStartOfDayInTimezone, toISODateString } from '~/utils/date-utils';
-
-type PrimaryDocumentsSessionData = NonNullable<SessionData['inPersonSINCase']['secondaryDocument']>;
 
 export const handle = {
   i18nNamespace: [...parentHandle.i18nNamespace, 'protected'],
@@ -39,12 +37,16 @@ export const handle = {
 
 export async function loader({ context, request }: Route.LoaderArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
-  const { t, lang } = await getTranslation(request, handle.i18nNamespace);
+
+  const tabId = new URL(request.url).searchParams.get('tid') ?? '';
+  const secondaryDocument = (context.session.inPersonSinApplications ??= {})[tabId]?.secondaryDocument;
+
+  const { lang, t } = await getTranslation(request, handle.i18nNamespace);
 
   return {
     documentTitle: t('protected:secondary-identity-document.page-title'),
     localizedApplicantSecondaryDocumentChoices: getLocalizedApplicantSecondaryDocumentChoices(lang),
-    defaultFormValues: context.session.inPersonSINCase?.secondaryDocument,
+    defaultFormValues: secondaryDocument,
   };
 }
 
@@ -57,6 +59,7 @@ export async function action({ context, request }: Route.ActionArgs) {
 
   const tabId = new URL(request.url).searchParams.get('tid');
   if (!tabId) throw new AppError('Missing tab id', ErrorCodes.MISSING_TAB_ID, { httpStatusCode: 400 });
+  const sessionData = ((context.session.inPersonSinApplications ??= {})[tabId] ??= {});
 
   const { lang, t } = await getTranslation(request, handle.i18nNamespace);
 
@@ -117,7 +120,7 @@ export async function action({ context, request }: Route.ActionArgs) {
             t('protected:secondary-identity-document.expiry-date.invalid'),
           ),
         ),
-      }) satisfies v.GenericSchema<PrimaryDocumentsSessionData>;
+      }) satisfies v.GenericSchema<SecondaryDocumentData>;
 
       const expiryYear = Number(formData.get('expiry-year'));
       const expiryMonth = Number(formData.get('expiry-month'));
@@ -140,7 +143,7 @@ export async function action({ context, request }: Route.ActionArgs) {
         return data({ errors: v.flatten<typeof schema>(parseResult.issues).nested }, { status: 400 });
       }
 
-      (context.session.inPersonSINCase ??= {}).secondaryDocument = {
+      sessionData.secondaryDocument = {
         /*
         TODO: Enable file upload
         document: parseResult.output.document,

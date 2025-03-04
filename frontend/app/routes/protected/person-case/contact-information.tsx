@@ -3,7 +3,6 @@ import { useId, useState } from 'react';
 import type { RouteHandle } from 'react-router';
 import { data, useFetcher } from 'react-router';
 
-import type { SessionData } from 'express-session';
 import { useTranslation } from 'react-i18next';
 import * as v from 'valibot';
 
@@ -25,8 +24,7 @@ import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/layout';
-
-type ContactInformationSessionData = NonNullable<SessionData['inPersonSINCase']['contactInformation']>;
+import type { ContactInformationData } from '~/routes/protected/person-case/@types';
 
 export const handle = {
   i18nNamespace: [...parentHandle.i18nNamespace, 'protected'],
@@ -34,16 +32,19 @@ export const handle = {
 
 export async function loader({ context, request }: Route.LoaderArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
+
+  const tabId = new URL(request.url).searchParams.get('tid') ?? '';
+  const contactInformation = (context.session.inPersonSinApplications ??= {})[tabId]?.contactInformation;
+
   const { lang, t } = await getTranslation(request, handle.i18nNamespace);
-  const { PP_CANADA_COUNTRY_CODE } = serverEnvironment;
 
   return {
     documentTitle: t('protected:contact-information.page-title'),
-    defaultFormValues: context.session.inPersonSINCase?.contactInformation,
+    defaultFormValues: contactInformation,
     localizedpreferredLanguages: languageCorrespondenceService.getLocalizedLanguageOfCorrespondence(lang),
     localizedCountries: countryService.getLocalizedCountries(lang),
     localizedProvincesTerritoriesStates: provinceService.getLocalizedProvinces(lang),
-    PP_CANADA_COUNTRY_CODE,
+    canadaCountryCode: serverEnvironment.PP_CANADA_COUNTRY_CODE,
   };
 }
 
@@ -56,10 +57,10 @@ export async function action({ context, request }: Route.ActionArgs) {
 
   const tabId = new URL(request.url).searchParams.get('tid');
   if (!tabId) throw new AppError('Missing tab id', ErrorCodes.MISSING_TAB_ID, { httpStatusCode: 400 });
+  const sessionData = ((context.session.inPersonSinApplications ??= {})[tabId] ??= {});
 
   const { lang, t } = await getTranslation(request, handle.i18nNamespace);
 
-  const { PP_CANADA_COUNTRY_CODE } = serverEnvironment;
   const formData = await request.formData();
   const action = formData.get('action');
 
@@ -109,7 +110,7 @@ export async function action({ context, request }: Route.ActionArgs) {
         }),
         v.variant('country', [
           v.object({
-            country: v.literal(PP_CANADA_COUNTRY_CODE),
+            country: v.literal(serverEnvironment.PP_CANADA_COUNTRY_CODE),
             province: v.picklist(
               provinceService.getProvinces().map(({ id }) => id),
               t('protected:contact-information.error-messages.province-required'),
@@ -124,7 +125,7 @@ export async function action({ context, request }: Route.ActionArgs) {
             ),
           }),
         ]),
-      ]) satisfies v.GenericSchema<ContactInformationSessionData>;
+      ]) satisfies v.GenericSchema<ContactInformationData>;
 
       const input = {
         preferredLanguage: formData.get('preferredLanguage') as string,
@@ -138,7 +139,7 @@ export async function action({ context, request }: Route.ActionArgs) {
         postalCode: formData.get('postalCode') as string,
         city: formData.get('city') as string,
         province: formData.get('province') as string,
-      } satisfies Partial<ContactInformationSessionData>;
+      } satisfies Partial<ContactInformationData>;
 
       const parseResult = v.safeParse(schema, input, { lang });
 
@@ -146,7 +147,7 @@ export async function action({ context, request }: Route.ActionArgs) {
         return data({ errors: v.flatten<typeof schema>(parseResult.issues).nested }, { status: 400 });
       }
 
-      (context.session.inPersonSINCase ??= {}).contactInformation = parseResult.output;
+      sessionData.contactInformation = parseResult.output;
 
       throw i18nRedirect('routes/protected/person-case/review.tsx', request, {
         search: new URLSearchParams({ tid: tabId }),
@@ -272,7 +273,7 @@ export default function ContactInformation({ loaderData, actionData, params }: R
                   defaultValue={loaderData.defaultFormValues?.city}
                   required
                 />
-                {country === loaderData.PP_CANADA_COUNTRY_CODE ? (
+                {country === loaderData.canadaCountryCode ? (
                   <InputSelect
                     className="w-max rounded-sm"
                     id="province"

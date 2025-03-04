@@ -5,7 +5,6 @@ import type { RouteHandle } from 'react-router';
 import { data, useFetcher } from 'react-router';
 
 import { faExclamationCircle, faXmark } from '@fortawesome/free-solid-svg-icons';
-import type { SessionData } from 'express-session';
 import { useTranslation } from 'react-i18next';
 import * as v from 'valibot';
 
@@ -29,10 +28,9 @@ import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/layout';
+import type { PrimaryDocumentData } from '~/routes/protected/person-case/@types';
 import { getStartOfDayInTimezone, isDateInPastOrTodayInTimeZone, isValidDateString, toISODateString } from '~/utils/date-utils';
 import { REGEX_PATTERNS } from '~/utils/regex-utils';
-
-type PrimaryDocumentsSessionData = NonNullable<SessionData['inPersonSINCase']['primaryDocuments']>;
 
 const VALID_CURRENT_STATUS = ['canadian-citizen-born-outside-canada'];
 /**
@@ -48,11 +46,15 @@ export const handle = {
 
 export async function loader({ context, request }: Route.LoaderArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
+
+  const tabId = new URL(request.url).searchParams.get('tid') ?? '';
+  const primaryDocuments = (context.session.inPersonSinApplications ??= {})[tabId]?.primaryDocuments;
+
   const { t, lang } = await getTranslation(request, handle.i18nNamespace);
 
   return {
     documentTitle: t('protected:primary-identity-document.page-title'),
-    defaultFormValues: context.session.inPersonSINCase?.primaryDocuments,
+    defaultFormValues: primaryDocuments,
     localizedGenders: applicantGenderService.getLocalizedApplicantGenders(lang),
   };
 }
@@ -61,19 +63,12 @@ export function meta({ data }: Route.MetaArgs) {
   return [{ title: data.documentTitle }];
 }
 
-function toDateString(year: number, month: number, day: number): string {
-  try {
-    return toISODateString(year, month, day);
-  } catch {
-    return '';
-  }
-}
-
 export async function action({ context, request }: Route.ActionArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
 
   const tabId = new URL(request.url).searchParams.get('tid');
   if (!tabId) throw new AppError('Missing tab id', ErrorCodes.MISSING_TAB_ID, { httpStatusCode: 400 });
+  const sessionData = ((context.session.inPersonSinApplications ??= {})[tabId] ??= {});
 
   const { lang, t } = await getTranslation(request, handle.i18nNamespace);
 
@@ -233,7 +228,7 @@ export async function action({ context, request }: Route.ActionArgs) {
           ],
           t('protected:primary-identity-document.document-type.required'),
         ),
-      ]) satisfies v.GenericSchema<PrimaryDocumentsSessionData>;
+      ]) satisfies v.GenericSchema<PrimaryDocumentData>;
 
       const dateOfBirthYear = Number(formData.get('dateOfBirthYear'));
       const dateOfBirthMonth = Number(formData.get('dateOfBirthMonth'));
@@ -273,7 +268,7 @@ export async function action({ context, request }: Route.ActionArgs) {
         return data({ errors: v.flatten(parseResult.issues).nested }, { status: 400 });
       }
 
-      (context.session.inPersonSINCase ??= {}).primaryDocuments = parseResult.output;
+      sessionData.primaryDocuments = parseResult.output;
 
       throw i18nRedirect('routes/protected/person-case/secondary-doc.tsx', request, {
         search: new URLSearchParams({ tid: tabId }),
@@ -599,4 +594,12 @@ function PrimaryDocsFields({
       )}
     </>
   );
+}
+
+function toDateString(year: number, month: number, day: number): string {
+  try {
+    return toISODateString(year, month, day);
+  } catch {
+    return '';
+  }
 }

@@ -4,7 +4,6 @@ import type { RouteHandle } from 'react-router';
 import { data, useFetcher } from 'react-router';
 
 import { faExclamationCircle, faXmark } from '@fortawesome/free-solid-svg-icons';
-import type { SessionData } from 'express-session';
 import { useTranslation } from 'react-i18next';
 import * as v from 'valibot';
 
@@ -21,8 +20,7 @@ import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/layout';
-
-type PrivacyStatmentSessionData = NonNullable<SessionData['inPersonSINCase']['privacyStatement']>;
+import type { PrivacyStatementData } from '~/routes/protected/person-case/@types';
 
 export const handle = {
   i18nNamespace: [...parentHandle.i18nNamespace, 'protected'],
@@ -30,11 +28,15 @@ export const handle = {
 
 export async function loader({ context, request }: Route.LoaderArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
+
+  const tabId = new URL(request.url).searchParams.get('tid') ?? '';
+  const privacyStatement = (context.session.inPersonSinApplications ??= {})[tabId]?.privacyStatement;
+
   const { t } = await getTranslation(request, handle.i18nNamespace);
 
   return {
     documentTitle: t('protected:privacy-statement.page-title'),
-    defaultFormValues: context.session.inPersonSINCase?.privacyStatement,
+    defaultFormValues: privacyStatement,
   };
 }
 
@@ -47,6 +49,7 @@ export async function action({ context, request }: Route.ActionArgs) {
 
   const tabId = new URL(request.url).searchParams.get('tid');
   if (!tabId) throw new AppError('Missing tab id', ErrorCodes.MISSING_TAB_ID, { httpStatusCode: 400 });
+  const sessionData = ((context.session.inPersonSinApplications ??= {})[tabId] ??= {});
 
   const { lang, t } = await getTranslation(request, handle.i18nNamespace);
 
@@ -61,11 +64,11 @@ export async function action({ context, request }: Route.ActionArgs) {
     case 'next': {
       const schema = v.object({
         agreedToTerms: v.literal(true, t('protected:privacy-statement.confirm-privacy-notice-checkbox.required')),
-      }) satisfies v.GenericSchema<PrivacyStatmentSessionData>;
+      }) satisfies v.GenericSchema<PrivacyStatementData>;
 
       const input = {
         agreedToTerms: formData.get('agreedToTerms') ? true : undefined,
-      } satisfies Partial<PrivacyStatmentSessionData>;
+      } satisfies Partial<PrivacyStatementData>;
 
       const parseResult = v.safeParse(schema, input, { lang });
 
@@ -73,7 +76,7 @@ export async function action({ context, request }: Route.ActionArgs) {
         return data({ errors: v.flatten<typeof schema>(parseResult.issues).nested }, { status: 400 });
       }
 
-      (context.session.inPersonSINCase ??= {}).privacyStatement = parseResult.output;
+      sessionData.privacyStatement = parseResult.output;
 
       throw i18nRedirect('routes/protected/person-case/request-details.tsx', request, {
         search: new URLSearchParams({ tid: tabId }),

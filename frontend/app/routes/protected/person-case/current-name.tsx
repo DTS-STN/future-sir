@@ -5,7 +5,6 @@ import type { RouteHandle } from 'react-router';
 import { data, useFetcher } from 'react-router';
 
 import { faExclamationCircle, faXmark } from '@fortawesome/free-solid-svg-icons';
-import type { SessionData } from 'express-session';
 import type { ResourceKey } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import type { PartialDeep } from 'type-fest';
@@ -27,10 +26,9 @@ import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/layout';
+import type { CurrentNameData } from '~/routes/protected/person-case/@types';
 import { REGEX_PATTERNS } from '~/utils/regex-utils';
 import { trimToUndefined } from '~/utils/string-utils';
-
-type CurrentNameSessionData = NonNullable<SessionData['inPersonSINCase']['currentNameInfo']>;
 
 const REQUIRE_OPTIONS = {
   yes: 'Yes', //
@@ -55,15 +53,19 @@ export const handle = {
 
 export async function loader({ context, request }: Route.LoaderArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
+
+  const tabId = new URL(request.url).searchParams.get('tid') ?? '';
+  const sessionData = (context.session.inPersonSinApplications ??= {})[tabId];
+
   const { t } = await getTranslation(request, handle.i18nNamespace);
 
   return {
     documentTitle: t('protected:primary-identity-document.page-title'),
-    defaultFormValues: context.session.inPersonSINCase?.currentNameInfo,
+    defaultFormValues: sessionData?.currentNameInfo,
     primaryDocName: {
-      firstName: context.session.inPersonSINCase?.primaryDocuments?.givenName,
-      middleName: '', //context.session.inPersonSINCase?.primaryDocuments?.middleName,
-      lastName: context.session.inPersonSINCase?.primaryDocuments?.lastName,
+      firstName: sessionData?.primaryDocuments?.givenName,
+      middleName: '', //sessionData?.primaryDocuments?.middleName,
+      lastName: sessionData?.primaryDocuments?.lastName,
     },
   };
 }
@@ -77,6 +79,7 @@ export async function action({ context, request }: Route.ActionArgs) {
 
   const tabId = new URL(request.url).searchParams.get('tid');
   if (!tabId) throw new AppError('Missing tab id', ErrorCodes.MISSING_TAB_ID, { httpStatusCode: 400 });
+  const sessionData = ((context.session.inPersonSinApplications ??= {})[tabId] ??= {});
 
   const { lang, t } = await getTranslation(request, handle.i18nNamespace);
 
@@ -140,7 +143,7 @@ export async function action({ context, request }: Route.ActionArgs) {
           }),
         ],
         t('protected:current-name.preferred-name.required-error'),
-      ) satisfies v.GenericSchema<CurrentNameSessionData>;
+      ) satisfies v.GenericSchema<CurrentNameData>;
 
       const input = {
         preferredSameAsDocumentName: formData.get('same-name')
@@ -163,7 +166,7 @@ export async function action({ context, request }: Route.ActionArgs) {
         return data({ errors: v.flatten<typeof schema>(parseResult.issues).nested }, { status: 400 });
       }
 
-      (context.session.inPersonSINCase ??= {}).currentNameInfo = parseResult.output;
+      sessionData.currentNameInfo = parseResult.output;
 
       throw i18nRedirect('routes/protected/person-case/personal-info.tsx', request, {
         search: new URLSearchParams({ tid: tabId }),

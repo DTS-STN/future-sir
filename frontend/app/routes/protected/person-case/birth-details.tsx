@@ -4,7 +4,6 @@ import type { RouteHandle } from 'react-router';
 import { data, useFetcher } from 'react-router';
 
 import { faExclamationCircle, faXmark } from '@fortawesome/free-solid-svg-icons';
-import type { SessionData } from 'express-session';
 import { useTranslation } from 'react-i18next';
 import * as v from 'valibot';
 
@@ -26,10 +25,9 @@ import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/layout';
+import type { BirthDetailsData } from '~/routes/protected/person-case/@types';
 import { REGEX_PATTERNS } from '~/utils/regex-utils';
 import { trimToUndefined } from '~/utils/string-utils';
-
-type BirthDetailsSessionData = NonNullable<SessionData['inPersonSINCase']['birthDetails']>;
 
 const REQUIRE_OPTIONS = { yes: 'Yes', no: 'No' } as const;
 
@@ -37,24 +35,20 @@ export const handle = {
   i18nNamespace: [...parentHandle.i18nNamespace, 'protected'],
 } as const satisfies RouteHandle;
 
-export async function loader({ context, request }: Route.LoaderArgs) {
+export async function loader({ context, params, request }: Route.LoaderArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
-  const { lang, t } = await getTranslation(request, handle.i18nNamespace);
-  const { PP_CANADA_COUNTRY_CODE } = serverEnvironment;
 
-  const birthDetails = context.session.inPersonSINCase?.birthDetails;
+  const tabId = new URL(request.url).searchParams.get('tid') ?? '';
+  const birthDetails = (context.session.inPersonSinApplications ??= {})[tabId]?.birthDetails;
+
+  const { lang, t } = await getTranslation(request, handle.i18nNamespace);
 
   return {
     documentTitle: t('protected:birth-details.page-title'),
     localizedCountries: countryService.getLocalizedCountries(lang),
     localizedProvincesTerritoriesStates: provinceService.getLocalizedProvinces(lang),
-    PP_CANADA_COUNTRY_CODE,
-    defaultFormValues: {
-      country: birthDetails?.country,
-      province: birthDetails?.province,
-      city: birthDetails?.city,
-      fromMultipleBirth: birthDetails?.fromMultipleBirth,
-    },
+    canadaCountryCode: serverEnvironment.PP_CANADA_COUNTRY_CODE,
+    defaultFormValues: birthDetails,
   };
 }
 
@@ -62,15 +56,15 @@ export function meta({ data }: Route.MetaArgs) {
   return [{ title: data.documentTitle }];
 }
 
-export async function action({ context, request }: Route.ActionArgs) {
+export async function action({ context, params, request }: Route.ActionArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
 
   const tabId = new URL(request.url).searchParams.get('tid');
   if (!tabId) throw new AppError('Missing tab id', ErrorCodes.MISSING_TAB_ID, { httpStatusCode: 400 });
+  const sessionData = ((context.session.inPersonSinApplications ??= {})[tabId] ??= {});
 
   const { lang, t } = await getTranslation(request, handle.i18nNamespace);
 
-  const { PP_CANADA_COUNTRY_CODE } = serverEnvironment;
   const formData = await request.formData();
   const action = formData.get('action');
 
@@ -86,7 +80,7 @@ export async function action({ context, request }: Route.ActionArgs) {
         'country',
         [
           v.object({
-            country: v.literal(PP_CANADA_COUNTRY_CODE, t('protected:birth-details.country.invalid-country')),
+            country: v.literal(serverEnvironment.PP_CANADA_COUNTRY_CODE, t('protected:birth-details.country.invalid-country')),
             province: v.picklist(
               provinceService.getProvinces().map(({ id }) => id),
               t('protected:birth-details.province.required-province'),
@@ -104,7 +98,7 @@ export async function action({ context, request }: Route.ActionArgs) {
             country: v.pipe(
               v.string(t('protected:birth-details.country.required-country')),
               v.nonEmpty(t('protected:birth-details.country.required-country')),
-              v.excludes(PP_CANADA_COUNTRY_CODE, t('protected:birth-details.country.invalid-country')),
+              v.excludes(serverEnvironment.PP_CANADA_COUNTRY_CODE, t('protected:birth-details.country.invalid-country')),
               v.picklist(
                 countryService.getCountries().map(({ id }) => id),
                 t('protected:birth-details.country.invalid-country'),
@@ -132,7 +126,7 @@ export async function action({ context, request }: Route.ActionArgs) {
           }),
         ],
         t('protected:birth-details.country.required-country'),
-      ) satisfies v.GenericSchema<BirthDetailsSessionData>;
+      ) satisfies v.GenericSchema<BirthDetailsData>;
 
       const input = {
         country: formData.get('country') as string,
@@ -149,7 +143,7 @@ export async function action({ context, request }: Route.ActionArgs) {
         return data({ errors: v.flatten<typeof schema>(parseResult.issues).nested }, { status: 400 });
       }
 
-      (context.session.inPersonSINCase ??= {}).birthDetails = parseResult.output;
+      sessionData.birthDetails = parseResult.output;
 
       throw i18nRedirect('routes/protected/person-case/parent-details.tsx', request, {
         search: new URLSearchParams({ tid: tabId }),
@@ -162,11 +156,11 @@ export async function action({ context, request }: Route.ActionArgs) {
   }
 }
 
-export default function BirthDetails({ loaderData, actionData, params }: Route.ComponentProps) {
+export default function BirthDetails({ actionData, loaderData, matches, params }: Route.ComponentProps) {
   const { t } = useTranslation(handle.i18nNamespace);
 
-  const [country, setCountry] = useState(loaderData.defaultFormValues.country);
-  const [fromMultipleBirth, setFromMultipleBirth] = useState(loaderData.defaultFormValues.fromMultipleBirth);
+  const [country, setCountry] = useState(loaderData.defaultFormValues?.country);
+  const [fromMultipleBirth, setFromMultipleBirth] = useState(loaderData.defaultFormValues?.fromMultipleBirth);
 
   const fetcherKey = useId();
   const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
@@ -221,7 +215,7 @@ export default function BirthDetails({ loaderData, actionData, params }: Route.C
               id="country-id"
               name="country"
               errorMessage={errors?.country?.at(0)}
-              defaultValue={loaderData.defaultFormValues.country ?? ''}
+              defaultValue={loaderData.defaultFormValues?.country ?? ''}
               required
               options={countryOptions}
               label={t('protected:birth-details.country.label')}
@@ -230,7 +224,7 @@ export default function BirthDetails({ loaderData, actionData, params }: Route.C
             />
             {country && (
               <>
-                {country === loaderData.PP_CANADA_COUNTRY_CODE ? (
+                {country === loaderData.canadaCountryCode ? (
                   <InputSelect
                     className="w-max rounded-sm"
                     id="province"
@@ -238,7 +232,7 @@ export default function BirthDetails({ loaderData, actionData, params }: Route.C
                     name="province"
                     options={provinceTerritoryStateOptions}
                     errorMessage={errors?.province?.at(0)}
-                    defaultValue={loaderData.defaultFormValues.province}
+                    defaultValue={loaderData.defaultFormValues?.province}
                     required
                   />
                 ) : (
@@ -246,8 +240,8 @@ export default function BirthDetails({ loaderData, actionData, params }: Route.C
                     errorMessage={errors?.province?.at(0)}
                     label={t('protected:birth-details.province.label')}
                     name="province"
-                    defaultValue={loaderData.defaultFormValues.province}
-                    required={country === loaderData.PP_CANADA_COUNTRY_CODE}
+                    defaultValue={loaderData.defaultFormValues?.province}
+                    required={country === loaderData.canadaCountryCode}
                     type="text"
                     className="w-full rounded-sm sm:w-104"
                   />
@@ -256,8 +250,8 @@ export default function BirthDetails({ loaderData, actionData, params }: Route.C
                   errorMessage={errors?.city?.at(0)}
                   label={t('protected:birth-details.city.label')}
                   name="city"
-                  defaultValue={loaderData.defaultFormValues.city}
-                  required={country === loaderData.PP_CANADA_COUNTRY_CODE}
+                  defaultValue={loaderData.defaultFormValues?.city}
+                  required={country === loaderData.canadaCountryCode}
                   type="text"
                   className="w-full rounded-sm sm:w-104"
                 />

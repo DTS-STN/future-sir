@@ -4,7 +4,6 @@ import { useId, useState } from 'react';
 import type { RouteHandle } from 'react-router';
 import { data, useFetcher } from 'react-router';
 
-import type { SessionData } from 'express-session';
 import { useTranslation } from 'react-i18next';
 import * as v from 'valibot';
 
@@ -26,9 +25,8 @@ import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/layout';
+import type { PreviousSinData } from '~/routes/protected/person-case/@types';
 import { formatSin, isValidSin, sinInputPatternFormat } from '~/utils/sin-utils';
-
-type PreviousSinSessionData = NonNullable<SessionData['inPersonSINCase']['previousSin']>;
 
 export const handle = {
   i18nNamespace: [...parentHandle.i18nNamespace, 'protected'],
@@ -36,14 +34,17 @@ export const handle = {
 
 export async function loader({ context, request }: Route.LoaderArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
-  const { t, lang } = await getTranslation(request, handle.i18nNamespace);
-  const { PP_HAS_HAD_PREVIOUS_SIN_CODE } = serverEnvironment;
+
+  const tabId = new URL(request.url).searchParams.get('tid') ?? '';
+  const previousSin = (context.session.inPersonSinApplications ??= {})[tabId]?.previousSin;
+
+  const { lang, t } = await getTranslation(request, handle.i18nNamespace);
 
   return {
     documentTitle: t('protected:previous-sin.page-title'),
-    langocalizedApplicantHadSinOptions: getLocalizedApplicantHadSinOptions(lang),
-    defaultFormValues: context.session.inPersonSINCase?.previousSin,
-    PP_HAS_HAD_PREVIOUS_SIN_CODE,
+    defaultFormValues: previousSin,
+    hasHadPreviousSinCode: serverEnvironment.PP_HAS_HAD_PREVIOUS_SIN_CODE,
+    localizedApplicantHadSinOptions: getLocalizedApplicantHadSinOptions(lang),
   };
 }
 
@@ -56,9 +57,9 @@ export async function action({ context, request }: Route.ActionArgs) {
 
   const tabId = new URL(request.url).searchParams.get('tid');
   if (!tabId) throw new AppError('Missing tab id', ErrorCodes.MISSING_TAB_ID, { httpStatusCode: 400 });
+  const sessionData = ((context.session.inPersonSinApplications ??= {})[tabId] ??= {});
 
   const { lang, t } = await getTranslation(request, handle.i18nNamespace);
-  const { PP_HAS_HAD_PREVIOUS_SIN_CODE } = serverEnvironment;
 
   const formData = await request.formData();
   const action = formData.get('action');
@@ -91,20 +92,21 @@ export async function action({ context, request }: Route.ActionArgs) {
             [['hasPreviousSin'], ['socialInsuranceNumber']],
             (input) =>
               input.socialInsuranceNumber === undefined ||
-              (input.hasPreviousSin === PP_HAS_HAD_PREVIOUS_SIN_CODE && isValidSin(input.socialInsuranceNumber ?? '')),
+              (input.hasPreviousSin === serverEnvironment.PP_HAS_HAD_PREVIOUS_SIN_CODE &&
+                isValidSin(input.socialInsuranceNumber ?? '')),
             t('protected:previous-sin.error-messages.sin-required'),
           ),
           ['socialInsuranceNumber'],
         ),
-      ) satisfies v.GenericSchema<PreviousSinSessionData>;
+      ) satisfies v.GenericSchema<PreviousSinData>;
 
       const input = {
         hasPreviousSin: formData.get('hasPreviousSin') as string,
         socialInsuranceNumber:
-          formData.get('hasPreviousSin') === PP_HAS_HAD_PREVIOUS_SIN_CODE
+          formData.get('hasPreviousSin') === serverEnvironment.PP_HAS_HAD_PREVIOUS_SIN_CODE
             ? (formData.get('socialInsuranceNumber') as string)
             : undefined,
-      } satisfies Partial<PreviousSinSessionData>;
+      } satisfies Partial<PreviousSinData>;
 
       const parseResult = v.safeParse(schema, input, { lang });
 
@@ -112,7 +114,7 @@ export async function action({ context, request }: Route.ActionArgs) {
         return data({ errors: v.flatten<typeof schema>(parseResult.issues).nested }, { status: 400 });
       }
 
-      (context.session.inPersonSINCase ??= {}).previousSin = parseResult.output;
+      sessionData.previousSin = parseResult.output;
 
       throw i18nRedirect('routes/protected/person-case/contact-information.tsx', request, {
         search: new URLSearchParams({ tid: tabId }),
@@ -136,7 +138,7 @@ export default function PreviousSin({ loaderData, actionData, params }: Route.Co
   const isSubmitting = fetcher.state !== 'idle';
   const errors = fetcher.data?.errors;
 
-  const hasPreviousSinOptions = loaderData.langocalizedApplicantHadSinOptions.map(({ id, name }) => ({
+  const hasPreviousSinOptions = loaderData.localizedApplicantHadSinOptions.map(({ id, name }) => ({
     value: id,
     children: name,
     defaultChecked: id === loaderData.defaultFormValues?.hasPreviousSin,
@@ -157,7 +159,7 @@ export default function PreviousSin({ loaderData, actionData, params }: Route.Co
               required
               errorMessage={errors?.hasPreviousSin?.at(0)}
             />
-            {hasPreviousSin === loaderData.PP_HAS_HAD_PREVIOUS_SIN_CODE && (
+            {hasPreviousSin === loaderData.hasHadPreviousSinCode && (
               <InputPatternField
                 defaultValue={loaderData.defaultFormValues?.socialInsuranceNumber ?? ''}
                 inputMode="numeric"

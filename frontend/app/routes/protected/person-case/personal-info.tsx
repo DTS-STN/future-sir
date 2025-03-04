@@ -5,7 +5,6 @@ import { data, useFetcher } from 'react-router';
 
 import { faExclamationCircle, faXmark, faXmarkCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import type { SessionData } from 'express-session';
 import { useTranslation } from 'react-i18next';
 import * as v from 'valibot';
 
@@ -24,9 +23,8 @@ import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/layout';
+import type { PersonalInfoData } from '~/routes/protected/person-case/@types';
 import { REGEX_PATTERNS } from '~/utils/regex-utils';
-
-type PersonalInformationSessionData = NonNullable<SessionData['inPersonSINCase']['personalInformation']>;
 
 export const handle = {
   i18nNamespace: [...parentHandle.i18nNamespace, 'protected'],
@@ -34,19 +32,25 @@ export const handle = {
 
 export async function loader({ context, request }: Route.LoaderArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
+
+  const tabId = new URL(request.url).searchParams.get('tid') ?? '';
+  const sessionData = (context.session.inPersonSinApplications ??= {})[tabId];
+  const personalInformation = sessionData?.personalInformation;
+  const primaryDocuments = sessionData?.primaryDocuments;
+
   const { t, lang } = await getTranslation(request, handle.i18nNamespace);
 
   return {
     documentTitle: t('protected:personal-information.page-title'),
     primaryDocValues: {
-      lastName: context.session.inPersonSINCase?.primaryDocuments?.lastName,
-      gender: context.session.inPersonSINCase?.primaryDocuments?.gender,
+      lastName: primaryDocuments?.lastName,
+      gender: primaryDocuments?.gender,
     },
     defaultFormValues: {
-      firstNamePreviouslyUsed: context.session.inPersonSINCase?.personalInformation?.firstNamePreviouslyUsed ?? [],
-      lastNameAtBirth: context.session.inPersonSINCase?.personalInformation?.lastNameAtBirth,
-      lastNamePreviouslyUsed: context.session.inPersonSINCase?.personalInformation?.lastNamePreviouslyUsed ?? [],
-      gender: context.session.inPersonSINCase?.personalInformation?.gender,
+      firstNamePreviouslyUsed: personalInformation?.firstNamePreviouslyUsed ?? [],
+      lastNameAtBirth: personalInformation?.lastNameAtBirth,
+      lastNamePreviouslyUsed: personalInformation?.lastNamePreviouslyUsed ?? [],
+      gender: personalInformation?.gender,
     },
     localizedGenders: applicantGenderService.getLocalizedApplicantGenders(lang),
   };
@@ -61,6 +65,7 @@ export async function action({ context, request }: Route.ActionArgs) {
 
   const tabId = new URL(request.url).searchParams.get('tid');
   if (!tabId) throw new AppError('Missing tab id', ErrorCodes.MISSING_TAB_ID, { httpStatusCode: 400 });
+  const sessionData = ((context.session.inPersonSinApplications ??= {})[tabId] ??= {});
 
   const { lang, t } = await getTranslation(request, handle.i18nNamespace);
 
@@ -93,14 +98,14 @@ export async function action({ context, request }: Route.ActionArgs) {
           applicantGenderService.getApplicantGenders().map(({ id }) => id),
           t('protected:personal-information.gender.required'),
         ),
-      }) satisfies v.GenericSchema<PersonalInformationSessionData>;
+      }) satisfies v.GenericSchema<PersonalInfoData>;
 
       const input = {
         firstNamePreviouslyUsed: formData.getAll('firstNamePreviouslyUsed').map(String),
         lastNameAtBirth: String(formData.get('lastNameAtBirth')),
         lastNamePreviouslyUsed: formData.getAll('lastNamePreviouslyUsed').map(String),
         gender: String(formData.get('gender')),
-      } satisfies Partial<PersonalInformationSessionData>;
+      } satisfies Partial<PersonalInfoData>;
 
       const parseResult = v.safeParse(schema, input, { lang });
 
@@ -108,7 +113,7 @@ export async function action({ context, request }: Route.ActionArgs) {
         return data({ errors: v.flatten<typeof schema>(parseResult.issues).nested }, { status: 400 });
       }
 
-      (context.session.inPersonSINCase ??= {}).personalInformation = parseResult.output;
+      sessionData.personalInformation = parseResult.output;
 
       throw i18nRedirect('routes/protected/person-case/birth-details.tsx', request, {
         search: new URLSearchParams({ tid: tabId }),

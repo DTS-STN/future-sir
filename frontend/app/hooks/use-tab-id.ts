@@ -45,15 +45,20 @@ function subscribe(sessionStorageKey: string, callback: () => void): () => void 
 
 type Options = {
   /**
+   * The query parameter key used for storing the tab id in the URL.
+   * Defaults to `'tid'`.
+   */
+  idSearchParamKey?: string;
+  /**
    * Whether to automatically update the URL with the tab id as a query parameter.
    * Defaults to `true`.
    */
   navigate?: false;
   /**
-   * The query parameter key used for storing the tab id in the URL.
-   * Defaults to `'tid'`.
+   * Whether to reload the document after navigating.
+   * Defaults to `false`.
    */
-  searchParamKey?: string;
+  reloadDocument?: boolean;
   /**
    * The session storage key used for persisting the tab id.
    * Defaults to `'tab-id'`.
@@ -74,34 +79,38 @@ type Options = {
  */
 export function useTabId(options?: Options): string | undefined {
   const {
-    navigate = true, //
-    searchParamKey = SEARCH_PARAM_KEY,
+    idSearchParamKey = SEARCH_PARAM_KEY,
+    navigate = true,
+    reloadDocument = false,
     sessionStorageKey = SESSION_STORAGE_KEY,
   } = options ?? {};
 
   const { search } = useLocation();
   const navigateFn = useNavigate();
 
-  const searchParamId = new URLSearchParams(search).get(searchParamKey);
+  const idSearchParam = new URLSearchParams(search).get(idSearchParamKey);
 
   // fetch the current tab id from session storage
   // this will often be undefined on first access
   const id = useSyncExternalStore(
     (callback) => subscribe(sessionStorageKey, callback),
     () => getSnapshot(sessionStorageKey),
-    () => searchParamId ?? undefined,
+    () => idSearchParam ?? undefined,
   );
 
   useEffect(() => {
     if (navigate) {
-      if (id !== undefined && id !== searchParamId) {
-        // if the tab id in session storage doesn't match the URL, update the URL
+      if (id !== undefined && id !== idSearchParam) {
+        // if the tab id in session storage doesn't match the URL, update the URL and optionally reload
         const urlSearchParams = new URLSearchParams(search);
-        urlSearchParams.set(searchParamKey, id);
-        void navigateFn({ search: urlSearchParams.toString() }, { replace: true });
+        urlSearchParams.set(idSearchParamKey, id);
+
+        void Promise.resolve(navigateFn({ search: urlSearchParams.toString() }, { replace: true })).then(() => {
+          if (reloadDocument) window.location.reload();
+        });
       }
     }
-  }, [id, navigate, search]);
+  }, [id, navigate, navigateFn, search]);
 
   return id;
 }

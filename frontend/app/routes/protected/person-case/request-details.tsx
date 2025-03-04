@@ -3,7 +3,6 @@ import { useId } from 'react';
 import type { RouteHandle } from 'react-router';
 import { data, useFetcher } from 'react-router';
 
-import type { SessionData } from 'express-session';
 import { useTranslation } from 'react-i18next';
 import * as v from 'valibot';
 
@@ -28,8 +27,7 @@ import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/layout';
-
-type RequestDetailsSessionData = NonNullable<SessionData['inPersonSINCase']['requestDetails']>;
+import type { RequestDetailsData } from '~/routes/protected/person-case/@types';
 
 export const handle = {
   i18nNamespace: [...parentHandle.i18nNamespace, 'protected'],
@@ -37,13 +35,17 @@ export const handle = {
 
 export async function loader({ context, request }: Route.LoaderArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
-  const { t, lang } = await getTranslation(request, handle.i18nNamespace);
+
+  const tabId = new URL(request.url).searchParams.get('tid') ?? '';
+  const requestDetails = (context.session.inPersonSinApplications ??= {})[tabId]?.requestDetails;
+
+  const { lang, t } = await getTranslation(request, handle.i18nNamespace);
 
   return {
     documentTitle: t('protected:request-details.page-title'),
     localizedSubmissionScenarios: getLocalizedApplicationSubmissionScenarios(lang),
     localizedTypeofApplicationToSubmit: getLocalizedTypesOfApplicationToSubmit(lang),
-    defaultFormValues: context.session.inPersonSINCase?.requestDetails,
+    defaultFormValues: requestDetails,
   };
 }
 
@@ -56,6 +58,7 @@ export async function action({ context, request }: Route.ActionArgs) {
 
   const tabId = new URL(request.url).searchParams.get('tid');
   if (!tabId) throw new AppError('Missing tab id', ErrorCodes.MISSING_TAB_ID, { httpStatusCode: 400 });
+  const sessionData = ((context.session.inPersonSinApplications ??= {})[tabId] ??= {});
 
   const { lang, t } = await getTranslation(request, handle.i18nNamespace);
 
@@ -79,12 +82,12 @@ export async function action({ context, request }: Route.ActionArgs) {
           getTypesOfApplicationToSubmit().map(({ id }) => id),
           t('protected:request-details.required-request'),
         ),
-      }) satisfies v.GenericSchema<RequestDetailsSessionData>;
+      }) satisfies v.GenericSchema<RequestDetailsData>;
 
       const input = {
         scenario: formData.get('scenario') as string,
         type: formData.get('request-type') as string,
-      } satisfies Partial<RequestDetailsSessionData>;
+      } satisfies Partial<RequestDetailsData>;
 
       const parseResult = v.safeParse(schema, input, { lang });
 
@@ -92,7 +95,7 @@ export async function action({ context, request }: Route.ActionArgs) {
         return data({ errors: v.flatten<typeof schema>(parseResult.issues).nested }, { status: 400 });
       }
 
-      (context.session.inPersonSINCase ??= {}).requestDetails = parseResult.output;
+      sessionData.requestDetails = parseResult.output;
 
       throw i18nRedirect('routes/protected/person-case/primary-docs.tsx', request, {
         search: new URLSearchParams({ tid: tabId }),
