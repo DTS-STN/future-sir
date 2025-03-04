@@ -3,7 +3,6 @@ import { useId } from 'react';
 import type { RouteHandle } from 'react-router';
 import { useFetcher } from 'react-router';
 
-import type { SessionData } from 'express-session';
 import type { ResourceKey } from 'i18next';
 import { useTranslation } from 'react-i18next';
 
@@ -71,7 +70,7 @@ function validateInPersonSINCaseSession(
   sessionData: InPersonSinApplication | undefined,
   tabId: string,
   request: Request,
-): Required<NonNullable<SessionData['inPersonSinApplications'][number]>> {
+): Required<InPersonSinApplication> {
   if (sessionData === undefined) {
     throw i18nRedirect('routes/protected/person-case/privacy-statement.tsx', request, {
       search: new URLSearchParams({ tid: tabId }),
