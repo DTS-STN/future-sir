@@ -38,6 +38,10 @@ export async function loader({ context, request }: Route.LoaderArgs) {
 
   return {
     documentTitle: t('protected:personal-information.page-title'),
+    primaryDocValues: {
+      lastName: context.session.inPersonSINCase?.primaryDocuments?.lastName,
+      gender: context.session.inPersonSINCase?.primaryDocuments?.gender,
+    },
     defaultFormValues: {
       firstNamePreviouslyUsed: context.session.inPersonSINCase?.personalInformation?.firstNamePreviouslyUsed ?? [],
       lastNameAtBirth: context.session.inPersonSINCase?.personalInformation?.lastNameAtBirth,
@@ -131,10 +135,12 @@ export default function PersonalInformation({ loaderData, params }: Route.Compon
   const [lastNames, setLastNames] = useState(loaderData.defaultFormValues.lastNamePreviouslyUsed);
   const [srAnnouncement, setSrAnnouncement] = useState('');
 
+  const genderId = loaderData.defaultFormValues.gender ?? loaderData.primaryDocValues.gender;
+
   const genderOptions = loaderData.localizedGenders.map(({ id, name }) => ({
     value: id,
     children: name,
-    defaultChecked: id === loaderData.defaultFormValues.gender,
+    defaultChecked: id === genderId,
   }));
 
   function handleAddFirstName() {
@@ -223,7 +229,7 @@ export default function PersonalInformation({ loaderData, params }: Route.Compon
             </div>
             <InputField
               id="last-name-at-birth-id"
-              defaultValue={loaderData.defaultFormValues.lastNameAtBirth}
+              defaultValue={loaderData.defaultFormValues.lastNameAtBirth ?? loaderData.primaryDocValues.lastName}
               errorMessage={errors?.lastNameAtBirth?.at(0)}
               label={t('protected:personal-information.last-name-at-birth.label')}
               name="lastNameAtBirth"
