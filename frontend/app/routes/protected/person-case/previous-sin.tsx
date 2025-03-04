@@ -10,6 +10,11 @@ import * as v from 'valibot';
 
 import type { Info, Route } from './+types/previous-sin';
 
+import {
+  getApplicantHadSinOptions,
+  getLocalizedApplicantHadSinOptions,
+} from '~/.server/domain/person-case/services/applicant-sin-service';
+import { serverEnvironment } from '~/.server/environment';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
@@ -25,23 +30,20 @@ import { formatSin, isValidSin, sinInputPatternFormat } from '~/utils/sin-utils'
 
 type PreviousSinSessionData = NonNullable<SessionData['inPersonSINCase']['previousSin']>;
 
-const VALID_HAS_PREVIOUS_SIN_OPTIONS = {
-  yes: 'yes',
-  no: 'no',
-  unknown: 'unknown',
-} as const;
-
 export const handle = {
   i18nNamespace: [...parentHandle.i18nNamespace, 'protected'],
 } as const satisfies RouteHandle;
 
 export async function loader({ context, request }: Route.LoaderArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
-  const { t } = await getTranslation(request, handle.i18nNamespace);
+  const { t, lang } = await getTranslation(request, handle.i18nNamespace);
+  const { PP_HAS_HAD_PREVIOUS_SIN_CODE } = serverEnvironment;
 
   return {
     documentTitle: t('protected:previous-sin.page-title'),
+    langocalizedApplicantHadSinOptions: getLocalizedApplicantHadSinOptions(lang),
     defaultFormValues: context.session.inPersonSINCase?.previousSin,
+    PP_HAS_HAD_PREVIOUS_SIN_CODE,
   };
 }
 
@@ -56,6 +58,7 @@ export async function action({ context, request }: Route.ActionArgs) {
   if (!tabId) throw new AppError('Missing tab id', ErrorCodes.MISSING_TAB_ID, { httpStatusCode: 400 });
 
   const { lang, t } = await getTranslation(request, handle.i18nNamespace);
+  const { PP_HAS_HAD_PREVIOUS_SIN_CODE } = serverEnvironment;
 
   const formData = await request.formData();
   const action = formData.get('action');
@@ -71,7 +74,7 @@ export async function action({ context, request }: Route.ActionArgs) {
       const schema = v.pipe(
         v.object({
           hasPreviousSin: v.picklist(
-            Object.keys(VALID_HAS_PREVIOUS_SIN_OPTIONS),
+            getApplicantHadSinOptions().map(({ id }) => id),
             t('protected:previous-sin.error-messages.has-previous-sin-required'),
           ),
           socialInsuranceNumber: v.optional(
@@ -88,7 +91,7 @@ export async function action({ context, request }: Route.ActionArgs) {
             [['hasPreviousSin'], ['socialInsuranceNumber']],
             (input) =>
               input.socialInsuranceNumber === undefined ||
-              (input.hasPreviousSin === VALID_HAS_PREVIOUS_SIN_OPTIONS.yes && isValidSin(input.socialInsuranceNumber ?? '')),
+              (input.hasPreviousSin === PP_HAS_HAD_PREVIOUS_SIN_CODE && isValidSin(input.socialInsuranceNumber ?? '')),
             t('protected:previous-sin.error-messages.sin-required'),
           ),
           ['socialInsuranceNumber'],
@@ -98,7 +101,7 @@ export async function action({ context, request }: Route.ActionArgs) {
       const input = {
         hasPreviousSin: formData.get('hasPreviousSin') as string,
         socialInsuranceNumber:
-          formData.get('hasPreviousSin') === VALID_HAS_PREVIOUS_SIN_OPTIONS.yes
+          formData.get('hasPreviousSin') === PP_HAS_HAD_PREVIOUS_SIN_CODE
             ? (formData.get('socialInsuranceNumber') as string)
             : undefined,
       } satisfies Partial<PreviousSinSessionData>;
@@ -133,10 +136,10 @@ export default function PreviousSin({ loaderData, actionData, params }: Route.Co
   const isSubmitting = fetcher.state !== 'idle';
   const errors = fetcher.data?.errors;
 
-  const hasPreviousSinOptions = Object.values(VALID_HAS_PREVIOUS_SIN_OPTIONS).map((value) => ({
-    value: value,
-    children: t(`protected:previous-sin.has-previous-sin-options.${value}`),
-    defaultChecked: value === loaderData.defaultFormValues?.hasPreviousSin,
+  const hasPreviousSinOptions = loaderData.langocalizedApplicantHadSinOptions.map(({ id, name }) => ({
+    value: id,
+    children: name,
+    defaultChecked: id === loaderData.defaultFormValues?.hasPreviousSin,
     onChange: ({ target }: ChangeEvent<HTMLInputElement>) => setHasPreviousSin(target.value),
   }));
 
@@ -154,7 +157,7 @@ export default function PreviousSin({ loaderData, actionData, params }: Route.Co
               required
               errorMessage={errors?.hasPreviousSin?.at(0)}
             />
-            {hasPreviousSin === VALID_HAS_PREVIOUS_SIN_OPTIONS.yes && (
+            {hasPreviousSin === loaderData.PP_HAS_HAD_PREVIOUS_SIN_CODE && (
               <InputPatternField
                 defaultValue={loaderData.defaultFormValues?.socialInsuranceNumber ?? ''}
                 inputMode="numeric"
