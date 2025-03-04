@@ -12,27 +12,6 @@
     "no-cases": "No cases are currently assigned to you.",
     "coming-soon": "Coming soon"
   },
-  "countries": {
-    "select-option": "Select option",
-    "CAN": "Canada",
-    "FRA": "France"
-  },
-  "provinces": {
-    "select-option": "Select option",
-    "AB": "Alberta",
-    "BC": "British Columbia",
-    "MB": "Manitoba",
-    "NB": "New Brunswick",
-    "NL": "Newfoundland and Labrador",
-    "NT": "Northwest Territories",
-    "NS": "Nova Scotia",
-    "NU": "Nunavut",
-    "ON": "Ontario",
-    "PE": "Prince Edward Island",
-    "QC": "Quebec",
-    "SK": "Saskatchewan",
-    "YT": "Yukon"
-  },
   "in-person": {
     "title": "In-person SIN request",
     "description": "Process an application or amendment"
@@ -134,12 +113,7 @@
     },
     "gender": {
       "label": "Gender",
-      "required": "Gender is required.",
-      "options": {
-        "female": "Female",
-        "male": "Male",
-        "other": "Other"
-      }
+      "required": "Gender is required."
     },
     "citizenship-date": {
       "label": "Citizenship date",
@@ -161,12 +135,7 @@
     "document-type": {
       "title": "Document type",
       "required": "Document type is required.",
-      "invalid": "Document type is invalid.",
-      "options": {
-        "passport": "Passport (Canadian or foreign)",
-        "id-card": "Canadian provincial or territorial ID card or driver's license",
-        "other-id": "Any other Canadian government issued ID"
-      }
+      "invalid": "Document type is invalid."
     },
     "expiry-date": {
       "title": "Expiry date",
@@ -189,26 +158,10 @@
   "request-details": {
     "page-title": "Applicant",
     "select-scenario": "Select the scenario that best describes the client's situation",
-    "scenarios": {
-      "for-self": "Client is applying for themself",
-      "legal-guardian": "Client is a parent or legal guardian applying on behalf of a minor or a dependent adult child",
-      "legal-representative": "Client is a legal representative applying on behalf of someone else",
-      "as-employee": "Client is a provincial/territorial employee applying on behalf of someone for whom they have legal authority",
-      "estate-representative": "Client is a legal representative of an estate requesting confirmation of SIN for a deceased person"
-    },
     "type-request": "Type of request",
-    "requests": {
-      "select-option": "Select option",
-      "first-time": "First time SIN",
-      "record-confirmation": "SIN record amendment / Confirmation of SIN",
-      "name-change": "Legal name change",
-      "expiry-extension": "Extension of expiry date",
-      "change-status": "Change of status",
-      "sin-confirmation": "Confirmation of SIN",
-      "new-sin": "New SIN (fraud)"
-    },
     "required-scenario": "Client scenario is required.",
-    "required-request": "Type of request is required."
+    "required-request": "Type of request is required.",
+    "select-option": "Select option"
   },
   "current-name": {
     "page-title": "Name for SIN",
@@ -284,22 +237,12 @@
     "gender": {
       "label": "Gender",
       "help-message-primary": "This is pre-filled from the applicant's primary identity document and can be changed.",
-      "required": "Gender is required.",
-      "options": {
-        "female": "Female",
-        "male": "Male",
-        "other": "Other"
-      }
+      "required": "Gender is required."
     }
   },
   "previous-sin": {
     "page-title": "Previous SIN",
     "has-previous-sin-label": "Has the applicant ever had a SIN?",
-    "has-previous-sin-options": {
-      "yes": "Yes",
-      "no": "No",
-      "unknown": "Unknown (don't recall)"
-    },
     "social-insurance-number-label": "Social Insurance Number",
     "error-messages": {
       "has-previous-sin-required": "Select whether the applicant has had a previous SIN",

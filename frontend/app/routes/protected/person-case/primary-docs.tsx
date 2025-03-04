@@ -372,7 +372,7 @@ function CurrentStatusInCanada({ defaultValue, errorMessage, onChange }: Current
 
   const currentStatusInCanadaOptions = [
     {
-      children: t('protected:request-details.requests.select-option'),
+      children: t('protected:request-details.select-option'),
       value: '',
     },
     ...CurrentStatusInCanada.map((value) => ({
@@ -420,7 +420,7 @@ function DocumentType({ currentStatus, defaultValue, errorMessage, onChange }: D
 
   const documentTypeOptions = [
     {
-      children: t('protected:request-details.requests.select-option'),
+      children: t('protected:request-details.select-option'),
       value: '',
       hidden: true,
     },
