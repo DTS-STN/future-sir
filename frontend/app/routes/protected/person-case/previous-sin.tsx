@@ -43,7 +43,6 @@ export async function loader({ context, request }: Route.LoaderArgs) {
   return {
     documentTitle: t('protected:previous-sin.page-title'),
     defaultFormValues: previousSin,
-    hasHadPreviousSinCode: serverEnvironment.PP_HAS_HAD_PREVIOUS_SIN_CODE,
     localizedApplicantHadSinOptions: getLocalizedApplicantHadSinOptions(lang),
   };
 }
@@ -159,7 +158,7 @@ export default function PreviousSin({ loaderData, actionData, params }: Route.Co
               required
               errorMessage={errors?.hasPreviousSin?.at(0)}
             />
-            {hasPreviousSin === loaderData.hasHadPreviousSinCode && (
+            {hasPreviousSin === globalThis.__appEnvironment.PP_HAS_HAD_PREVIOUS_SIN_CODE && (
               <InputPatternField
                 defaultValue={loaderData.defaultFormValues?.socialInsuranceNumber ?? ''}
                 inputMode="numeric"

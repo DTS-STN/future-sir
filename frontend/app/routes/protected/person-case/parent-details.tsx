@@ -45,7 +45,6 @@ export async function loader({ context, request }: Route.LoaderArgs) {
     documentTitle: t('protected:parent-details.page-title'),
     localizedCountries: countryService.getLocalizedCountries(lang),
     localizedProvincesTerritoriesStates: provinceService.getLocalizedProvinces(lang),
-    canadaCountryCode: serverEnvironment.PP_CANADA_COUNTRY_CODE,
     defaultFormValues: (parentDetails ?? []).map((details) =>
       details.unavailable
         ? { unavailable: true }
@@ -361,7 +360,7 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
             options={countryOptions}
             onChange={({ target }) => setCountry(target.value)}
           />
-          {country == loaderData.canadaCountryCode ? (
+          {country == globalThis.__appEnvironment.PP_CANADA_COUNTRY_CODE ? (
             <InputSelect
               errorMessage={errors?.[`${index}.birthLocation.province`]?.at(0)}
               className="w-full rounded-sm sm:w-104"
@@ -388,7 +387,7 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
             label={t('protected:parent-details.city')}
             name={`${index}-city`}
             defaultValue={defaultValues?.city}
-            required={country == loaderData.canadaCountryCode}
+            required={country == globalThis.__appEnvironment.PP_CANADA_COUNTRY_CODE}
             type="text"
           />
         </>

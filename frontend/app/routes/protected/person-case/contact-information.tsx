@@ -44,7 +44,6 @@ export async function loader({ context, request }: Route.LoaderArgs) {
     localizedpreferredLanguages: languageCorrespondenceService.getLocalizedLanguageOfCorrespondence(lang),
     localizedCountries: countryService.getLocalizedCountries(lang),
     localizedProvincesTerritoriesStates: provinceService.getLocalizedProvinces(lang),
-    canadaCountryCode: serverEnvironment.PP_CANADA_COUNTRY_CODE,
   };
 }
 
@@ -273,7 +272,7 @@ export default function ContactInformation({ loaderData, actionData, params }: R
                   defaultValue={loaderData.defaultFormValues?.city}
                   required
                 />
-                {country === loaderData.canadaCountryCode ? (
+                {country === globalThis.__appEnvironment.PP_CANADA_COUNTRY_CODE ? (
                   <InputSelect
                     className="w-max rounded-sm"
                     id="province"
