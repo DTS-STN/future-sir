@@ -37,6 +37,9 @@
     "title": "In-person SIN request",
     "description": "Process an application or amendment"
   },
+  "first-time": {
+    "title": "First-time SIN request"
+  },
   "enquiry-only": {
     "title": "Enquiry only",
     "description": "Search for a SIN record"
@@ -417,5 +420,10 @@
     "other-last-names": "Other last names",
     "search": "Search",
     "matches": "Matches"
+  },
+  "sin-confirmation": {
+    "page-title": "SIN confirmation",
+    "print": "Print",
+    "finish": "Finish"
   }
 }

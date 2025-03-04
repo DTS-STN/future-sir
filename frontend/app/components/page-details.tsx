@@ -12,7 +12,7 @@ export function PageDetails({ buildDate, buildVersion, pageId, ...props }: PageD
   const { t } = useTranslation(['gcweb']);
 
   return (
-    <section className="mt-16 mb-8" {...props}>
+    <section className="mt-16 mb-8 print:hidden" {...props}>
       <h2 className="sr-only">{t('gcweb:page-details.page-details')}</h2>
       <dl id="wb-dtmd" className="space-y-1">
         <div className="flex gap-2">

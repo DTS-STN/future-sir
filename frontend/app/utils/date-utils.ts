@@ -1,5 +1,6 @@
 import { TZDate } from '@date-fns/tz';
-import { formatISO, isBefore, isToday, isValid, parseISO, startOfDay } from 'date-fns';
+import { format, formatISO, isBefore, isToday, isValid, parseISO, startOfDay } from 'date-fns';
+import { enUS, fr } from 'date-fns/locale';
 
 import { padWithZero } from '~/utils/string-utils';
 
@@ -73,7 +74,20 @@ export function isValidTimeZone(timeZone: string): boolean {
 }
 
 /**
-<<<<<<< HEAD
+ * @param date - Optional date or timestamp to use. If not provided, the current date and time are used.
+ *               Can be a number (milliseconds since epoch), a string (parsable by `new Date()`), or a Date object.
+ * @returns The date formatted in both English ("MMM dd, yyyy") and French ("dd MMM. yyyy").
+ */
+export function dateToLocalizedText(date?: number | string | Date): { dateEn: string; dateFr: string } {
+  const targetDate = new Date(date ?? Date.now());
+  const tzDate = new TZDate(targetDate);
+  return {
+    dateEn: format(tzDate, 'MMM dd, yyyy', { locale: enUS }),
+    dateFr: format(tzDate, 'dd MMM. yyyy', { locale: fr }),
+  };
+}
+
+/**
  * Checks if a given string is a valid date string in ISO 8601 format (YYYY-MM-DD).
  *
  * This function uses `parseISO` (presumably from a date/time library like date-fns)
