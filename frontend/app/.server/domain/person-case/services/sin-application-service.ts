@@ -15,17 +15,16 @@ import { ErrorCodes } from '~/errors/error-codes';
  * @returns A promise that resolves with the SIN application response data.
  * @throws {AppError} If the API call fails or the response data is missing.
  */
-
 export async function submitSinApplication(
   submitSinApplicationRequest: SinApplicationRequest,
 ): Promise<SinApplicationResponse> {
-  const { response, data } = await api.submitSinApplication({ body: submitSinApplicationRequest });
+  const { response, data } = await api.postSinApplication({ body: submitSinApplicationRequest });
 
   if (data === undefined) {
     const content = await response.text();
     throw new AppError(
       `Failed to submit SIN application; stastus: ${response.status}; content: ${content}`,
-      ErrorCodes.FAILED_SUBMIT_SIN_APPLICATION,
+      ErrorCodes.SUBMIT_SIN_APPLICATION_FAILED,
     );
   }
 

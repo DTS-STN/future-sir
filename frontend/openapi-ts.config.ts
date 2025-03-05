@@ -4,11 +4,11 @@ import { defineConfig } from '@hey-api/openapi-ts';
  * @see https://heyapi.dev/openapi-ts/configuration
  */
 export default defineConfig({
-  input: 'fsir-openapi.yml',
+  input: 'other/specs/fsir-openapi.yml',
   output: {
     format: 'prettier',
     indexFile: true,
-    path: 'app/.server/shared/api',
+    path: './app/.server/shared/api',
   },
   plugins: [
     {

@@ -6,7 +6,6 @@ info:
 paths:
   /SINApplication:
     post:
-      operationId: 'submitSINApplication'
       requestBody:
         content:
           application/json:
@@ -40,7 +39,8 @@ paths:
                           ValueBoolean: false
                       - ApplicationDetailID: 'SIN Confirmation receiving method'
                         ApplicationDetailValue:
-                          ValueCode: 'email'
+                          ValueCode:
+                            ReferenceDataID: 'Email'
                       - ApplicationDetailID: 'Already had a sin'
                         ApplicationDetailValue:
                           ValueBoolean: true
@@ -68,36 +68,31 @@ paths:
                             - IdentificationID: '2'
                           RelatedPerson:
                             - PersonName:
-                                - PersonGivenName:
-                                    - 'Christian'
+                                - PersonGivenName: 'Christian'
                                   PersonSurName: 'Bale'
                               PersonRelationshipCode:
                                 ReferenceDataName: 'Parent 1'
 
                             - PersonName:
-                                - PersonGivenName:
-                                    - 'Emma'
+                                - PersonGivenName: 'Emma'
                                   PersonSurName: 'Stone'
                               PersonRelationshipCode:
                                 ReferenceDataName: 'Parent 2'
 
                             - PersonName:
-                                - PersonGivenName:
-                                    - 'Ryan'
+                                - PersonGivenName: 'Ryan'
                                   PersonSurName: 'Gosling'
                               PersonRelationshipCode:
                                 ReferenceDataName: 'Parent 3'
 
                             - PersonName:
-                                - PersonGivenName:
-                                    - 'Nicole'
+                                - PersonGivenName: 'Nicole'
                                   PersonSurName: 'Kidman'
                               PersonRelationshipCode:
                                 ReferenceDataName: 'Parent 4'
                           Client:
                             PersonName:
-                              - PersonGivenName:
-                                  - Paul
+                              - PersonGivenName: 'Paul'
                                 PersonSurName: 'Atreides'
                             ClientIdentification:
                               - IdentificationID: '123456'
@@ -128,17 +123,15 @@ paths:
                       PersonName:
                         - PersonNameCategoryCode:
                             ReferenceDataName: 'Legal'
-                          PersonGivenName:
-                            - Paul
+                          PersonGivenName: 'Paul'
                           PersonSurName: 'Atreides'
                         - PersonNameCategoryCode:
                             ReferenceDataName: 'Native'
                           PersonFullName: 'Paul Atreides'
                         - PersonNameCategoryCode:
                             ReferenceDataName: 'Alternate'
-                          PersonGivenName:
-                            - Muadib
-                          PersonSurName: Chalamet
+                          PersonGivenName: 'Muadib'
+                          PersonSurName: 'Chalamet'
                         - PersonNameCategoryCode:
                             ReferenceDataName: 'at birth'
                           PersonSurName: 'Atreides'
@@ -159,62 +152,61 @@ paths:
                         date: '1999-05-11'
                       RelatedPerson:
                         - PersonName:
-                            - PersonGivenName:
-                                - 'Christian'
+                            - PersonGivenName: 'Christian'
                               PersonSurName: 'Bale'
                           PersonRelationshipCode:
                             ReferenceDataName: 'Parent 1'
 
                         - PersonName:
-                            - PersonGivenName:
-                                - 'Emma'
+                            - PersonGivenName: 'Emma'
                               PersonSurName: 'Stone'
                           PersonRelationshipCode:
                             ReferenceDataName: 'Parent 2'
 
                         - PersonName:
-                            - PersonGivenName:
-                                - 'Ryan'
+                            - PersonGivenName: 'Ryan'
                               PersonSurName: 'Gosling'
                           PersonRelationshipCode:
                             ReferenceDataName: 'Parent 3'
 
                         - PersonName:
-                            - PersonGivenName:
-                                - 'Nicole'
+                            - PersonGivenName: 'Nicole'
                               PersonSurName: 'Kidman'
                           PersonRelationshipCode:
                             ReferenceDataName: 'Parent 4'
                       PersonLanguage:
-                        - CommunicationCategoryCode: 'Correspondence'
+                        - CommunicationCategoryCode:
+                            ReferenceDataName: 'Correspondence'
                           LanguageCode:
                             ReferenceDataID: 'FR'
-                          PreferredIndicator: 'True'
+                          PreferredIndicator: True
                       PersonContactInformation:
                         - EmailAddress:
                             - EmailAddressID: paulSpiceLoverForever@gmail.com
                           TelephoneNumber:
                             - TelephoneNumberCategoryCode:
                                 ReferenceDataName: 'Primary'
-                              FullTelephoneNumber: '819-334-2233' #Confirm format?
+                              FullTelephoneNumber:
+                                TelephoneNumberFullID: '819-334-2233' #Confirm format?
                             - TelephoneNumberCategoryCode:
                                 ReferenceDataName: 'Secondary'
-                              FullTelephoneNumber: '819-123-9933' #Confirm format?
-                            - Address:
-                                - AddressCityName: 'Gatineau'
-                                  AddressStreet:
-                                    StreetNumberText: '22'
-                                    StreetName: 'Eddy'
-                                  AddressSecondaryUnitText: '3'
-                                  AddressProvince:
-                                    ProvinceCode:
-                                      ReferenceDataID: 'QC'
-                                      ReferenceDataName: 'Québec'
-                                  AddressCountry:
-                                    CountryCode:
-                                      ReferenceDataID: 'CAN'
-                                  AddressPostalCode: 'J8N 5K9'
-                                  AddressRecipientName: 'Paul Atreides'
+                              FullTelephoneNumber:
+                                TelephoneNumberFullID: '819-123-9933' #Confirm format?
+                          Address:
+                            - AddressCityName: 'Gatineau'
+                              AddressStreet:
+                                StreetNumberText: '22'
+                                StreetName: 'Eddy'
+                              AddressSecondaryUnitText: '3'
+                              AddressProvince:
+                                ProvinceCode:
+                                  ReferenceDataID: 'QC'
+                                  ReferenceDataName: 'Québec'
+                              AddressCountry:
+                                CountryCode:
+                                  ReferenceDataID: 'CAN'
+                              AddressPostalCode: 'J8N 5K9'
+                              AddressRecipientName: 'Paul Atreides'
               Minimum Valid Request With Method Mail:
                 value:
                   SINApplication:
@@ -240,7 +232,8 @@ paths:
                           ValueBoolean: false
                       - ApplicationDetailID: 'SIN Confirmation receiving method'
                         ApplicationDetailValue:
-                          ValueCode: 'Mail'
+                          ValueCode:
+                            ReferenceDataID: 'Mail'
                       - ApplicationDetailID: 'Already had a sin'
                         ApplicationDetailValue:
                           ValueBoolean: false
@@ -263,16 +256,14 @@ paths:
                             - IdentificationID: '2'
                           Client:
                             PersonName:
-                              - PersonGivenName:
-                                  - Paul
+                              - PersonGivenName: 'Paul'
                                 PersonSurName: 'Atreides'
                             PersonBirthDate:
                               date: '1999-05-12' # See what format is expected
                       PersonName:
                         - PersonNameCategoryCode:
                             ReferenceDataName: 'Legal'
-                          PersonGivenName:
-                            - Paul
+                          PersonGivenName: 'Paul'
                           PersonSurName: 'Atreides'
                         - PersonNameCategoryCode:
                             ReferenceDataName: 'at birth'
@@ -289,10 +280,11 @@ paths:
                       PersonBirthDate:
                         date: '1999-05-11'
                       PersonLanguage:
-                        - CommunicationCategoryCode: 'Correspondence'
+                        - CommunicationCategoryCode:
+                            ReferenceDataName: 'Correspondence'
                           LanguageCode:
                             ReferenceDataID: 'FR'
-                          PreferredIndicator: 'True'
+                          PreferredIndicator: True
                       PersonContactInformation:
                         - Address:
                             - AddressCityName: 'Gatineau'
@@ -332,7 +324,8 @@ paths:
                           ValueBoolean: false
                       - ApplicationDetailID: 'SIN Confirmation receiving method'
                         ApplicationDetailValue:
-                          ValueCode: 'Email'
+                          ValueCode:
+                            ReferenceDataID: 'Email'
                       - ApplicationDetailID: 'Already had a sin'
                         ApplicationDetailValue:
                           ValueBoolean: false
@@ -363,8 +356,7 @@ paths:
                       PersonName:
                         - PersonNameCategoryCode:
                             ReferenceDataName: 'Legal'
-                          PersonGivenName:
-                            - Paul
+                          PersonGivenName: 'Paul'
                           PersonSurName: 'Atreides'
                         - PersonNameCategoryCode:
                             ReferenceDataName: 'at birth'
@@ -381,13 +373,14 @@ paths:
                       PersonBirthDate:
                         date: '1999-05-11'
                       PersonLanguage:
-                        - CommunicationCategoryCode: 'Correspondence'
+                        - CommunicationCategoryCode:
+                            ReferenceDataName: 'Correspondence'
                           LanguageCode:
                             ReferenceDataID: 'FR'
-                          PreferredIndicator: 'True'
-                    PersonContactInformation:
-                      - EmailAddress:
-                          - EmailAddressID: paulSpiceLoverForever@gmail.com
+                          PreferredIndicator: True
+                      PersonContactInformation:
+                        - EmailAddress:
+                            - EmailAddressID: paulSpiceLoverForever@gmail.com
 
         required: true
       responses:
@@ -407,12 +400,19 @@ components:
     SINApplicationResponse:
       properties:
         SINApplication:
-          $ref: '#/components/schemas/SINApplicationType'
+          $ref: '#/components/schemas/SINApplicationTypeResponse'
     SINApplicationRequest:
       description: The request body for SinApplication endpoint
       properties:
         SINApplication:
           $ref: '#/components/schemas/SINApplicationType'
+
+    SINApplicationTypeResponse:
+      description: A data type for the SIN Application resource.
+      type: object
+      properties:
+        SINApplicationIdentification:
+          $ref: '#/components/schemas/SINApplicationIdentification'
     SINApplicationType:
       description: A data type for the SIN Application resource.
       type: object
@@ -539,8 +539,6 @@ components:
     CertificateType:
       description: A data type for the certificate resource.
       type: object
-      required:
-        - Client
       allOf:
         - $ref: '#/components/schemas/ResourceType'
         - properties:
@@ -557,7 +555,9 @@ components:
             Client:
               $ref: '#/components/schemas/CertificateClient'
             RelatedPerson:
-              $ref: '#/components/schemas/RelatedPerson'
+              type: array
+              items:
+                $ref: '#/components/schemas/RelatedPerson'
 
     ContactInformationType:
       description: A data type for how to contact a person or an organization.
@@ -658,9 +658,7 @@ components:
         PersonFullName:
           $ref: '#/components/schemas/PersonFullName'
         PersonGivenName:
-          type: array
-          items:
-            $ref: '#/components/schemas/PersonGivenName'
+          $ref: '#/components/schemas/PersonGivenName'
         PersonNameCategoryCode:
           $ref: '#/components/schemas/PersonNameCategoryCode'
           x-comment: Extension
