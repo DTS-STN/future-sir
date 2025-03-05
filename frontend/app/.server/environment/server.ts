@@ -9,14 +9,12 @@ import { session, defaults as sessionDefaults } from '~/.server/environment/sess
 import { telemetry, defaults as telemetryDefaults } from '~/.server/environment/telemetry';
 import { LogFactory } from '~/.server/logging';
 import { stringToIntegerSchema } from '~/.server/validation/string-to-integer-schema';
-import { isValidTimeZone } from '~/utils/date-utils';
 
 const log = LogFactory.getLogger(import.meta.url);
 
 export type Server = Readonly<v.InferOutput<typeof server>>;
 
 export const defaults = {
-  BASE_TIMEZONE: 'Canada/Eastern',
   NODE_ENV: 'development',
   PORT: '3000',
   ...authenticationDefaults,
@@ -41,7 +39,6 @@ export const server = v.pipe(
     ...redis.entries,
     ...session.entries,
     ...telemetry.entries,
-    BASE_TIMEZONE: v.optional(v.pipe(v.string(), v.check(isValidTimeZone)), defaults.BASE_TIMEZONE),
     NODE_ENV: v.optional(v.picklist(['production', 'development', 'test']), defaults.NODE_ENV),
     PORT: v.optional(v.pipe(stringToIntegerSchema(), v.minValue(0)), defaults.PORT),
   }),
