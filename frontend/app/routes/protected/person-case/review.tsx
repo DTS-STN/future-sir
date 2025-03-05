@@ -12,8 +12,10 @@ import {
   applicantGenderService,
   applicantSecondaryDocumentService,
   languageCorrespondenceService,
+  sinApplicationService,
 } from '~/.server/domain/person-case/services';
 import { serverEnvironment } from '~/.server/environment';
+import type { SinApplicationRequest } from '~/.server/shared/api/types.gen';
 import { countryService, provinceService } from '~/.server/shared/services';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
@@ -213,10 +215,95 @@ export function meta({ data }: Route.MetaArgs) {
   return [{ title: data.documentTitle }];
 }
 
+//TODO: update with correct values
+
+function mapInPersonSINCaseToSinApplicationRequest(inPersonSINCase: Required<InPersonSinApplication>): SinApplicationRequest {
+  return {
+    SINApplication: {
+      SINApplicationIdentification: [
+        {
+          IdentificationID: inPersonSINCase.primaryDocuments.registrationNumber, //or a clientNumber?
+        },
+      ],
+      Applicant: {
+        PersonBirthDate: { date: inPersonSINCase.primaryDocuments.dateOfBirth },
+        PersonName: [
+          {
+            PersonNameCategoryCode: {
+              ReferenceDataName: 'Legal',
+            },
+            PersonGivenName: [inPersonSINCase.primaryDocuments.givenName],
+            PersonSurName: inPersonSINCase.primaryDocuments.lastName,
+          },
+          {
+            PersonNameCategoryCode: {
+              ReferenceDataName: 'at birth',
+            },
+            PersonSurName: inPersonSINCase.personalInformation.lastNameAtBirth,
+          },
+        ],
+        PersonGenderCode: { ReferenceDataID: inPersonSINCase.primaryDocuments.gender },
+        PersonBirthLocation: {
+          LocationContactInformation: [
+            {
+              Address: [
+                {
+                  AddressCityName: inPersonSINCase.birthDetails.city,
+                  AddressProvince: { ProvinceCode: { ReferenceDataID: inPersonSINCase.birthDetails.province } },
+                  AddressCountry: { CountryCode: { ReferenceDataID: inPersonSINCase.birthDetails.country } },
+                },
+              ],
+            },
+          ],
+        },
+        PersonContactInformation: [
+          {
+            Address: [
+              {
+                AddressStreet: { StreetName: inPersonSINCase.contactInformation.address },
+                AddressCityName: inPersonSINCase.contactInformation.city,
+                AddressProvince: { ProvinceCode: { ReferenceDataID: inPersonSINCase.contactInformation.province } },
+                AddressCountry: { CountryCode: { ReferenceDataID: inPersonSINCase.contactInformation.country } },
+                AddressPostalCode: inPersonSINCase.contactInformation.postalCode,
+              },
+            ],
+            EmailAddress: [{ EmailAddressID: inPersonSINCase.contactInformation.emailAddress }],
+            TelephoneNumber: [
+              { FullTelephoneNumber: { TelephoneNumberFullID: inPersonSINCase.contactInformation.primaryPhoneNumber } },
+              { FullTelephoneNumber: { TelephoneNumberFullID: inPersonSINCase.contactInformation.secondaryPhoneNumber } },
+            ],
+          },
+        ],
+        Certificate: [],
+        PersonLanguage: [
+          {
+            CommunicationCategoryCode: {
+              ReferenceDataName: 'Correspondence',
+            },
+            LanguageCode: { ReferenceDataID: inPersonSINCase.contactInformation.preferredLanguage },
+            PreferredIndicator: true,
+          },
+        ],
+      },
+      //SINApplicationCategoryCode: { ReferenceDataID: inPersonSINCase.requestDetails.type }, //TODO: update from esdc_typeofapplicationtosubmit
+      //SINApplicationDetail: [
+      //  {
+      //    ApplicationDetailID: inPersonSINCase.requestDetails.applicationDetailId,
+      //    ApplicationDetailValue: { ValueString: inPersonSINCase.requestDetails.applicationDetailValue },
+      //  },
+      //],
+    },
+  };
+}
+
 export async function action({ context, request }: Route.ActionArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
   const tabId = new URL(request.url).searchParams.get('tid');
   if (!tabId) throw new AppError('Missing tab id', ErrorCodes.MISSING_TAB_ID, { httpStatusCode: 400 });
+
+  const sessionData = (context.session.inPersonSinApplications ??= {})[tabId];
+  const inPersonSINCase = validateInPersonSINCaseSession(sessionData, tabId, request);
+  const sinApplicationRequest = mapInPersonSINCaseToSinApplicationRequest(inPersonSINCase);
 
   const formData = await request.formData();
   const action = formData.get('action');
@@ -229,7 +316,9 @@ export async function action({ context, request }: Route.ActionArgs) {
     }
 
     case 'next': {
-      throw i18nRedirect('routes/protected/index.tsx', request);
+      const result = await sinApplicationService.submitSinApplication(sinApplicationRequest);
+      console.log(result);
+      throw i18nRedirect('routes/protected/index.tsx', request); //TODO: Redirect to correct route
     }
     default: {
       throw new AppError(`Unrecognized action: ${action}`, ErrorCodes.UNRECOGNIZED_ACTION);
