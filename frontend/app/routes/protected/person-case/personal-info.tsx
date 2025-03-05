@@ -86,7 +86,7 @@ export async function action({ context, request }: Route.ActionArgs) {
 
     case 'next': {
       const schema = v.object({
-        firstNamePreviouslyUsed: v.optional(v.array(v.string())),
+        firstNamePreviouslyUsed: v.optional(v.array(v.pipe(v.string(), v.trim()))),
         lastNameAtBirth: v.pipe(
           v.string(t('protected:personal-information.last-name-at-birth.required')),
           v.trim(),
@@ -97,7 +97,7 @@ export async function action({ context, request }: Route.ActionArgs) {
           ),
           v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:personal-information.last-name-at-birth.format')),
         ),
-        lastNamePreviouslyUsed: v.optional(v.array(v.string())),
+        lastNamePreviouslyUsed: v.optional(v.array(v.pipe(v.string(), v.trim()))),
         gender: v.picklist(
           applicantGenderService.getApplicantGenders().map(({ id }) => id),
           t('protected:personal-information.gender.required'),
@@ -105,9 +105,9 @@ export async function action({ context, request }: Route.ActionArgs) {
       }) satisfies v.GenericSchema<PersonalInfoData>;
 
       const input = {
-        firstNamePreviouslyUsed: formData.getAll('firstNamePreviouslyUsed').map(String),
+        firstNamePreviouslyUsed: formData.getAll('firstNamePreviouslyUsed').map(String).filter(Boolean),
         lastNameAtBirth: String(formData.get('lastNameAtBirth')),
-        lastNamePreviouslyUsed: formData.getAll('lastNamePreviouslyUsed').map(String),
+        lastNamePreviouslyUsed: formData.getAll('lastNamePreviouslyUsed').map(String).filter(Boolean),
         gender: String(formData.get('gender')),
       } satisfies Partial<PersonalInfoData>;
 
@@ -243,27 +243,23 @@ export default function PersonalInformation({ actionData, loaderData, params, ma
             </div>
 
             <div id="other-first-names" className="flex space-x-4">
-              {otherFirstNames.map((name) => {
-                if (name.length > 0) {
-                  return (
-                    <div
-                      key={name}
-                      className="inline-flex items-center justify-center rounded-sm border-blue-100 bg-blue-100 px-2 py-1 align-middle text-gray-900"
-                    >
-                      <span>{name}</span>
-                      <button
-                        aria-label={t('protected:personal-information.name-added-aria-label', { name })}
-                        onClick={() => removeOtherFirstName(name)}
-                        type="button"
-                      >
-                        <FontAwesomeIcon icon={faXmark} className="ml-1" />
-                      </button>
+              {otherFirstNames.map((name) => (
+                <div
+                  key={name}
+                  className="inline-flex items-center justify-center rounded-sm border-blue-100 bg-blue-100 px-2 py-1 align-middle text-gray-900"
+                >
+                  <span>{name}</span>
+                  <button
+                    aria-label={t('protected:personal-information.name-added-aria-label', { name })}
+                    onClick={() => removeOtherFirstName(name)}
+                    type="button"
+                  >
+                    <FontAwesomeIcon icon={faXmark} className="ml-1" />
+                  </button>
 
-                      <input type="hidden" name="firstNamePreviouslyUsed" value={name} />
-                    </div>
-                  );
-                }
-              })}
+                  <input type="hidden" name="firstNamePreviouslyUsed" value={name} />
+                </div>
+              ))}
             </div>
 
             <InputField
@@ -299,27 +295,23 @@ export default function PersonalInformation({ actionData, loaderData, params, ma
             </div>
 
             <div id="other-last-names" className="flex space-x-4">
-              {otherLastNames.map((name) => {
-                if (name.length > 0) {
-                  return (
-                    <div
-                      key={name}
-                      className="inline-flex items-center justify-center rounded-sm border-blue-100 bg-blue-100 px-2 py-1 align-middle text-gray-900"
-                    >
-                      <span>{name}</span>
-                      <button
-                        aria-label={t('protected:personal-information.name-added-aria-label', { name })}
-                        onClick={() => removeOtherLastName(name)}
-                        type="button"
-                      >
-                        <FontAwesomeIcon icon={faXmark} className="ml-1" />
-                      </button>
+              {otherLastNames.map((name) => (
+                <div
+                  key={name}
+                  className="inline-flex items-center justify-center rounded-sm border-blue-100 bg-blue-100 px-2 py-1 align-middle text-gray-900"
+                >
+                  <span>{name}</span>
+                  <button
+                    aria-label={t('protected:personal-information.name-added-aria-label', { name })}
+                    onClick={() => removeOtherLastName(name)}
+                    type="button"
+                  >
+                    <FontAwesomeIcon icon={faXmark} className="ml-1" />
+                  </button>
 
-                      <input type="hidden" name="lastNamePreviouslyUsed" value={name} />
-                    </div>
-                  );
-                }
-              })}
+                  <input type="hidden" name="lastNamePreviouslyUsed" value={name} />
+                </div>
+              ))}
             </div>
 
             <span aria-live="polite" aria-atomic="true" className="sr-only">
