@@ -1,19 +1,19 @@
-import type { ComponentProps } from 'react';
+import type { ComponentProps, JSX } from 'react';
 
 import { formatAddress } from '~/utils/string-utils';
 import { cn } from '~/utils/tailwind-utils';
 
-export interface AddressDetails {
+type Address = {
   addressLine1?: string;
   addressLine2?: string;
   city?: string;
-  country: string;
   postalZipCode?: string;
   provinceState?: string;
-}
+  country: string;
+};
 
-export interface AddressProps extends ComponentProps<'address'> {
-  address: AddressDetails;
+type AddressProps = ComponentProps<'address'> & {
+  address: Address;
   /**
    * The format of the address
    *
@@ -21,13 +21,12 @@ export interface AddressProps extends ComponentProps<'address'> {
    * - `alternative`: An alternative address format, with the address line, city, province/state, postal/zip code, and country on separate lines.
    */
   format?: 'standard' | 'alternative';
-}
+};
 
-export function Address({ address, format = 'standard', className, ...restProps }: AddressProps) {
-  const formattedAddress = formatAddress({ ...address, format });
+export function Address({ address, format, className, ...rest }: AddressProps): JSX.Element {
   return (
-    <address className={cn('whitespace-pre-wrap not-italic', className)} data-testid="address-id" {...restProps}>
-      {formattedAddress}
+    <address className={cn('whitespace-pre-wrap not-italic', className)} data-testid="address-id" {...rest}>
+      {formatAddress(address, format)}
     </address>
   );
 }
