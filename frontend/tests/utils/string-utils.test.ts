@@ -28,7 +28,7 @@ describe('string-utils', () => {
         country: 'Canada',
       });
 
-      expect(result).toEqual('Apt 4B 123 Main St\nAnytown ON A1A 1A1\nCanada');
+      expect(result).toEqual('Apt 4B 123 Main St\nAnytown ON  A1A 1A1\nCanada');
     });
 
     it('should format a standard address without addressLine2', () => {
@@ -40,7 +40,7 @@ describe('string-utils', () => {
         country: 'Canada',
       });
 
-      expect(result).toEqual('123 Main St\nAnytown ON A1A 1A1\nCanada');
+      expect(result).toEqual('123 Main St\nAnytown ON  A1A 1A1\nCanada');
     });
 
     it('should format a standard address with all fields, simple addressLine2', () => {
@@ -53,7 +53,7 @@ describe('string-utils', () => {
         country: 'Canada',
       });
 
-      expect(result).toEqual('4B-123 Main St\nAnytown ON A1A 1A1\nCanada');
+      expect(result).toEqual('4B-123 Main St\nAnytown ON  A1A 1A1\nCanada');
     });
 
     it('should format a standard address without provinceState and postalZipCode', () => {
@@ -120,7 +120,7 @@ describe('string-utils', () => {
         country: 'Canada',
       });
 
-      expect(result).toEqual('123 Main St\nAnytown A1A 1A1\nCanada');
+      expect(result).toEqual('123 Main St\nAnytown  A1A 1A1\nCanada');
     });
 
     it('should format a standard address with complex suite name', () => {
@@ -133,7 +133,7 @@ describe('string-utils', () => {
         country: 'Canada',
       });
 
-      expect(result).toEqual('123 Main St Suite 4B\nAnytown ON A1A 1A1\nCanada');
+      expect(result).toEqual('123 Main St Suite 4B\nAnytown ON  A1A 1A1\nCanada');
     });
   });
 });

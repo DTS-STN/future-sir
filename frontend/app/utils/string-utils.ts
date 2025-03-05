@@ -47,11 +47,11 @@ function formatAddressLine(addressLine1: string | undefined, addressLine2: strin
   if (!addressLine2?.trim()) return addressLine1;
 
   // check if addressLine2 is a simple alphanumeric suite number
-  const isSuiteNumber = /^[a-z\d]+$/i.test(addressLine2.trim());
+  const isSuiteNumber = /^\w+$/i.test(addressLine2.trim());
 
   return isSuiteNumber
-    ? `${addressLine2.trim()}-${addressLine1.trim()}` //
-    : `${addressLine1.trim()} ${addressLine2.trim()}`;
+    ? `${addressLine2.trim()}-${addressLine1.trim()}` // ex: Apt 4B-123 Main St
+    : `${addressLine1.trim()} ${addressLine2.trim()}`; // ex: 123 Main St Apt 4B
 }
 
 /**
@@ -63,13 +63,13 @@ type Address = {
    */
   addressLine1?: string;
   /**
+   * Apartment, suite, or unit number
+   */
+  addressLine2?: string;
+  /**
    * City name
    */
   city?: string;
-  /**
-   * Country name
-   */
-  country: string;
   /**
    * Province or state code
    */
@@ -79,9 +79,9 @@ type Address = {
    */
   postalZipCode?: string;
   /**
-   * Apartment, suite, or unit number
+   * Country name
    */
-  addressLine2?: string;
+  country: string;
 };
 
 /**
@@ -119,7 +119,7 @@ type Address = {
  * });
  *
  * // 456 Oak Ave
- * // Springfield A1A 1A1
+ * // Springfield  A1A 1A1
  * // Canada
  * ```
  * @example
@@ -137,7 +137,12 @@ type Address = {
  * ```
  */
 export function formatAddress(address: Address, format?: 'standard' | 'alternative'): string {
-  const { addressLine1, addressLine2, city, provinceState, postalZipCode, country } = address;
+  const addressLine1 = trimToUndefined(address.addressLine1);
+  const addressLine2 = trimToUndefined(address.addressLine2);
+  const city = trimToUndefined(address.city);
+  const provinceState = trimToUndefined(address.provinceState);
+  const postalZipCode = trimToUndefined(address.postalZipCode);
+  const country = trimToUndefined(address.country);
 
   const lines =
     format === 'alternative'
@@ -149,7 +154,9 @@ export function formatAddress(address: Address, format?: 'standard' | 'alternati
         ]
       : [
           formatAddressLine(addressLine1, addressLine2),
-          [city, provinceState, postalZipCode].filter(Boolean).join(' '),
+          // note the intentional extra space added before postal code
+          // see https://www.canadapost-postescanada.ca/cpc/en/support/articles/addressing-guidelines/important-information.page
+          [city, provinceState, postalZipCode && ` ${postalZipCode}`].filter(Boolean).join(' '),
           country,
         ];
 
