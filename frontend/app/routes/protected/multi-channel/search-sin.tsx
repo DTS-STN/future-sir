@@ -37,18 +37,16 @@ export function meta({ data }: Route.MetaArgs) {
 export function action({ context, request }: Route.ActionArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
 
-  //TODO: fetch and return mock table result data
-  const headers = ['Header 1', 'Header 2', 'Header 3', 'Header 4', 'Header 5'];
-  const data = [
-    ['Data 1-1', 'Data 1-2', 'Data 1-3', 'Data 1-4', 'Data 1-5'],
-    ['Data 2-1', 'Data 2-2', 'Data 2-3', 'Data 2-4', 'Data 2-5'],
-    ['Data 3-1', 'Data 3-2', 'Data 3-3', 'Data 3-4', 'Data 3-5'],
-    ['Data 4-1', 'Data 4-2', 'Data 4-3', 'Data 4-4', 'Data 4-5'],
-  ];
+  //TODO: fetch and return mock table data
   return {
-    tableResults: {
-      headers,
-      table: { data },
+    tableData: {
+      rows: [
+        ['John Doe', 'January 1, 1980', 'Doe', '*** *** 000', '98%'],
+        ['Johnathan Doe', 'February 10, 1985', 'Doe', '*** *** 000', '95%'],
+        ['John D', 'March 15, 1990', 'N/A', '*** *** 000', '88%'],
+        ['Johnny Doe', 'April 20, 1978', 'Doe', '*** *** 000', '92%'],
+        ['J. Doe', 'May 25, 1992', 'Doe', '*** *** 000', '90%'],
+      ],
     },
   };
 }
@@ -89,10 +87,19 @@ export default function SearchSin({ loaderData, actionData, params }: Route.Comp
               </div>
             </div>
 
-            {fetcher.data?.tableResults && (
+            {fetcher.data?.tableData && (
               <>
                 <h3 className="font-lato mb-4 text-xl font-semibold">{t('protected:search-sin.matches')}</h3>
-                <DataTable {...fetcher.data.tableResults} />
+                <DataTable
+                  headers={[
+                    t('protected:search-sin.table.headers.full-name'),
+                    t('protected:search-sin.table.headers.date-of-birth'),
+                    t('protected:search-sin.table.headers.parent-surname'),
+                    t('protected:search-sin.table.headers.sin'),
+                    t('protected:search-sin.table.headers.match'),
+                  ]}
+                  rows={fetcher.data.tableData.rows}
+                />
               </>
             )}
           </div>
