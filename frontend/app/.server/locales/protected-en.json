@@ -349,7 +349,10 @@
     "edit-secondary-identity-document": "Edit secondary identity document",
     "edit-current-name": "Edit current name",
     "edit-personal-details": "Edit personal details",
-    "edit-birth-details": "Edit birth details"
+    "edit-birth-details": "Edit birth details",
+    "edit-parent-details": "Edit parent details",
+    "edit-previous-sin": "Edit previous sin",
+    "edit-contact-information": "Edit contact information"
   },
   "search-sin": {
     "page-title": "Search for a SIN",
