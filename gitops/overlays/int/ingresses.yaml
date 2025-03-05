@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: future-sir-frontend
+  labels:
+    app.kubernetes.io/name: future-sir-frontend
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: future-sir-int.dev-dp-internal.dts-stn.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: future-sir-frontend
+                port:
+                  name: http

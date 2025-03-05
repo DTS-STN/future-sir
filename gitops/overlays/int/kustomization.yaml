@@ -1,0 +1,26 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: future-social-insurance-registry
+nameSuffix: -int
+commonLabels:
+  # commonLabels must have at least one unique label
+  # per environment to ensure selectors are applied correctly
+  app.kubernetes.io/instance: int
+labels:
+  - pairs:
+      app.kubernetes.io/part-of: future-social-insurance-registry
+      app.kubernetes.io/managed-by: teamcity
+      app.kubernetes.io/cluster: dts-dev-sced-rhp-spoke-aks
+      app.kubernetes.io/environment: int
+      app.kubernetes.io/tier: nonprod
+resources:
+  - ../../base/future-sir-frontend/
+  - ./external-secrets.yaml
+  - ./ingresses.yaml
+patches:
+  - path: ./patches/deployments.yaml
+configMapGenerator:
+  - name: future-sir-frontend
+    behavior: merge
+    envs:
+      - ./configs/future-sir-frontend/config.conf
