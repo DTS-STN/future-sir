@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react';
 
 type Row = (string | number | ReactNode)[];
-type Table = { data: Row[] };
 
 interface DataTableProps {
   /**
@@ -12,7 +11,7 @@ interface DataTableProps {
   /**
    * 2D array of table data where each inner array represents a row
    */
-  table: Table;
+  rows: Row[];
 
   /**
    * Whether to apply alternating background colors to rows
@@ -21,7 +20,7 @@ interface DataTableProps {
   striped?: boolean;
 }
 
-export function DataTable({ headers, table, striped = true }: DataTableProps) {
+export function DataTable({ headers, rows, striped = true }: DataTableProps) {
   return (
     <div className="overflow-x-auto rounded-lg shadow">
       <table className="min-w-full divide-y divide-gray-200">
@@ -35,7 +34,7 @@ export function DataTable({ headers, table, striped = true }: DataTableProps) {
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200 bg-white">
-          {table.data.map((row, rowIndex) => (
+          {rows.map((row, rowIndex) => (
             <tr key={rowIndex} className={striped && rowIndex % 2 === 1 ? 'bg-gray-50' : 'bg-white'}>
               {row.map((cell, cellIndex) => (
                 <td key={cellIndex} className="px-6 py-4 text-sm whitespace-nowrap text-gray-900">

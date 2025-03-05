@@ -363,7 +363,16 @@
     "parents-legal-guardians": "Parents/legal guardians",
     "other-last-names": "Other last names",
     "search": "Search",
-    "matches": "Matches"
+    "matches": "Matches",
+    "table": {
+      "headers": {
+        "full-name": "Full name",
+        "date-of-birth": "Date of birth",
+        "parent-surname": "Parent's birth surname",
+        "sin": "SIN",
+        "match": "Match"
+      }
+    }
   },
   "pid-verification": {
     "page-title": "Validation result",
@@ -371,6 +380,7 @@
     "validation-passed": "Validation passed",
     "all-input-successful": "All inputs have been successfully validated and match the primary identity document.",
     "next": "Next",
-    "previous": "Previous"
+    "previous": "Previous",
+    "matches": "Matches"
   }
 }
