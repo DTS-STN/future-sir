@@ -52,7 +52,11 @@ export async function loader({ context, request }: Route.LoaderArgs) {
       lastNamePreviouslyUsed: personalInformation?.lastNamePreviouslyUsed ?? [],
       gender: personalInformation?.gender,
     },
-    localizedGenders: applicantGenderService.getLocalizedApplicantGenders(lang),
+    genders: applicantGenderService.getLocalizedApplicantGenders(lang).map(({ id, name }) => ({
+      value: id,
+      children: name,
+      defaultChecked: id === (personalInformation?.gender ?? primaryDocuments?.gender),
+    })),
   };
 }
 
@@ -126,7 +130,7 @@ export async function action({ context, request }: Route.ActionArgs) {
   }
 }
 
-export default function PersonalInformation({ loaderData, params }: Route.ComponentProps) {
+export default function PersonalInformation({ actionData, loaderData, params, matches }: Route.ComponentProps) {
   const { t } = useTranslation(handle.i18nNamespace);
 
   const fetcherKey = useId();
@@ -134,42 +138,68 @@ export default function PersonalInformation({ loaderData, params }: Route.Compon
   const isSubmitting = fetcher.state !== 'idle';
   const errors = fetcher.data?.errors;
 
-  const [firstName, setFirstName] = useState<string>('');
-  const [firstNames, setFirstNames] = useState(loaderData.defaultFormValues.firstNamePreviouslyUsed);
-  const [lastName, setLastName] = useState<string>('');
-  const [lastNames, setLastNames] = useState(loaderData.defaultFormValues.lastNamePreviouslyUsed);
+  const [otherFirstName, setOtherFirstName] = useState('');
+  const [otherFirstNames, setOtherFirstNames] = useState(loaderData.defaultFormValues.firstNamePreviouslyUsed);
+  const [otherLastName, setOtherLastName] = useState('');
+  const [otherLastNames, setOtherLastNames] = useState(loaderData.defaultFormValues.lastNamePreviouslyUsed);
   const [srAnnouncement, setSrAnnouncement] = useState('');
 
-  const genderId = loaderData.defaultFormValues.gender ?? loaderData.primaryDocValues.gender;
+  /**
+   * Adds a name to `otherFirstNames` if it doesn't already exist.
+   * Clears the `otherFirstName` value upon success.
+   */
+  function addOtherFirstName(): void {
+    const name = otherFirstName.trim();
 
-  const genderOptions = loaderData.localizedGenders.map(({ id, name }) => ({
-    value: id,
-    children: name,
-    defaultChecked: id === genderId,
-  }));
+    if (name) {
+      setOtherFirstNames((prev) => {
+        const alreadyExists = prev.find((val) => val.toLowerCase() === name.toLowerCase());
 
-  function handleAddFirstName() {
-    if (firstName.trim()) {
-      setFirstNames((prev) => (!prev.includes(firstName.trim()) ? [...prev, firstName.trim()] : prev));
-      setFirstName('');
+        if (alreadyExists) {
+          return prev;
+        }
+
+        setOtherFirstName('');
+        return [...prev, name];
+      });
     }
   }
 
-  function handleRemoveFirstName(name: string) {
-    setSrAnnouncement(t(`protected:personal-information.removed-name-sr-message`, { name: name }));
-    setFirstNames((prev) => [...prev].filter((n) => n !== name));
+  /**
+   * Removes a name from `otherFirstNames` and announces the removal to screen readers.
+   */
+  function removeOtherFirstName(name: string): void {
+    setSrAnnouncement(t('protected:personal-information.removed-name-sr-message', { name }));
+    setOtherFirstNames((prev) => prev.filter((val) => val !== name));
   }
 
-  function handleAddLastName() {
-    if (lastName.trim()) {
-      setLastNames((prev) => (!prev.includes(lastName.trim()) ? [...prev, lastName.trim()] : prev));
-      setLastName('');
+  /**
+   * Adds a name to `otherLastNames` if it doesn't already exist.
+   * Clears the `otherLastName` value upon success.
+   */
+  function addOtherLastName(): void {
+    const name = otherLastName.trim();
+
+    if (name) {
+      setOtherLastNames((prev) => {
+        const alreadyExists = prev.find((val) => val.toLowerCase() === name.toLowerCase());
+
+        if (alreadyExists) {
+          return prev;
+        }
+
+        setOtherLastName('');
+        return [...prev, name];
+      });
     }
   }
 
-  function handleRemoveLastName(name: string) {
-    setSrAnnouncement(t(`protected:personal-information.removed-name-sr-message`, { name: name }));
-    setLastNames((prev) => [...prev].filter((n) => n !== name));
+  /**
+   * Removes a name from `otherLastNames` and announces the removal to screen readers.
+   */
+  function removeOtherLastName(name: string): void {
+    setSrAnnouncement(t('protected:personal-information.removed-name-sr-message', { name }));
+    setOtherLastNames((prev) => prev.filter((val) => val !== name));
   }
 
   return (
@@ -182,13 +212,14 @@ export default function PersonalInformation({ loaderData, params }: Route.Compon
           {t('protected:person-case.refer-button')}
         </Button>
       </div>
+
       <Progress className="mt-8" label="" value={30} />
       <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:personal-information.page-title')}</PageTitle>
 
       <FetcherErrorSummary fetcherKey={fetcherKey}>
-        <fetcher.Form method="post" noValidate>
+        <fetcher.Form method="post" noValidate={true}>
           <div className="flex flex-col space-y-6">
-            <div className="flex space-x-4">
+            <div id="other-first-name-input" className="flex space-x-4">
               <InputField
                 id="first-name-id"
                 className="w-full"
@@ -196,52 +227,55 @@ export default function PersonalInformation({ loaderData, params }: Route.Compon
                 helpMessagePrimary={t('protected:personal-information.first-name-previously-used.help-message-primary')}
                 label={t('protected:personal-information.first-name-previously-used.label')}
                 name="firstNamePreviouslyUsed"
-                type="text"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
+                onChange={(e) => setOtherFirstName(e.target.value)}
+                value={otherFirstName}
               />
               <Button
-                className="self-end"
                 id="add-first-name-button"
+                className="self-end"
                 endIcon={faXmarkCircle}
-                variant="link"
+                onClick={addOtherFirstName}
                 type="button"
-                onClick={handleAddFirstName}
+                variant="link"
               >
                 {t('protected:personal-information.add-name')}
               </Button>
             </div>
-            <div className="flex space-x-4">
-              {firstNames.map(
-                (name) =>
-                  name.length > 0 && (
+
+            <div id="other-first-names" className="flex space-x-4">
+              {otherFirstNames.map((name) => {
+                if (name.length > 0) {
+                  return (
                     <div
                       key={name}
                       className="inline-flex items-center justify-center rounded-sm border-blue-100 bg-blue-100 px-2 py-1 align-middle text-gray-900"
                     >
-                      <input type="hidden" name="firstNamePreviouslyUsed" value={name} />
-                      {name}
+                      <span>{name}</span>
                       <button
-                        aria-label={t('protected:personal-information.name-added-aria-label', { name: name })}
+                        aria-label={t('protected:personal-information.name-added-aria-label', { name })}
+                        onClick={() => removeOtherFirstName(name)}
                         type="button"
-                        onClick={() => handleRemoveFirstName(name)}
                       >
                         <FontAwesomeIcon icon={faXmark} className="ml-1" />
                       </button>
+
+                      <input type="hidden" name="firstNamePreviouslyUsed" value={name} />
                     </div>
-                  ),
-              )}
+                  );
+                }
+              })}
             </div>
+
             <InputField
               id="last-name-at-birth-id"
               defaultValue={loaderData.defaultFormValues.lastNameAtBirth ?? loaderData.primaryDocValues.lastName}
               errorMessage={errors?.lastNameAtBirth?.at(0)}
               label={t('protected:personal-information.last-name-at-birth.label')}
               name="lastNameAtBirth"
-              required
-              type="text"
+              required={true}
             />
-            <div className="flex space-x-4">
+
+            <div id="other-last-name-input" className="flex space-x-4">
               <InputField
                 id="last-name-id"
                 className="w-full"
@@ -249,41 +283,43 @@ export default function PersonalInformation({ loaderData, params }: Route.Compon
                 helpMessagePrimary={t('protected:personal-information.last-name-previously-used.help-message-primary')}
                 label={t('protected:personal-information.last-name-previously-used.label')}
                 name="lastNamePreviouslyUsed"
-                type="text"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
+                onChange={(e) => setOtherLastName(e.target.value)}
+                value={otherLastName}
               />
               <Button
-                className="self-end"
                 id="add-last-name-button"
+                className="self-end"
                 endIcon={faXmarkCircle}
-                variant="link"
+                onClick={addOtherLastName}
                 type="button"
-                onClick={handleAddLastName}
+                variant="link"
               >
                 {t('protected:personal-information.add-name')}
               </Button>
             </div>
-            <div className="flex space-x-4">
-              {lastNames.map(
-                (name) =>
-                  name.length > 0 && (
+
+            <div id="other-last-names" className="flex space-x-4">
+              {otherLastNames.map((name) => {
+                if (name.length > 0) {
+                  return (
                     <div
                       key={name}
                       className="inline-flex items-center justify-center rounded-sm border-blue-100 bg-blue-100 px-2 py-1 align-middle text-gray-900"
                     >
-                      <input type="hidden" name="lastNamePreviouslyUsed" value={name} />
-                      {name}
+                      <span>{name}</span>
                       <button
-                        aria-label={t('protected:personal-information.name-added-aria-label', { name: name })}
+                        aria-label={t('protected:personal-information.name-added-aria-label', { name })}
+                        onClick={() => removeOtherLastName(name)}
                         type="button"
-                        onClick={() => handleRemoveLastName(name)}
                       >
                         <FontAwesomeIcon icon={faXmark} className="ml-1" />
                       </button>
+
+                      <input type="hidden" name="lastNamePreviouslyUsed" value={name} />
                     </div>
-                  ),
-              )}
+                  );
+                }
+              })}
             </div>
 
             <span aria-live="polite" aria-atomic="true" className="sr-only">
@@ -296,10 +332,11 @@ export default function PersonalInformation({ loaderData, params }: Route.Compon
               helpMessagePrimary={t('protected:personal-information.gender.help-message-primary')}
               legend={t('protected:personal-information.gender.label')}
               name="gender"
-              options={genderOptions}
-              required
+              options={loaderData.genders}
+              required={true}
             />
           </div>
+
           <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
             <Button name="action" value="next" variant="primary" id="continue-button" disabled={isSubmitting}>
               {t('protected:person-case.next')}
