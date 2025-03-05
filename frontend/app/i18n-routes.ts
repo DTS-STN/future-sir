@@ -105,6 +105,14 @@ export const i18nRoutes = [
       },
       {
         id: 'MCF-0001',
+        file: 'routes/protected/multi-channel/pid-verification.tsx',
+        paths: {
+          en: '/en/protected/multi-channel/pid-verification',
+          fr: '/fr/protege/multi-chaine/pid-verification',
+        },
+      },
+      {
+        id: 'MCF-0002',
         file: 'routes/protected/multi-channel/search-sin.tsx',
         paths: {
           en: '/en/protected/multi-channel/search-sin',
