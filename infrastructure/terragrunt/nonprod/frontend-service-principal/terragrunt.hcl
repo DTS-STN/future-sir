@@ -21,7 +21,8 @@ inputs = {
   app_passwords       = ["Default secret"]
   app_web_redirect_uris = [
     "http://localhost:3000/auth/callback/azuread",
-    "https://future-sir-dev.dev-dp-internal.dts-stn.com/auth/callback/azuread"
+    "https://future-sir-dev.dev-dp-internal.dts-stn.com/auth/callback/azuread",
+    "https://future-sir-int.dev-dp-internal.dts-stn.com/auth/callback/azuread",
   ]
 
   app_owners = [
