@@ -438,9 +438,9 @@ function PersonalDetailsData({ data, tabId }: PersonalDetailsDataProps) {
         <DescriptionListItem term={t('protected:personal-information.first-name-previously-used.label')}>
           {data.firstNamePreviouslyUsed && data.firstNamePreviouslyUsed.length > 0 && (
             <ul className="ml-6 list-disc">
-              {data.firstNamePreviouslyUsed.map(
-                (value, index) => value.length > 0 && <li key={`${index}-${value}`}>{value}</li>,
-              )}
+              {data.firstNamePreviouslyUsed.map((value, index) => (
+                <li key={`${index}-${value}`}>{value}</li>
+              ))}
             </ul>
           )}
         </DescriptionListItem>
@@ -450,9 +450,9 @@ function PersonalDetailsData({ data, tabId }: PersonalDetailsDataProps) {
         <DescriptionListItem term={t('protected:personal-information.last-name-previously-used.label')}>
           {data.lastNamePreviouslyUsed && data.lastNamePreviouslyUsed.length > 0 && (
             <ul className="ml-6 list-disc">
-              {data.lastNamePreviouslyUsed.map(
-                (value, index) => value.length > 0 && <li key={`${index}-${value}`}>{value}</li>,
-              )}
+              {data.lastNamePreviouslyUsed.map((value, index) => (
+                <li key={`${index}-${value}`}>{value}</li>
+              ))}
             </ul>
           )}
         </DescriptionListItem>
