@@ -57,7 +57,7 @@ export default function Layout({ loaderData }: Route.ComponentProps) {
           <MenuItem file="routes/public/index.tsx">{t('protected:index.public')}</MenuItem>
         </AppBar>
       </header>
-      <main className="container">
+      <main className="container print:w-full print:max-w-none">
         <Outlet />
         <PageDetails buildDate={BUILD_DATE} buildVersion={BUILD_VERSION} pageId={pageId} />
       </main>

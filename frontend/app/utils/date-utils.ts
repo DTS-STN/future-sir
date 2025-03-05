@@ -73,7 +73,35 @@ export function isValidTimeZone(timeZone: string): boolean {
 }
 
 /**
-<<<<<<< HEAD
+ * @returns The local IANA time zone name.
+ */
+export function getLocalTimeZone() {
+  return Intl.DateTimeFormat().resolvedOptions().timeZone;
+}
+
+/**
+ * @param timezone - The IANA time zone name (e.g., 'America/New_York', 'Europe/London').
+ * @param date - Optional date or timestamp to use. If not provided, the current date and time are used.
+ *               Can be a number (milliseconds since epoch), a string (parsable by `new Date()`), or a Date object.
+ * @returns The date formatted in both English ("MMM dd, yyyy") and French ("dd MMM. yyyy").
+ */
+export function dateToLocalizedText(timezone: string, date?: number | string | Date): { dateEn: string; dateFr: string } {
+  const targetDate = getStartOfDayInTimezone(timezone, date);
+  return {
+    dateEn: targetDate.toLocaleDateString('en-CA', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    }),
+    dateFr: targetDate.toLocaleDateString('fr-CA', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    }),
+  };
+}
+
+/**
  * Checks if a given string is a valid date string in ISO 8601 format (YYYY-MM-DD).
  *
  * This function uses `parseISO` (presumably from a date/time library like date-fns)

@@ -16,6 +16,9 @@
     "title": "Demande NAS en personne",
     "description": "Traiter une demande ou une modification"
   },
+  "first-time": {
+    "title": "Demande NAS pour la première fois"
+  },
   "enquiry-only": {
     "title": "Demande uniquement",
     "description": "Rechercher un enregistrement SIN"
@@ -382,5 +385,33 @@
     "next": "Next",
     "previous": "Previous",
     "matches": "Matches"
+  },
+  "sin-confirmation": {
+    "page-title": "Confirmation du NAS",
+    "print": "Imprimer",
+    "finish": "Terminer",
+    "protected-b": "PROTÉGÉ B",
+    "social-insurance-number": "Numéro d'assurance sociale (NAS)",
+    "names-on-record": "Noms au dossier de NAS",
+    "first-name": "Prénom",
+    "middle-name": "Second(s) prénom(s)",
+    "family-name": "Nom(s) de famile",
+    "address": "Adresse",
+    "protect-sin": {
+      "title": "Protégez votre NAS, il est confidentiel",
+      "description": "Conservez tout document où i'on retrouve votre NAS dans un enroit sûr."
+    },
+    "use-of-sin": {
+      "title": "Utilisation de votre NAS",
+      "description": "Vous devez fournir votre NAS à votre employeur dans les trois jours suivant sa recéption. Aussi, centains programmes et/ou services utilisent les données au dossier de NAS afin d'authentifier i'dentité d'une personne. Assurez-vous d'utiliser les noms qui figurent ci-dessus."
+    },
+    "sin-begin-9": {
+      "title": "Si votre NAS débute par le chiffre 9",
+      "description": "Vous devez présenter à votre employeur une autorisation valide vous permettant de travailler au Canada. Votre dossier de NAS doit être mis à jour afin de refléter la plus récente date d'expiration."
+    },
+    "more-information": {
+      "title": "Pour plus de renseignements, consultez notre site Web\u00a0:",
+      "description": "Canada.ca/numero-assurance-sociale"
+    }
   }
 }
