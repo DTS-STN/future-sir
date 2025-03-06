@@ -224,8 +224,10 @@
     "name-added-aria-label": "Name added: {{name}}, Activate to remove name",
     "removed-name-sr-message": "Name removed: {{name}}",
     "first-name-previously-used": {
+      "format": "First name must contain letters only.",
       "help-message-primary": "Type a name into the field and press Enter or click \"Add Name\" to save it.",
-      "label": "Other first names previously used"
+      "label": "Other first names previously used",
+      "max-length": "First name must contain at most {{maximum}} character(s)."
     },
     "last-name-at-birth": {
       "format": "Last name must contain letters only.",

@@ -61,7 +61,16 @@ export async function action({ context, params, request }: Route.ActionArgs) {
       const { lang, t } = await getTranslation(request, handle.i18nNamespace);
 
       const schema = v.object({
-        firstNamePreviouslyUsed: v.optional(v.array(v.pipe(v.string(), v.trim()))),
+        firstNamePreviouslyUsed: v.optional(
+          v.array(
+            v.pipe(
+              v.string(),
+              v.trim(),
+              v.maxLength(100, t('protected:personal-information.first-name-previously-used.max-length', { maximum: 100 })),
+              v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:personal-information.first-name-previously-used.format')),
+            ),
+          ),
+        ),
         lastNameAtBirth: v.pipe(
           v.string(t('protected:personal-information.last-name-at-birth.required')),
           v.trim(),
@@ -69,7 +78,16 @@ export async function action({ context, params, request }: Route.ActionArgs) {
           v.maxLength(100, t('protected:personal-information.last-name-at-birth.max-length', { maximum: 100 })),
           v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:personal-information.last-name-at-birth.format')),
         ),
-        lastNamePreviouslyUsed: v.optional(v.array(v.pipe(v.string(), v.trim()))),
+        lastNamePreviouslyUsed: v.optional(
+          v.array(
+            v.pipe(
+              v.string(),
+              v.trim(),
+              v.maxLength(100, t('protected:personal-information.last-name-at-birth.max-length', { maximum: 100 })),
+              v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:personal-information.last-name-at-birth.format')),
+            ),
+          ),
+        ),
         gender: v.picklist(
           applicantGenderService.getApplicantGenders().map(({ id }) => id),
           t('protected:personal-information.gender.required'),
@@ -144,6 +162,25 @@ export default function PersonalInformation({ actionData, loaderData, params, ma
   const [otherLastNames, setOtherLastNames] = useState(loaderData.defaultFormValues.lastNamePreviouslyUsed);
   const [srAnnouncement, setSrAnnouncement] = useState('');
 
+  function errorNameField(fieldName: string, errors?: Record<string, [string, ...string[]] | undefined>): string {
+    if (!errors) {
+      return '';
+    }
+
+    const directError = errors[fieldName]?.[0];
+    if (directError) {
+      return directError;
+    }
+
+    const indexedKey = Object.keys(errors).find((key) => key.startsWith(`${fieldName}.`));
+
+    if (indexedKey && errors[indexedKey] && errors[indexedKey].length > 0) {
+      return errors[indexedKey][0];
+    }
+
+    return '';
+  }
+
   /**
    * Adds a name to `otherFirstNames` if it doesn't already exist.
    * Clears the `otherFirstName` value upon success.
@@ -167,10 +204,37 @@ export default function PersonalInformation({ actionData, loaderData, params, ma
 
   /**
    * Removes a name from `otherFirstNames` and announces the removal to screen readers.
+   * Also removes the corresponding error message if it exists.
    */
   function removeOtherFirstName(name: string): void {
     setSrAnnouncement(t('protected:personal-information.removed-name-sr-message', { name }));
-    setOtherFirstNames((prev) => prev.filter((val) => val !== name));
+
+    setOtherFirstNames((prev) => {
+      const updatedFirstNames = prev.filter((val) => val !== name);
+
+      if (errors) {
+        const indexToRemove = otherFirstNames.indexOf(name);
+
+        if (indexToRemove !== -1) {
+          // Create a mutable copy of the errors object
+          const mutableErrors: Record<string, [string, ...string[]] | undefined> = { ...errors };
+
+          const updatedErrors: Record<string, [string, ...string[]] | undefined> = Object.keys(mutableErrors).reduce(
+            (acc: Record<string, [string, ...string[]] | undefined>, key) => {
+              if (key !== `firstNamePreviouslyUsed.${indexToRemove}`) {
+                acc[key] = mutableErrors[key];
+              }
+              return acc;
+            },
+            {},
+          );
+
+          fetcher.data = { ...fetcher.data, errors: updatedErrors };
+        }
+      }
+
+      return updatedFirstNames;
+    });
   }
 
   /**
@@ -196,10 +260,37 @@ export default function PersonalInformation({ actionData, loaderData, params, ma
 
   /**
    * Removes a name from `otherLastNames` and announces the removal to screen readers.
+   * Also removes the corresponding error message if it exists.
    */
   function removeOtherLastName(name: string): void {
     setSrAnnouncement(t('protected:personal-information.removed-name-sr-message', { name }));
-    setOtherLastNames((prev) => prev.filter((val) => val !== name));
+
+    setOtherLastNames((prev) => {
+      const updatedLastNames = prev.filter((val) => val !== name);
+
+      if (errors) {
+        const indexToRemove = otherLastNames.indexOf(name);
+
+        if (indexToRemove !== -1) {
+          // Create a mutable copy of the errors object
+          const mutableErrors: Record<string, [string, ...string[]] | undefined> = { ...errors };
+
+          const updatedErrors: Record<string, [string, ...string[]] | undefined> = Object.keys(mutableErrors).reduce(
+            (acc: Record<string, [string, ...string[]] | undefined>, key) => {
+              if (key !== `lastNamePreviouslyUsed.${indexToRemove}`) {
+                acc[key] = mutableErrors[key];
+              }
+              return acc;
+            },
+            {},
+          );
+
+          fetcher.data = { ...fetcher.data, errors: updatedErrors };
+        }
+      }
+
+      return updatedLastNames;
+    });
   }
 
   return (
@@ -223,7 +314,7 @@ export default function PersonalInformation({ actionData, loaderData, params, ma
               <InputField
                 id="first-name-id"
                 className="w-full"
-                errorMessage={errors?.firstNamePreviouslyUsed?.at(0)}
+                errorMessage={errorNameField('firstNamePreviouslyUsed', errors)}
                 helpMessagePrimary={t('protected:personal-information.first-name-previously-used.help-message-primary')}
                 label={t('protected:personal-information.first-name-previously-used.label')}
                 name="firstNamePreviouslyUsed"
@@ -242,22 +333,26 @@ export default function PersonalInformation({ actionData, loaderData, params, ma
               </Button>
             </div>
 
-            <div id="other-first-names" className="flex space-x-4">
-              {otherFirstNames.map((name) => (
-                <div
-                  key={name}
-                  className="inline-flex items-center justify-center rounded-sm border-blue-100 bg-blue-100 px-2 py-1 align-middle text-gray-900"
-                >
-                  <span>{name}</span>
-                  <button
-                    aria-label={t('protected:personal-information.name-added-aria-label', { name })}
-                    onClick={() => removeOtherFirstName(name)}
-                    type="button"
-                  >
-                    <FontAwesomeIcon icon={faXmark} className="ml-1" />
-                  </button>
+            <div id="other-first-names" className="flex flex-wrap space-y-4 space-x-4">
+              {otherFirstNames.map((name, index) => (
+                <div key={name} className="flex flex-col space-y-2">
+                  <div className="inline-flex items-center justify-center rounded-sm border-blue-100 bg-blue-100 px-2 py-1 align-middle text-gray-900">
+                    <span>{name}</span>
+                    <button
+                      aria-label={t('protected:personal-information.name-added-aria-label', { name })}
+                      onClick={() => removeOtherFirstName(name)}
+                      type="button"
+                    >
+                      <FontAwesomeIcon icon={faXmark} className="ml-1" />
+                    </button>
 
-                  <input type="hidden" name="firstNamePreviouslyUsed" value={name} />
+                    <input type="hidden" name="firstNamePreviouslyUsed" value={name} />
+                  </div>
+                  {errors?.[`firstNamePreviouslyUsed.${index}`]?.at(0) && (
+                    <div className="border-1-2 inline-block border-red-600 bg-red-50 px-3 py-1">
+                      {errors[`firstNamePreviouslyUsed.${index}`]?.at(0)}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -275,7 +370,7 @@ export default function PersonalInformation({ actionData, loaderData, params, ma
               <InputField
                 id="last-name-id"
                 className="w-full"
-                errorMessage={errors?.lastNamePreviouslyUsed?.at(0)}
+                errorMessage={errorNameField('lastNamePreviouslyUsed', errors)}
                 helpMessagePrimary={t('protected:personal-information.last-name-previously-used.help-message-primary')}
                 label={t('protected:personal-information.last-name-previously-used.label')}
                 name="lastNamePreviouslyUsed"
@@ -294,22 +389,26 @@ export default function PersonalInformation({ actionData, loaderData, params, ma
               </Button>
             </div>
 
-            <div id="other-last-names" className="flex space-x-4">
-              {otherLastNames.map((name) => (
-                <div
-                  key={name}
-                  className="inline-flex items-center justify-center rounded-sm border-blue-100 bg-blue-100 px-2 py-1 align-middle text-gray-900"
-                >
-                  <span>{name}</span>
-                  <button
-                    aria-label={t('protected:personal-information.name-added-aria-label', { name })}
-                    onClick={() => removeOtherLastName(name)}
-                    type="button"
-                  >
-                    <FontAwesomeIcon icon={faXmark} className="ml-1" />
-                  </button>
+            <div id="other-last-names" className="flex flex-wrap space-y-4 space-x-4">
+              {otherLastNames.map((name, index) => (
+                <div key={name} className="flex flex-col space-y-2">
+                  <div className="inline-flex items-center justify-center rounded-sm border-blue-100 bg-blue-100 px-2 py-1 align-middle text-gray-900">
+                    <span>{name}</span>
+                    <button
+                      aria-label={t('protected:personal-information.name-added-aria-label', { name })}
+                      onClick={() => removeOtherLastName(name)}
+                      type="button"
+                    >
+                      <FontAwesomeIcon icon={faXmark} className="ml-1" />
+                    </button>
 
-                  <input type="hidden" name="lastNamePreviouslyUsed" value={name} />
+                    <input type="hidden" name="lastNamePreviouslyUsed" value={name} />
+                  </div>
+                  {errors?.[`lastNamePreviouslyUsed.${index}`]?.at(0) && (
+                    <div className="border-1-2 inline-block border-red-600 bg-red-50 px-3 py-1">
+                      {errors[`lastNamePreviouslyUsed.${index}`]?.at(0)}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
