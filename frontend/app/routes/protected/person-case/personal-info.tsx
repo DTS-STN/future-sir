@@ -60,7 +60,16 @@ export async function action({ context, params, request }: Route.ActionArgs) {
       const { lang, t } = await getTranslation(request, handle.i18nNamespace);
 
       const schema = v.object({
-        firstNamePreviouslyUsed: v.optional(v.array(v.pipe(v.string(), v.trim()))),
+        firstNamePreviouslyUsed: v.optional(
+          v.array(
+            v.pipe(
+              v.string(),
+              v.trim(),
+              v.maxLength(100, t('protected:personal-information.first-name-previously-used.max-length', { maximum: 100 })),
+              v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:personal-information.first-name-previously-used.format')),
+            ),
+          ),
+        ),
         lastNameAtBirth: v.pipe(
           v.string(t('protected:personal-information.last-name-at-birth.required')),
           v.trim(),
@@ -68,7 +77,16 @@ export async function action({ context, params, request }: Route.ActionArgs) {
           v.maxLength(100, t('protected:personal-information.last-name-at-birth.max-length', { maximum: 100 })),
           v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:personal-information.last-name-at-birth.format')),
         ),
-        lastNamePreviouslyUsed: v.optional(v.array(v.pipe(v.string(), v.trim()))),
+        lastNamePreviouslyUsed: v.optional(
+          v.array(
+            v.pipe(
+              v.string(),
+              v.trim(),
+              v.maxLength(100, t('protected:personal-information.last-name-previously-used.max-length', { maximum: 100 })),
+              v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:personal-information.last-name-previously-used.format')),
+            ),
+          ),
+        ),
         gender: v.picklist(
           applicantGenderService.getApplicantGenders().map(({ id }) => id),
           t('protected:personal-information.gender.required'),
@@ -143,6 +161,18 @@ export default function PersonalInformation({ actionData, loaderData, params, ma
   const [otherLastName, setOtherLastName] = useState('');
   const [otherLastNames, setOtherLastNames] = useState(loaderData.defaultFormValues.lastNamePreviouslyUsed);
   const [srAnnouncement, setSrAnnouncement] = useState('');
+  const [firstNameError, setFirstNameError] = useState<string | undefined>(undefined);
+  const [lastNameError, setLastNameError] = useState<string | undefined>(undefined);
+
+  function getErrorMessage(fieldName: string, errors?: Record<string, [string, ...string[]] | undefined>): string {
+    if (!errors) return '';
+
+    const directError = errors[fieldName]?.[0];
+    if (directError) return directError;
+
+    const indexedErrorKey = Object.keys(errors).find((key) => key.startsWith(`${fieldName}.`));
+    return (indexedErrorKey && errors[indexedErrorKey]?.[0]) ?? '';
+  }
 
   /**
    * Adds a name to `otherFirstNames` if it doesn't already exist.
@@ -150,6 +180,22 @@ export default function PersonalInformation({ actionData, loaderData, params, ma
    */
   function addOtherFirstName(): void {
     const name = otherFirstName.trim();
+
+    const firstNameSchema = v.pipe(
+      v.string(),
+      v.trim(),
+      v.maxLength(100, t('protected:personal-information.first-name-previously-used.max-length', { maximum: 100 })),
+      v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:personal-information.first-name-previously-used.format')),
+    );
+
+    const result = v.safeParse(firstNameSchema, name);
+
+    if (!result.success) {
+      setFirstNameError(result.issues[0].message);
+      return;
+    } else {
+      setFirstNameError(undefined);
+    }
 
     if (name) {
       setOtherFirstNames((prev) => {
@@ -179,6 +225,22 @@ export default function PersonalInformation({ actionData, loaderData, params, ma
    */
   function addOtherLastName(): void {
     const name = otherLastName.trim();
+
+    const lastNameSchema = v.pipe(
+      v.string(),
+      v.trim(),
+      v.maxLength(100, t('protected:personal-information.last-name-previously-used.max-length', { maximum: 100 })),
+      v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:personal-information.last-name-previously-used.format')),
+    );
+
+    const result = v.safeParse(lastNameSchema, name);
+
+    if (!result.success) {
+      setLastNameError(result.issues[0].message);
+      return;
+    } else {
+      setLastNameError(undefined);
+    }
 
     if (name) {
       setOtherLastNames((prev) => {
@@ -213,7 +275,7 @@ export default function PersonalInformation({ actionData, loaderData, params, ma
               <InputField
                 id="first-name-id"
                 className="w-full"
-                errorMessage={errors?.firstNamePreviouslyUsed?.at(0)}
+                errorMessage={firstNameError ?? getErrorMessage('firstNamePreviouslyUsed', errors)}
                 helpMessagePrimary={t('protected:personal-information.first-name-previously-used.help-message-primary')}
                 label={t('protected:personal-information.first-name-previously-used.label')}
                 name="firstNamePreviouslyUsed"
@@ -265,7 +327,7 @@ export default function PersonalInformation({ actionData, loaderData, params, ma
               <InputField
                 id="last-name-id"
                 className="w-full"
-                errorMessage={errors?.lastNamePreviouslyUsed?.at(0)}
+                errorMessage={lastNameError ?? getErrorMessage('lastNamePreviouslyUsed', errors)}
                 helpMessagePrimary={t('protected:personal-information.last-name-previously-used.help-message-primary')}
                 label={t('protected:personal-information.last-name-previously-used.label')}
                 name="lastNamePreviouslyUsed"
