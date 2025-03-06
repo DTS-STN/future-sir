@@ -80,40 +80,50 @@ export async function action({ context, params, request }: Route.ActionArgs) {
               v.email(t('protected:contact-information.error-messages.email-address-invalid-format')),
             ),
           ),
-          country: v.picklist(
-            countryService.getCountries().map(({ id }) => id),
-            t('protected:contact-information.error-messages.country-required'),
-          ),
-          address: v.pipe(v.string(), v.trim(), v.nonEmpty(t('protected:contact-information.error-messages.address-required'))),
-          postalCode: v.pipe(
-            v.string(),
-            v.trim(),
-            v.nonEmpty(t('protected:contact-information.error-messages.postal-code-required')),
-          ),
-          city: v.pipe(v.string(), v.trim(), v.nonEmpty(t('protected:contact-information.error-messages.city-required'))),
-          province: v.pipe(
-            v.string(),
-            v.trim(),
-            v.nonEmpty(t('protected:contact-information.error-messages.province-required')),
-          ),
         }),
-        v.variant('country', [
-          v.object({
-            country: v.literal(serverEnvironment.PP_CANADA_COUNTRY_CODE),
-            province: v.picklist(
-              provinceService.getProvinces().map(({ id }) => id),
-              t('protected:contact-information.error-messages.province-required'),
-            ),
-          }),
-          v.object({
-            country: v.string(),
-            province: v.pipe(
-              v.string(),
-              v.trim(),
-              v.nonEmpty(t('protected:contact-information.error-messages.province-required')),
-            ),
-          }),
-        ]),
+        v.variant(
+          'country',
+          [
+            v.object({
+              country: v.literal(serverEnvironment.PP_CANADA_COUNTRY_CODE),
+              province: v.picklist(
+                provinceService.getProvinces().map(({ id }) => id),
+                t('protected:contact-information.error-messages.province-required'),
+              ),
+              address: v.pipe(
+                v.string(),
+                v.trim(),
+                v.nonEmpty(t('protected:contact-information.error-messages.address-required')),
+              ),
+              postalCode: v.pipe(
+                v.string(),
+                v.trim(),
+                v.nonEmpty(t('protected:contact-information.error-messages.postal-code-required')),
+              ),
+              city: v.pipe(v.string(), v.trim(), v.nonEmpty(t('protected:contact-information.error-messages.city-required'))),
+            }),
+            v.object({
+              country: v.picklist(countryService.getCountries().map(({ id }) => id)),
+              province: v.pipe(
+                v.string(),
+                v.trim(),
+                v.nonEmpty(t('protected:contact-information.error-messages.province-required')),
+              ),
+              address: v.pipe(
+                v.string(),
+                v.trim(),
+                v.nonEmpty(t('protected:contact-information.error-messages.address-required')),
+              ),
+              postalCode: v.pipe(
+                v.string(),
+                v.trim(),
+                v.nonEmpty(t('protected:contact-information.error-messages.postal-code-required')),
+              ),
+              city: v.pipe(v.string(), v.trim(), v.nonEmpty(t('protected:contact-information.error-messages.city-required'))),
+            }),
+          ],
+          t('protected:contact-information.error-messages.country-required'),
+        ),
       ]) satisfies v.GenericSchema<ContactInformationData>;
 
       const input = {
