@@ -3,6 +3,7 @@ import { useId, useState } from 'react';
 import type { RouteHandle } from 'react-router';
 import { data, redirect, useFetcher } from 'react-router';
 
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import * as v from 'valibot';
 
@@ -139,6 +140,11 @@ export async function action({ context, params, request }: Route.ActionArgs) {
       break;
     }
 
+    case 'abandon': {
+      machineActor.send({ type: 'cancel' });
+      break;
+    }
+
     default: {
       throw new AppError(`Unrecognized action: ${action}`, ErrorCodes.UNRECOGNIZED_ACTION);
     }
@@ -192,9 +198,15 @@ export default function ContactInformation({ loaderData, actionData, params }: R
 
   return (
     <div className="max-w-prose">
-      <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:contact-information.page-title')}</PageTitle>
       <FetcherErrorSummary fetcherKey={fetcherKey}>
         <fetcher.Form method="post" noValidate>
+          <div className="flex justify-end">
+            <Button name="action" value="abandon" id="abandon-button" endIcon={faXmark} variant="link">
+              {t('protected:person-case.abandon-button')}
+            </Button>
+          </div>
+          <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:contact-information.page-title')}</PageTitle>
+
           <div className="space-y-6">
             <h2 className="font-lato text-2xl font-bold">{t('protected:contact-information.correspondence')}</h2>
             <InputRadios

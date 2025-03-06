@@ -3,7 +3,7 @@ import { useId, useState } from 'react';
 import type { RouteHandle } from 'react-router';
 import { data, redirect, useFetcher } from 'react-router';
 
-import { faExclamationCircle, faXmark, faXmarkCircle } from '@fortawesome/free-solid-svg-icons';
+import { faXmark, faXmarkCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useTranslation } from 'react-i18next';
 import * as v from 'valibot';
@@ -19,7 +19,6 @@ import { FetcherErrorSummary } from '~/components/error-summary';
 import { InputField } from '~/components/input-field';
 import { InputRadios } from '~/components/input-radios';
 import { PageTitle } from '~/components/page-title';
-import { Progress } from '~/components/progress';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { getTranslation } from '~/i18n-config.server';
@@ -90,6 +89,11 @@ export async function action({ context, params, request }: Route.ActionArgs) {
       }
 
       machineActor.send({ type: 'submitPersonalInfo', data: parseResult.output });
+      break;
+    }
+
+    case 'abandon': {
+      machineActor.send({ type: 'cancel' });
       break;
     }
 
@@ -204,20 +208,16 @@ export default function PersonalInformation({ actionData, loaderData, params, ma
 
   return (
     <>
-      <div className="flex justify-end">
-        <Button id="abandon-button" endIcon={faXmark} variant="link">
-          {t('protected:person-case.abandon-button')}
-        </Button>
-        <Button id="refer-button" endIcon={faExclamationCircle} variant="link">
-          {t('protected:person-case.refer-button')}
-        </Button>
-      </div>
-
-      <Progress className="mt-8" label="" value={30} />
-      <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:personal-information.page-title')}</PageTitle>
-
       <FetcherErrorSummary fetcherKey={fetcherKey}>
         <fetcher.Form method="post" noValidate={true}>
+          <div className="flex justify-end">
+            <Button name="action" value="abandon" id="abandon-button" endIcon={faXmark} variant="link">
+              {t('protected:person-case.abandon-button')}
+            </Button>
+          </div>
+
+          <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:personal-information.page-title')}</PageTitle>
+
           <div className="flex flex-col space-y-6">
             <div id="other-first-name-input" className="flex space-x-4">
               <InputField

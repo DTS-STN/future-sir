@@ -4,7 +4,7 @@ import { useId, useState } from 'react';
 import type { RouteHandle } from 'react-router';
 import { data, redirect, useFetcher } from 'react-router';
 
-import { faExclamationCircle, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import type { ResourceKey } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import type { PartialDeep } from 'type-fest';
@@ -22,7 +22,6 @@ import { InputField } from '~/components/input-field';
 import type { InputRadiosProps } from '~/components/input-radios';
 import { InputRadios } from '~/components/input-radios';
 import { PageTitle } from '~/components/page-title';
-import { Progress } from '~/components/progress';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { getTranslation } from '~/i18n-config.server';
@@ -157,6 +156,11 @@ export async function action({ context, params, request }: Route.ActionArgs) {
       break;
     }
 
+    case 'abandon': {
+      machineActor.send({ type: 'cancel' });
+      break;
+    }
+
     default: {
       throw new AppError(`Unrecognized action: ${action}`, ErrorCodes.UNRECOGNIZED_ACTION);
     }
@@ -247,33 +251,31 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
 
   return (
     <>
-      <div className="flex justify-end">
-        <Button id="abandon-button" endIcon={faXmark} variant="link">
-          {t('protected:person-case.abandon-button')}
-        </Button>
-        <Button id="refer-button" endIcon={faExclamationCircle} variant="link">
-          {t('protected:person-case.refer-button')}
-        </Button>
-      </div>
-      <Progress className="mt-8" label="" value={30} />
-      <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:current-name.page-title')}</PageTitle>
-      <p className="mb-4">{t('protected:current-name.recorded-name.description')}</p>
-      <ul className="mb-8 list-disc pl-5 font-bold">
-        <li>
-          {t('protected:current-name.recorded-name.first-name')}
-          <span className="ml-[1ch] font-normal">{loaderData.primaryDocName.firstName}</span>
-        </li>
-        <li>
-          {t('protected:current-name.recorded-name.middle-name')}
-          <span className="ml-[1ch] font-normal">{loaderData.primaryDocName.middleName}</span>
-        </li>
-        <li>
-          {t('protected:current-name.recorded-name.last-name')}
-          <span className="ml-[1ch] font-normal">{loaderData.primaryDocName.lastName}</span>
-        </li>
-      </ul>
       <FetcherErrorSummary fetcherKey={fetcherKey}>
         <fetcher.Form method="post" noValidate>
+          <div className="flex justify-end">
+            <Button name="action" value="abandon" id="abandon-button" endIcon={faXmark} variant="link">
+              {t('protected:person-case.abandon-button')}
+            </Button>
+          </div>
+
+          <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:current-name.page-title')}</PageTitle>
+          <p className="mb-4">{t('protected:current-name.recorded-name.description')}</p>
+          <ul className="mb-8 list-disc pl-5 font-bold">
+            <li>
+              {t('protected:current-name.recorded-name.first-name')}
+              <span className="ml-[1ch] font-normal">{loaderData.primaryDocName.firstName}</span>
+            </li>
+            <li>
+              {t('protected:current-name.recorded-name.middle-name')}
+              <span className="ml-[1ch] font-normal">{loaderData.primaryDocName.middleName}</span>
+            </li>
+            <li>
+              {t('protected:current-name.recorded-name.last-name')}
+              <span className="ml-[1ch] font-normal">{loaderData.primaryDocName.lastName}</span>
+            </li>
+          </ul>
+
           <div className="space-y-6">
             <InputRadios
               errorMessage={errors?.preferredSameAsDocumentName?.at(0)}

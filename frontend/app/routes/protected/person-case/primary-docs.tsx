@@ -4,7 +4,7 @@ import { useId, useState } from 'react';
 import type { RouteHandle } from 'react-router';
 import { data, redirect, useFetcher } from 'react-router';
 
-import { faExclamationCircle, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import * as v from 'valibot';
 
@@ -24,7 +24,6 @@ import { InputFile } from '~/components/input-file';
 import { InputRadios } from '~/components/input-radios';
 import { InputSelect } from '~/components/input-select';
 import { PageTitle } from '~/components/page-title';
-import { Progress } from '~/components/progress';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { getTranslation } from '~/i18n-config.server';
@@ -225,6 +224,11 @@ export async function action({ context, params, request }: Route.ActionArgs) {
       break;
     }
 
+    case 'abandon': {
+      machineActor.send({ type: 'cancel' });
+      break;
+    }
+
     default: {
       throw new AppError(`Unrecognized action: ${action}`, ErrorCodes.UNRECOGNIZED_ACTION);
     }
@@ -267,19 +271,16 @@ export default function PrimaryDocs({ loaderData, actionData, params }: Route.Co
 
   return (
     <>
-      <div className="flex justify-end">
-        <Button id="abandon-button" endIcon={faXmark} variant="link">
-          {t('protected:person-case.abandon-button')}
-        </Button>
-        <Button id="refer-button" endIcon={faExclamationCircle} variant="link">
-          {t('protected:person-case.refer-button')}
-        </Button>
-      </div>
-      <Progress className="mt-8" label="" value={30} />
-      <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:primary-identity-document.page-title')}</PageTitle>
-
       <FetcherErrorSummary fetcherKey={fetcherKey}>
         <fetcher.Form method="post" noValidate encType="multipart/form-data">
+          <div className="flex justify-end">
+            <Button name="action" value="abandon" id="abandon-button" endIcon={faXmark} variant="link">
+              {t('protected:person-case.abandon-button')}
+            </Button>
+          </div>
+
+          <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:primary-identity-document.page-title')}</PageTitle>
+
           <div className="space-y-6">
             <CurrentStatusInCanada
               defaultValue={loaderData.defaultFormValues?.currentStatusInCanada}

@@ -3,6 +3,7 @@ import { useId } from 'react';
 import type { RouteHandle } from 'react-router';
 import { redirect, useFetcher } from 'react-router';
 
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import type { ResourceKey } from 'i18next';
 import { useTranslation } from 'react-i18next';
 
@@ -61,6 +62,11 @@ export async function action({ context, params, request }: Route.ActionArgs) {
 
     case 'next': {
       machineActor.send({ type: 'submitReview' });
+      break;
+    }
+
+    case 'abandon': {
+      machineActor.send({ type: 'cancel' });
       break;
     }
 
@@ -160,43 +166,47 @@ export default function Review({ loaderData, actionData, params }: Route.Compone
   const isSubmitting = fetcher.state !== 'idle';
 
   return (
-    <>
-      <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:review.page-title')}</PageTitle>
-      <div className="max-w-prose">
-        <fetcher.Form method="post" noValidate>
-          <p className="mb-8 text-lg">{t('protected:review.read-carefully')}</p>
-          <div className="space-y-10">
-            <PrimaryDocumentData data={inPersonSINCase.primaryDocuments} tabId={loaderData.tabId} />
-            <SecondayDocumentData data={inPersonSINCase.secondaryDocument} tabId={loaderData.tabId} />
-            <PreferredNameData
-              data={{
-                ...inPersonSINCase.currentNameInfo,
-                firstName: inPersonSINCase.currentNameInfo.preferredSameAsDocumentName
-                  ? inPersonSINCase.primaryDocuments.givenName
-                  : inPersonSINCase.currentNameInfo.firstName,
-                lastName: inPersonSINCase.currentNameInfo.preferredSameAsDocumentName
-                  ? inPersonSINCase.primaryDocuments.lastName
-                  : inPersonSINCase.currentNameInfo.lastName,
-              }}
-              tabId={loaderData.tabId}
-            />
-            <PersonalDetailsData data={inPersonSINCase.personalInformation} tabId={loaderData.tabId} />
-            <BirthDetailsData data={inPersonSINCase.birthDetails} tabId={loaderData.tabId} />
-            <ParentDetailsData data={inPersonSINCase.parentDetails ?? []} tabId={loaderData.tabId} />
-            <PreviousSinData data={inPersonSINCase.previousSin} tabId={loaderData.tabId} />
-            <ContactInformationData data={inPersonSINCase.contactInformation} tabId={loaderData.tabId} />
-          </div>
-          <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
-            <Button name="action" value="next" variant="primary" id="continue-button" disabled={isSubmitting}>
-              {t('protected:person-case.next')}
-            </Button>
-            <Button name="action" value="back" id="back-button" disabled={isSubmitting}>
-              {t('protected:person-case.previous')}
-            </Button>
-          </div>
-        </fetcher.Form>
-      </div>
-    </>
+    <div className="max-w-prose">
+      <fetcher.Form method="post" noValidate>
+        <div className="flex justify-end">
+          <Button name="action" value="abandon" id="abandon-button" endIcon={faXmark} variant="link">
+            {t('protected:person-case.abandon-button')}
+          </Button>
+        </div>
+        <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:review.page-title')}</PageTitle>
+
+        <p className="mb-8 text-lg">{t('protected:review.read-carefully')}</p>
+        <div className="space-y-10">
+          <PrimaryDocumentData data={inPersonSINCase.primaryDocuments} tabId={loaderData.tabId} />
+          <SecondayDocumentData data={inPersonSINCase.secondaryDocument} tabId={loaderData.tabId} />
+          <PreferredNameData
+            data={{
+              ...inPersonSINCase.currentNameInfo,
+              firstName: inPersonSINCase.currentNameInfo.preferredSameAsDocumentName
+                ? inPersonSINCase.primaryDocuments.givenName
+                : inPersonSINCase.currentNameInfo.firstName,
+              lastName: inPersonSINCase.currentNameInfo.preferredSameAsDocumentName
+                ? inPersonSINCase.primaryDocuments.lastName
+                : inPersonSINCase.currentNameInfo.lastName,
+            }}
+            tabId={loaderData.tabId}
+          />
+          <PersonalDetailsData data={inPersonSINCase.personalInformation} tabId={loaderData.tabId} />
+          <BirthDetailsData data={inPersonSINCase.birthDetails} tabId={loaderData.tabId} />
+          <ParentDetailsData data={inPersonSINCase.parentDetails ?? []} tabId={loaderData.tabId} />
+          <PreviousSinData data={inPersonSINCase.previousSin} tabId={loaderData.tabId} />
+          <ContactInformationData data={inPersonSINCase.contactInformation} tabId={loaderData.tabId} />
+        </div>
+        <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
+          <Button name="action" value="next" variant="primary" id="continue-button" disabled={isSubmitting}>
+            {t('protected:person-case.next')}
+          </Button>
+          <Button name="action" value="back" id="back-button" disabled={isSubmitting}>
+            {t('protected:person-case.previous')}
+          </Button>
+        </div>
+      </fetcher.Form>
+    </div>
   );
 }
 
@@ -253,7 +263,17 @@ function PrimaryDocumentData({ data, tabId }: DataProps) {
   );
 }
 
-function SecondayDocumentData({ data, tabId }: DataProps) {
+interface SecondayDocumentDataProps {
+  data: {
+    documentTypeName: string;
+    documentType: string;
+    expiryMonth: number;
+    expiryYear: number;
+  };
+  tabId?: string;
+}
+
+function SecondayDocumentData({ data, tabId }: SecondayDocumentDataProps) {
   const { t } = useTranslation(handle.i18nNamespace);
   return (
     <section className="space-y-6">
@@ -263,7 +283,9 @@ function SecondayDocumentData({ data, tabId }: DataProps) {
           <p>{data.documentTypeName}</p>
         </DescriptionListItem>
         <DescriptionListItem term={t('protected:secondary-identity-document.expiry-date.title')}>
-          <p>{data.expiryDate}</p>
+          <p>
+            {data.expiryMonth} {data.expiryYear}
+          </p>
         </DescriptionListItem>
         <DescriptionListItem term={t('protected:review.document-uploaded')}>
           <p>{t('protected:review.choosen-file')}</p>
