@@ -2,7 +2,7 @@ import type { JSX } from 'react';
 import { useId, useState } from 'react';
 
 import type { RouteHandle } from 'react-router';
-import { data, useFetcher } from 'react-router';
+import { data, redirect, useFetcher } from 'react-router';
 
 import { faExclamationCircle, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
@@ -13,6 +13,7 @@ import type { Info, Route } from './+types/primary-docs';
 import type { LocalizedApplicantGender } from '~/.server/domain/person-case/models';
 import { applicantGenderService } from '~/.server/domain/person-case/services';
 import { serverEnvironment } from '~/.server/environment';
+import { LogFactory } from '~/.server/logging';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
@@ -28,70 +29,45 @@ import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/layout';
-import type { PrimaryDocumentData } from '~/routes/protected/person-case/@types';
+import type { PrimaryDocumentData } from '~/routes/protected/person-case/state-machine';
+import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine';
 import { getStartOfDayInTimezone, isDateInPastOrTodayInTimeZone, isValidDateString, toISODateString } from '~/utils/date-utils';
 import { REGEX_PATTERNS } from '~/utils/regex-utils';
 
 const VALID_CURRENT_STATUS = ['canadian-citizen-born-outside-canada'];
-/**
- * Valid document type for proof of concept
- */
 const VALID_DOCTYPES = ['certificate-of-canadian-citizenship'];
 
-const timezone = serverEnvironment.BASE_TIMEZONE;
+const log = LogFactory.getLogger(import.meta.url);
 
 export const handle = {
   i18nNamespace: [...parentHandle.i18nNamespace, 'protected'],
 } as const satisfies RouteHandle;
 
-export async function loader({ context, request }: Route.LoaderArgs) {
-  requireAuth(context.session, new URL(request.url), ['user']);
-
-  const tabId = new URL(request.url).searchParams.get('tid') ?? '';
-  const primaryDocuments = (context.session.inPersonSinApplications ??= {})[tabId]?.primaryDocuments;
-
-  const { t, lang } = await getTranslation(request, handle.i18nNamespace);
-
-  return {
-    documentTitle: t('protected:primary-identity-document.page-title'),
-    defaultFormValues: primaryDocuments,
-    localizedGenders: applicantGenderService.getLocalizedApplicantGenders(lang),
-  };
-}
-
 export function meta({ data }: Route.MetaArgs) {
   return [{ title: data.documentTitle }];
 }
 
-export async function action({ context, request }: Route.ActionArgs) {
+export async function action({ context, params, request }: Route.ActionArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
 
-  const tabId = new URL(request.url).searchParams.get('tid');
-  if (!tabId) throw new AppError('Missing tab id', ErrorCodes.MISSING_TAB_ID, { httpStatusCode: 400 });
-  const sessionData = ((context.session.inPersonSinApplications ??= {})[tabId] ??= {});
+  const machineActor = loadMachineActor(context.session, request, 'primary-docs');
 
-  const { lang, t } = await getTranslation(request, handle.i18nNamespace);
+  if (!machineActor) {
+    log.warn('Could not find a machine snapshot in session; redirecting to start of flow');
+    throw i18nRedirect('routes/protected/person-case/privacy-statement.tsx', request);
+  }
 
   const formData = await request.formData();
   const action = formData.get('action');
 
-  const nameMaxLength = 100;
-  const registrationNumberLength = 8;
-  const clientNumberLength = 10;
-  /*
-  TODO: Enable file upload
-  const maxImageSizeBits = 1024 * 1024 * 15; //Max image size is 15 MB
-  */
-
   switch (action) {
     case 'back': {
-      throw i18nRedirect('routes/protected/person-case/request-details.tsx', request, {
-        search: new URLSearchParams({ tid: tabId }),
-      });
+      machineActor.send({ type: 'prev' });
+      break;
     }
 
     case 'next': {
-      const maxAllowedDate = getStartOfDayInTimezone(timezone);
+      const { lang, t } = await getTranslation(request, handle.i18nNamespace);
 
       const schema = v.intersect([
         v.object({
@@ -111,53 +87,44 @@ export async function action({ context, request }: Route.ActionArgs) {
                 v.string(t('protected:primary-identity-document.registration-number.required')),
                 v.trim(),
                 v.nonEmpty(t('protected:primary-identity-document.registration-number.required')),
-                v.length(
-                  registrationNumberLength,
-                  t('protected:primary-identity-document.registration-number.invalid', { length: registrationNumberLength }),
-                ),
+                v.length(8, t('protected:primary-identity-document.registration-number.invalid', { length: 8 })),
                 v.regex(
                   REGEX_PATTERNS.DIGIT_ONLY,
-                  t('protected:primary-identity-document.registration-number.invalid', { length: registrationNumberLength }),
+                  t('protected:primary-identity-document.registration-number.invalid', { length: 8 }),
                 ),
               ),
               clientNumber: v.pipe(
                 v.string(t('protected:primary-identity-document.client-number.required')),
                 v.trim(),
                 v.nonEmpty(t('protected:primary-identity-document.client-number.required')),
-                v.length(
-                  clientNumberLength,
-                  t('protected:primary-identity-document.client-number.invalid', { length: clientNumberLength }),
-                ),
+                v.length(10, t('protected:primary-identity-document.client-number.invalid', { length: 10 })),
                 v.regex(
                   REGEX_PATTERNS.DIGIT_ONLY,
-                  t('protected:primary-identity-document.client-number.invalid', { length: clientNumberLength }),
+                  t('protected:primary-identity-document.client-number.invalid', { length: 10 }),
                 ),
               ),
               givenName: v.pipe(
                 v.string(t('protected:primary-identity-document.given-name.required')),
                 v.trim(),
                 v.nonEmpty(t('protected:primary-identity-document.given-name.required')),
-                v.maxLength(
-                  nameMaxLength,
-                  t('protected:primary-identity-document.given-name.max-length', { maximum: nameMaxLength }),
-                ),
+                v.maxLength(100, t('protected:primary-identity-document.given-name.max-length', { maximum: 100 })),
                 v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:primary-identity-document.given-name.format')),
               ),
               lastName: v.pipe(
                 v.string(t('protected:primary-identity-document.last-name.required')),
                 v.trim(),
                 v.nonEmpty(t('protected:primary-identity-document.last-name.required')),
-                v.maxLength(
-                  nameMaxLength,
-                  t('protected:primary-identity-document.last-name.max-length', { maximum: nameMaxLength }),
-                ),
+                v.maxLength(100, t('protected:primary-identity-document.last-name.max-length', { maximum: 100 })),
                 v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:primary-identity-document.last-name.format')),
               ),
               dateOfBirthYear: v.pipe(
                 v.number(t('protected:primary-identity-document.date-of-birth.required-year')),
                 v.integer(t('protected:primary-identity-document.date-of-birth.invalid-year')),
                 v.minValue(1, t('protected:primary-identity-document.date-of-birth.invalid-year')),
-                v.maxValue(maxAllowedDate.getFullYear(), t('protected:primary-identity-document.date-of-birth.invalid-year')),
+                v.maxValue(
+                  getStartOfDayInTimezone(serverEnvironment.BASE_TIMEZONE).getFullYear(),
+                  t('protected:primary-identity-document.date-of-birth.invalid-year'),
+                ),
               ),
               dateOfBirthMonth: v.pipe(
                 v.number(t('protected:primary-identity-document.date-of-birth.required-month')),
@@ -178,7 +145,7 @@ export async function action({ context, request }: Route.ActionArgs) {
                   t('protected:primary-identity-document.date-of-birth.invalid'),
                 ),
                 v.custom(
-                  (input) => isDateInPastOrTodayInTimeZone(timezone, input as string),
+                  (input) => isDateInPastOrTodayInTimeZone(serverEnvironment.BASE_TIMEZONE, input as string),
                   t('protected:primary-identity-document.date-of-birth.invalid-future-date'),
                 ),
               ),
@@ -191,7 +158,7 @@ export async function action({ context, request }: Route.ActionArgs) {
                 v.integer(t('protected:primary-identity-document.citizenship-date.invalid-year')),
                 v.minValue(1, t('protected:primary-identity-document.citizenship-date.invalid-year')),
                 v.maxValue(
-                  maxAllowedDate.getFullYear(),
+                  getStartOfDayInTimezone(serverEnvironment.BASE_TIMEZONE).getFullYear(),
                   t('protected:primary-identity-document.citizenship-date.invalid-year'),
                 ),
               ),
@@ -214,16 +181,6 @@ export async function action({ context, request }: Route.ActionArgs) {
                   t('protected:primary-identity-document.citizenship-date.invalid'),
                 ),
               ),
-              /* TODO: Enable file upload
-              document: v.pipe(
-                v.file(t('protected:primary-identity-document.upload-document.required')),
-                v.mimeType(
-                  ['image/jpeg', 'image/png', 'image/heic'],
-                  t('protected:primary-identity-document.upload-document.invalid'),
-                ),
-                v.maxSize(maxImageSizeBits),
-              ),
-              */
             }),
           ],
           t('protected:primary-identity-document.document-type.required'),
@@ -256,10 +213,6 @@ export async function action({ context, request }: Route.ActionArgs) {
         citizenshipDateMonth: citizenshipDateMonth,
         citizenshipDateDay: citizenshipDateDay,
         citizenshipDate: citizenshipDate,
-        /*
-        TODO: Enable file upload
-        document: formData.get('document') as File,
-        */
       } satisfies Partial<v.InferInput<typeof schema>>;
 
       const parseResult = v.safeParse(schema, input, { lang });
@@ -268,16 +221,29 @@ export async function action({ context, request }: Route.ActionArgs) {
         return data({ errors: v.flatten(parseResult.issues).nested }, { status: 400 });
       }
 
-      sessionData.primaryDocuments = parseResult.output;
-
-      throw i18nRedirect('routes/protected/person-case/secondary-doc.tsx', request, {
-        search: new URLSearchParams({ tid: tabId }),
-      });
+      machineActor.send({ type: 'submitPrimaryDocuments', data: parseResult.output });
+      break;
     }
+
     default: {
       throw new AppError(`Unrecognized action: ${action}`, ErrorCodes.UNRECOGNIZED_ACTION);
     }
   }
+
+  throw redirect(getStateRoute(machineActor, { params, request }));
+}
+
+export async function loader({ context, request }: Route.LoaderArgs) {
+  requireAuth(context.session, new URL(request.url), ['user']);
+
+  const { lang, t } = await getTranslation(request, handle.i18nNamespace);
+  const machineActor = loadMachineActor(context.session, request, 'primary-docs');
+
+  return {
+    documentTitle: t('protected:primary-identity-document.page-title'),
+    defaultFormValues: machineActor?.getSnapshot().context.primaryDocuments,
+    localizedGenders: applicantGenderService.getLocalizedApplicantGenders(lang),
+  };
 }
 
 export default function PrimaryDocs({ loaderData, actionData, params }: Route.ComponentProps) {

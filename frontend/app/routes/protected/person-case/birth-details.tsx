@@ -1,7 +1,7 @@
 import { useId, useState } from 'react';
 
 import type { RouteHandle } from 'react-router';
-import { data, useFetcher } from 'react-router';
+import { data, redirect, useFetcher } from 'react-router';
 
 import { faExclamationCircle, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
@@ -10,6 +10,7 @@ import * as v from 'valibot';
 import type { Info, Route } from './+types/birth-details';
 
 import { serverEnvironment } from '~/.server/environment';
+import { LogFactory } from '~/.server/logging';
 import { countryService, provinceService } from '~/.server/shared/services';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
@@ -25,31 +26,18 @@ import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/layout';
-import type { BirthDetailsData } from '~/routes/protected/person-case/@types';
+import type { BirthDetailsData } from '~/routes/protected/person-case/state-machine';
+import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine';
 import { REGEX_PATTERNS } from '~/utils/regex-utils';
 import { trimToUndefined } from '~/utils/string-utils';
 
 const REQUIRE_OPTIONS = { yes: 'Yes', no: 'No' } as const;
 
+const log = LogFactory.getLogger(import.meta.url);
+
 export const handle = {
   i18nNamespace: [...parentHandle.i18nNamespace, 'protected'],
 } as const satisfies RouteHandle;
-
-export async function loader({ context, params, request }: Route.LoaderArgs) {
-  requireAuth(context.session, new URL(request.url), ['user']);
-
-  const tabId = new URL(request.url).searchParams.get('tid') ?? '';
-  const birthDetails = (context.session.inPersonSinApplications ??= {})[tabId]?.birthDetails;
-
-  const { lang, t } = await getTranslation(request, handle.i18nNamespace);
-
-  return {
-    documentTitle: t('protected:birth-details.page-title'),
-    localizedCountries: countryService.getLocalizedCountries(lang),
-    localizedProvincesTerritoriesStates: provinceService.getLocalizedProvinces(lang),
-    defaultFormValues: birthDetails,
-  };
-}
 
 export function meta({ data }: Route.MetaArgs) {
   return [{ title: data.documentTitle }];
@@ -58,23 +46,25 @@ export function meta({ data }: Route.MetaArgs) {
 export async function action({ context, params, request }: Route.ActionArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
 
-  const tabId = new URL(request.url).searchParams.get('tid');
-  if (!tabId) throw new AppError('Missing tab id', ErrorCodes.MISSING_TAB_ID, { httpStatusCode: 400 });
-  const sessionData = ((context.session.inPersonSinApplications ??= {})[tabId] ??= {});
+  const machineActor = loadMachineActor(context.session, request, 'birth-info');
 
-  const { lang, t } = await getTranslation(request, handle.i18nNamespace);
+  if (!machineActor) {
+    log.warn('Could not find a machine snapshot in session; redirecting to start of flow');
+    throw i18nRedirect('routes/protected/person-case/privacy-statement.tsx', request);
+  }
 
   const formData = await request.formData();
   const action = formData.get('action');
 
   switch (action) {
     case 'back': {
-      throw i18nRedirect('routes/protected/person-case/personal-info.tsx', request, {
-        search: new URLSearchParams({ tid: tabId }),
-      });
+      machineActor.send({ type: 'prev' });
+      break;
     }
 
     case 'next': {
+      const { lang, t } = await getTranslation(request, handle.i18nNamespace);
+
       const schema = v.variant(
         'country',
         [
@@ -142,17 +132,30 @@ export async function action({ context, params, request }: Route.ActionArgs) {
         return data({ errors: v.flatten<typeof schema>(parseResult.issues).nested }, { status: 400 });
       }
 
-      sessionData.birthDetails = parseResult.output;
-
-      throw i18nRedirect('routes/protected/person-case/parent-details.tsx', request, {
-        search: new URLSearchParams({ tid: tabId }),
-      });
+      machineActor.send({ type: 'submitBirthDetails', data: parseResult.output });
+      break;
     }
 
     default: {
       throw new AppError(`Unrecognized action: ${action}`, ErrorCodes.UNRECOGNIZED_ACTION);
     }
   }
+
+  throw redirect(getStateRoute(machineActor, { params, request }));
+}
+
+export async function loader({ context, params, request }: Route.LoaderArgs) {
+  requireAuth(context.session, new URL(request.url), ['user']);
+
+  const { lang, t } = await getTranslation(request, handle.i18nNamespace);
+  const machineActor = loadMachineActor(context.session, request, 'birth-info');
+
+  return {
+    documentTitle: t('protected:birth-details.page-title'),
+    localizedCountries: countryService.getLocalizedCountries(lang),
+    localizedProvincesTerritoriesStates: provinceService.getLocalizedProvinces(lang),
+    defaultFormValues: machineActor?.getSnapshot().context.birthDetails,
+  };
 }
 
 export default function BirthDetails({ actionData, loaderData, matches, params }: Route.ComponentProps) {
