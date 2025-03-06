@@ -120,6 +120,14 @@ export const i18nRoutes = [
         },
       },
       {
+        id: 'MCF-0003',
+        file: 'routes/protected/multi-channel/finalize-request.tsx',
+        paths: {
+          en: '/en/protected/multi-channel/finalize-request',
+          fr: '/fr/protege/multi-chaine/finalize-request',
+        },
+      },
+      {
         file: 'routes/protected/person-case/layout.tsx',
         children: [
           {
