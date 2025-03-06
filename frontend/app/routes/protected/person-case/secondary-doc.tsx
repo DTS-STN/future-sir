@@ -1,7 +1,7 @@
 import { useId } from 'react';
 
 import type { RouteHandle } from 'react-router';
-import { data, useFetcher } from 'react-router';
+import { data, redirect, useFetcher } from 'react-router';
 
 import { faExclamationCircle, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { isBefore } from 'date-fns';
@@ -15,6 +15,7 @@ import {
   getLocalizedApplicantSecondaryDocumentChoices,
 } from '~/.server/domain/person-case/services/applicant-secondary-document-service';
 import { serverEnvironment } from '~/.server/environment';
+import { LogFactory } from '~/.server/logging';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
@@ -28,78 +29,54 @@ import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/layout';
-import type { SecondaryDocumentData } from '~/routes/protected/person-case/@types';
+import type { SecondaryDocumentData } from '~/routes/protected/person-case/state-machine';
+import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine';
 import { getStartOfDayInTimezone, toISODateString } from '~/utils/date-utils';
+
+const log = LogFactory.getLogger(import.meta.url);
 
 export const handle = {
   i18nNamespace: [...parentHandle.i18nNamespace, 'protected'],
 } as const satisfies RouteHandle;
 
-export async function loader({ context, request }: Route.LoaderArgs) {
-  requireAuth(context.session, new URL(request.url), ['user']);
-
-  const tabId = new URL(request.url).searchParams.get('tid') ?? '';
-  const secondaryDocument = (context.session.inPersonSinApplications ??= {})[tabId]?.secondaryDocument;
-
-  const { lang, t } = await getTranslation(request, handle.i18nNamespace);
-
-  return {
-    documentTitle: t('protected:secondary-identity-document.page-title'),
-    localizedApplicantSecondaryDocumentChoices: getLocalizedApplicantSecondaryDocumentChoices(lang),
-    defaultFormValues: secondaryDocument,
-  };
-}
-
 export function meta({ data }: Route.MetaArgs) {
   return [{ title: data.documentTitle }];
 }
 
-export async function action({ context, request }: Route.ActionArgs) {
+export async function action({ context, params, request }: Route.ActionArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
 
-  const tabId = new URL(request.url).searchParams.get('tid');
-  if (!tabId) throw new AppError('Missing tab id', ErrorCodes.MISSING_TAB_ID, { httpStatusCode: 400 });
-  const sessionData = ((context.session.inPersonSinApplications ??= {})[tabId] ??= {});
+  const machineActor = loadMachineActor(context.session, request, 'secondary-docs');
 
-  const { lang, t } = await getTranslation(request, handle.i18nNamespace);
+  if (!machineActor) {
+    log.warn('Could not find a machine snapshot in session; redirecting to start of flow');
+    throw i18nRedirect('routes/protected/person-case/privacy-statement.tsx', request);
+  }
 
   const formData = await request.formData();
   const action = formData.get('action');
-  /*
-  TODO: Enable file upload
-  const maxImageSizeBits = 1024 * 1024 * 15; //Max image size is 15 MB
-  */
 
   switch (action) {
     case 'back': {
-      throw i18nRedirect('routes/protected/person-case/primary-docs.tsx', request, {
-        search: new URLSearchParams({ tid: tabId }),
-      });
+      machineActor.send({ type: 'prev' });
+      break;
     }
 
     case 'next': {
-      const currentDate = getStartOfDayInTimezone(serverEnvironment.BASE_TIMEZONE);
+      const { lang, t } = await getTranslation(request, handle.i18nNamespace);
 
       const schema = v.object({
         documentType: v.picklist(
           getApplicantSecondaryDocumentChoices().map(({ id }) => id),
           t('protected:secondary-identity-document.document-type.invalid'),
         ),
-        /*
-        TODO: Enable file upload
-        document: v.pipe(
-          v.file(t('protected:secondary-identity-document.upload-document.required')),
-          v.mimeType(
-            ['image/jpeg', 'image/png', 'image/heic'],
-            t('protected:secondary-identity-document.upload-document.invalid'),
-          ),
-          v.maxSize(maxImageSizeBits),
-        ),
-        */
         expiryYear: v.pipe(
           v.number(t('protected:secondary-identity-document.expiry-date.required-year')),
           v.integer(t('protected:secondary-identity-document.expiry-date.invalid-year')),
-          v.minValue(currentDate.getFullYear(), t('protected:secondary-identity-document.expiry-date.invalid-year')),
+          v.minValue(
+            getStartOfDayInTimezone(serverEnvironment.BASE_TIMEZONE).getFullYear(),
+            t('protected:secondary-identity-document.expiry-date.invalid-year'),
+          ),
         ),
         expiryMonth: v.pipe(
           v.number(t('protected:secondary-identity-document.expiry-date.required-month')),
@@ -116,7 +93,11 @@ export async function action({ context, request }: Route.ActionArgs) {
         expiryDate: v.pipe(
           v.string(t('protected:secondary-identity-document.expiry-date.required')),
           v.custom(
-            (expiryDate) => isBefore(currentDate, getStartOfDayInTimezone(serverEnvironment.BASE_TIMEZONE, String(expiryDate))),
+            (expiryDate) =>
+              isBefore(
+                getStartOfDayInTimezone(serverEnvironment.BASE_TIMEZONE),
+                getStartOfDayInTimezone(serverEnvironment.BASE_TIMEZONE, String(expiryDate)),
+              ),
             t('protected:secondary-identity-document.expiry-date.invalid'),
           ),
         ),
@@ -125,11 +106,8 @@ export async function action({ context, request }: Route.ActionArgs) {
       const expiryYear = Number(formData.get('expiry-year'));
       const expiryMonth = Number(formData.get('expiry-month'));
       const expiryDay = Number(formData.get('expiry-day'));
+
       const input = {
-        /*
-        TODO: Enable file upload
-        document: formData.get('document') as File,
-        */
         documentType: String(formData.get('document-type')),
         expiryYear: expiryYear,
         expiryMonth: expiryMonth,
@@ -143,23 +121,29 @@ export async function action({ context, request }: Route.ActionArgs) {
         return data({ errors: v.flatten<typeof schema>(parseResult.issues).nested }, { status: 400 });
       }
 
-      sessionData.secondaryDocument = {
-        /*
-        TODO: Enable file upload
-        document: parseResult.output.document,
-        */
-        documentType: parseResult.output.documentType,
-        expiryDate: parseResult.output.expiryDate,
-      };
-
-      throw i18nRedirect('routes/protected/person-case/current-name.tsx', request, {
-        search: new URLSearchParams({ tid: tabId }),
-      });
+      machineActor.send({ type: 'submitSecondaryDocuments', data: parseResult.output });
+      break;
     }
+
     default: {
       throw new AppError(`Unrecognized action: ${action}`, ErrorCodes.UNRECOGNIZED_ACTION);
     }
   }
+
+  throw redirect(getStateRoute(machineActor, { params, request }));
+}
+
+export async function loader({ context, request }: Route.LoaderArgs) {
+  requireAuth(context.session, new URL(request.url), ['user']);
+
+  const { lang, t } = await getTranslation(request, handle.i18nNamespace);
+  const machineActor = loadMachineActor(context.session, request, 'secondary-docs');
+
+  return {
+    documentTitle: t('protected:secondary-identity-document.page-title'),
+    localizedApplicantSecondaryDocumentChoices: getLocalizedApplicantSecondaryDocumentChoices(lang),
+    defaultFormValues: machineActor?.getSnapshot().context.secondaryDocument,
+  };
 }
 
 export default function SecondaryDoc({ loaderData, actionData, params }: Route.ComponentProps) {

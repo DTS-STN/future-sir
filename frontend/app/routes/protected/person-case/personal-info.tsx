@@ -1,7 +1,7 @@
 import { useId, useState } from 'react';
 
 import type { RouteHandle } from 'react-router';
-import { data, useFetcher } from 'react-router';
+import { data, redirect, useFetcher } from 'react-router';
 
 import { faExclamationCircle, faXmark, faXmarkCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -11,6 +11,7 @@ import * as v from 'valibot';
 import type { Info, Route } from './+types/personal-info';
 
 import { applicantGenderService } from '~/.server/domain/person-case/services';
+import { LogFactory } from '~/.server/logging';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
@@ -23,78 +24,49 @@ import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/layout';
-import type { PersonalInfoData } from '~/routes/protected/person-case/@types';
+import type { PersonalInfoData } from '~/routes/protected/person-case/state-machine';
+import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine';
 import { REGEX_PATTERNS } from '~/utils/regex-utils';
+
+const log = LogFactory.getLogger(import.meta.url);
 
 export const handle = {
   i18nNamespace: [...parentHandle.i18nNamespace, 'protected'],
 } as const satisfies RouteHandle;
 
-export async function loader({ context, request }: Route.LoaderArgs) {
-  requireAuth(context.session, new URL(request.url), ['user']);
-
-  const tabId = new URL(request.url).searchParams.get('tid') ?? '';
-  const sessionData = (context.session.inPersonSinApplications ??= {})[tabId];
-  const personalInformation = sessionData?.personalInformation;
-  const primaryDocuments = sessionData?.primaryDocuments;
-
-  const { t, lang } = await getTranslation(request, handle.i18nNamespace);
-
-  return {
-    documentTitle: t('protected:personal-information.page-title'),
-    primaryDocValues: {
-      lastName: primaryDocuments?.lastName,
-      gender: primaryDocuments?.gender,
-    },
-    defaultFormValues: {
-      firstNamePreviouslyUsed: personalInformation?.firstNamePreviouslyUsed ?? [],
-      lastNameAtBirth: personalInformation?.lastNameAtBirth,
-      lastNamePreviouslyUsed: personalInformation?.lastNamePreviouslyUsed ?? [],
-      gender: personalInformation?.gender,
-    },
-    genders: applicantGenderService.getLocalizedApplicantGenders(lang).map(({ id, name }) => ({
-      value: id,
-      children: name,
-      defaultChecked: id === (personalInformation?.gender ?? primaryDocuments?.gender),
-    })),
-  };
-}
-
 export function meta({ data }: Route.MetaArgs) {
   return [{ title: data.documentTitle }];
 }
 
-export async function action({ context, request }: Route.ActionArgs) {
+export async function action({ context, params, request }: Route.ActionArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
 
-  const tabId = new URL(request.url).searchParams.get('tid');
-  if (!tabId) throw new AppError('Missing tab id', ErrorCodes.MISSING_TAB_ID, { httpStatusCode: 400 });
-  const sessionData = ((context.session.inPersonSinApplications ??= {})[tabId] ??= {});
+  const machineActor = loadMachineActor(context.session, request, 'personal-info');
 
-  const { lang, t } = await getTranslation(request, handle.i18nNamespace);
+  if (!machineActor) {
+    log.warn('Could not find a machine snapshot in session; redirecting to start of flow');
+    throw i18nRedirect('routes/protected/person-case/privacy-statement.tsx', request);
+  }
 
   const formData = await request.formData();
   const action = formData.get('action');
-  const nameMaxLength = 100;
 
   switch (action) {
     case 'back': {
-      throw i18nRedirect('routes/protected/person-case/current-name.tsx', request, {
-        search: new URLSearchParams({ tid: tabId }),
-      });
+      machineActor.send({ type: 'prev' });
+      break;
     }
 
     case 'next': {
+      const { lang, t } = await getTranslation(request, handle.i18nNamespace);
+
       const schema = v.object({
         firstNamePreviouslyUsed: v.optional(v.array(v.pipe(v.string(), v.trim()))),
         lastNameAtBirth: v.pipe(
           v.string(t('protected:personal-information.last-name-at-birth.required')),
           v.trim(),
           v.nonEmpty(t('protected:personal-information.last-name-at-birth.required')),
-          v.maxLength(
-            nameMaxLength,
-            t('protected:personal-information.last-name-at-birth.max-length', { maximum: nameMaxLength }),
-          ),
+          v.maxLength(100, t('protected:personal-information.last-name-at-birth.max-length', { maximum: 100 })),
           v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:personal-information.last-name-at-birth.format')),
         ),
         lastNamePreviouslyUsed: v.optional(v.array(v.pipe(v.string(), v.trim()))),
@@ -117,17 +89,45 @@ export async function action({ context, request }: Route.ActionArgs) {
         return data({ errors: v.flatten<typeof schema>(parseResult.issues).nested }, { status: 400 });
       }
 
-      sessionData.personalInformation = parseResult.output;
-
-      throw i18nRedirect('routes/protected/person-case/birth-details.tsx', request, {
-        search: new URLSearchParams({ tid: tabId }),
-      });
+      machineActor.send({ type: 'submitPersonalInfo', data: parseResult.output });
+      break;
     }
 
     default: {
       throw new AppError(`Unrecognized action: ${action}`, ErrorCodes.UNRECOGNIZED_ACTION);
     }
   }
+
+  throw redirect(getStateRoute(machineActor, { params, request }));
+}
+
+export async function loader({ context, request }: Route.LoaderArgs) {
+  requireAuth(context.session, new URL(request.url), ['user']);
+
+  const { lang, t } = await getTranslation(request, handle.i18nNamespace);
+  const machineActor = loadMachineActor(context.session, request, 'personal-info');
+
+  const personalInformation = machineActor?.getSnapshot().context.personalInformation;
+  const primaryDocuments = machineActor?.getSnapshot().context.primaryDocuments;
+
+  return {
+    documentTitle: t('protected:personal-information.page-title'),
+    primaryDocValues: {
+      lastName: primaryDocuments?.lastName,
+      gender: primaryDocuments?.gender,
+    },
+    defaultFormValues: {
+      firstNamePreviouslyUsed: personalInformation?.firstNamePreviouslyUsed ?? [],
+      lastNameAtBirth: personalInformation?.lastNameAtBirth,
+      lastNamePreviouslyUsed: personalInformation?.lastNamePreviouslyUsed ?? [],
+      gender: personalInformation?.gender,
+    },
+    genders: applicantGenderService.getLocalizedApplicantGenders(lang).map(({ id, name }) => ({
+      value: id,
+      children: name,
+      defaultChecked: id === (personalInformation?.gender ?? primaryDocuments?.gender),
+    })),
+  };
 }
 
 export default function PersonalInformation({ actionData, loaderData, params, matches }: Route.ComponentProps) {

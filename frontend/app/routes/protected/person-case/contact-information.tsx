@@ -1,7 +1,7 @@
 import { useId, useState } from 'react';
 
 import type { RouteHandle } from 'react-router';
-import { data, useFetcher } from 'react-router';
+import { data, redirect, useFetcher } from 'react-router';
 
 import { useTranslation } from 'react-i18next';
 import * as v from 'valibot';
@@ -10,6 +10,7 @@ import type { Info, Route } from './+types/contact-information';
 
 import { languageCorrespondenceService } from '~/.server/domain/person-case/services';
 import { serverEnvironment } from '~/.server/environment';
+import { LogFactory } from '~/.server/logging';
 import { countryService, provinceService } from '~/.server/shared/services';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
@@ -24,53 +25,41 @@ import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/layout';
-import type { ContactInformationData } from '~/routes/protected/person-case/@types';
+import type { ContactInformationData } from '~/routes/protected/person-case/state-machine';
+import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine';
+
+const log = LogFactory.getLogger(import.meta.url);
 
 export const handle = {
   i18nNamespace: [...parentHandle.i18nNamespace, 'protected'],
 } as const satisfies RouteHandle;
 
-export async function loader({ context, request }: Route.LoaderArgs) {
-  requireAuth(context.session, new URL(request.url), ['user']);
-
-  const tabId = new URL(request.url).searchParams.get('tid') ?? '';
-  const contactInformation = (context.session.inPersonSinApplications ??= {})[tabId]?.contactInformation;
-
-  const { lang, t } = await getTranslation(request, handle.i18nNamespace);
-
-  return {
-    documentTitle: t('protected:contact-information.page-title'),
-    defaultFormValues: contactInformation,
-    localizedpreferredLanguages: languageCorrespondenceService.getLocalizedLanguageOfCorrespondence(lang),
-    localizedCountries: countryService.getLocalizedCountries(lang),
-    localizedProvincesTerritoriesStates: provinceService.getLocalizedProvinces(lang),
-  };
-}
-
 export function meta({ data }: Route.MetaArgs) {
   return [{ title: data.documentTitle }];
 }
 
-export async function action({ context, request }: Route.ActionArgs) {
+export async function action({ context, params, request }: Route.ActionArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
 
-  const tabId = new URL(request.url).searchParams.get('tid');
-  if (!tabId) throw new AppError('Missing tab id', ErrorCodes.MISSING_TAB_ID, { httpStatusCode: 400 });
-  const sessionData = ((context.session.inPersonSinApplications ??= {})[tabId] ??= {});
+  const machineActor = loadMachineActor(context.session, request, 'contact-info');
 
-  const { lang, t } = await getTranslation(request, handle.i18nNamespace);
+  if (!machineActor) {
+    log.warn('Could not find a machine snapshot in session; redirecting to start of flow');
+    throw i18nRedirect('routes/protected/person-case/privacy-statement.tsx', request);
+  }
 
   const formData = await request.formData();
   const action = formData.get('action');
 
   switch (action) {
     case 'back': {
-      throw i18nRedirect('routes/protected/person-case/previous-sin.tsx', request, {
-        search: new URLSearchParams({ tid: tabId }),
-      });
+      machineActor.send({ type: 'prev' });
+      break;
     }
 
     case 'next': {
+      const { lang, t } = await getTranslation(request, handle.i18nNamespace);
+
       const schema = v.intersect([
         v.object({
           preferredLanguage: v.picklist(
@@ -146,17 +135,31 @@ export async function action({ context, request }: Route.ActionArgs) {
         return data({ errors: v.flatten<typeof schema>(parseResult.issues).nested }, { status: 400 });
       }
 
-      sessionData.contactInformation = parseResult.output;
-
-      throw i18nRedirect('routes/protected/person-case/review.tsx', request, {
-        search: new URLSearchParams({ tid: tabId }),
-      });
+      machineActor.send({ type: 'submitContactInfo', data: parseResult.output });
+      break;
     }
 
     default: {
       throw new AppError(`Unrecognized action: ${action}`, ErrorCodes.UNRECOGNIZED_ACTION);
     }
   }
+
+  throw redirect(getStateRoute(machineActor, { params, request }));
+}
+
+export async function loader({ context, request }: Route.LoaderArgs) {
+  requireAuth(context.session, new URL(request.url), ['user']);
+
+  const { lang, t } = await getTranslation(request, handle.i18nNamespace);
+  const machineActor = loadMachineActor(context.session, request, 'contact-info');
+
+  return {
+    documentTitle: t('protected:contact-information.page-title'),
+    defaultFormValues: machineActor?.getSnapshot().context.contactInformation,
+    localizedpreferredLanguages: languageCorrespondenceService.getLocalizedLanguageOfCorrespondence(lang),
+    localizedCountries: countryService.getLocalizedCountries(lang),
+    localizedProvincesTerritoriesStates: provinceService.getLocalizedProvinces(lang),
+  };
 }
 
 export default function ContactInformation({ loaderData, actionData, params }: Route.ComponentProps) {

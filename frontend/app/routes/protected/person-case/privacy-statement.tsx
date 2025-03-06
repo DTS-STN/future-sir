@@ -1,7 +1,7 @@
 import { useId } from 'react';
 
 import type { RouteHandle } from 'react-router';
-import { data, useFetcher } from 'react-router';
+import { data, redirect, useFetcher } from 'react-router';
 
 import { faExclamationCircle, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
@@ -9,6 +9,7 @@ import * as v from 'valibot';
 
 import type { Info, Route } from './+types/privacy-statement';
 
+import { LogFactory } from '~/.server/logging';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
@@ -20,48 +21,41 @@ import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/layout';
-import type { PrivacyStatementData } from '~/routes/protected/person-case/@types';
+import type { PrivacyStatementData } from '~/routes/protected/person-case/state-machine';
+import { createMachineActor, getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine';
+
+const log = LogFactory.getLogger(import.meta.url);
 
 export const handle = {
   i18nNamespace: [...parentHandle.i18nNamespace, 'protected'],
 } as const satisfies RouteHandle;
 
-export async function loader({ context, request }: Route.LoaderArgs) {
-  requireAuth(context.session, new URL(request.url), ['user']);
-
-  const tabId = new URL(request.url).searchParams.get('tid') ?? '';
-  const privacyStatement = (context.session.inPersonSinApplications ??= {})[tabId]?.privacyStatement;
-
-  const { t } = await getTranslation(request, handle.i18nNamespace);
-
-  return {
-    documentTitle: t('protected:privacy-statement.page-title'),
-    defaultFormValues: privacyStatement,
-  };
-}
-
 export function meta({ data }: Route.MetaArgs) {
   return [{ title: data.documentTitle }];
 }
 
-export async function action({ context, request }: Route.ActionArgs) {
+export async function action({ context, params, request }: Route.ActionArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
 
-  const tabId = new URL(request.url).searchParams.get('tid');
-  if (!tabId) throw new AppError('Missing tab id', ErrorCodes.MISSING_TAB_ID, { httpStatusCode: 400 });
-  const sessionData = ((context.session.inPersonSinApplications ??= {})[tabId] ??= {});
+  const machineActor = loadMachineActor(context.session, request, 'privacy-statement');
 
-  const { lang, t } = await getTranslation(request, handle.i18nNamespace);
+  if (!machineActor) {
+    log.warn('Could not find a machine snapshot in session; redirecting to start of flow');
+    throw i18nRedirect('routes/protected/person-case/privacy-statement.tsx', request);
+  }
 
   const formData = await request.formData();
   const action = formData.get('action');
 
   switch (action) {
     case 'back': {
-      throw i18nRedirect('routes/protected/index.tsx', request);
+      machineActor.send({ type: 'prev' });
+      break;
     }
 
     case 'next': {
+      const { lang, t } = await getTranslation(request, handle.i18nNamespace);
+
       const schema = v.object({
         agreedToTerms: v.literal(true, t('protected:privacy-statement.confirm-privacy-notice-checkbox.required')),
       }) satisfies v.GenericSchema<PrivacyStatementData>;
@@ -76,17 +70,28 @@ export async function action({ context, request }: Route.ActionArgs) {
         return data({ errors: v.flatten<typeof schema>(parseResult.issues).nested }, { status: 400 });
       }
 
-      sessionData.privacyStatement = parseResult.output;
-
-      throw i18nRedirect('routes/protected/person-case/request-details.tsx', request, {
-        search: new URLSearchParams({ tid: tabId }),
-      });
+      machineActor.send({ type: 'submitPrivacyStatement', data: parseResult.output });
+      break;
     }
 
     default: {
       throw new AppError(`Unrecognized action: ${action}`, ErrorCodes.UNRECOGNIZED_ACTION);
     }
   }
+
+  throw redirect(getStateRoute(machineActor, { params, request }));
+}
+
+export async function loader({ context, request }: Route.LoaderArgs) {
+  requireAuth(context.session, new URL(request.url), ['user']);
+
+  if (new URL(request.url).searchParams.get('tid')) {
+    // we can create the machine actor only when a tab id exists
+    createMachineActor(context.session, request);
+  }
+
+  const { t } = await getTranslation(request, handle.i18nNamespace);
+  return { documentTitle: t('protected:privacy-statement.page-title') };
 }
 
 export default function PrivacyStatement({ loaderData, params }: Route.ComponentProps) {
@@ -141,8 +146,7 @@ export default function PrivacyStatement({ loaderData, params }: Route.Component
               id="agreed-to-terms"
               name="agreedToTerms"
               errorMessage={errors?.agreedToTerms?.at(0)}
-              defaultChecked={loaderData.defaultFormValues?.agreedToTerms}
-              required
+              required={true}
             >
               {t('protected:privacy-statement.confirm-privacy-notice-checkbox.title')}
             </InputCheckbox>
@@ -150,9 +154,6 @@ export default function PrivacyStatement({ loaderData, params }: Route.Component
           <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
             <Button name="action" value="next" variant="primary" id="continue-button" disabled={isSubmitting}>
               {t('protected:person-case.next')}
-            </Button>
-            <Button name="action" value="back" id="back-button" disabled={isSubmitting}>
-              {t('protected:person-case.previous')}
             </Button>
           </div>
         </fetcher.Form>
