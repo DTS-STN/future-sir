@@ -4,7 +4,6 @@ import type { RouteHandle } from 'react-router';
 import { data, redirect, useFetcher } from 'react-router';
 
 import { faExclamationCircle, faXmark } from '@fortawesome/free-solid-svg-icons';
-import { isBefore } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import * as v from 'valibot';
 
@@ -31,7 +30,7 @@ import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/layout';
 import type { SecondaryDocumentData } from '~/routes/protected/person-case/state-machine';
 import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine';
-import { getStartOfDayInTimezone, toISODateString } from '~/utils/date-utils';
+import { getStartOfDayInTimezone } from '~/utils/date-utils';
 
 const log = LogFactory.getLogger(import.meta.url);
 
@@ -64,55 +63,55 @@ export async function action({ context, params, request }: Route.ActionArgs) {
 
     case 'next': {
       const { lang, t } = await getTranslation(request, handle.i18nNamespace);
-
-      const schema = v.object({
-        documentType: v.picklist(
-          getApplicantSecondaryDocumentChoices().map(({ id }) => id),
-          t('protected:secondary-identity-document.document-type.invalid'),
-        ),
-        expiryYear: v.pipe(
-          v.number(t('protected:secondary-identity-document.expiry-date.required-year')),
-          v.integer(t('protected:secondary-identity-document.expiry-date.invalid-year')),
-          v.minValue(
-            getStartOfDayInTimezone(serverEnvironment.BASE_TIMEZONE).getFullYear(),
-            t('protected:secondary-identity-document.expiry-date.invalid-year'),
+      const currentDate = getStartOfDayInTimezone(serverEnvironment.BASE_TIMEZONE);
+      const schema = v.pipe(
+        v.object({
+          documentType: v.picklist(
+            getApplicantSecondaryDocumentChoices().map(({ id }) => id),
+            t('protected:secondary-identity-document.document-type.invalid'),
           ),
+          /*
+        TODO: Enable file upload
+        document: v.pipe(
+          v.file(t('protected:secondary-identity-document.upload-document.required')),
+          v.mimeType(
+            ['image/jpeg', 'image/png', 'image/heic'],
+            t('protected:secondary-identity-document.upload-document.invalid'),
+          ),
+          v.maxSize(maxImageSizeBits),
         ),
-        expiryMonth: v.pipe(
-          v.number(t('protected:secondary-identity-document.expiry-date.required-month')),
-          v.integer(t('protected:secondary-identity-document.expiry-date.invalid-month')),
-          v.minValue(1, t('protected:secondary-identity-document.expiry-date.invalid-month')),
-          v.maxValue(12, t('protected:secondary-identity-document.expiry-date.invalid-month')),
-        ),
-        expiryDay: v.pipe(
-          v.number(t('protected:secondary-identity-document.expiry-date.required-day')),
-          v.integer(t('protected:secondary-identity-document.expiry-date.invalid-day')),
-          v.minValue(1, t('protected:secondary-identity-document.expiry-date.invalid-day')),
-          v.maxValue(31, t('protected:secondary-identity-document.expiry-date.invalid-day')),
-        ),
-        expiryDate: v.pipe(
-          v.string(t('protected:secondary-identity-document.expiry-date.required')),
-          v.custom(
-            (expiryDate) =>
-              isBefore(
-                getStartOfDayInTimezone(serverEnvironment.BASE_TIMEZONE),
-                getStartOfDayInTimezone(serverEnvironment.BASE_TIMEZONE, String(expiryDate)),
-              ),
+        */
+          expiryYear: v.pipe(
+            v.number(t('protected:secondary-identity-document.expiry-date.required-year')),
+            v.integer(t('protected:secondary-identity-document.expiry-date.invalid-year')),
+            v.minValue(currentDate.getFullYear(), t('protected:secondary-identity-document.expiry-date.invalid-year')),
+          ),
+          expiryMonth: v.pipe(
+            v.number(t('protected:secondary-identity-document.expiry-date.required-month')),
+            v.integer(t('protected:secondary-identity-document.expiry-date.invalid-month')),
+            v.minValue(1, t('protected:secondary-identity-document.expiry-date.invalid-month')),
+            v.maxValue(12, t('protected:secondary-identity-document.expiry-date.invalid-month')),
+          ),
+        }),
+        v.forward(
+          v.partialCheck(
+            [['expiryYear'], ['expiryMonth']],
+            (input) =>
+              input.expiryYear > currentDate.getFullYear() ||
+              (input.expiryYear === currentDate.getFullYear() && input.expiryMonth >= currentDate.getMonth()),
             t('protected:secondary-identity-document.expiry-date.invalid'),
           ),
+          ['expiryMonth'],
         ),
-      }) satisfies v.GenericSchema<SecondaryDocumentData>;
+      ) satisfies v.GenericSchema<SecondaryDocumentData>;
 
       const expiryYear = Number(formData.get('expiry-year'));
       const expiryMonth = Number(formData.get('expiry-month'));
-      const expiryDay = Number(formData.get('expiry-day'));
 
       const input = {
         documentType: String(formData.get('document-type')),
         expiryYear: expiryYear,
         expiryMonth: expiryMonth,
-        expiryDay: expiryDay,
-        expiryDate: toISODateString(expiryYear, expiryMonth, expiryDay),
       } satisfies Partial<v.InferInput<typeof schema>>;
 
       const parseResult = v.safeParse(schema, input, { lang });
@@ -185,20 +184,18 @@ export default function SecondaryDoc({ loaderData, actionData, params }: Route.C
               errorMessage={errors?.documentType?.at(0)}
             />
             <DatePickerField
-              defaultValue={loaderData.defaultFormValues?.expiryDate}
+              defaultMonth={loaderData.defaultFormValues?.expiryMonth}
+              defaultYear={loaderData.defaultFormValues?.expiryYear}
               id="expiry-date-id"
               legend={t('protected:secondary-identity-document.expiry-date.title')}
               required
               names={{
-                day: 'expiry-day',
                 month: 'expiry-month',
                 year: 'expiry-year',
               }}
               errorMessages={{
-                all: errors?.expiryDate?.at(0),
                 year: errors?.expiryYear?.at(0),
                 month: errors?.expiryMonth?.at(0),
-                day: errors?.expiryDay?.at(0),
               }}
             />
             <InputFile
