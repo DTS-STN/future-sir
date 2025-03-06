@@ -89,7 +89,8 @@ export type RequestDetailsData = {
 export type SecondaryDocumentData = {
   documentType: string;
   // document: File; TODO :: enable me!
-  expiryDate: string;
+  expiryMonth: number;
+  expiryYear: number;
 };
 
 export type InPersonSinApplication = Partial<{

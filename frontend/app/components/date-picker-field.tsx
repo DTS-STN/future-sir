@@ -35,6 +35,9 @@ const inputStyles = {
  */
 export interface DatePickerFieldProps {
   defaultValue?: string;
+  defaultYear?: number;
+  defaultMonth?: number;
+  defaultDay?: number;
   disabled?: boolean;
   errorMessages?: {
     all?: string;
@@ -49,9 +52,9 @@ export interface DatePickerFieldProps {
   id: string;
   legend: ReactNode;
   names: {
-    day: string;
-    month: string;
-    year: string;
+    day?: string;
+    month?: string;
+    year?: string;
   };
   required?: boolean;
 }
@@ -64,6 +67,9 @@ export interface DatePickerFieldProps {
  */
 export const DatePickerField = ({
   defaultValue,
+  defaultYear,
+  defaultMonth,
+  defaultDay,
   disabled,
   errorMessages,
   helpMessagePrimary,
@@ -118,11 +124,15 @@ export const DatePickerField = ({
   }, {} as AriaErrorMessage);
 
   // Extract default date parts from the default value
-  const { day = '', month = '', year = '' } = extractDateParts(defaultValue ?? '');
+  const {
+    day = defaultDay ? padWithZero(defaultDay, 2) : '',
+    month = defaultMonth ? padWithZero(defaultMonth, 2) : '',
+    year = defaultYear ? padWithZero(defaultYear, 4) : '',
+  } = extractDateParts(defaultValue ?? '');
 
   // Define date picker part fields
   const datePickerPartFields = {
-    year: (
+    year: names.year ? (
       <DatePickerYearField
         id={id}
         defaultValue={year}
@@ -134,8 +144,10 @@ export const DatePickerField = ({
         required={required}
         disabled={disabled}
       />
+    ) : (
+      <></>
     ),
-    month: (
+    month: names.month ? (
       <DatePickerMonthField
         id={id}
         defaultValue={month}
@@ -149,8 +161,10 @@ export const DatePickerField = ({
         required={required}
         disabled={disabled}
       />
+    ) : (
+      <></>
     ),
-    day: (
+    day: names.day ? (
       <DatePickerDayField
         id={id}
         defaultValue={day}
@@ -162,6 +176,8 @@ export const DatePickerField = ({
         required={required}
         disabled={disabled}
       />
+    ) : (
+      <></>
     ),
   } as const satisfies Record<DatePart, JSX.Element>;
 
