@@ -98,11 +98,11 @@ export default function SinConfirmation({ loaderData, actionData, params }: Rout
             <BilingualText resourceKey="protected:sin-confirmation.social-insurance-number" />:
           </h3>
           <p className="mt-4 text-center font-semibold">
-            {recordDetails.sinNumber.slice(0, 3)}
+            <HiddenNumbers>{recordDetails.sinNumber.slice(0, 3)}</HiddenNumbers>
             <span className="mx-[0.5ch]">-</span>
-            {recordDetails.sinNumber.slice(3, 6)}
+            <HiddenNumbers>{recordDetails.sinNumber.slice(3, 6)}</HiddenNumbers>
             <span className="mx-[0.5ch]">-</span>
-            {recordDetails.sinNumber.slice(6, 9)}
+            <HiddenNumbers>{recordDetails.sinNumber.slice(6, 9)}</HiddenNumbers>
           </p>
         </section>
         <section>
@@ -164,6 +164,19 @@ export default function SinConfirmation({ loaderData, actionData, params }: Rout
           {t('protected:sin-confirmation.finish')}
         </Button>
       </fetcher.Form>
+    </>
+  );
+}
+
+interface HiddenNumbersProps {
+  children: ReactNode;
+}
+
+function HiddenNumbers({ children }: HiddenNumbersProps) {
+  return (
+    <>
+      <span className="hidden print:inline">{children}</span>
+      <span className="inline print:hidden">***</span>
     </>
   );
 }
