@@ -48,6 +48,9 @@ app.use(compression());
 log.info('    ✓ logging middleware');
 app.use(logging(serverEnvironment));
 
+log.info('    ✓ security headers middleware');
+app.use(security(serverEnvironment));
+
 if (serverEnvironment.isProduction) {
   log.info('    ✓ static assets middleware (production)');
   log.info('      ✓ caching /assets for 1y');
@@ -63,9 +66,6 @@ if (serverEnvironment.isProduction) {
   log.info('      ✓ caching remaining static content for 1h');
   app.use(express.static('./public', { maxAge: '1h' }));
 }
-
-log.info('    ✓ security headers middleware');
-app.use(security(serverEnvironment));
 
 log.info('    ✓ session middleware (%s)', serverEnvironment.SESSION_TYPE);
 app.use(session(serverEnvironment));
