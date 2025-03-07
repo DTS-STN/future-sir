@@ -1,13 +1,17 @@
 import type { RouteHandle } from 'react-router';
-import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
+import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
 
 import { config as fontAwesomeConfig } from '@fortawesome/fontawesome-svg-core';
 
 import type { Route } from './+types/root';
 
 import { clientEnvironmentRevision } from '~/.server/environment';
-import { BilingualErrorBoundary } from '~/components/bilingual-error-boundary';
-import { UnilingualErrorBoundary } from '~/components/unilingual-error-boundary';
+import {
+  BilingualErrorBoundary,
+  BilingualNotFound,
+  UnilingualErrorBoundary,
+  UnilingualNotFound,
+} from '~/components/error-boundaries';
 import { useLanguage } from '~/hooks/use-language';
 import indexStyleSheet from '~/index.css?url';
 import tailwindStyleSheet from '~/tailwind.css?url';
@@ -81,8 +85,19 @@ export default function App({ loaderData }: Route.ComponentProps) {
 export function ErrorBoundary(props: Route.ErrorBoundaryProps) {
   const { currentLanguage } = useLanguage();
 
+  if (is404Error(props.error)) {
+    // prettier-ignore
+    return currentLanguage
+      ? <UnilingualNotFound {...props} />
+      : <BilingualNotFound {...props} />;
+  }
+
   // prettier-ignore
   return currentLanguage
     ? <UnilingualErrorBoundary {...props} />
     : <BilingualErrorBoundary {...props} />;
+}
+
+function is404Error(error: Route.ErrorBoundaryProps['error']) {
+  return isRouteErrorResponse(error) && error.status === 404;
 }
