@@ -78,7 +78,8 @@ export function security(environment: ServerEnvironment): RequestHandler {
       `img-src 'self' data: www.canada.ca`,
       `object-src data:`,
       `script-src 'self' 'nonce-${response.locals.nonce}'`,
-      // unsafe-inline is required by Radix Primitives 💩
+      // NOTE: unsafe-inline is required by Radix Primitives 💩
+      // see https://github.com/radix-ui/primitives/discussions/3130
       `style-src 'self' 'unsafe-inline' fonts.googleapis.com use.fontawesome.com www.canada.ca`,
     ].join('; ');
 
