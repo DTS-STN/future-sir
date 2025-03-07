@@ -26,8 +26,8 @@ import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
-import type { SecondaryDocumentData } from '~/routes/protected/person-case/state-machine';
 import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine';
+import type { SecondaryDocumentData } from '~/routes/protected/person-case/types';
 import { getStartOfDayInTimezone } from '~/utils/date-utils';
 
 const log = LogFactory.getLogger(import.meta.url);

@@ -27,8 +27,8 @@ import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
-import type { InPersonSinApplication } from '~/routes/protected/person-case/state-machine';
 import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine';
+import type { InPersonSinApplication } from '~/routes/protected/person-case/types';
 
 const log = LogFactory.getLogger(import.meta.url);
 
@@ -587,7 +587,7 @@ function ContactInformationData({ data, tabId }: ContactInformationDataProps) {
 }
 
 function validateInPersonSINCaseSession(
-  sessionData: InPersonSinApplication | undefined,
+  sessionData: Partial<InPersonSinApplication> | undefined,
   tabId: string | undefined,
   request: Request,
 ): Required<InPersonSinApplication> {

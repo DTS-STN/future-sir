@@ -4,107 +4,26 @@ import { generatePath } from 'react-router';
 import type { Actor } from 'xstate';
 import { assign, createActor, setup } from 'xstate';
 
-import type { ServerEnvironment } from '~/.server/environment';
 import { LogFactory } from '~/.server/logging';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import type { I18nRouteFile } from '~/i18n-routes';
 import { i18nRoutes } from '~/i18n-routes';
+import type {
+  BirthDetailsData,
+  ContactInformationData,
+  CurrentNameData,
+  InPersonSinApplication,
+  ParentDetailsData,
+  PersonalInfoData,
+  PreviousSinData,
+  PrimaryDocumentData,
+  PrivacyStatementData,
+  RequestDetailsData,
+  SecondaryDocumentData,
+} from '~/routes/protected/person-case/types';
 import { getLanguage } from '~/utils/i18n-utils';
 import { getRouteByFile } from '~/utils/route-utils';
-
-export type BirthDetailsData =
-  | { country: ServerEnvironment['PP_CANADA_COUNTRY_CODE']; province: string; city: string; fromMultipleBirth: boolean }
-  | { country: string; province?: string; city?: string; fromMultipleBirth: boolean };
-
-export type ContactInformationData = {
-  preferredLanguage: string;
-  primaryPhoneNumber: string;
-  secondaryPhoneNumber?: string;
-  emailAddress?: string;
-  country: string;
-  address: string;
-  postalCode: string;
-  city: string;
-  province: string;
-};
-
-export type CurrentNameData =
-  | { preferredSameAsDocumentName: true }
-  | {
-      preferredSameAsDocumentName: false;
-      firstName: string;
-      middleName?: string;
-      lastName: string;
-      supportingDocuments:
-        | { required: false } //
-        | { required: true; documentTypes: string[] };
-    };
-
-export type ParentDetailsData = (
-  | { unavailable: true }
-  | {
-      unavailable: false;
-      givenName: string;
-      lastName: string;
-      birthLocation:
-        | { country: 'CAN'; province: string; city: string } //
-        | { country: string; province?: string; city?: string };
-    }
-)[];
-
-export type PersonalInfoData = {
-  firstNamePreviouslyUsed?: string[];
-  lastNameAtBirth: string;
-  lastNamePreviouslyUsed?: string[];
-  gender: string;
-};
-
-export type PreviousSinData = {
-  hasPreviousSin: string;
-  socialInsuranceNumber?: string;
-};
-
-export type PrimaryDocumentData = {
-  citizenshipDate: string;
-  clientNumber: string;
-  currentStatusInCanada: string;
-  dateOfBirth: string;
-  documentType: string;
-  gender: string;
-  givenName: string;
-  lastName: string;
-  registrationNumber: string;
-};
-
-export type PrivacyStatementData = {
-  agreedToTerms: true;
-};
-
-export type RequestDetailsData = {
-  type: string;
-  scenario: string;
-};
-
-export type SecondaryDocumentData = {
-  documentType: string;
-  // document: File; TODO :: enable me!
-  expiryMonth: number;
-  expiryYear: number;
-};
-
-export type InPersonSinApplication = Partial<{
-  currentNameInfo: CurrentNameData;
-  privacyStatement: PrivacyStatementData;
-  requestDetails: RequestDetailsData;
-  primaryDocuments: PrimaryDocumentData;
-  personalInformation: PersonalInfoData;
-  secondaryDocument: SecondaryDocumentData;
-  previousSin: PreviousSinData;
-  contactInformation: ContactInformationData;
-  birthDetails: BirthDetailsData;
-  parentDetails: ParentDetailsData;
-}>;
 
 export type Machine = typeof machine;
 
@@ -129,9 +48,22 @@ const log = LogFactory.getLogger(import.meta.url);
 
 const machineId = 'person-case';
 
+const initialContext = {
+  birthDetails: undefined,
+  contactInformation: undefined,
+  currentNameInfo: undefined,
+  parentDetails: undefined,
+  personalInformation: undefined,
+  previousSin: undefined,
+  primaryDocuments: undefined,
+  privacyStatement: undefined,
+  requestDetails: undefined,
+  secondaryDocument: undefined,
+} satisfies Partial<InPersonSinApplication>;
+
 export const machine = setup({
   types: {
-    context: {} as InPersonSinApplication,
+    context: {} as Partial<InPersonSinApplication>,
     events: {} as
       | { type: 'prev' }
       | { type: 'cancel' }
@@ -153,19 +85,16 @@ export const machine = setup({
 }).createMachine({
   id: machineId,
   initial: 'privacy-statement',
-
+  context: initialContext,
   //
   // global state transitions
   //
   on: {
     cancel: {
       target: '.privacy-statement',
-      actions: assign(({ context, event }) => ({
-        /* clear the machine context */
-      })),
+      actions: assign(initialContext),
     },
   },
-
   states: {
     'privacy-statement': {
       meta: {
@@ -174,10 +103,7 @@ export const machine = setup({
       on: {
         submitPrivacyStatement: {
           target: 'request-details',
-          actions: assign(({ context, event }) => ({
-            ...context,
-            privacyStatement: event.data,
-          })),
+          actions: assign(({ event }) => ({ privacyStatement: event.data })),
         },
       },
     },
@@ -191,10 +117,7 @@ export const machine = setup({
         },
         submitRequestDetails: {
           target: 'primary-docs',
-          actions: assign(({ context, event }) => ({
-            ...context,
-            requestDetails: event.data,
-          })),
+          actions: assign(({ event }) => ({ requestDetails: event.data })),
         },
       },
     },
@@ -208,10 +131,7 @@ export const machine = setup({
         },
         submitPrimaryDocuments: {
           target: 'secondary-docs',
-          actions: assign(({ context, event }) => ({
-            ...context,
-            primaryDocuments: event.data,
-          })),
+          actions: assign(({ event }) => ({ primaryDocuments: event.data })),
         },
       },
     },
@@ -225,10 +145,7 @@ export const machine = setup({
         },
         submitSecondaryDocuments: {
           target: 'name-info',
-          actions: assign(({ context, event }) => ({
-            ...context,
-            secondaryDocument: event.data,
-          })),
+          actions: assign(({ event }) => ({ secondaryDocument: event.data })),
         },
       },
     },
@@ -242,10 +159,7 @@ export const machine = setup({
         },
         submitCurrentName: {
           target: 'personal-info',
-          actions: assign(({ context, event }) => ({
-            ...context,
-            currentNameInfo: event.data,
-          })),
+          actions: assign(({ event }) => ({ currentNameInfo: event.data })),
         },
       },
     },
@@ -259,10 +173,7 @@ export const machine = setup({
         },
         submitPersonalInfo: {
           target: 'birth-info',
-          actions: assign(({ context, event }) => ({
-            ...context,
-            personalInformation: event.data,
-          })),
+          actions: assign(({ event }) => ({ personalInformation: event.data })),
         },
       },
     },
@@ -276,10 +187,7 @@ export const machine = setup({
         },
         submitBirthDetails: {
           target: 'parent-info',
-          actions: assign(({ context, event }) => ({
-            ...context,
-            birthDetails: event.data,
-          })),
+          actions: assign(({ event }) => ({ birthDetails: event.data })),
         },
       },
     },
@@ -293,10 +201,7 @@ export const machine = setup({
         },
         submitParentDetails: {
           target: 'previous-sin-info',
-          actions: assign(({ context, event }) => ({
-            ...context,
-            parentDetails: event.data,
-          })),
+          actions: assign(({ event }) => ({ parentDetails: event.data })),
         },
       },
     },
@@ -310,10 +215,7 @@ export const machine = setup({
         },
         submitPreviousSin: {
           target: 'contact-info',
-          actions: assign(({ context, event }) => ({
-            ...context,
-            previousSin: event.data,
-          })),
+          actions: assign(({ event }) => ({ previousSin: event.data })),
         },
       },
     },
@@ -327,10 +229,7 @@ export const machine = setup({
         },
         submitContactInfo: {
           target: 'review',
-          actions: assign(({ context, event }) => ({
-            ...context,
-            contactInformation: event.data,
-          })),
+          actions: assign(({ event }) => ({ contactInformation: event.data })),
         },
       },
     },
@@ -344,7 +243,7 @@ export const machine = setup({
         },
         submitReview: {
           target: 'privacy-statement',
-          actions: ({ context, event }) => {
+          actions: ({ event }) => {
             // TODO ::: GjB ::: handle final submission
           },
         },
