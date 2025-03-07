@@ -24,8 +24,8 @@ import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
-import type { BirthDetailsData } from '~/routes/protected/person-case/state-machine';
 import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine';
+import type { BirthDetailsData } from '~/routes/protected/person-case/types';
 import { REGEX_PATTERNS } from '~/utils/regex-utils';
 import { trimToUndefined } from '~/utils/string-utils';
 

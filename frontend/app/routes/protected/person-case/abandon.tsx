@@ -14,7 +14,7 @@ const log = LogFactory.getLogger(import.meta.url);
 export async function action({ context, params, request }: Route.ActionArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
 
-  const machineActor = loadMachineActor(context.session, request, 'privacy-statement');
+  const machineActor = loadMachineActor(context.session, request);
 
   if (!machineActor) {
     log.warn('Could not find a machine snapshot in session; redirecting to start of flow');

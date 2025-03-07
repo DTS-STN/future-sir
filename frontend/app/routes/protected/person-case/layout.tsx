@@ -1,7 +1,7 @@
 import { useId } from 'react';
 
 import type { RouteHandle } from 'react-router';
-import { Outlet, useFetcher } from 'react-router';
+import { Outlet, useFetcher, useSearchParams } from 'react-router';
 
 import { faSpinner, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -21,6 +21,7 @@ export const handle = {
 
 export default function Layout({ actionData, loaderData, matches, params }: Route.ComponentProps) {
   const { i18n, t } = useTranslation(handle.i18nNamespace);
+  const [searchParams] = useSearchParams();
 
   const fetcher = useFetcher<Info['actionData']>({ key: useId() });
   const tabId = useTabId({ reloadDocument: true }); // ensure we always have a tabId generated
@@ -36,7 +37,7 @@ export default function Layout({ actionData, loaderData, matches, params }: Rout
 
   return (
     <>
-      <fetcher.Form action={abandonAction} className="float-right" method="post">
+      <fetcher.Form action={`${abandonAction}?${searchParams.toString()}`} className="float-right" method="post">
         <Button name="action" value="abandon" id="abandon-button" endIcon={faXmark} variant="link">
           {t('protected:person-case.abandon-button')}
         </Button>
