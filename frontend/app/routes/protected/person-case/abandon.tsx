@@ -35,5 +35,5 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     }
   }
 
-  throw redirect(getStateRoute(machineActor, { params, request }));
+  throw redirect(getStateRoute(machineActor, { context, params, request }));
 }
