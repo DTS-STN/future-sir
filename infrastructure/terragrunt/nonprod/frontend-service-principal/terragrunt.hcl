@@ -19,6 +19,7 @@ inputs = {
   app_name            = "Future SIR: Frontend Service Principal (nonprod)"
   app_identifier_uris = ["api://nonprod.future-sir.esdc-edsc.gc.ca/frontend"]
   app_passwords       = ["Default secret"]
+  app_public          = true # TODO ::: GjB ::: temporarily enabled to help 'CC' on the power-platform team... disable at a later date
   app_web_redirect_uris = [
     "http://localhost:3000/auth/callback/azuread",
     "https://future-sir-dev.dev-dp-internal.dts-stn.com/auth/callback/azuread",
