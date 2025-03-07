@@ -70,7 +70,7 @@ export async function action({ context, request }: Route.ActionArgs) {
 
       const input = {
         originOfSin: formData.get('originOfSin'),
-        declaration: formData.get('declaration'),
+        declaration: formData.get('declaration') ? true : undefined,
       };
 
       const parseResult = v.safeParse(schema, input, { lang });

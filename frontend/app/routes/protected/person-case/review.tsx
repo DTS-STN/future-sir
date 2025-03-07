@@ -195,7 +195,7 @@ export default function Review({ loaderData, actionData, params }: Route.Compone
         </div>
         <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
           <Button name="action" value="next" variant="primary" id="continue-button" disabled={isSubmitting}>
-            {t('protected:person-case.next')}
+            {t('protected:person-case.create-case-button')}
           </Button>
           <Button name="action" value="back" id="back-button" disabled={isSubmitting}>
             {t('protected:person-case.previous')}
