@@ -6,14 +6,16 @@ import { defineConfig } from '@hey-api/openapi-ts';
 export default defineConfig({
   input: 'other/specs/fsir-openapi.yml',
   output: {
-    format: 'prettier',
+    path: './app/.server/shared/api/interop',
+    clean: true,
     indexFile: true,
-    path: './app/.server/shared/api',
+    format: 'prettier',
+    lint: 'eslint',
   },
   plugins: [
     {
       name: '@hey-api/client-fetch',
-      runtimeConfigPath: './app/.server/shared/client-config.ts',
+      runtimeConfigPath: './app/.server/shared/api/interop-client-config.ts',
     },
   ],
 });

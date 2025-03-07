@@ -1,5 +1,5 @@
-import type { SinApplicationRequest, SinApplicationResponse } from '~/.server/shared/api';
-import * as api from '~/.server/shared/api';
+import type { SinApplicationRequest, SinApplicationResponse } from '~/.server/shared/api/interop';
+import { sinapplication } from '~/.server/shared/api/interop';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 
@@ -18,7 +18,7 @@ import { ErrorCodes } from '~/errors/error-codes';
 export async function submitSinApplication(
   submitSinApplicationRequest: SinApplicationRequest,
 ): Promise<SinApplicationResponse> {
-  const { response, data } = await api.postSinApplication({ body: submitSinApplicationRequest });
+  const { response, data } = await sinapplication({ body: submitSinApplicationRequest });
 
   if (data === undefined) {
     const content = await response.text();
