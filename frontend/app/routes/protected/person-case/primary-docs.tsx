@@ -30,6 +30,7 @@ import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine';
 import type { PrimaryDocumentData } from '~/routes/protected/person-case/types';
 import { getStartOfDayInTimezone, isDateInPastOrTodayInTimeZone, isValidDateString, toISODateString } from '~/utils/date-utils';
+import { getSingleKey } from '~/utils/i18n-utils';
 import { REGEX_PATTERNS } from '~/utils/regex-utils';
 
 const VALID_CURRENT_STATUS = ['canadian-citizen-born-outside-canada'];
@@ -65,123 +66,117 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     }
 
     case 'next': {
-      const { lang, t } = await getTranslation(request, handle.i18nNamespace);
+      const { lang } = await getTranslation(request, handle.i18nNamespace);
 
       const schema = v.intersect([
         v.object({
           currentStatusInCanada: v.pipe(
-            v.string(t('protected:primary-identity-document.current-status-in-canada.required')),
+            v.string('protected:primary-identity-document.current-status-in-canada.required'),
             v.trim(),
-            v.nonEmpty(t('protected:primary-identity-document.current-status-in-canada.required')),
-            v.picklist(VALID_CURRENT_STATUS, t('protected:primary-identity-document.current-status-in-canada.invalid')),
+            v.nonEmpty('protected:primary-identity-document.current-status-in-canada.required'),
+            v.picklist(VALID_CURRENT_STATUS, 'protected:primary-identity-document.current-status-in-canada.invalid'),
           ),
         }),
         v.variant(
           'documentType',
           [
             v.object({
-              documentType: v.picklist(VALID_DOCTYPES, t('protected:primary-identity-document.document-type.invalid')),
+              documentType: v.picklist(VALID_DOCTYPES, 'protected:primary-identity-document.document-type.invalid'),
               registrationNumber: v.pipe(
-                v.string(t('protected:primary-identity-document.registration-number.required')),
+                v.string('protected:primary-identity-document.registration-number.required'),
                 v.trim(),
-                v.nonEmpty(t('protected:primary-identity-document.registration-number.required')),
-                v.length(8, t('protected:primary-identity-document.registration-number.invalid', { length: 8 })),
-                v.regex(
-                  REGEX_PATTERNS.DIGIT_ONLY,
-                  t('protected:primary-identity-document.registration-number.invalid', { length: 8 }),
-                ),
+                v.nonEmpty('protected:primary-identity-document.registration-number.required'),
+                v.length(8, 'protected:primary-identity-document.registration-number.invalid'),
+                v.regex(REGEX_PATTERNS.DIGIT_ONLY, 'protected:primary-identity-document.registration-number.invalid'),
               ),
               clientNumber: v.pipe(
-                v.string(t('protected:primary-identity-document.client-number.required')),
+                v.string('protected:primary-identity-document.client-number.required'),
                 v.trim(),
-                v.nonEmpty(t('protected:primary-identity-document.client-number.required')),
-                v.length(10, t('protected:primary-identity-document.client-number.invalid', { length: 10 })),
-                v.regex(
-                  REGEX_PATTERNS.DIGIT_ONLY,
-                  t('protected:primary-identity-document.client-number.invalid', { length: 10 }),
-                ),
+                v.nonEmpty('protected:primary-identity-document.client-number.required'),
+                v.length(10, 'protected:primary-identity-document.client-number.invalid'),
+                v.regex(REGEX_PATTERNS.DIGIT_ONLY, 'protected:primary-identity-document.client-number.invalid'),
               ),
               givenName: v.pipe(
-                v.string(t('protected:primary-identity-document.given-name.required')),
+                v.string('protected:primary-identity-document.given-name.required'),
                 v.trim(),
-                v.nonEmpty(t('protected:primary-identity-document.given-name.required')),
-                v.maxLength(100, t('protected:primary-identity-document.given-name.max-length', { maximum: 100 })),
-                v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:primary-identity-document.given-name.format')),
+                v.nonEmpty('protected:primary-identity-document.given-name.required'),
+                v.maxLength(100, 'protected:primary-identity-document.given-name.max-length'),
+                v.regex(REGEX_PATTERNS.NON_DIGIT, 'protected:primary-identity-document.given-name.format'),
               ),
               lastName: v.pipe(
-                v.string(t('protected:primary-identity-document.last-name.required')),
+                v.string('protected:primary-identity-document.last-name.required'),
                 v.trim(),
-                v.nonEmpty(t('protected:primary-identity-document.last-name.required')),
-                v.maxLength(100, t('protected:primary-identity-document.last-name.max-length', { maximum: 100 })),
-                v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:primary-identity-document.last-name.format')),
+                v.nonEmpty('protected:primary-identity-document.last-name.required'),
+                v.maxLength(100, 'protected:primary-identity-document.last-name.max-length'),
+                v.regex(REGEX_PATTERNS.NON_DIGIT, 'protected:primary-identity-document.last-name.format'),
               ),
               dateOfBirthYear: v.pipe(
-                v.number(t('protected:primary-identity-document.date-of-birth.required-year')),
-                v.integer(t('protected:primary-identity-document.date-of-birth.invalid-year')),
-                v.minValue(1, t('protected:primary-identity-document.date-of-birth.invalid-year')),
+                v.number('protected:primary-identity-document.date-of-birth.required-year'),
+                v.integer('protected:primary-identity-document.date-of-birth.invalid-year'),
+                v.minValue(1, 'protected:primary-identity-document.date-of-birth.invalid-year'),
                 v.maxValue(
                   getStartOfDayInTimezone(serverEnvironment.BASE_TIMEZONE).getFullYear(),
-                  t('protected:primary-identity-document.date-of-birth.invalid-year'),
+                  'protected:primary-identity-document.date-of-birth.invalid-year',
                 ),
               ),
               dateOfBirthMonth: v.pipe(
-                v.number(t('protected:primary-identity-document.date-of-birth.required-month')),
-                v.integer(t('protected:primary-identity-document.date-of-birth.invalid-month')),
-                v.minValue(1, t('protected:primary-identity-document.date-of-birth.invalid-month')),
-                v.maxValue(12, t('protected:primary-identity-document.date-of-birth.invalid-month')),
+                v.number('protected:primary-identity-document.date-of-birth.required-month'),
+                v.integer('protected:primary-identity-document.date-of-birth.invalid-month'),
+                v.minValue(1, 'protected:primary-identity-document.date-of-birth.invalid-month'),
+                v.maxValue(12, 'protected:primary-identity-document.date-of-birth.invalid-month'),
               ),
               dateOfBirthDay: v.pipe(
-                v.number(t('protected:primary-identity-document.date-of-birth.required-day')),
-                v.integer(t('protected:primary-identity-document.date-of-birth.invalid-day')),
-                v.minValue(1, t('protected:primary-identity-document.date-of-birth.invalid-day')),
-                v.maxValue(31, t('protected:primary-identity-document.date-of-birth.invalid-day')),
+                v.number('protected:primary-identity-document.date-of-birth.required-day'),
+                v.integer('protected:primary-identity-document.date-of-birth.invalid-day'),
+                v.minValue(1, 'protected:primary-identity-document.date-of-birth.invalid-day'),
+                v.maxValue(31, 'protected:primary-identity-document.date-of-birth.invalid-day'),
               ),
               dateOfBirth: v.pipe(
                 v.string(),
                 v.custom(
                   (input) => isValidDateString(input as string),
-                  t('protected:primary-identity-document.date-of-birth.invalid'),
+                  'protected:primary-identity-document.date-of-birth.invalid',
                 ),
                 v.custom(
                   (input) => isDateInPastOrTodayInTimeZone(serverEnvironment.BASE_TIMEZONE, input as string),
-                  t('protected:primary-identity-document.date-of-birth.invalid-future-date'),
+                  'protected:primary-identity-document.date-of-birth.invalid-future-date',
                 ),
               ),
               gender: v.picklist(
                 applicantGenderService.getApplicantGenders().map(({ id }) => id),
-                t('protected:primary-identity-document.gender.required'),
+                'protected:primary-identity-document.gender.required',
               ),
               citizenshipDateYear: v.pipe(
-                v.number(t('protected:primary-identity-document.citizenship-date.required-year')),
-                v.integer(t('protected:primary-identity-document.citizenship-date.invalid-year')),
-                v.minValue(1, t('protected:primary-identity-document.citizenship-date.invalid-year')),
+                v.number('protected:primary-identity-document.citizenship-date.required-year'),
+                v.integer('protected:primary-identity-document.citizenship-date.invalid-year'),
+                v.minValue(1, 'protected:primary-identity-document.citizenship-date.invalid-year'),
                 v.maxValue(
                   getStartOfDayInTimezone(serverEnvironment.BASE_TIMEZONE).getFullYear(),
-                  t('protected:primary-identity-document.citizenship-date.invalid-year'),
+                  'protected:primary-identity-document.citizenship-date.invalid-year',
                 ),
               ),
               citizenshipDateMonth: v.pipe(
-                v.number(t('protected:primary-identity-document.citizenship-date.required-month')),
-                v.integer(t('protected:primary-identity-document.citizenship-date.invalid-month')),
-                v.minValue(1, t('protected:primary-identity-document.citizenship-date.invalid-month')),
-                v.maxValue(12, t('protected:primary-identity-document.citizenship-date.invalid-month')),
+                v.number('protected:primary-identity-document.citizenship-date.required-month'),
+                v.integer('protected:primary-identity-document.citizenship-date.invalid-month'),
+                v.minValue(1, 'protected:primary-identity-document.citizenship-date.invalid-month'),
+                v.maxValue(12, 'protected:primary-identity-document.citizenship-date.invalid-month'),
               ),
               citizenshipDateDay: v.pipe(
-                v.number(t('protected:primary-identity-document.citizenship-date.required-day')),
-                v.integer(t('protected:primary-identity-document.citizenship-date.invalid-day')),
-                v.minValue(1, t('protected:primary-identity-document.citizenship-date.invalid-day')),
-                v.maxValue(31, t('protected:primary-identity-document.citizenship-date.invalid-day')),
+                v.number('protected:primary-identity-document.citizenship-date.required-day'),
+                v.integer('protected:primary-identity-document.citizenship-date.invalid-day'),
+                v.minValue(1, 'protected:primary-identity-document.citizenship-date.invalid-day'),
+                v.maxValue(31, 'protected:primary-identity-document.citizenship-date.invalid-day'),
               ),
               citizenshipDate: v.pipe(
                 v.string(),
                 v.custom(
                   (input) => isValidDateString(input as string),
-                  t('protected:primary-identity-document.citizenship-date.invalid'),
+                  'protected:primary-identity-document.citizenship-date.invalid',
                 ),
               ),
             }),
           ],
-          t('protected:primary-identity-document.document-type.required'),
+          'protected:primary-identity-document.document-type.required',
         ),
       ]) satisfies v.GenericSchema<PrimaryDocumentData>;
 
@@ -265,14 +260,14 @@ export default function PrimaryDocs({ loaderData, actionData, params }: Route.Co
           <div className="space-y-6">
             <CurrentStatusInCanada
               defaultValue={loaderData.defaultFormValues?.currentStatusInCanada}
-              errorMessage={errors?.currentStatusInCanada?.at(0)}
+              errorMessage={t(getSingleKey(errors?.currentStatusInCanada))}
               onChange={({ target }) => setCurrentStatus(target.value)}
             />
             {currentStatus && (
               <DocumentType
                 currentStatus={currentStatus}
                 defaultValue={loaderData.defaultFormValues?.documentType}
-                errorMessage={errors?.documentType?.at(0)}
+                errorMessage={t(getSingleKey(errors?.documentType))}
                 onChange={({ target }) => setDocumentType(target.value)}
               />
             )}
@@ -449,7 +444,7 @@ function PrimaryDocsFields({
           <InputField
             id="registration-number-id"
             defaultValue={defaultValues?.registrationNumber}
-            errorMessage={errors?.registrationNumber?.at(0)}
+            errorMessage={t(getSingleKey(errors?.registrationNumber), { length: 8 })}
             label={t('protected:primary-identity-document.registration-number.label')}
             name="registrationNumber"
             required
@@ -458,7 +453,7 @@ function PrimaryDocsFields({
           <InputField
             id="client-number-id"
             defaultValue={defaultValues?.clientNumber}
-            errorMessage={errors?.clientNumber?.at(0)}
+            errorMessage={t(getSingleKey(errors?.clientNumber), { length: 10 })}
             label={t('protected:primary-identity-document.client-number.label')}
             name="clientNumber"
             required
@@ -467,7 +462,7 @@ function PrimaryDocsFields({
           <InputField
             id="given-name-id"
             defaultValue={defaultValues?.givenName}
-            errorMessage={errors?.givenName?.at(0)}
+            errorMessage={t(getSingleKey(errors?.givenName), { maximum: 100 })}
             helpMessagePrimary={t('protected:primary-identity-document.given-name.help-message-primary')}
             label={t('protected:primary-identity-document.given-name.label')}
             name="givenName"
@@ -477,7 +472,7 @@ function PrimaryDocsFields({
           <InputField
             id="last-name-id"
             defaultValue={defaultValues?.lastName}
-            errorMessage={errors?.lastName?.at(0)}
+            errorMessage={t(getSingleKey(errors?.lastName), { maximum: 100 })}
             helpMessagePrimary={t('protected:primary-identity-document.last-name.help-message-primary')}
             label={t('protected:primary-identity-document.last-name.label')}
             name="lastName"
@@ -495,15 +490,15 @@ function PrimaryDocsFields({
               year: 'dateOfBirthYear',
             }}
             errorMessages={{
-              all: errors?.dateOfBirth?.at(0),
-              year: errors?.dateOfBirthYear?.at(0),
-              month: errors?.dateOfBirthMonth?.at(0),
-              day: errors?.dateOfBirthDay?.at(0),
+              all: t(getSingleKey(errors?.dateOfBirth)),
+              year: t(getSingleKey(errors?.dateOfBirthYear)),
+              month: t(getSingleKey(errors?.dateOfBirthMonth)),
+              day: t(getSingleKey(errors?.dateOfBirthDay)),
             }}
           />
           <InputRadios
             id="gender-id"
-            errorMessage={errors?.gender?.at(0)}
+            errorMessage={t(getSingleKey(errors?.gender))}
             legend={t('protected:primary-identity-document.gender.label')}
             name="gender"
             options={genderOptions}
@@ -520,10 +515,10 @@ function PrimaryDocsFields({
               year: 'citizenshipDateYear',
             }}
             errorMessages={{
-              all: errors?.citizenshipDate?.at(0),
-              year: errors?.citizenshipDateYear?.at(0),
-              month: errors?.citizenshipDateMonth?.at(0),
-              day: errors?.citizenshipDateDay?.at(0),
+              all: t(getSingleKey(errors?.citizenshipDate)),
+              year: t(getSingleKey(errors?.citizenshipDateYear)),
+              month: t(getSingleKey(errors?.citizenshipDateMonth)),
+              day: t(getSingleKey(errors?.citizenshipDateDay)),
             }}
           />
           <InputFile
@@ -535,7 +530,7 @@ function PrimaryDocsFields({
             required
             /*
             TODO: Enable file upload
-            errorMessage={errors?.document?.at(0)}
+            errorMessage={t(getSingleKey(errors?.document))}
             */
           />
         </>

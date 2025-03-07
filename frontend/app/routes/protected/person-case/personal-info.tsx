@@ -5,6 +5,7 @@ import { data, redirect, useFetcher } from 'react-router';
 
 import { faXmark, faXmarkCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import type { ResourceKey } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import * as v from 'valibot';
 
@@ -25,6 +26,7 @@ import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine';
 import type { PersonalInfoData } from '~/routes/protected/person-case/types';
+import { getSingleKey } from '~/utils/i18n-utils';
 import { REGEX_PATTERNS } from '~/utils/regex-utils';
 
 const log = LogFactory.getLogger(import.meta.url);
@@ -57,7 +59,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     }
 
     case 'next': {
-      const { lang, t } = await getTranslation(request, handle.i18nNamespace);
+      const { lang } = await getTranslation(request, handle.i18nNamespace);
 
       const schema = v.object({
         firstNamePreviouslyUsed: v.optional(
@@ -65,31 +67,31 @@ export async function action({ context, params, request }: Route.ActionArgs) {
             v.pipe(
               v.string(),
               v.trim(),
-              v.maxLength(100, t('protected:personal-information.first-name-previously-used.max-length', { maximum: 100 })),
-              v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:personal-information.first-name-previously-used.format')),
+              v.maxLength(100, 'protected:personal-information.first-name-previously-used.max-length'),
+              v.regex(REGEX_PATTERNS.NON_DIGIT, 'protected:personal-information.first-name-previously-used.format'),
             ),
           ),
         ),
         lastNameAtBirth: v.pipe(
-          v.string(t('protected:personal-information.last-name-at-birth.required')),
+          v.string('protected:personal-information.last-name-at-birth.required'),
           v.trim(),
-          v.nonEmpty(t('protected:personal-information.last-name-at-birth.required')),
-          v.maxLength(100, t('protected:personal-information.last-name-at-birth.max-length', { maximum: 100 })),
-          v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:personal-information.last-name-at-birth.format')),
+          v.nonEmpty('protected:personal-information.last-name-at-birth.required'),
+          v.maxLength(100, 'protected:personal-information.last-name-at-birth.max-length'),
+          v.regex(REGEX_PATTERNS.NON_DIGIT, 'protected:personal-information.last-name-at-birth.format'),
         ),
         lastNamePreviouslyUsed: v.optional(
           v.array(
             v.pipe(
               v.string(),
               v.trim(),
-              v.maxLength(100, t('protected:personal-information.last-name-previously-used.max-length', { maximum: 100 })),
-              v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:personal-information.last-name-previously-used.format')),
+              v.maxLength(100, 'protected:personal-information.last-name-previously-used.max-length'),
+              v.regex(REGEX_PATTERNS.NON_DIGIT, 'protected:personal-information.last-name-previously-used.format'),
             ),
           ),
         ),
         gender: v.picklist(
           applicantGenderService.getApplicantGenders().map(({ id }) => id),
-          t('protected:personal-information.gender.required'),
+          'protected:personal-information.gender.required',
         ),
       }) satisfies v.GenericSchema<PersonalInfoData>;
 
@@ -161,10 +163,10 @@ export default function PersonalInformation({ actionData, loaderData, params, ma
   const [otherLastName, setOtherLastName] = useState('');
   const [otherLastNames, setOtherLastNames] = useState(loaderData.defaultFormValues.lastNamePreviouslyUsed);
   const [srAnnouncement, setSrAnnouncement] = useState('');
-  const [firstNameError, setFirstNameError] = useState<string | undefined>(undefined);
-  const [lastNameError, setLastNameError] = useState<string | undefined>(undefined);
+  const [firstNameError, setFirstNameError] = useState<ResourceKey | undefined>(undefined);
+  const [lastNameError, setLastNameError] = useState<ResourceKey | undefined>(undefined);
 
-  function getErrorMessage(fieldName: string, errors?: Record<string, [string, ...string[]] | undefined>): string {
+  function getErrorMessage(fieldName: string, errors?: Record<string, [string, ...string[]] | undefined>): ResourceKey {
     if (!errors) return '';
 
     const directError = errors[fieldName]?.[0];
@@ -184,8 +186,8 @@ export default function PersonalInformation({ actionData, loaderData, params, ma
     const firstNameSchema = v.pipe(
       v.string(),
       v.trim(),
-      v.maxLength(100, t('protected:personal-information.first-name-previously-used.max-length', { maximum: 100 })),
-      v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:personal-information.first-name-previously-used.format')),
+      v.maxLength(100, 'protected:personal-information.first-name-previously-used.max-length'),
+      v.regex(REGEX_PATTERNS.NON_DIGIT, 'protected:personal-information.first-name-previously-used.format'),
     );
 
     const result = v.safeParse(firstNameSchema, name);
@@ -229,8 +231,8 @@ export default function PersonalInformation({ actionData, loaderData, params, ma
     const lastNameSchema = v.pipe(
       v.string(),
       v.trim(),
-      v.maxLength(100, t('protected:personal-information.last-name-previously-used.max-length', { maximum: 100 })),
-      v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:personal-information.last-name-previously-used.format')),
+      v.maxLength(100, 'protected:personal-information.last-name-previously-used.max-length'),
+      v.regex(REGEX_PATTERNS.NON_DIGIT, 'protected:personal-information.last-name-previously-used.format'),
     );
 
     const result = v.safeParse(lastNameSchema, name);
@@ -275,7 +277,7 @@ export default function PersonalInformation({ actionData, loaderData, params, ma
               <InputField
                 id="first-name-id"
                 className="w-full"
-                errorMessage={firstNameError ?? getErrorMessage('firstNamePreviouslyUsed', errors)}
+                errorMessage={t(firstNameError ?? getErrorMessage('firstNamePreviouslyUsed', errors), { maximum: 100 })}
                 helpMessagePrimary={t('protected:personal-information.first-name-previously-used.help-message-primary')}
                 label={t('protected:personal-information.first-name-previously-used.label')}
                 name="firstNamePreviouslyUsed"
@@ -317,7 +319,7 @@ export default function PersonalInformation({ actionData, loaderData, params, ma
             <InputField
               id="last-name-at-birth-id"
               defaultValue={loaderData.defaultFormValues.lastNameAtBirth ?? loaderData.primaryDocValues.lastName}
-              errorMessage={errors?.lastNameAtBirth?.at(0)}
+              errorMessage={t(getSingleKey(errors?.lastNameAtBirth), { maximum: 100 })}
               label={t('protected:personal-information.last-name-at-birth.label')}
               name="lastNameAtBirth"
               required={true}
@@ -327,7 +329,7 @@ export default function PersonalInformation({ actionData, loaderData, params, ma
               <InputField
                 id="last-name-id"
                 className="w-full"
-                errorMessage={lastNameError ?? getErrorMessage('lastNamePreviouslyUsed', errors)}
+                errorMessage={t(lastNameError ?? getErrorMessage('lastNamePreviouslyUsed', errors), { maximum: 100 })}
                 helpMessagePrimary={t('protected:personal-information.last-name-previously-used.help-message-primary')}
                 label={t('protected:personal-information.last-name-previously-used.label')}
                 name="lastNamePreviouslyUsed"
@@ -372,7 +374,7 @@ export default function PersonalInformation({ actionData, loaderData, params, ma
 
             <InputRadios
               id="gender-id"
-              errorMessage={errors?.gender?.at(0)}
+              errorMessage={t(getSingleKey(errors?.gender))}
               helpMessagePrimary={t('protected:personal-information.gender.help-message-primary')}
               legend={t('protected:personal-information.gender.label')}
               name="gender"

@@ -26,6 +26,7 @@ import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine';
 import type { ParentDetailsData } from '~/routes/protected/person-case/types';
+import { getSingleKey } from '~/utils/i18n-utils';
 import { REGEX_PATTERNS } from '~/utils/regex-utils';
 import { trimToUndefined } from '~/utils/string-utils';
 
@@ -61,7 +62,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     }
 
     case 'next': {
-      const { lang, t } = await getTranslation(request, handle.i18nNamespace);
+      const { lang } = await getTranslation(request, handle.i18nNamespace);
 
       const schema = v.pipe(
         v.array(
@@ -74,18 +75,18 @@ export async function action({ context, params, request }: Route.ActionArgs) {
               v.object({
                 unavailable: v.literal(false),
                 givenName: v.pipe(
-                  v.string(t('protected:parent-details.given-name-error.required-error')),
+                  v.string('protected:parent-details.given-name-error.required-error'),
                   v.trim(),
-                  v.nonEmpty(t('protected:parent-details.given-name-error.required-error')),
-                  v.maxLength(100, t('protected:parent-details.given-name-error.max-length-error')),
-                  v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:parent-details.given-name-error.format-error')),
+                  v.nonEmpty('protected:parent-details.given-name-error.required-error'),
+                  v.maxLength(100, 'protected:parent-details.given-name-error.max-length-error'),
+                  v.regex(REGEX_PATTERNS.NON_DIGIT, 'protected:parent-details.given-name-error.format-error'),
                 ),
                 lastName: v.pipe(
-                  v.string(t('protected:parent-details.last-name-error.required-error')),
+                  v.string('protected:parent-details.last-name-error.required-error'),
                   v.trim(),
-                  v.nonEmpty(t('protected:parent-details.last-name-error.required-error')),
-                  v.maxLength(100, t('protected:parent-details.last-name-error.max-length-error')),
-                  v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:parent-details.last-name-error.format-error')),
+                  v.nonEmpty('protected:parent-details.last-name-error.required-error'),
+                  v.maxLength(100, 'protected:parent-details.last-name-error.max-length-error'),
+                  v.regex(REGEX_PATTERNS.NON_DIGIT, 'protected:parent-details.last-name-error.format-error'),
                 ),
                 birthLocation: v.variant(
                   'country',
@@ -93,60 +94,60 @@ export async function action({ context, params, request }: Route.ActionArgs) {
                     v.object({
                       country: v.literal(
                         serverEnvironment.PP_CANADA_COUNTRY_CODE,
-                        t('protected:parent-details.country-error.invalid-country'),
+                        'protected:parent-details.country-error.invalid-country',
                       ),
                       province: v.picklist(
                         provinceService.getProvinces().map(({ id }) => id),
-                        t('protected:parent-details.province-error.required-province'),
+                        'protected:parent-details.province-error.required-province',
                       ),
                       city: v.pipe(
-                        v.string(t('protected:parent-details.city-error.required-city')),
+                        v.string('protected:parent-details.city-error.required-city'),
                         v.trim(),
-                        v.nonEmpty(t('protected:parent-details.city-error.required-city')),
-                        v.maxLength(100, t('protected:parent-details.city-error.invalid-city')),
-                        v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:parent-details.city-error.invalid-city')),
+                        v.nonEmpty('protected:parent-details.city-error.required-city'),
+                        v.maxLength(100, 'protected:parent-details.city-error.invalid-city'),
+                        v.regex(REGEX_PATTERNS.NON_DIGIT, 'protected:parent-details.city-error.invalid-city'),
                       ),
                     }),
                     v.object({
                       country: v.pipe(
-                        v.string(t('protected:parent-details.country-error.required-country')),
-                        v.nonEmpty(t('protected:parent-details.country-error.required-country')),
+                        v.string('protected:parent-details.country-error.required-country'),
+                        v.nonEmpty('protected:parent-details.country-error.required-country'),
                         v.excludes(
                           serverEnvironment.PP_CANADA_COUNTRY_CODE,
-                          t('protected:parent-details.country-error.invalid-country'),
+                          'protected:parent-details.country-error.invalid-country',
                         ),
                         v.picklist(
                           countryService.getCountries().map(({ id }) => id),
-                          t('protected:parent-details.country-error.invalid-country'),
+                          'protected:parent-details.country-error.invalid-country',
                         ),
                       ),
                       province: v.optional(
                         v.pipe(
-                          v.string(t('protected:parent-details.province-error.required-province')),
+                          v.string('protected:parent-details.province-error.required-province'),
                           v.trim(),
-                          v.nonEmpty(t('protected:parent-details.province-error.required-province')),
-                          v.maxLength(100, t('protected:parent-details.province-error.invalid-province')),
-                          v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:parent-details.province-error.invalid-province')),
+                          v.nonEmpty('protected:parent-details.province-error.required-province'),
+                          v.maxLength(100, 'protected:parent-details.province-error.invalid-province'),
+                          v.regex(REGEX_PATTERNS.NON_DIGIT, 'protected:parent-details.province-error.invalid-province'),
                         ),
                       ),
                       city: v.optional(
                         v.pipe(
-                          v.string(t('protected:parent-details.city-error.required-city')),
+                          v.string('protected:parent-details.city-error.required-city'),
                           v.trim(),
-                          v.nonEmpty(t('protected:parent-details.city-error.required-city')),
-                          v.maxLength(100, t('protected:parent-details.city-error.invalid-city')),
-                          v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:parent-details.city-error.invalid-city')),
+                          v.nonEmpty('protected:parent-details.city-error.required-city'),
+                          v.maxLength(100, 'protected:parent-details.city-error.invalid-city'),
+                          v.regex(REGEX_PATTERNS.NON_DIGIT, 'protected:parent-details.city-error.invalid-city'),
                         ),
                       ),
                     }),
                   ],
-                  t('protected:parent-details.country-error.required-country'),
+                  'protected:parent-details.country-error.required-country',
                 ),
               }),
             ],
-            t('protected:parent-details.details-unavailable'),
+            'protected:parent-details.details-unavailable',
           ),
-          t('protected:parent-details.details-unavailable'),
+          'protected:parent-details.details-unavailable',
         ),
         v.minLength(1),
         v.maxLength(MAX_PARENTS),
@@ -324,7 +325,7 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
         )}
       </div>
       <InputCheckbox
-        errorMessage={errors?.[`${index}.unavailable`]?.at(0)}
+        errorMessage={t(getSingleKey(errors?.[`${index}.unavailable`]))}
         id={`${index}-unavailable-id`}
         name={`${index}-unavailable`}
         defaultChecked={unavailable}
@@ -337,7 +338,7 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
       {!unavailable && (
         <>
           <InputField
-            errorMessage={errors?.[`${index}.givenName`]?.at(0)}
+            errorMessage={t(getSingleKey(errors?.[`${index}.givenName`]))}
             label={t('protected:parent-details.given-name')}
             name={`${index}-given-name`}
             defaultValue={defaultValues?.givenName}
@@ -346,7 +347,7 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
             className="w-full rounded-sm sm:w-104"
           />
           <InputField
-            errorMessage={errors?.[`${index}.lastName`]?.at(0)}
+            errorMessage={t(getSingleKey(errors?.[`${index}.lastName`]))}
             label={t('protected:parent-details.last-name')}
             name={`${index}-last-name`}
             defaultValue={defaultValues?.lastName}
@@ -355,7 +356,7 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
             className="w-full rounded-sm sm:w-104"
           />
           <InputSelect
-            errorMessage={errors?.[`${index}.birthLocation.country`]?.at(0)}
+            errorMessage={t(getSingleKey(errors?.[`${index}.birthLocation.country`]))}
             className="w-full rounded-sm sm:w-104"
             id={`${index}-country-id`}
             name={`${index}-country`}
@@ -366,7 +367,7 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
           />
           {country == globalThis.__appEnvironment.PP_CANADA_COUNTRY_CODE ? (
             <InputSelect
-              errorMessage={errors?.[`${index}.birthLocation.province`]?.at(0)}
+              errorMessage={t(getSingleKey(errors?.[`${index}.birthLocation.province`]))}
               className="w-full rounded-sm sm:w-104"
               id={`${index}-province-id`}
               name={`${index}-province`}
@@ -377,7 +378,7 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
             />
           ) : (
             <InputField
-              errorMessage={errors?.[`${index}.birthLocation.province`]?.at(0)}
+              errorMessage={t(getSingleKey(errors?.[`${index}.birthLocation.province`]))}
               className="w-full rounded-sm sm:w-104"
               label={t('protected:parent-details.province')}
               name={`${index}-province`}
@@ -386,7 +387,7 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
             />
           )}
           <InputField
-            errorMessage={errors?.[`${index}.birthLocation.city`]?.at(0)}
+            errorMessage={t(getSingleKey(errors?.[`${index}.birthLocation.city`]))}
             className="w-full rounded-sm sm:w-104"
             label={t('protected:parent-details.city')}
             name={`${index}-city`}

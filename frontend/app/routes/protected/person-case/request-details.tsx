@@ -30,6 +30,7 @@ import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine';
 import type { RequestDetailsData } from '~/routes/protected/person-case/types';
+import { getSingleKey } from '~/utils/i18n-utils';
 
 const log = LogFactory.getLogger(import.meta.url);
 
@@ -61,16 +62,16 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     }
 
     case 'next': {
-      const { lang, t } = await getTranslation(request, handle.i18nNamespace);
+      const { lang } = await getTranslation(request, handle.i18nNamespace);
 
       const schema = v.object({
         scenario: v.picklist(
           getApplicationSubmissionScenarios().map(({ id }) => id),
-          t('protected:request-details.required-scenario'),
+          'protected:request-details.required-scenario',
         ),
         type: v.picklist(
           getTypesOfApplicationToSubmit().map(({ id }) => id),
-          t('protected:request-details.required-request'),
+          'protected:request-details.required-request',
         ),
       }) satisfies v.GenericSchema<RequestDetailsData>;
 
@@ -151,7 +152,7 @@ export default function RequestDetails({ loaderData, actionData, params }: Route
               name="scenario"
               options={scenarioOptions}
               required
-              errorMessage={errors?.scenario?.at(0)}
+              errorMessage={t(getSingleKey(errors?.scenario))}
             />
             <InputSelect
               className="w-max rounded-sm"
@@ -160,7 +161,7 @@ export default function RequestDetails({ loaderData, actionData, params }: Route
               label={t('protected:request-details.type-request')}
               defaultValue={loaderData.defaultFormValues?.type ?? ''}
               options={requestOptions}
-              errorMessage={errors?.type?.at(0)}
+              errorMessage={t(getSingleKey(errors?.type))}
             />
           </div>
           <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">

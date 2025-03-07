@@ -26,6 +26,7 @@ import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine';
 import type { BirthDetailsData } from '~/routes/protected/person-case/types';
+import { getSingleKey } from '~/utils/i18n-utils';
 import { REGEX_PATTERNS } from '~/utils/regex-utils';
 import { trimToUndefined } from '~/utils/string-utils';
 
@@ -61,58 +62,58 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     }
 
     case 'next': {
-      const { lang, t } = await getTranslation(request, handle.i18nNamespace);
+      const { lang } = await getTranslation(request, handle.i18nNamespace);
 
       const schema = v.variant(
         'country',
         [
           v.object({
-            country: v.literal(serverEnvironment.PP_CANADA_COUNTRY_CODE, t('protected:birth-details.country.invalid-country')),
+            country: v.literal(serverEnvironment.PP_CANADA_COUNTRY_CODE, 'protected:birth-details.country.invalid-country'),
             province: v.picklist(
               provinceService.getProvinces().map(({ id }) => id),
-              t('protected:birth-details.province.required-province'),
+              'protected:birth-details.province.required-province',
             ),
             city: v.pipe(
-              v.string(t('protected:birth-details.city.required-city')),
+              v.string('protected:birth-details.city.required-city'),
               v.trim(),
-              v.nonEmpty(t('protected:birth-details.city.required-city')),
-              v.maxLength(100, t('protected:birth-details.city.invalid-city')),
-              v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:birth-details.city.invalid-city')),
+              v.nonEmpty('protected:birth-details.city.required-city'),
+              v.maxLength(100, 'protected:birth-details.city.invalid-city'),
+              v.regex(REGEX_PATTERNS.NON_DIGIT, 'protected:birth-details.city.invalid-city'),
             ),
-            fromMultipleBirth: v.boolean(t('protected:birth-details.from-multiple.required-from-multiple')),
+            fromMultipleBirth: v.boolean('protected:birth-details.from-multiple.required-from-multiple'),
           }),
           v.object({
             country: v.pipe(
-              v.string(t('protected:birth-details.country.required-country')),
-              v.nonEmpty(t('protected:birth-details.country.required-country')),
-              v.excludes(serverEnvironment.PP_CANADA_COUNTRY_CODE, t('protected:birth-details.country.invalid-country')),
+              v.string('protected:birth-details.country.required-country'),
+              v.nonEmpty('protected:birth-details.country.required-country'),
+              v.excludes(serverEnvironment.PP_CANADA_COUNTRY_CODE, 'protected:birth-details.country.invalid-country'),
               v.picklist(
                 countryService.getCountries().map(({ id }) => id),
-                t('protected:birth-details.country.invalid-country'),
+                'protected:birth-details.country.invalid-country',
               ),
             ),
             province: v.optional(
               v.pipe(
-                v.string(t('protected:birth-details.province.required-province')),
+                v.string('protected:birth-details.province.required-province'),
                 v.trim(),
-                v.nonEmpty(t('protected:birth-details.province.required-province')),
-                v.maxLength(100, t('protected:birth-details.province.invalid-province')),
-                v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:birth-details.province.invalid-province')),
+                v.nonEmpty('protected:birth-details.province.required-province'),
+                v.maxLength(100, 'protected:birth-details.province.invalid-province'),
+                v.regex(REGEX_PATTERNS.NON_DIGIT, 'protected:birth-details.province.invalid-province'),
               ),
             ),
             city: v.optional(
               v.pipe(
-                v.string(t('protected:birth-details.city.required-city')),
+                v.string('protected:birth-details.city.required-city'),
                 v.trim(),
-                v.nonEmpty(t('protected:birth-details.city.required-city')),
-                v.maxLength(100, t('protected:birth-details.city.invalid-city')),
-                v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:birth-details.city.invalid-city')),
+                v.nonEmpty('protected:birth-details.city.required-city'),
+                v.maxLength(100, 'protected:birth-details.city.invalid-city'),
+                v.regex(REGEX_PATTERNS.NON_DIGIT, 'protected:birth-details.city.invalid-city'),
               ),
             ),
-            fromMultipleBirth: v.boolean(t('protected:birth-details.from-multiple.required-from-multiple')),
+            fromMultipleBirth: v.boolean('protected:birth-details.from-multiple.required-from-multiple'),
           }),
         ],
-        t('protected:birth-details.country.required-country'),
+        'protected:birth-details.country.required-country',
       ) satisfies v.GenericSchema<BirthDetailsData>;
 
       const input = {
@@ -206,7 +207,7 @@ export default function BirthDetails({ actionData, loaderData, matches, params }
             <InputSelect
               id="country-id"
               name="country"
-              errorMessage={errors?.country?.at(0)}
+              errorMessage={t(getSingleKey(errors?.country))}
               defaultValue={loaderData.defaultFormValues?.country ?? ''}
               required
               options={countryOptions}
@@ -223,13 +224,13 @@ export default function BirthDetails({ actionData, loaderData, matches, params }
                     label={t('protected:birth-details.province.label')}
                     name="province"
                     options={provinceTerritoryStateOptions}
-                    errorMessage={errors?.province?.at(0)}
+                    errorMessage={t(getSingleKey(errors?.province))}
                     defaultValue={loaderData.defaultFormValues?.province}
                     required
                   />
                 ) : (
                   <InputField
-                    errorMessage={errors?.province?.at(0)}
+                    errorMessage={t(getSingleKey(errors?.province))}
                     label={t('protected:birth-details.province.label')}
                     name="province"
                     defaultValue={loaderData.defaultFormValues?.province}
@@ -239,7 +240,7 @@ export default function BirthDetails({ actionData, loaderData, matches, params }
                   />
                 )}
                 <InputField
-                  errorMessage={errors?.city?.at(0)}
+                  errorMessage={t(getSingleKey(errors?.city))}
                   label={t('protected:birth-details.city.label')}
                   name="city"
                   defaultValue={loaderData.defaultFormValues?.city}
@@ -253,7 +254,7 @@ export default function BirthDetails({ actionData, loaderData, matches, params }
                   name="from-multiple"
                   options={fromMultipleBirthOptions}
                   required
-                  errorMessage={errors?.fromMultipleBirth?.at(0)}
+                  errorMessage={t(getSingleKey(errors?.fromMultipleBirth))}
                 />
               </>
             )}

@@ -29,6 +29,7 @@ import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine';
 import type { SecondaryDocumentData } from '~/routes/protected/person-case/types';
 import { getStartOfDayInTimezone } from '~/utils/date-utils';
+import { getSingleKey } from '~/utils/i18n-utils';
 
 const log = LogFactory.getLogger(import.meta.url);
 
@@ -60,24 +61,24 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     }
 
     case 'next': {
-      const { lang, t } = await getTranslation(request, handle.i18nNamespace);
+      const { lang } = await getTranslation(request, handle.i18nNamespace);
       const currentDate = getStartOfDayInTimezone(serverEnvironment.BASE_TIMEZONE);
       const schema = v.pipe(
         v.object({
           documentType: v.picklist(
             getApplicantSecondaryDocumentChoices().map(({ id }) => id),
-            t('protected:secondary-identity-document.document-type.invalid'),
+            'protected:secondary-identity-document.document-type.invalid',
           ),
           expiryYear: v.pipe(
-            v.number(t('protected:secondary-identity-document.expiry-date.required-year')),
-            v.integer(t('protected:secondary-identity-document.expiry-date.invalid-year')),
-            v.minValue(currentDate.getFullYear(), t('protected:secondary-identity-document.expiry-date.invalid-year')),
+            v.number('protected:secondary-identity-document.expiry-date.required-year'),
+            v.integer('protected:secondary-identity-document.expiry-date.invalid-year'),
+            v.minValue(currentDate.getFullYear(), 'protected:secondary-identity-document.expiry-date.invalid-year'),
           ),
           expiryMonth: v.pipe(
-            v.number(t('protected:secondary-identity-document.expiry-date.required-month')),
-            v.integer(t('protected:secondary-identity-document.expiry-date.invalid-month')),
-            v.minValue(1, t('protected:secondary-identity-document.expiry-date.invalid-month')),
-            v.maxValue(12, t('protected:secondary-identity-document.expiry-date.invalid-month')),
+            v.number('protected:secondary-identity-document.expiry-date.required-month'),
+            v.integer('protected:secondary-identity-document.expiry-date.invalid-month'),
+            v.minValue(1, 'protected:secondary-identity-document.expiry-date.invalid-month'),
+            v.maxValue(12, 'protected:secondary-identity-document.expiry-date.invalid-month'),
           ),
         }),
         v.forward(
@@ -86,7 +87,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
             (input) =>
               input.expiryYear > currentDate.getFullYear() ||
               (input.expiryYear === currentDate.getFullYear() && input.expiryMonth >= currentDate.getMonth()),
-            t('protected:secondary-identity-document.expiry-date.invalid'),
+            'protected:secondary-identity-document.expiry-date.invalid',
           ),
           ['expiryMonth'],
         ),
@@ -160,7 +161,7 @@ export default function SecondaryDoc({ loaderData, actionData, params }: Route.C
               name="document-type"
               options={docOptions}
               required
-              errorMessage={errors?.documentType?.at(0)}
+              errorMessage={t(getSingleKey(errors?.documentType))}
             />
             <DatePickerField
               defaultMonth={loaderData.defaultFormValues?.expiryMonth}
@@ -173,8 +174,8 @@ export default function SecondaryDoc({ loaderData, actionData, params }: Route.C
                 year: 'expiry-year',
               }}
               errorMessages={{
-                year: errors?.expiryYear?.at(0),
-                month: errors?.expiryMonth?.at(0),
+                year: t(getSingleKey(errors?.expiryYear)),
+                month: t(getSingleKey(errors?.expiryMonth)),
               }}
             />
             <InputFile
@@ -186,7 +187,7 @@ export default function SecondaryDoc({ loaderData, actionData, params }: Route.C
               required
               /*
               TODO: Enable file upload
-              errorMessage={errors?.document?.at(0)}
+              errorMessage={t(getSingleKey(errors?.document))}
               */
             />
           </div>

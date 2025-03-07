@@ -28,6 +28,7 @@ import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine';
 import type { ContactInformationData } from '~/routes/protected/person-case/types';
+import { getSingleKey } from '~/utils/i18n-utils';
 
 const log = LogFactory.getLogger(import.meta.url);
 
@@ -59,18 +60,18 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     }
 
     case 'next': {
-      const { lang, t } = await getTranslation(request, handle.i18nNamespace);
+      const { lang } = await getTranslation(request, handle.i18nNamespace);
 
       const schema = v.intersect([
         v.object({
           preferredLanguage: v.picklist(
             languageCorrespondenceService.getLanguagesOfCorrespondence().map(({ id }) => id),
-            t('protected:contact-information.error-messages.preferred-language-required'),
+            'protected:contact-information.error-messages.preferred-language-required',
           ),
           primaryPhoneNumber: v.pipe(
             v.string(),
             v.trim(),
-            v.nonEmpty(t('protected:contact-information.error-messages.primary-phone-required')),
+            v.nonEmpty('protected:contact-information.error-messages.primary-phone-required'),
             v.transform((val) => parsePhoneNumberWithError(val, 'CA').formatInternational().replace(/ /g, '')),
           ),
           secondaryPhoneNumber: v.optional(
@@ -81,11 +82,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
             ),
           ),
           emailAddress: v.optional(
-            v.pipe(
-              v.string(),
-              v.trim(),
-              v.email(t('protected:contact-information.error-messages.email-address-invalid-format')),
-            ),
+            v.pipe(v.string(), v.trim(), v.email('protected:contact-information.error-messages.email-address-invalid-format')),
           ),
         }),
         v.variant(
@@ -95,41 +92,41 @@ export async function action({ context, params, request }: Route.ActionArgs) {
               country: v.literal(serverEnvironment.PP_CANADA_COUNTRY_CODE),
               province: v.picklist(
                 provinceService.getProvinces().map(({ id }) => id),
-                t('protected:contact-information.error-messages.province-required'),
+                'protected:contact-information.error-messages.province-required',
               ),
               address: v.pipe(
                 v.string(),
                 v.trim(),
-                v.nonEmpty(t('protected:contact-information.error-messages.address-required')),
+                v.nonEmpty('protected:contact-information.error-messages.address-required'),
               ),
               postalCode: v.pipe(
                 v.string(),
                 v.trim(),
-                v.nonEmpty(t('protected:contact-information.error-messages.postal-code-required')),
+                v.nonEmpty('protected:contact-information.error-messages.postal-code-required'),
               ),
-              city: v.pipe(v.string(), v.trim(), v.nonEmpty(t('protected:contact-information.error-messages.city-required'))),
+              city: v.pipe(v.string(), v.trim(), v.nonEmpty('protected:contact-information.error-messages.city-required')),
             }),
             v.object({
               country: v.picklist(countryService.getCountries().map(({ id }) => id)),
               province: v.pipe(
                 v.string(),
                 v.trim(),
-                v.nonEmpty(t('protected:contact-information.error-messages.province-required')),
+                v.nonEmpty('protected:contact-information.error-messages.province-required'),
               ),
               address: v.pipe(
                 v.string(),
                 v.trim(),
-                v.nonEmpty(t('protected:contact-information.error-messages.address-required')),
+                v.nonEmpty('protected:contact-information.error-messages.address-required'),
               ),
               postalCode: v.pipe(
                 v.string(),
                 v.trim(),
-                v.nonEmpty(t('protected:contact-information.error-messages.postal-code-required')),
+                v.nonEmpty('protected:contact-information.error-messages.postal-code-required'),
               ),
-              city: v.pipe(v.string(), v.trim(), v.nonEmpty(t('protected:contact-information.error-messages.city-required'))),
+              city: v.pipe(v.string(), v.trim(), v.nonEmpty('protected:contact-information.error-messages.city-required')),
             }),
           ],
-          t('protected:contact-information.error-messages.country-required'),
+          'protected:contact-information.error-messages.country-required',
         ),
       ]) satisfies v.GenericSchema<ContactInformationData>;
 
@@ -223,7 +220,7 @@ export default function ContactInformation({ loaderData, actionData, params }: R
               legend={t('protected:contact-information.preferred-language-label')}
               name="preferredLanguage"
               options={languageOptions}
-              errorMessage={errors?.preferredLanguage?.at(0)}
+              errorMessage={t(getSingleKey(errors?.preferredLanguage))}
               required
             />
             <InputPhoneField
@@ -232,7 +229,7 @@ export default function ContactInformation({ loaderData, actionData, params }: R
               name="primaryPhoneNumber"
               type="tel"
               inputMode="tel"
-              errorMessage={errors?.primaryPhoneNumber?.at(0)}
+              errorMessage={t(getSingleKey(errors?.primaryPhoneNumber))}
               defaultValue={loaderData.defaultFormValues?.primaryPhoneNumber}
               required
             />
@@ -242,7 +239,7 @@ export default function ContactInformation({ loaderData, actionData, params }: R
               name="secondaryPhoneNumber"
               type="tel"
               inputMode="tel"
-              errorMessage={errors?.secondaryPhoneNumber?.at(0)}
+              errorMessage={t(getSingleKey(errors?.secondaryPhoneNumber))}
               defaultValue={loaderData.defaultFormValues?.secondaryPhoneNumber}
             />
             <div className="max-w-prose">
@@ -253,7 +250,7 @@ export default function ContactInformation({ loaderData, actionData, params }: R
                 label={t('protected:contact-information.email-label')}
                 name="emailAddress"
                 className="w-full"
-                errorMessage={errors?.emailAddress?.at(0)}
+                errorMessage={t(getSingleKey(errors?.emailAddress))}
                 defaultValue={loaderData.defaultFormValues?.emailAddress}
               />
             </div>
@@ -264,7 +261,7 @@ export default function ContactInformation({ loaderData, actionData, params }: R
               name="country"
               label={t('protected:contact-information.country-select-label')}
               options={countryOptions}
-              errorMessage={errors?.country?.at(0)}
+              errorMessage={t(getSingleKey(errors?.country))}
               defaultValue={loaderData.defaultFormValues?.country}
               onChange={({ target }) => setCountry(target.value)}
               required
@@ -277,7 +274,7 @@ export default function ContactInformation({ loaderData, actionData, params }: R
                   helpMessagePrimary={t('protected:contact-information.address-help-message')}
                   name="address"
                   className="w-full"
-                  errorMessage={errors?.address?.at(0)}
+                  errorMessage={t(getSingleKey(errors?.address))}
                   defaultValue={loaderData.defaultFormValues?.address}
                   required
                 />
@@ -285,7 +282,7 @@ export default function ContactInformation({ loaderData, actionData, params }: R
                   id="postal-code"
                   label={t('protected:contact-information.postal-code-label')}
                   name="postalCode"
-                  errorMessage={errors?.postalCode?.at(0)}
+                  errorMessage={t(getSingleKey(errors?.postalCode))}
                   defaultValue={loaderData.defaultFormValues?.postalCode}
                   required
                 />
@@ -294,7 +291,7 @@ export default function ContactInformation({ loaderData, actionData, params }: R
                   label={t('protected:contact-information.city-label')}
                   name="city"
                   className="w-full"
-                  errorMessage={errors?.city?.at(0)}
+                  errorMessage={t(getSingleKey(errors?.city))}
                   defaultValue={loaderData.defaultFormValues?.city}
                   required
                 />
@@ -305,7 +302,7 @@ export default function ContactInformation({ loaderData, actionData, params }: R
                     label={t('protected:contact-information.canada-province-label')}
                     name="province"
                     options={provinceTerritoryStateOptions}
-                    errorMessage={errors?.province?.at(0)}
+                    errorMessage={t(getSingleKey(errors?.province))}
                     defaultValue={loaderData.defaultFormValues?.province}
                     required
                   />
@@ -315,7 +312,7 @@ export default function ContactInformation({ loaderData, actionData, params }: R
                     label={t('protected:contact-information.other-country-province-label')}
                     name="province"
                     className="w-full"
-                    errorMessage={errors?.province?.at(0)}
+                    errorMessage={t(getSingleKey(errors?.province))}
                     defaultValue={loaderData.defaultFormValues?.province}
                     required
                   />

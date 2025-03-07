@@ -1,6 +1,6 @@
 import type { RouteModule } from 'react-router';
 
-import type { Namespace } from 'i18next';
+import type { Namespace, ResourceKey } from 'i18next';
 
 /**
  * Returns the i81n namespace required by the given routes by examining the route's i18nNamespace handle property.
@@ -67,4 +67,17 @@ function getLanguageFromPath(pathname: string): Language | undefined {
       return undefined;
     }
   }
+}
+
+/**
+ * Retrieves a ResourceKey from a list of strings.
+ * @param stringList - A list of strings, where each string may represent a Resource key.
+ * @param index - An optional index to select a specific element (defaults to the first element).
+ * @returns A ResourceKey from the string list, or undefined if no key is found.
+ */
+export function getSingleKey(
+  stringList: [string, ...string[]] | undefined,
+  index: number | undefined = 0,
+): ResourceKey | undefined {
+  return stringList?.at(index);
 }
