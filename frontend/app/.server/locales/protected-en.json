@@ -224,18 +224,22 @@
     "name-added-aria-label": "Name added: {{name}}, Activate to remove name",
     "removed-name-sr-message": "Name removed: {{name}}",
     "first-name-previously-used": {
+      "format": "Other first name must contain letters only.",
       "help-message-primary": "Type a name into the field and press Enter or click \"Add Name\" to save it.",
-      "label": "Other first names previously used"
+      "label": "Other first names previously used",
+      "max-length": "Other first name must contain at most {{maximum}} character(s)."
     },
     "last-name-at-birth": {
-      "format": "Last name must contain letters only.",
+      "format": "Last name at birth must contain letters only.",
       "label": "Last name at birth",
-      "max-length": "Last name must contain at most {{maximum}} character(s).",
+      "max-length": "Last name at birth must contain at most {{maximum}} character(s).",
       "required": "Last name is required."
     },
     "last-name-previously-used": {
+      "format": "Other last name must contain letters only.",
       "help-message-primary": "Type a name into the field and press Enter or click \"Add Name\" to save it.",
-      "label": "Other last names previously used"
+      "label": "Other last names previously used",
+      "max-length": "Other last name must contain at most {{maximum}} character(s)."
     },
     "gender": {
       "label": "Gender",

@@ -225,8 +225,10 @@
     "name-added-aria-label": "Nom ajouté\u00a0: {{name}}, Activez pour supprimer le nom",
     "removed-name-sr-message": "Nom supprimé\u00a0: {{name}}",
     "first-name-previously-used": {
+      "format": "Le prénom doit contenir uniquement des lettres.",
       "help-message-primary": "Tapez un nom dans le champ et appuyez sur Entrée ou cliquez sur «\u00a0Ajouter un nom\u00a0» pour l'enregistrer.",
-      "label": "Autres prénoms précédemment utilisés"
+      "label": "Autres prénoms précédemment utilisés",
+      "max-length": "Le prénom doit contenir au maximum {{maximum}} caractère(s)."
     },
     "last-name-at-birth": {
       "format": "Le nom de famille doit contenir uniquement des lettres.",
@@ -235,8 +237,10 @@
       "required": "Le nom de famille est requis."
     },
     "last-name-previously-used": {
+      "format": "Le nom de famille doit contenir uniquement des lettres.",
       "help-message-primary": "Tapez un nom dans le champ et appuyez sur Entrée ou cliquez sur «\u00a0Ajouter un nom\u00a0» pour l'enregistrer.",
-      "label": "Autres noms de famille précédemment utilisés"
+      "label": "Autres noms de famille précédemment utilisés",
+      "max-length": "Le nom de famille doit contenir au maximum {{maximum}} caractère(s)."
     },
     "gender": {
       "label": "Genre",
