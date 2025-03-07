@@ -34,14 +34,11 @@
     "resources": "ressources i18n chargées depuis : <mark>{{resource}}</mark>"
   },
   "person-case": {
-    "page-title": "Cas en personne",
     "abandon-button": "Abandonner",
-    "add-button": "Ajouter un prénom",
+    "create-case-button": "Créer un dossier",
     "previous": "Précédent",
     "next": "Suivant",
-    "refer-button": "Parrainer",
-    "first-name": "Entrez le prénom",
-    "last-name": "Entrez le nom de famille"
+    "refer-button": "Parrainer"
   },
   "privacy-statement": {
     "confirm-privacy-notice-checkbox": {

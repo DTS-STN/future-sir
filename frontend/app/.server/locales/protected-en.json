@@ -34,14 +34,11 @@
     "resources": "i18n resources loaded from: <mark>{{resource}}</mark>"
   },
   "person-case": {
-    "page-title": "In person case",
     "abandon-button": "Abandon",
-    "add-button": "Add first name",
+    "create-case-button": "Create case",
     "previous": "Previous",
     "next": "Next",
-    "refer-button": "Refer",
-    "first-name": "Enter first name",
-    "last-name": "Enter last name"
+    "refer-button": "Refer"
   },
   "privacy-statement": {
     "confirm-privacy-notice-checkbox": {
