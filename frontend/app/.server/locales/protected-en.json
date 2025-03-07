@@ -392,6 +392,11 @@
     "final-check": "Final check",
     "first-time": "You are processing a first-time SIN request.",
     "before-processing": "Before processing the transaction, ensure that you have followed the SIN Application Review Process (SARP).",
+    "warnings": {
+      "heading": "Warnings",
+      "following-warnings": "Based on the data entered, the system has retrieved the following warning(s):",
+      "multiple-births": "The applicant's SIN record shows he or she is a part of a multiple birth. Ensure that you have identified the correct SIN record."
+    },
     "declaration": "Declaration",
     "all-transactions": "All transactions that you process will be recorded and could be used for quality monitoring. You are accountable for all transactions that are processed using your usercode. You must not process applications for family members or other persons with whom you have a personal relationship.",
     "declaration-checkbox-label": "I have considered all criteria relating to the SARP, as well as any warning messages displayed above, if applicable. I judge this application to be legitimate, accurate, complete, and meeting all program requirements. I have no personal relationship to this applicant.",
