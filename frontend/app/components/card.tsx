@@ -1,4 +1,4 @@
-import type { HTMLProps, JSX } from 'react';
+import type { ComponentProps, JSX } from 'react';
 
 import type { FlipProp, IconProp } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -6,7 +6,7 @@ import { Slot } from '@radix-ui/react-slot';
 
 import { cn } from '~/utils/tailwind-utils';
 
-type CardProps = HTMLProps<HTMLDivElement> & {
+type CardProps = ComponentProps<'div'> & {
   /**
    * Use the asChild prop to change the default rendered element for the one passed
    * as a child, merging their props and behavior. Useful for rendering links.
@@ -19,9 +19,10 @@ type CardProps = HTMLProps<HTMLDivElement> & {
  * It supports various customization options.
  */
 export function Card({ className, asChild, ...props }: CardProps): JSX.Element {
-  const Comp = asChild ? Slot : 'div';
+  const Component = asChild ? Slot : 'div';
+
   return (
-    <Comp
+    <Component
       className={cn(
         'group block rounded-xs border bg-white shadow-xs [&:is(a)]:hover:bg-gray-50 [&:is(a)]:hover:shadow-md',
         className,
@@ -34,11 +35,11 @@ export function Card({ className, asChild, ...props }: CardProps): JSX.Element {
 /**
  * CardHeader component renders the header section of a card.
  */
-export function CardHeader({ className, ...props }: HTMLProps<HTMLDivElement>) {
+export function CardHeader({ className, ...props }: ComponentProps<'div'>) {
   return <div className={cn('flex flex-col space-y-1.5 p-6', className)} {...props} />;
 }
 
-type CardTitleProps = HTMLProps<HTMLHeadingElement> & {
+type CardTitleProps = ComponentProps<'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'> & {
   /**
    * Use the asChild prop to change the default rendered element for the one passed as a child, merging their props and behavior.
    */
@@ -50,9 +51,10 @@ type CardTitleProps = HTMLProps<HTMLHeadingElement> & {
  * It supports optional child rendering.
  */
 export function CardTitle({ asChild, className, ...props }: CardTitleProps) {
-  const Comp = asChild ? Slot : 'h3';
+  const Component = asChild ? Slot : 'h3';
+
   return (
-    <Comp
+    <Component
       className={cn(
         'leading-none font-semibold group-[&:is(a)]:text-slate-700 group-[&:is(a)]:underline group-[&:is(a):focus]:text-blue-700 group-[&:is(a):hover]:text-blue-700',
         className,
@@ -65,28 +67,28 @@ export function CardTitle({ asChild, className, ...props }: CardTitleProps) {
 /**
  * CardDescription component renders the description of a card.
  */
-export function CardDescription({ className, ...props }: HTMLProps<HTMLDivElement>) {
+export function CardDescription({ className, ...props }: ComponentProps<'div'>) {
   return <div className={cn('text-sm text-black/60', className)} {...props} />;
 }
 
 /**
  * CardContent component renders the content section of a card.
  */
-export function CardContent({ className, ...props }: HTMLProps<HTMLDivElement>) {
+export function CardContent({ className, ...props }: ComponentProps<'div'>) {
   return <div className={cn('p-6 pt-0', className)} {...props} />;
 }
 
 /**
  * CardFooter component renders the footer section of a card.
  */
-export function CardFooter({ className, ...props }: HTMLProps<HTMLDivElement>) {
+export function CardFooter({ className, ...props }: ComponentProps<'div'>) {
   return <div className={cn('flex items-center p-6 pt-0', className)} {...props} />;
 }
 
 /**
  * CardImage component renders an image in a card.
  */
-export function CardImage({ className, ...props }: HTMLProps<HTMLImageElement>) {
+export function CardImage({ className, ...props }: ComponentProps<'img'>) {
   return (
     <img
       alt=""
@@ -101,11 +103,11 @@ export function CardImage({ className, ...props }: HTMLProps<HTMLImageElement>) 
 /**
  * CardTag component renders a tag in a card.
  */
-export function CardTag({ className, ...props }: HTMLProps<HTMLSpanElement>) {
+export function CardTag({ className, ...props }: ComponentProps<'span'>) {
   return <span className={cn('inline-block bg-cyan-700 px-2 py-1 text-xs text-white', className)} {...props} />;
 }
 
-type CardIconProps = OmitStrict<HTMLProps<HTMLDivElement>, 'children'> & {
+type CardIconProps = OmitStrict<ComponentProps<'div'>, 'children'> & {
   /**
    * FontAwesome icon to be displayed.
    */
