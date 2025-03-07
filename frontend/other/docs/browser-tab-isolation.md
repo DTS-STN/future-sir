@@ -55,7 +55,6 @@ component using the hook will re-render to reflect the updated id. If the hook's
 `navigate` option is `true`, the hook also updates the URL to include the tab
 id.
 
-
 ## Why `useTabId()` is essential: addressing data isolation in multi-tab applications
 
 ### Ensuring unique browser tab identification
@@ -67,7 +66,7 @@ represent a separate user session context**.
 
 Without a mechanism to differentiate between tabs, data associated with one tab
 could inadvertently interfere with or overwrite data in another tab, leading to
-data corruption and a frustrating user experience.  `useTabId()` helps to solve
+data corruption and a frustrating user experience. `useTabId()` helps to solve
 this problem by providing a unique identifier for each tab, effectively
 isolating the data context for each instance of your application.
 
@@ -90,7 +89,7 @@ browser. This isolation is critical for:
 If the application relies on a single, non-unique session storage location (or
 similar shared storage) to manage data for multi-page flows, we run the risk of
 data clobbering. This occurs when multiple tabs or windows of your application
-attempt to read and write data to the same storage location simultaneously.  The
+attempt to read and write data to the same storage location simultaneously. The
 result is unpredictable and often leads to one tab's data overwriting or
 corrupting another's.
 
@@ -100,18 +99,18 @@ Imagine a user completing a multi-page application form and, as many users do,
 they open a second tab to potentially refer back to an earlier page or compare
 information. Let's illustrate what can go wrong without `useTabId()`:
 
-1. **Tab A: *--form in progress--*:** the user opens the application in Tab A
+1. **Tab A: _--form in progress--_:** the user opens the application in Tab A
    and begins filling out a multi-page form. They complete the first page and
    navigate to the second page. The data entered so far is stored in session
    storage (without a unique tab id).
-1. **Tab B: *--new form instance--*:** the user opens a new tab (Tab B) and
+1. **Tab B: _--new form instance--_:** the user opens a new tab (Tab B) and
    navigates to the same application form. They also start filling out the first
    page of the form in this new tab.
 1. **‼ DATA COLLISION ‼:** because there's no unique tab identification, both Tab A
    and Tab B are potentially using the same session storage key to save form
    data. When the user in Tab B enters data on the first page, this new data
    overwrites the data previously saved by Tab A in session storage.
-1. **Tab A: *--‼ DATA CORRUPTION ‼--* 😱:** when the user returns to Tab A (where
+1. **Tab A: _--‼ DATA CORRUPTION ‼--_ 😱:** when the user returns to Tab A (where
    they were on the second page of the form), they may now find that the form
    fields are populated with the data they entered in Tab B, or even with a
    corrupted or incomplete state. This leads to significant confusion, data
