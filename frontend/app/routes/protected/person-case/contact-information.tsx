@@ -3,7 +3,6 @@ import { useId, useState } from 'react';
 import type { RouteHandle } from 'react-router';
 import { data, redirect, useFetcher } from 'react-router';
 
-import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import * as v from 'valibot';
 
@@ -25,7 +24,7 @@ import { PageTitle } from '~/components/page-title';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { getTranslation } from '~/i18n-config.server';
-import { handle as parentHandle } from '~/routes/protected/layout';
+import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import type { ContactInformationData } from '~/routes/protected/person-case/state-machine';
 import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine';
 
@@ -150,11 +149,6 @@ export async function action({ context, params, request }: Route.ActionArgs) {
       break;
     }
 
-    case 'abandon': {
-      machineActor.send({ type: 'cancel' });
-      break;
-    }
-
     default: {
       throw new AppError(`Unrecognized action: ${action}`, ErrorCodes.UNRECOGNIZED_ACTION);
     }
@@ -180,8 +174,10 @@ export async function loader({ context, request }: Route.LoaderArgs) {
 
 export default function ContactInformation({ loaderData, actionData, params }: Route.ComponentProps) {
   const { t } = useTranslation(handle.i18nNamespace);
+
   const fetcherKey = useId();
   const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
+
   const isSubmitting = fetcher.state !== 'idle';
   const errors = fetcher.data?.errors;
 
@@ -207,16 +203,11 @@ export default function ContactInformation({ loaderData, actionData, params }: R
   }));
 
   return (
-    <div className="max-w-prose">
+    <>
+      <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:contact-information.page-title')}</PageTitle>
+
       <FetcherErrorSummary fetcherKey={fetcherKey}>
         <fetcher.Form method="post" noValidate>
-          <div className="flex justify-end">
-            <Button name="action" value="abandon" id="abandon-button" endIcon={faXmark} variant="link">
-              {t('protected:person-case.abandon-button')}
-            </Button>
-          </div>
-          <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:contact-information.page-title')}</PageTitle>
-
           <div className="space-y-6">
             <h2 className="font-lato text-2xl font-bold">{t('protected:contact-information.correspondence')}</h2>
             <InputRadios
@@ -246,16 +237,18 @@ export default function ContactInformation({ loaderData, actionData, params }: R
               errorMessage={errors?.secondaryPhoneNumber?.at(0)}
               defaultValue={loaderData.defaultFormValues?.secondaryPhoneNumber}
             />
-            <InputField
-              id="email-address"
-              type="email"
-              inputMode="email"
-              label={t('protected:contact-information.email-label')}
-              name="emailAddress"
-              className="w-full"
-              errorMessage={errors?.emailAddress?.at(0)}
-              defaultValue={loaderData.defaultFormValues?.emailAddress}
-            />
+            <div className="max-w-prose">
+              <InputField
+                id="email-address"
+                type="email"
+                inputMode="email"
+                label={t('protected:contact-information.email-label')}
+                name="emailAddress"
+                className="w-full"
+                errorMessage={errors?.emailAddress?.at(0)}
+                defaultValue={loaderData.defaultFormValues?.emailAddress}
+              />
+            </div>
             <h2 className="font-lato text-2xl font-bold">{t('protected:contact-information.mailing-address')}</h2>
             <InputSelect
               className="w-max rounded-sm"
@@ -332,6 +325,6 @@ export default function ContactInformation({ loaderData, actionData, params }: R
           </div>
         </fetcher.Form>
       </FetcherErrorSummary>
-    </div>
+    </>
   );
 }

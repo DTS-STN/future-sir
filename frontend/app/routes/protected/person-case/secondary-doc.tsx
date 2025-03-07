@@ -3,7 +3,6 @@ import { useId } from 'react';
 import type { RouteHandle } from 'react-router';
 import { data, redirect, useFetcher } from 'react-router';
 
-import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import * as v from 'valibot';
 
@@ -26,7 +25,7 @@ import { PageTitle } from '~/components/page-title';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { getTranslation } from '~/i18n-config.server';
-import { handle as parentHandle } from '~/routes/protected/layout';
+import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import type { SecondaryDocumentData } from '~/routes/protected/person-case/state-machine';
 import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine';
 import { getStartOfDayInTimezone } from '~/utils/date-utils';
@@ -69,17 +68,6 @@ export async function action({ context, params, request }: Route.ActionArgs) {
             getApplicantSecondaryDocumentChoices().map(({ id }) => id),
             t('protected:secondary-identity-document.document-type.invalid'),
           ),
-          /*
-        TODO: Enable file upload
-        document: v.pipe(
-          v.file(t('protected:secondary-identity-document.upload-document.required')),
-          v.mimeType(
-            ['image/jpeg', 'image/png', 'image/heic'],
-            t('protected:secondary-identity-document.upload-document.invalid'),
-          ),
-          v.maxSize(maxImageSizeBits),
-        ),
-        */
           expiryYear: v.pipe(
             v.number(t('protected:secondary-identity-document.expiry-date.required-year')),
             v.integer(t('protected:secondary-identity-document.expiry-date.invalid-year')),
@@ -123,11 +111,6 @@ export async function action({ context, params, request }: Route.ActionArgs) {
       break;
     }
 
-    case 'abandon': {
-      machineActor.send({ type: 'cancel' });
-      break;
-    }
-
     default: {
       throw new AppError(`Unrecognized action: ${action}`, ErrorCodes.UNRECOGNIZED_ACTION);
     }
@@ -154,6 +137,7 @@ export default function SecondaryDoc({ loaderData, actionData, params }: Route.C
 
   const fetcherKey = useId();
   const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
+
   const isSubmitting = fetcher.state !== 'idle';
   const errors = fetcher.data?.errors;
 
@@ -165,18 +149,10 @@ export default function SecondaryDoc({ loaderData, actionData, params }: Route.C
 
   return (
     <>
+      <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:secondary-identity-document.page-title')}</PageTitle>
+
       <FetcherErrorSummary fetcherKey={fetcherKey}>
         <fetcher.Form method="post" noValidate encType="multipart/form-data">
-          <div className="flex justify-end">
-            <Button name="action" value="abandon" id="abandon-button" endIcon={faXmark} variant="link">
-              {t('protected:person-case.abandon-button')}
-            </Button>
-          </div>
-
-          <PageTitle subTitle={t('protected:in-person.title')}>
-            {t('protected:secondary-identity-document.page-title')}
-          </PageTitle>
-
           <div className="space-y-10">
             <InputRadios
               id="document-type-id"

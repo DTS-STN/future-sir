@@ -1,10 +1,8 @@
-import type { ChangeEvent } from 'react';
 import { useId, useState } from 'react';
 
 import type { RouteHandle } from 'react-router';
 import { data, redirect, useFetcher } from 'react-router';
 
-import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import type { ResourceKey } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import type { PartialDeep } from 'type-fest';
@@ -25,7 +23,7 @@ import { PageTitle } from '~/components/page-title';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { getTranslation } from '~/i18n-config.server';
-import { handle as parentHandle } from '~/routes/protected/layout';
+import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import type { CurrentNameData } from '~/routes/protected/person-case/state-machine';
 import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine';
 import { REGEX_PATTERNS } from '~/utils/regex-utils';
@@ -156,11 +154,6 @@ export async function action({ context, params, request }: Route.ActionArgs) {
       break;
     }
 
-    case 'abandon': {
-      machineActor.send({ type: 'cancel' });
-      break;
-    }
-
     default: {
       throw new AppError(`Unrecognized action: ${action}`, ErrorCodes.UNRECOGNIZED_ACTION);
     }
@@ -201,41 +194,33 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
   const isSubmitting = fetcher.state !== 'idle';
   const errors = fetcher.data?.errors;
 
-  function handleSameNameChanged(event: ChangeEvent<HTMLInputElement>) {
-    setSameName(event.target.value === REQUIRE_OPTIONS.yes);
-  }
-
   const nameOptions: InputRadiosProps['options'] = [
     {
       children: t('gcweb:input-option.yes'),
       value: REQUIRE_OPTIONS.yes,
       defaultChecked: sameName === true,
-      onChange: handleSameNameChanged,
+      onChange: ({ target }) => setSameName(target.value === REQUIRE_OPTIONS.yes),
     },
     {
       children: t('gcweb:input-option.no'),
       value: REQUIRE_OPTIONS.no,
       defaultChecked: sameName === false,
-      onChange: handleSameNameChanged,
+      onChange: ({ target }) => setSameName(target.value === REQUIRE_OPTIONS.yes),
     },
   ];
-
-  function handleRequireDocChanged(event: ChangeEvent<HTMLInputElement>) {
-    setRequireDoc(event.target.value === REQUIRE_OPTIONS.yes);
-  }
 
   const requireOptions: InputRadiosProps['options'] = [
     {
       children: t('gcweb:input-option.yes'),
       value: REQUIRE_OPTIONS.yes,
       defaultChecked: requireDoc === true,
-      onChange: handleRequireDocChanged,
+      onChange: ({ target }) => setRequireDoc(target.value === REQUIRE_OPTIONS.yes),
     },
     {
       children: t('gcweb:input-option.no'),
       value: REQUIRE_OPTIONS.no,
       defaultChecked: requireDoc === false,
-      onChange: handleRequireDocChanged,
+      onChange: ({ target }) => setRequireDoc(target.value === REQUIRE_OPTIONS.yes),
     },
   ];
 
@@ -251,15 +236,10 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
 
   return (
     <>
+      <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:current-name.page-title')}</PageTitle>
+
       <FetcherErrorSummary fetcherKey={fetcherKey}>
         <fetcher.Form method="post" noValidate>
-          <div className="flex justify-end">
-            <Button name="action" value="abandon" id="abandon-button" endIcon={faXmark} variant="link">
-              {t('protected:person-case.abandon-button')}
-            </Button>
-          </div>
-
-          <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:current-name.page-title')}</PageTitle>
           <p className="mb-4">{t('protected:current-name.recorded-name.description')}</p>
           <ul className="mb-8 list-disc pl-5 font-bold">
             <li>

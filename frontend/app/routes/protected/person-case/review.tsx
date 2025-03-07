@@ -3,7 +3,6 @@ import { useId } from 'react';
 import type { RouteHandle } from 'react-router';
 import { redirect, useFetcher } from 'react-router';
 
-import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import type { ResourceKey } from 'i18next';
 import { useTranslation } from 'react-i18next';
 
@@ -27,7 +26,7 @@ import { PageTitle } from '~/components/page-title';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { getTranslation } from '~/i18n-config.server';
-import { handle as parentHandle } from '~/routes/protected/layout';
+import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import type { InPersonSinApplication } from '~/routes/protected/person-case/state-machine';
 import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine';
 
@@ -159,22 +158,19 @@ export async function loader({ context, request }: Route.LoaderArgs) {
 }
 
 export default function Review({ loaderData, actionData, params }: Route.ComponentProps) {
-  const { inPersonSINCase } = loaderData;
   const { t } = useTranslation(handle.i18nNamespace);
+
   const fetcherKey = useId();
   const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
+
   const isSubmitting = fetcher.state !== 'idle';
+  const { inPersonSINCase } = loaderData;
 
   return (
-    <div className="max-w-prose">
-      <fetcher.Form method="post" noValidate>
-        <div className="flex justify-end">
-          <Button name="action" value="abandon" id="abandon-button" endIcon={faXmark} variant="link">
-            {t('protected:person-case.abandon-button')}
-          </Button>
-        </div>
-        <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:review.page-title')}</PageTitle>
+    <>
+      <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:review.page-title')}</PageTitle>
 
+      <fetcher.Form className="max-w-prose" method="post" noValidate>
         <p className="mb-8 text-lg">{t('protected:review.read-carefully')}</p>
         <div className="space-y-10">
           <PrimaryDocumentData data={inPersonSINCase.primaryDocuments} tabId={loaderData.tabId} />
@@ -206,7 +202,7 @@ export default function Review({ loaderData, actionData, params }: Route.Compone
           </Button>
         </div>
       </fetcher.Form>
-    </div>
+    </>
   );
 }
 

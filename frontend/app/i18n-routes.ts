@@ -131,7 +131,15 @@ export const i18nRoutes = [
         file: 'routes/protected/person-case/layout.tsx',
         children: [
           {
-            id: 'PROT-0004',
+            id: 'INP-0000',
+            file: 'routes/protected/person-case/abandon.tsx',
+            paths: {
+              en: '/en/protected/person-case/abandon',
+              fr: '/fr/protege/cas-personnel/abandonner',
+            },
+          },
+          {
+            id: 'INP-0001',
             file: 'routes/protected/person-case/privacy-statement.tsx',
             paths: {
               en: '/en/protected/person-case/privacy-statement',
@@ -139,7 +147,7 @@ export const i18nRoutes = [
             },
           },
           {
-            id: 'PROT-0005',
+            id: 'INP-0002',
             file: 'routes/protected/person-case/primary-docs.tsx',
             paths: {
               en: '/en/protected/person-case/primary-documents',
@@ -147,7 +155,7 @@ export const i18nRoutes = [
             },
           },
           {
-            id: 'PROT-0006',
+            id: 'INP-0003',
             file: 'routes/protected/person-case/request-details.tsx',
             paths: {
               en: '/en/protected/person-case/request-details',
@@ -155,7 +163,7 @@ export const i18nRoutes = [
             },
           },
           {
-            id: 'PROT-0007',
+            id: 'INP-0004',
             file: 'routes/protected/person-case/current-name.tsx',
             paths: {
               en: '/en/protected/person-case/current-name',
@@ -163,7 +171,7 @@ export const i18nRoutes = [
             },
           },
           {
-            id: 'PROT-0008',
+            id: 'INP-0005',
             file: 'routes/protected/person-case/personal-info.tsx',
             paths: {
               en: '/en/protected/person-case/personal-information',
@@ -171,7 +179,7 @@ export const i18nRoutes = [
             },
           },
           {
-            id: 'PROT-0009',
+            id: 'INP-0006',
             file: 'routes/protected/person-case/secondary-doc.tsx',
             paths: {
               en: '/en/protected/person-case/secondary-document',
@@ -179,7 +187,7 @@ export const i18nRoutes = [
             },
           },
           {
-            id: 'PROT-0010',
+            id: 'INP-0007',
             file: 'routes/protected/person-case/birth-details.tsx',
             paths: {
               en: '/en/protected/person-case/birth-details',
@@ -187,7 +195,7 @@ export const i18nRoutes = [
             },
           },
           {
-            id: 'PROT-0011',
+            id: 'INP-0008',
             file: 'routes/protected/person-case/parent-details.tsx',
             paths: {
               en: '/en/protected/person-case/parent-details',
@@ -195,7 +203,7 @@ export const i18nRoutes = [
             },
           },
           {
-            id: 'PROT-0012',
+            id: 'INP-0009',
             file: 'routes/protected/person-case/previous-sin.tsx',
             paths: {
               en: '/en/protected/person-case/previous-sin',
@@ -203,7 +211,7 @@ export const i18nRoutes = [
             },
           },
           {
-            id: 'PROT-0013',
+            id: 'INP-0010',
             file: 'routes/protected/person-case/contact-information.tsx',
             paths: {
               en: '/en/protected/person-case/contact-information',
@@ -211,7 +219,7 @@ export const i18nRoutes = [
             },
           },
           {
-            id: 'PROT-0014',
+            id: 'INP-0011',
             file: 'routes/protected/person-case/review.tsx',
             paths: {
               en: '/en/protected/person-case/review',

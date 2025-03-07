@@ -22,7 +22,7 @@ import { PageTitle } from '~/components/page-title';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { getTranslation } from '~/i18n-config.server';
-import { handle as parentHandle } from '~/routes/protected/layout';
+import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import type { PersonalInfoData } from '~/routes/protected/person-case/state-machine';
 import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine';
 import { REGEX_PATTERNS } from '~/utils/regex-utils';
@@ -92,11 +92,6 @@ export async function action({ context, params, request }: Route.ActionArgs) {
       break;
     }
 
-    case 'abandon': {
-      machineActor.send({ type: 'cancel' });
-      break;
-    }
-
     default: {
       throw new AppError(`Unrecognized action: ${action}`, ErrorCodes.UNRECOGNIZED_ACTION);
     }
@@ -139,6 +134,7 @@ export default function PersonalInformation({ actionData, loaderData, params, ma
 
   const fetcherKey = useId();
   const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
+
   const isSubmitting = fetcher.state !== 'idle';
   const errors = fetcher.data?.errors;
 
@@ -208,16 +204,10 @@ export default function PersonalInformation({ actionData, loaderData, params, ma
 
   return (
     <>
+      <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:personal-information.page-title')}</PageTitle>
+
       <FetcherErrorSummary fetcherKey={fetcherKey}>
         <fetcher.Form method="post" noValidate={true}>
-          <div className="flex justify-end">
-            <Button name="action" value="abandon" id="abandon-button" endIcon={faXmark} variant="link">
-              {t('protected:person-case.abandon-button')}
-            </Button>
-          </div>
-
-          <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:personal-information.page-title')}</PageTitle>
-
           <div className="flex flex-col space-y-6">
             <div id="other-first-name-input" className="flex space-x-4">
               <InputField
@@ -227,7 +217,7 @@ export default function PersonalInformation({ actionData, loaderData, params, ma
                 helpMessagePrimary={t('protected:personal-information.first-name-previously-used.help-message-primary')}
                 label={t('protected:personal-information.first-name-previously-used.label')}
                 name="firstNamePreviouslyUsed"
-                onChange={(e) => setOtherFirstName(e.target.value)}
+                onChange={({ target }) => setOtherFirstName(target.value)}
                 value={otherFirstName}
               />
               <Button
@@ -279,7 +269,7 @@ export default function PersonalInformation({ actionData, loaderData, params, ma
                 helpMessagePrimary={t('protected:personal-information.last-name-previously-used.help-message-primary')}
                 label={t('protected:personal-information.last-name-previously-used.label')}
                 name="lastNamePreviouslyUsed"
-                onChange={(e) => setOtherLastName(e.target.value)}
+                onChange={({ target }) => setOtherLastName(target.value)}
                 value={otherLastName}
               />
               <Button

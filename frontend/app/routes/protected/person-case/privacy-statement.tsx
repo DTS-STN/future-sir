@@ -3,7 +3,6 @@ import { useId } from 'react';
 import type { RouteHandle } from 'react-router';
 import { data, redirect, useFetcher } from 'react-router';
 
-import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import * as v from 'valibot';
 
@@ -19,7 +18,7 @@ import { PageTitle } from '~/components/page-title';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { getTranslation } from '~/i18n-config.server';
-import { handle as parentHandle } from '~/routes/protected/layout';
+import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import type { PrivacyStatementData } from '~/routes/protected/person-case/state-machine';
 import { createMachineActor, getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine';
 
@@ -47,11 +46,6 @@ export async function action({ context, params, request }: Route.ActionArgs) {
   const action = formData.get('action');
 
   switch (action) {
-    case 'back': {
-      machineActor.send({ type: 'prev' });
-      break;
-    }
-
     case 'next': {
       const { lang, t } = await getTranslation(request, handle.i18nNamespace);
 
@@ -70,11 +64,6 @@ export async function action({ context, params, request }: Route.ActionArgs) {
       }
 
       machineActor.send({ type: 'submitPrivacyStatement', data: parseResult.output });
-      break;
-    }
-
-    case 'abandon': {
-      machineActor.send({ type: 'cancel' });
       break;
     }
 
@@ -103,21 +92,16 @@ export default function PrivacyStatement({ loaderData, params }: Route.Component
 
   const fetcherKey = useId();
   const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
+
   const isSubmitting = fetcher.state !== 'idle';
   const errors = fetcher.data?.errors;
 
   return (
     <>
+      <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:privacy-statement.page-title')}</PageTitle>
+
       <FetcherErrorSummary fetcherKey={fetcherKey}>
         <fetcher.Form method="post" noValidate>
-          <div className="flex justify-end">
-            <Button name="action" value="abandon" id="abandon-button" endIcon={faXmark} variant="link">
-              {t('protected:person-case.abandon-button')}
-            </Button>
-          </div>
-
-          <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:privacy-statement.page-title')}</PageTitle>
-
           <div className="space-y-6">
             <p>
               Lorem ipsum odor amet, consectetuer adipiscing elit. Gravida pulvinar fringilla augue per lacinia cubilia aliquam.

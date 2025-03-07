@@ -4,7 +4,6 @@ import { useId, useState } from 'react';
 import type { RouteHandle } from 'react-router';
 import { data, redirect, useFetcher } from 'react-router';
 
-import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import * as v from 'valibot';
 
@@ -27,7 +26,7 @@ import { PageTitle } from '~/components/page-title';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { getTranslation } from '~/i18n-config.server';
-import { handle as parentHandle } from '~/routes/protected/layout';
+import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import type { PrimaryDocumentData } from '~/routes/protected/person-case/state-machine';
 import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine';
 import { getStartOfDayInTimezone, isDateInPastOrTodayInTimeZone, isValidDateString, toISODateString } from '~/utils/date-utils';
@@ -224,11 +223,6 @@ export async function action({ context, params, request }: Route.ActionArgs) {
       break;
     }
 
-    case 'abandon': {
-      machineActor.send({ type: 'cancel' });
-      break;
-    }
-
     default: {
       throw new AppError(`Unrecognized action: ${action}`, ErrorCodes.UNRECOGNIZED_ACTION);
     }
@@ -255,44 +249,31 @@ export default function PrimaryDocs({ loaderData, actionData, params }: Route.Co
 
   const fetcherKey = useId();
   const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
+
   const isSubmitting = fetcher.state !== 'idle';
   const errors = fetcher.data?.errors;
 
   const [currentStatus, setCurrentStatus] = useState(loaderData.defaultFormValues?.currentStatusInCanada);
   const [documentType, setDocumentType] = useState(loaderData.defaultFormValues?.documentType);
 
-  const handleCurrentStatusChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setCurrentStatus(event.target.value);
-  };
-
-  const handleDocumentTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setDocumentType(event.target.value);
-  };
-
   return (
     <>
+      <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:primary-identity-document.page-title')}</PageTitle>
+
       <FetcherErrorSummary fetcherKey={fetcherKey}>
         <fetcher.Form method="post" noValidate encType="multipart/form-data">
-          <div className="flex justify-end">
-            <Button name="action" value="abandon" id="abandon-button" endIcon={faXmark} variant="link">
-              {t('protected:person-case.abandon-button')}
-            </Button>
-          </div>
-
-          <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:primary-identity-document.page-title')}</PageTitle>
-
           <div className="space-y-6">
             <CurrentStatusInCanada
               defaultValue={loaderData.defaultFormValues?.currentStatusInCanada}
               errorMessage={errors?.currentStatusInCanada?.at(0)}
-              onChange={handleCurrentStatusChange}
+              onChange={({ target }) => setCurrentStatus(target.value)}
             />
             {currentStatus && (
               <DocumentType
                 currentStatus={currentStatus}
                 defaultValue={loaderData.defaultFormValues?.documentType}
                 errorMessage={errors?.documentType?.at(0)}
-                onChange={handleDocumentTypeChange}
+                onChange={({ target }) => setDocumentType(target.value)}
               />
             )}
             {currentStatus && documentType && (
