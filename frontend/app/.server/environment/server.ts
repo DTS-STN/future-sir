@@ -3,6 +3,7 @@ import * as v from 'valibot';
 import { authentication, defaults as authenticationDefaults } from '~/.server/environment/authentication';
 import { client, defaults as clientDefaults } from '~/.server/environment/client';
 import { features, defaults as featuresDefaults } from '~/.server/environment/features';
+import { interopApi, defaults as interopApiDefaults } from '~/.server/environment/interop-api';
 import { logging, defaults as loggingDefaults } from '~/.server/environment/logging';
 import { redis, defaults as redisDefaults } from '~/.server/environment/redis';
 import { session, defaults as sessionDefaults } from '~/.server/environment/session';
@@ -20,6 +21,7 @@ export const defaults = {
   ...authenticationDefaults,
   ...clientDefaults,
   ...featuresDefaults,
+  ...interopApiDefaults,
   ...loggingDefaults,
   ...redisDefaults,
   ...sessionDefaults,
@@ -36,6 +38,7 @@ export const server = v.pipe(
     ...client.entries,
     ...features.entries,
     ...logging.entries,
+    ...interopApi.entries,
     ...redis.entries,
     ...session.entries,
     ...telemetry.entries,
