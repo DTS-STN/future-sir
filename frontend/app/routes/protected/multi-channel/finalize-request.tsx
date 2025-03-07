@@ -12,6 +12,7 @@ import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { stringToIntegerSchema } from '~/.server/validation/string-to-integer-schema';
 import { Button } from '~/components/button';
+import { ContextualAlert } from '~/components/contextual-alert';
 import { FetcherErrorSummary } from '~/components/error-summary';
 import { InputCheckbox } from '~/components/input-checkbox';
 import { InputSelect } from '~/components/input-select';
@@ -114,7 +115,11 @@ export default function PidVerification({ loaderData, actionData, params }: Rout
             <h2 className="font-lato text-2xl font-semibold">{t('protected:finalize-request.final-check')}</h2>
             <p>{t('protected:finalize-request.first-time')}</p>
             <p>{t('protected:finalize-request.before-processing')}</p>
-            {/* TODO: add 'warning' section if multiple births are part of record*/}
+            <h3 className="font-lato text-lg font-semibold">{t('protected:finalize-request.warnings.heading')}</h3>
+            <p>{t('protected:finalize-request.warnings.following-warnings')}</p>
+            <ContextualAlert type={'warning'}>
+              <p>{t('protected:finalize-request.warnings.multiple-births')}</p>
+            </ContextualAlert>
             <h3 className="font-lato text-lg font-semibold">{t('protected:finalize-request.declaration')}</h3>
             <p>{t('protected:finalize-request.all-transactions')}</p>
             <InputCheckbox
