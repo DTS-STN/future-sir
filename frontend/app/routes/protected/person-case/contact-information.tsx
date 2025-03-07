@@ -3,6 +3,7 @@ import { useId, useState } from 'react';
 import type { RouteHandle } from 'react-router';
 import { data, redirect, useFetcher } from 'react-router';
 
+import { parsePhoneNumberWithError } from 'libphonenumber-js';
 import { useTranslation } from 'react-i18next';
 import * as v from 'valibot';
 
@@ -70,8 +71,15 @@ export async function action({ context, params, request }: Route.ActionArgs) {
             v.string(),
             v.trim(),
             v.nonEmpty(t('protected:contact-information.error-messages.primary-phone-required')),
+            v.transform((val) => parsePhoneNumberWithError(val, 'CA').formatInternational().replace(/ /g, '')),
           ),
-          secondaryPhoneNumber: v.optional(v.pipe(v.string(), v.trim())),
+          secondaryPhoneNumber: v.optional(
+            v.pipe(
+              v.string(),
+              v.trim(),
+              v.transform((val) => parsePhoneNumberWithError(val, 'CA').formatInternational().replace(/ /g, '')),
+            ),
+          ),
           emailAddress: v.optional(
             v.pipe(
               v.string(),
