@@ -6,395 +6,401 @@ info:
 paths:
   /SINApplication:
     post:
+      operationId: "sinapplication"
       requestBody:
         content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SINApplicationRequest'
-            examples:
-              OpenApi Generated:
+          application/json: 
+              schema: 
                 $ref: '#/components/schemas/SINApplicationRequest'
-              Maximum Valid Request:
-                value:
-                  SINApplication:
-                    SINApplicationDetail:
-                      - ApplicationDetailID: 'SIN Application Submission Scenario'
-                        ApplicationDetailValue:
-                          ValueCode:
-                            ReferenceDataID: '1'
-                      - ApplicationDetailID: 'is registered indian status'
-                        ApplicationDetailValue:
-                          ValueBoolean: true
-                      - ApplicationDetailID: 'Register indian status on record'
-                        ApplicationDetailValue:
-                          ValueBoolean: true
-                      - ApplicationDetailID: 'Supporting document contains first name'
-                        ApplicationDetailValue:
-                          ValueBoolean: true
-                      - ApplicationDetailID: 'Supporting document contains last name'
-                        ApplicationDetailValue:
-                          ValueBoolean: true
-                      - ApplicationDetailID: 'is a part of multibirth'
-                        ApplicationDetailValue:
-                          ValueBoolean: false
-                      - ApplicationDetailID: 'SIN Confirmation receiving method'
-                        ApplicationDetailValue:
-                          ValueCode:
-                            ReferenceDataID: 'Email'
-                      - ApplicationDetailID: 'Already had a sin'
-                        ApplicationDetailValue:
-                          ValueBoolean: true
-                      - ApplicationDetailID: 'Previous SIN Number'
-                        ApplicationDetailValue:
-                          ValueString: '990124567'
-                    SINApplicationCategoryCode:
-                      ReferenceDataID: '3'
-                    Applicant:
-                      Certificate:
+              examples:
+                OpenApi Generated:
+                    $ref: '#/components/schemas/SINApplicationRequest'
+                Maximum Valid Request: 
+                  value:
+                    SystemCredential: "KwisatzHaderach"
+                    SINApplication:
+                      SINApplicationDetail:
+                        - ApplicationDetailID : "SIN Application Submission Scenario"
+                          ApplicationDetailValue:
+                            ValueCode:
+                              ReferenceDataID: "1"
+                        - ApplicationDetailID : "is registered indian status"
+                          ApplicationDetailValue:
+                            ValueBoolean: true
+                        - ApplicationDetailID : "Register indian status on record"
+                          ApplicationDetailValue:
+                            ValueBoolean: true
+                        - ApplicationDetailID : "Supporting document contains first name"
+                          ApplicationDetailValue:
+                            ValueBoolean: true
+                        - ApplicationDetailID : "Supporting document contains last name"
+                          ApplicationDetailValue:
+                            ValueBoolean: true
+                        - ApplicationDetailID : "is a part of multibirth"
+                          ApplicationDetailValue:
+                            ValueBoolean: false
+                        - ApplicationDetailID : "SIN Confirmation receiving method"
+                          ApplicationDetailValue:
+                            ValueCode:
+                              ReferenceDataID: "Email"
+                        - ApplicationDetailID : "Already had a sin"
+                          ApplicationDetailValue:
+                            ValueBoolean: true
+                        - ApplicationDetailID : "Previous SIN Number"
+                          ApplicationDetailValue:
+                            ValueString: "990124567"                                                                                
+                      SINApplicationCategoryCode: 
+                        ReferenceDataID: "3"
+                      Applicant:
+                        Certificate:
                         - CertificateCategoryCode:
-                            ReferenceDataID: '2'
+                            ReferenceDataID: "2"
                         - CertificateCategoryCode:
-                            ReferenceDataName: 'Certificate of indian status'
-                          ResourceReference: 'Certified'
+                            ReferenceDataName: "Certificate of indian status"
+                          ResourceReference: "Certified"
                         - CertificateCategoryCode:
-                            ReferenceDataID: '3'
-                          ResourceReference: 'Google'
+                            ReferenceDataID: "3"
+                          ResourceReference: "Google"
                           CertificateExpiryDate:
-                            date: '2024-02-12'
+                            date: "2024-02-12"
                         - CertificateCategoryCode:
-                            ReferenceDataID: '1'
-                          ResourceReference: 'Documents'
+                            ReferenceDataID: "1"
+                          ResourceReference: "Documents"
                           CertificateIdentification:
-                            - IdentificationID: '2'
+                           - IdentificationID : "2"
                           RelatedPerson:
                             - PersonName:
-                                - PersonGivenName: 'Christian'
-                                  PersonSurName: 'Bale'
+                              - PersonGivenName: "Christian"
+                                PersonSurName: "Bale"
                               PersonRelationshipCode:
-                                ReferenceDataName: 'Parent 1'
+                                ReferenceDataName: "Parent 1"
 
                             - PersonName:
-                                - PersonGivenName: 'Emma'
-                                  PersonSurName: 'Stone'
+                              - PersonGivenName: "Emma"
+                                PersonSurName: "Stone"
                               PersonRelationshipCode:
-                                ReferenceDataName: 'Parent 2'
+                                ReferenceDataName: "Parent 2"
 
                             - PersonName:
-                                - PersonGivenName: 'Ryan'
-                                  PersonSurName: 'Gosling'
+                              - PersonGivenName: "Ryan"
+                                PersonSurName: "Gosling"
                               PersonRelationshipCode:
-                                ReferenceDataName: 'Parent 3'
+                                ReferenceDataName: "Parent 3"  
 
                             - PersonName:
-                                - PersonGivenName: 'Nicole'
-                                  PersonSurName: 'Kidman'
+                              - PersonGivenName: "Nicole"
+                                PersonSurName: "Kidman"
                               PersonRelationshipCode:
-                                ReferenceDataName: 'Parent 4'
+                                ReferenceDataName: "Parent 4"                  
                           Client:
                             PersonName:
-                              - PersonGivenName: 'Paul'
-                                PersonSurName: 'Atreides'
+                              - PersonGivenName: "Paul"
+                                PersonSurName: "Atreides"
                             ClientIdentification:
-                              - IdentificationID: '123456'
+                              - IdentificationID: "123456"
                             PersonBirthDate:
-                              date: '1999-05-12' # See what format is expected
+                              date: "1999-05-12" # See what format is expected
                             PersonBirthLocation:
                               LocationContactInformation:
                                 - Address:
-                                    - AddressCityName: 'Gatineau'
-                                      AddressProvince:
-                                        ProvinceCode:
-                                          ReferenceDataID: 'QC'
-                                      AddressCountry:
-                                        CountryCode:
-                                          ReferenceDataID: 'CAN'
+                                  - AddressCityName: "Gatineau"  
+                                    AddressProvince:
+                                      ProvinceCode:
+                                        ReferenceDataID: "QC"
+                                    AddressCountry: 
+                                      CountryCode:
+                                        ReferenceDataID: "CAN"
                             PersonGenderCode:
-                              ReferenceDataID: '1'
+                              ReferenceDataID: "1"
                             PersonSexAtBirthCode:
-                              ReferenceDataID: '1'
+                              ReferenceDataID: "1"
                           CertificateEffectiveDate:
-                            date: '2025-02-25' # See what format is expected
+                            date: "2025-02-25" # See what format is expected
                           CertificateIssueDate:
-                            date: '2025-02-26' # See what format is expected
-                      ClientLegalStatus:
-                        Certificate:
-                          - CertificateEffectiveDate:
-                              date: '2025-02-26'
-                      PersonName:
-                        - PersonNameCategoryCode:
-                            ReferenceDataName: 'Legal'
-                          PersonGivenName: 'Paul'
-                          PersonSurName: 'Atreides'
-                        - PersonNameCategoryCode:
-                            ReferenceDataName: 'Native'
-                          PersonFullName: 'Paul Atreides'
-                        - PersonNameCategoryCode:
-                            ReferenceDataName: 'Alternate'
-                          PersonGivenName: 'Muadib'
-                          PersonSurName: 'Chalamet'
-                        - PersonNameCategoryCode:
-                            ReferenceDataName: 'at birth'
-                          PersonSurName: 'Atreides'
-                      PersonBirthLocation:
-                        LocationContactInformation:
-                          - Address:
-                              - AddressCityName: 'Gatineau'
-                                AddressProvince:
-                                  ProvinceCode:
-                                    ReferenceDataID: 'QC'
-                                    ReferenceDataName: 'Québec'
-                                AddressCountry:
-                                  CountryCode:
-                                    ReferenceDataID: 'CAN'
-                      PersonGenderCode:
-                        ReferenceDataID: '1'
-                      PersonBirthDate:
-                        date: '1999-05-11'
-                      RelatedPerson:
-                        - PersonName:
-                            - PersonGivenName: 'Christian'
-                              PersonSurName: 'Bale'
-                          PersonRelationshipCode:
-                            ReferenceDataName: 'Parent 1'
+                            date: "2025-02-26" # See what format is expected
+                        ClientLegalStatus:
+                          Certificate:
+                            - CertificateEffectiveDate:
+                                date: "2025-02-26"
+                        PersonName:
+                          - PersonNameCategoryCode:
+                              ReferenceDataName: "Legal"
+                            PersonGivenName: "Paul"
+                            PersonSurName: "Atreides"
+                          - PersonNameCategoryCode:
+                              ReferenceDataName: "Native"
+                            PersonFullName: "Paul Atreides"
+                          - PersonNameCategoryCode:
+                              ReferenceDataName: "Alternate"
+                            PersonGivenName: "Muadib"
+                            PersonSurName: "Chalamet"
+                          - PersonNameCategoryCode:
+                              ReferenceDataName: "at birth"
+                            PersonSurName: "Atreides"
+                        PersonBirthLocation:
+                            LocationContactInformation:
+                              - Address:
+                                - AddressCityName: "Gatineau"  
+                                  AddressProvince:
+                                    ProvinceCode:
+                                      ReferenceDataID: "QC"
+                                      ReferenceDataName: "Québec"
+                                  AddressCountry: 
+                                    CountryCode:
+                                      ReferenceDataID: "CAN"
+                        PersonGenderCode: 
+                          ReferenceDataID: "1"
+                        PersonBirthDate: 
+                          date: "1999-05-11"
+                        RelatedPerson:
+                            - PersonName:
+                              - PersonGivenName: "Christian"
+                                PersonSurName: "Bale"
+                              PersonRelationshipCode:
+                                ReferenceDataName: "Parent 1"
 
-                        - PersonName:
-                            - PersonGivenName: 'Emma'
-                              PersonSurName: 'Stone'
-                          PersonRelationshipCode:
-                            ReferenceDataName: 'Parent 2'
+                            - PersonName:
+                              - PersonGivenName: "Emma"
+                                PersonSurName: "Stone"
+                              PersonRelationshipCode:
+                                ReferenceDataName: "Parent 2"
 
-                        - PersonName:
-                            - PersonGivenName: 'Ryan'
-                              PersonSurName: 'Gosling'
-                          PersonRelationshipCode:
-                            ReferenceDataName: 'Parent 3'
+                            - PersonName:
+                              - PersonGivenName: "Ryan"
+                                PersonSurName: "Gosling"
+                              PersonRelationshipCode:
+                                ReferenceDataName: "Parent 3"  
 
-                        - PersonName:
-                            - PersonGivenName: 'Nicole'
-                              PersonSurName: 'Kidman'
-                          PersonRelationshipCode:
-                            ReferenceDataName: 'Parent 4'
-                      PersonLanguage:
-                        - CommunicationCategoryCode:
-                            ReferenceDataName: 'Correspondence'
-                          LanguageCode:
-                            ReferenceDataID: 'FR'
-                          PreferredIndicator: True
-                      PersonContactInformation:
-                        - EmailAddress:
+                            - PersonName:
+                              - PersonGivenName: "Nicole"
+                                PersonSurName: "Kidman"
+                              PersonRelationshipCode:
+                                ReferenceDataName: "Parent 4"
+                        PersonLanguage:
+                          - CommunicationCategoryCode: 
+                              ReferenceDataName: "Correspondence"
+                            LanguageCode:
+                              ReferenceDataID: "FR"
+                            PreferredIndicator: True       
+                        PersonContactInformation:
+                          - EmailAddress:
                             - EmailAddressID: paulSpiceLoverForever@gmail.com
-                          TelephoneNumber:
-                            - TelephoneNumberCategoryCode:
-                                ReferenceDataName: 'Primary'
-                              FullTelephoneNumber:
-                                TelephoneNumberFullID: '819-334-2233' #Confirm format?
-                            - TelephoneNumberCategoryCode:
-                                ReferenceDataName: 'Secondary'
-                              FullTelephoneNumber:
-                                TelephoneNumberFullID: '819-123-9933' #Confirm format?
-                          Address:
-                            - AddressCityName: 'Gatineau'
-                              AddressStreet:
-                                StreetNumberText: '22'
-                                StreetName: 'Eddy'
-                              AddressSecondaryUnitText: '3'
-                              AddressProvince:
-                                ProvinceCode:
-                                  ReferenceDataID: 'QC'
-                                  ReferenceDataName: 'Québec'
-                              AddressCountry:
-                                CountryCode:
-                                  ReferenceDataID: 'CAN'
-                              AddressPostalCode: 'J8N 5K9'
-                              AddressRecipientName: 'Paul Atreides'
-              Minimum Valid Request With Method Mail:
-                value:
-                  SINApplication:
-                    SINApplicationDetail:
-                      - ApplicationDetailID: 'SIN Application Submission Scenario'
-                        ApplicationDetailValue:
-                          ValueCode:
-                            ReferenceDataID: '4'
-                      - ApplicationDetailID: 'is registered indian status'
-                        ApplicationDetailValue:
-                          ValueBoolean: true
-                      - ApplicationDetailID: 'Register indian status on record'
-                        ApplicationDetailValue:
-                          ValueBoolean: true
-                      - ApplicationDetailID: 'Supporting document contains first name'
-                        ApplicationDetailValue:
-                          ValueBoolean: true
-                      - ApplicationDetailID: 'Supporting document contains last name'
-                        ApplicationDetailValue:
-                          ValueBoolean: true
-                      - ApplicationDetailID: 'is a part of multibirth'
-                        ApplicationDetailValue:
-                          ValueBoolean: false
-                      - ApplicationDetailID: 'SIN Confirmation receiving method'
-                        ApplicationDetailValue:
-                          ValueCode:
-                            ReferenceDataID: 'Mail'
-                      - ApplicationDetailID: 'Already had a sin'
-                        ApplicationDetailValue:
-                          ValueBoolean: false
-                    Applicant:
-                      Certificate:
+                            TelephoneNumber:
+                            - TelephoneNumberCategoryCode: 
+                                ReferenceDataName: "Primary"
+                              FullTelephoneNumber: 
+                                TelephoneNumberFullID: "819-334-2233" #Confirm format?
+                            - TelephoneNumberCategoryCode: 
+                                ReferenceDataName: "Secondary"
+                              FullTelephoneNumber: 
+                                TelephoneNumberFullID: "819-123-9933" #Confirm format?
+                            Address:
+                                - AddressCityName: "Gatineau"  
+                                  AddressStreet: 
+                                    StreetNumberText: "22"
+                                    StreetName: "Eddy"
+                                  AddressSecondaryUnitText: "3"
+                                  AddressProvince:
+                                    ProvinceCode:
+                                      ReferenceDataID: "QC"
+                                      ReferenceDataName: "Québec"
+                                  AddressCountry: 
+                                    CountryCode:
+                                      ReferenceDataID: "CAN"
+                                  AddressPostalCode: "J8N 5K9"
+                                  AddressRecipientName: "Paul Atreides"
+                Minimum Valid Request With Method Mail:
+                  value:
+                    SystemCredential: "KwisatzHaderach"
+                    SINApplication:
+                      SINApplicationDetail:
+                        - ApplicationDetailID : "SIN Application Submission Scenario"
+                          ApplicationDetailValue:
+                            ValueCode:
+                              ReferenceDataID: "4"
+                        - ApplicationDetailID : "is registered indian status"
+                          ApplicationDetailValue:
+                            ValueBoolean: true
+                        - ApplicationDetailID : "Register indian status on record"
+                          ApplicationDetailValue:
+                            ValueBoolean: true
+                        - ApplicationDetailID : "Supporting document contains first name"
+                          ApplicationDetailValue:
+                            ValueBoolean: true
+                        - ApplicationDetailID : "Supporting document contains last name"
+                          ApplicationDetailValue:
+                            ValueBoolean: true
+                        - ApplicationDetailID : "is a part of multibirth"
+                          ApplicationDetailValue:
+                            ValueBoolean: false
+                        - ApplicationDetailID : "SIN Confirmation receiving method"
+                          ApplicationDetailValue:
+                            ValueCode:
+                              ReferenceDataID: "Mail"
+                        - ApplicationDetailID : "Already had a sin"
+                          ApplicationDetailValue:
+                            ValueBoolean: false
+                      Applicant:
+                        Certificate:
                         - CertificateCategoryCode:
-                            ReferenceDataID: '7'
+                            ReferenceDataID: "7"
                         - CertificateCategoryCode:
-                            ReferenceDataName: 'Certificate of indian status'
-                          ResourceReference: 'Certified'
+                            ReferenceDataName: "Certificate of indian status"
+                          ResourceReference: "Certified"
                         - CertificateCategoryCode:
-                            ReferenceDataID: '3'
-                          ResourceReference: 'Google'
+                            ReferenceDataID: "3"
+                          ResourceReference: "Google"
                           CertificateExpiryDate:
-                            date: '2024-02-12'
+                            date: "2024-02-12"
                         - CertificateCategoryCode:
-                            ReferenceDataID: '1'
-                          ResourceReference: 'Documents'
+                            ReferenceDataID: "1"
+                          ResourceReference: "Documents"
                           CertificateIdentification:
-                            - IdentificationID: '2'
+                          - IdentificationID : "2"               
                           Client:
                             PersonName:
-                              - PersonGivenName: 'Paul'
-                                PersonSurName: 'Atreides'
+                              - PersonGivenName: "Paul"
+                                PersonSurName: "Atreides"
                             PersonBirthDate:
-                              date: '1999-05-12' # See what format is expected
-                      PersonName:
-                        - PersonNameCategoryCode:
-                            ReferenceDataName: 'Legal'
-                          PersonGivenName: 'Paul'
-                          PersonSurName: 'Atreides'
-                        - PersonNameCategoryCode:
-                            ReferenceDataName: 'at birth'
-                          PersonSurName: 'Atreides'
-                      PersonBirthLocation:
-                        LocationContactInformation:
-                          - Address:
-                              - AddressCityName: 'Gatineau'
-                                AddressCountry:
-                                  CountryCode:
-                                    ReferenceDataID: 'CAN'
-                      PersonGenderCode:
-                        ReferenceDataID: '1'
-                      PersonBirthDate:
-                        date: '1999-05-11'
-                      PersonLanguage:
-                        - CommunicationCategoryCode:
-                            ReferenceDataName: 'Correspondence'
-                          LanguageCode:
-                            ReferenceDataID: 'FR'
-                          PreferredIndicator: True
-                      PersonContactInformation:
-                        - Address:
-                            - AddressCityName: 'Gatineau'
-                              AddressStreet:
-                                StreetNumberText: '22'
-                                StreetName: 'Eddy'
-                              AddressSecondaryUnitText: '3'
-                              AddressProvince:
-                                ProvinceCode:
-                                  ReferenceDataID: 'QC'
-                              AddressCountry:
-                                CountryCode:
-                                  ReferenceDataID: 'CAN'
-                              AddressPostalCode: 'J8N 5K9'
-              Minimum Valid Request With Method Email:
-                value:
-                  SINApplication:
-                    SINApplicationDetail:
-                      - ApplicationDetailID: 'SIN Application Submission Scenario'
-                        ApplicationDetailValue:
-                          ValueCode:
-                            ReferenceDataID: '4'
-                      - ApplicationDetailID: 'is registered indian status'
-                        ApplicationDetailValue:
-                          ValueBoolean: true
-                      - ApplicationDetailID: 'Register indian status on record'
-                        ApplicationDetailValue:
-                          ValueBoolean: true
-                      - ApplicationDetailID: 'Supporting document contains first name'
-                        ApplicationDetailValue:
-                          ValueBoolean: true
-                      - ApplicationDetailID: 'Supporting document contains last name'
-                        ApplicationDetailValue:
-                          ValueBoolean: true
-                      - ApplicationDetailID: 'is a part of multibirth'
-                        ApplicationDetailValue:
-                          ValueBoolean: false
-                      - ApplicationDetailID: 'SIN Confirmation receiving method'
-                        ApplicationDetailValue:
-                          ValueCode:
-                            ReferenceDataID: 'Email'
-                      - ApplicationDetailID: 'Already had a sin'
-                        ApplicationDetailValue:
-                          ValueBoolean: false
-                    Applicant:
-                      Certificate:
+                              date: "1999-05-12" # See what format is expected                       
+                        PersonName:
+                          - PersonNameCategoryCode:
+                              ReferenceDataName: "Legal"
+                            PersonGivenName: "Paul"
+                            PersonSurName: "Atreides"                      
+                          - PersonNameCategoryCode:
+                              ReferenceDataName: "at birth"
+                            PersonSurName: "Atreides"
+                        PersonBirthLocation:
+                            LocationContactInformation:
+                              - Address:
+                                - AddressCityName: "Gatineau"  
+                                  AddressCountry: 
+                                    CountryCode:
+                                      ReferenceDataID: "CAN"
+                        PersonGenderCode: 
+                          ReferenceDataID:
+                            "1"
+                        PersonBirthDate: 
+                          date: "1999-05-11"                
+                        PersonLanguage:
+                          - CommunicationCategoryCode: 
+                              ReferenceDataName: "Correspondence"
+                            LanguageCode:
+                              ReferenceDataID: "FR"
+                            PreferredIndicator: True     
+                        PersonContactInformation:
+                            - Address:
+                                - AddressCityName: "Gatineau"  
+                                  AddressStreet:
+                                    StreetNumberText: "22"
+                                    StreetName: "Eddy"
+                                  AddressSecondaryUnitText: "3"
+                                  AddressProvince:
+                                    ProvinceCode:
+                                      ReferenceDataID: "QC"
+                                  AddressCountry: 
+                                    CountryCode:
+                                      ReferenceDataID: "CAN"
+                                  AddressPostalCode: "J8N 5K9"
+                Minimum Valid Request With Method Email:
+                  value:
+                    SystemCredential: "KwisatzHaderach"
+                    SINApplication:
+                      SINApplicationDetail:
+                        - ApplicationDetailID : "SIN Application Submission Scenario"
+                          ApplicationDetailValue:
+                            ValueCode:
+                              ReferenceDataID: "4"
+                        - ApplicationDetailID : "is registered indian status"
+                          ApplicationDetailValue:
+                            ValueBoolean: true
+                        - ApplicationDetailID : "Register indian status on record"
+                          ApplicationDetailValue:
+                            ValueBoolean: true
+                        - ApplicationDetailID : "Supporting document contains first name"
+                          ApplicationDetailValue:
+                            ValueBoolean: true
+                        - ApplicationDetailID : "Supporting document contains last name"
+                          ApplicationDetailValue:
+                            ValueBoolean: true
+                        - ApplicationDetailID : "is a part of multibirth"
+                          ApplicationDetailValue:
+                            ValueBoolean: false
+                        - ApplicationDetailID : "SIN Confirmation receiving method"
+                          ApplicationDetailValue:
+                            ValueCode:
+                              ReferenceDataID: "Email"
+                        - ApplicationDetailID : "Already had a sin"
+                          ApplicationDetailValue:
+                            ValueBoolean: false                                                                              
+                      Applicant:
+                        Certificate:
                         - CertificateCategoryCode:
-                            ReferenceDataID: '7'
+                            ReferenceDataID: "7"
                         - CertificateCategoryCode:
-                            ReferenceDataName: 'Certificate of indian status'
-                          ResourceReference: 'Certified'
+                            ReferenceDataName: "Certificate of indian status"
+                          ResourceReference: "Certified"
                         - CertificateCategoryCode:
-                            ReferenceDataID: '3'
-                          ResourceReference: 'Google'
+                            ReferenceDataID: "3"
+                          ResourceReference: "Google"
                           CertificateExpiryDate:
-                            date: '2024-02-12'
+                            date: "2024-02-12"
                         - CertificateCategoryCode:
-                            ReferenceDataID: '1'
-                          ResourceReference: 'Documents'
+                            ReferenceDataID: "1"
+                          ResourceReference: "Documents"
                           CertificateIdentification:
-                            - IdentificationID: '2'
+                          - IdentificationID : "2"               
                           Client:
                             PersonName:
                               - PersonGivenName:
-                                  - Paul
-                                PersonSurName: 'Atreides'
+                                - Paul
+                                PersonSurName: "Atreides"
                             PersonBirthDate:
-                              date: '1999-05-12' # See what format is expected
-                      PersonName:
-                        - PersonNameCategoryCode:
-                            ReferenceDataName: 'Legal'
-                          PersonGivenName: 'Paul'
-                          PersonSurName: 'Atreides'
-                        - PersonNameCategoryCode:
-                            ReferenceDataName: 'at birth'
-                          PersonSurName: 'Atreides'
-                      PersonBirthLocation:
-                        LocationContactInformation:
-                          - Address:
-                              - AddressCityName: 'Gatineau'
-                                AddressCountry:
-                                  CountryCode:
-                                    ReferenceDataID: 'CAN'
-                      PersonGenderCode:
-                        ReferenceDataID: '1'
-                      PersonBirthDate:
-                        date: '1999-05-11'
-                      PersonLanguage:
-                        - CommunicationCategoryCode:
-                            ReferenceDataName: 'Correspondence'
-                          LanguageCode:
-                            ReferenceDataID: 'FR'
-                          PreferredIndicator: True
-                      PersonContactInformation:
+                              date: "1999-05-12" # See what format is expected                       
+                        PersonName:
+                          - PersonNameCategoryCode:
+                              ReferenceDataName: "Legal"
+                            PersonGivenName: "Paul"
+                            PersonSurName: "Atreides"                      
+                          - PersonNameCategoryCode:
+                              ReferenceDataName: "at birth"
+                            PersonSurName: "Atreides"
+                        PersonBirthLocation:
+                            LocationContactInformation:
+                              - Address:
+                                - AddressCityName: "Gatineau"  
+                                  AddressCountry: 
+                                    CountryCode:
+                                      ReferenceDataID: "CAN"
+                        PersonGenderCode: 
+                          ReferenceDataID: "1"
+                        PersonBirthDate: 
+                          date: "1999-05-11"                
+                        PersonLanguage:
+                          - CommunicationCategoryCode:
+                              ReferenceDataName: "Correspondence"
+                            LanguageCode:
+                              ReferenceDataID: "FR"
+                            PreferredIndicator: True      
+                        PersonContactInformation:
                         - EmailAddress:
-                            - EmailAddressID: paulSpiceLoverForever@gmail.com
+                          - EmailAddressID: paulSpiceLoverForever@gmail.com
+
 
         required: true
       responses:
-        '200':
+        "200":
           description: Success
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/SINApplicationResponse'
               example:
-                SINApplication:
-                  SINApplicationIdentification:
-                    IdentificationID: '990124567'
-
+                  SINApplication:
+                    SINApplicationIdentification:
+                      IdentificationID: "990124567"
+              
 components:
   schemas:
     SINApplicationResponse:
@@ -404,6 +410,9 @@ components:
     SINApplicationRequest:
       description: The request body for SinApplication endpoint
       properties:
+        SystemCredential:
+          description: "The credentials to access the system."
+          type: "string"
         SINApplication:
           $ref: '#/components/schemas/SINApplicationType'
 
@@ -411,24 +420,24 @@ components:
       description: A data type for the SIN Application resource.
       type: object
       properties:
-        SINApplicationIdentification:
-          $ref: '#/components/schemas/SINApplicationIdentification'
+          SINApplicationIdentification:
+            $ref: '#/components/schemas/SINApplicationIdentification'
     SINApplicationType:
       description: A data type for the SIN Application resource.
       type: object
       properties:
-        SINApplicationIdentification:
-          type: array
-          items:
-            $ref: '#/components/schemas/SINApplicationIdentification'
-        Applicant:
-          $ref: '#/components/schemas/Client'
-        SINApplicationCategoryCode:
-          $ref: '#/components/schemas/SINApplicationCategoryCode'
-        SINApplicationDetail:
-          type: array
-          items:
-            $ref: '#/components/schemas/SINApplicationDetail'
+          SINApplicationIdentification:
+            type: array
+            items:
+              $ref: '#/components/schemas/SINApplicationIdentification'
+          Applicant:
+            $ref: '#/components/schemas/Client'
+          SINApplicationCategoryCode:
+            $ref: '#/components/schemas/SINApplicationCategoryCode'
+          SINApplicationDetail:
+            type: array
+            items:
+              $ref: '#/components/schemas/SINApplicationDetail'
 
     AddressType:
       description: A data type for a geophysical location described by postal information.
@@ -451,7 +460,7 @@ components:
           description: A name of a city or town.
           type: string
       x-comment: Extension
-
+      
     ApplicationDetailType:
       description: A data type for the detail about an application.
       type: object
@@ -478,34 +487,35 @@ components:
         - PersonName
 
       properties:
-        Certificate:
-          type: array
-          items:
-            $ref: '#/components/schemas/Certificate'
-        ClientLegalStatus:
-          $ref: '#/components/schemas/ClientLegalStatus'
-        PersonBirthDate:
-          $ref: '#/components/schemas/PersonBirthDate'
-        PersonContactInformation:
-          type: array
-          items:
-            $ref: '#/components/schemas/PersonContactInformation'
-        PersonBirthLocation:
-          $ref: '#/components/schemas/PersonBirthLocation'
-        PersonGenderCode:
-          $ref: '#/components/schemas/PersonGenderCode'
-        PersonLanguage:
-          type: array
-          items:
-            $ref: '#/components/schemas/PersonLanguage'
-        PersonName:
-          type: array
-          items:
-            $ref: '#/components/schemas/PersonName'
-        RelatedPerson:
-          type: array
-          items:
-            $ref: '#/components/schemas/RelatedPerson'
+          Certificate:
+            type: array
+            items:
+              $ref: '#/components/schemas/Certificate'
+          ClientLegalStatus:
+            $ref: '#/components/schemas/ClientLegalStatus'
+          PersonBirthDate:
+            $ref: '#/components/schemas/PersonBirthDate'
+          PersonContactInformation:
+            type: array
+            items:
+              $ref: '#/components/schemas/PersonContactInformation'
+          PersonBirthLocation:
+            $ref: '#/components/schemas/PersonBirthLocation'
+          PersonGenderCode:
+            $ref: '#/components/schemas/PersonGenderCode'
+          PersonLanguage:
+            type: array
+            items:
+              $ref: '#/components/schemas/PersonLanguage'
+          PersonName:
+            type: array
+            items:
+              $ref: '#/components/schemas/PersonName'
+          RelatedPerson:
+            type: array
+            items:
+              $ref: '#/components/schemas/RelatedPerson'
+
 
     CertificateClientType:
       description: A data type for the client resource.
@@ -515,31 +525,32 @@ components:
         - PersonName
 
       properties:
-        ClientIdentification:
-          type: array
-          items:
-            $ref: '#/components/schemas/ClientIdentification'
-        PersonBirthDate:
-          $ref: '#/components/schemas/PersonBirthDate'
-        PersonBirthLocation:
-          $ref: '#/components/schemas/PersonBirthLocation'
-        PersonGenderCode:
-          $ref: '#/components/schemas/PersonGenderCode'
-        PersonName:
-          type: array
-          items:
-            $ref: '#/components/schemas/PersonName'
-        PersonSexAtBirthCode:
-          $ref: '#/components/schemas/PersonSexAtBirthCode'
+          ClientIdentification:
+            type: array
+            items:
+              $ref: '#/components/schemas/ClientIdentification'
+          PersonBirthDate:
+            $ref: '#/components/schemas/PersonBirthDate'
+          PersonBirthLocation:                                                   
+            $ref: '#/components/schemas/PersonBirthLocation'
+          PersonGenderCode:
+            $ref: '#/components/schemas/PersonGenderCode'
+          PersonName:
+            type: array
+            items:
+              $ref: '#/components/schemas/PersonName'
+          PersonSexAtBirthCode:
+            $ref: '#/components/schemas/PersonSexAtBirthCode'
 
     Certificate:
       $ref: '#/components/schemas/CertificateType'
       description: A resource for documents associated with a vital event.
 
+
     CertificateType:
-      description: A data type for the certificate resource.
-      type: object
-      allOf:
+        description: A data type for the certificate resource.
+        type: object
+        allOf:
         - $ref: '#/components/schemas/ResourceType'
         - properties:
             CertificateCategoryCode:
@@ -612,7 +623,7 @@ components:
     IdentificationType:
       description: A data type for a representation of an identity.
       required:
-        - IdentificationID
+      - IdentificationID
       type: object
       properties:
         IdentificationID:
@@ -632,7 +643,7 @@ components:
         PreferredIndicator:
           $ref: '#/components/schemas/PreferredIndicator'
           x-comment: Extension
-      x-comment: Extension
+      x-comment: Extension  
 
     LegalStatusType:
       description: A data type for a condition where a person was or is lawfully in
@@ -677,29 +688,29 @@ components:
       description: A data type for information about a person related to a client.
       type: object
       allOf:
-        - properties:
-            PersonBirthDate:
-              $ref: '#/components/schemas/PersonBirthDate'
-            PersonBirthLocation:
-              $ref: '#/components/schemas/PersonBirthLocation'
-            PersonContactInformation:
-              type: array
-              items:
-                $ref: '#/components/schemas/PersonContactInformation'
-            PersonLanguage:
-              type: array
-              items:
-                $ref: '#/components/schemas/PersonLanguage'
-            PersonGenderCode:
-              $ref: '#/components/schemas/PersonGenderCode'
-            PersonName:
-              type: array
-              items:
-                $ref: '#/components/schemas/PersonName'
-            PersonRelationshipCode:
-              $ref: '#/components/schemas/PersonRelationshipCode'
-            PersonSexAtBirthCode:
-              $ref: '#/components/schemas/PersonSexAtBirthCode'
+      - properties:
+          PersonBirthDate:
+            $ref: '#/components/schemas/PersonBirthDate'
+          PersonBirthLocation:
+            $ref: '#/components/schemas/PersonBirthLocation'
+          PersonContactInformation:
+            type: array
+            items:
+              $ref: '#/components/schemas/PersonContactInformation'
+          PersonLanguage:
+            type: array
+            items:
+              $ref: '#/components/schemas/PersonLanguage'
+          PersonGenderCode:
+            $ref: '#/components/schemas/PersonGenderCode'
+          PersonName:
+            type: array
+            items:
+              $ref: '#/components/schemas/PersonName'
+          PersonRelationshipCode:
+            $ref: '#/components/schemas/PersonRelationshipCode'
+          PersonSexAtBirthCode:
+            $ref: '#/components/schemas/PersonSexAtBirthCode'
 
     ReferenceDataCodeType:
       description: "Represents a codeable concept used by a property of a resource.\
@@ -720,7 +731,7 @@ components:
           $ref: '#/components/schemas/ResourceReference'
 
     StreetType:
-      description: 'A data type for a road, thoroughfare, or highway.'
+      description: "A data type for a road, thoroughfare, or highway."
       type: object
       properties:
         StreetNumberText:
@@ -739,6 +750,7 @@ components:
           x-comment: Extension
       x-comment: Extension
 
+
     ValueType:
       description: A value represented in different data types.
       type: object
@@ -752,7 +764,7 @@ components:
 
     Address:
       $ref: '#/components/schemas/AddressType'
-      description: 'A set of location information, often described by postal information.'
+      description: "A set of location information, often described by postal information."
 
     AddressCountry:
       $ref: '#/components/schemas/CountryType'
@@ -766,7 +778,7 @@ components:
 
     AddressStreet:
       $ref: '#/components/schemas/StreetType'
-      description: 'A road, thoroughfare or highway.'
+      description: "A road, thoroughfare or highway."
     ApplicationDetailValue:
       $ref: '#/components/schemas/ValueType'
       description: The value of the application detail data element.
@@ -802,7 +814,7 @@ components:
 
     CommunicationCategoryCode:
       $ref: '#/components/schemas/ReferenceDataCodeType'
-      description: 'A code of human communication, ie: spoken, written.'
+      description: "A code of human communication, ie: spoken, written."
       x-comment: Extension
 
     CountryCode:
@@ -834,7 +846,7 @@ components:
     LocationContactInformation:
       $ref: '#/components/schemas/ContactInformationType'
       description: A set of contact information for a location.
-
+      
     PersonBirthDate:
       $ref: '#/components/schemas/DateType'
       description: A date a person was born.
@@ -882,7 +894,7 @@ components:
       $ref: '#/components/schemas/ReferenceDataCodeType'
       description: A code for a province of a country.
       x-comment: Extension
-
+      
     RelatedPerson:
       $ref: '#/components/schemas/RelatedPersonType'
       description: Information about a person related to a client.
@@ -895,7 +907,7 @@ components:
       $ref: '#/components/schemas/ApplicationDetailType'
       description: Application Details for a SIN Application. Usually used for information
         on forms that are not being stored as data concepts.
-
+        
     SINApplicationIdentification:
       $ref: '#/components/schemas/IdentificationType'
       description: An Identification for a SIN Application
@@ -910,7 +922,7 @@ components:
     AddressPostalCode:
       description: An identifier of a post office-assigned zone for an address.
       type: string
-
+      
     AddressRecipientName:
       description: "A name of a person, organization, or other recipient to whom physical\
         \ mail may be sent."
@@ -919,7 +931,7 @@ components:
     AddressSecondaryUnitText:
       description: A particular unit within a larger unit or grouping at a location.
       type: string
-
+      
     ApplicationDetailID:
       description: A unique ID for an application detail data element.
       type: string
@@ -927,7 +939,7 @@ components:
       description: An unique identifier for an email box.
       type: string
       x-comment: Extension
-
+      
     TelephoneNumberFullID:
       description: A complete telephone number.
       type: string
@@ -947,7 +959,7 @@ components:
     PersonSurName:
       description: A last name or family name of a person.
       type: string
-
+    
     PreferredIndicator:
       description: An indicator marking this class as preferred.
       type: boolean
@@ -962,8 +974,8 @@ components:
       type: string
 
     ResourceReference:
-      description: 'Literal reference, Relative, internal or absolute URL.'
-      type: string
+      description: "Literal reference, Relative, internal or absolute URL."
+      type: string     
 
     StreetNumberText:
       description: A number that identifies a particular unit or location within a

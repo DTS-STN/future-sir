@@ -1,0 +1,3 @@
+# ignore API specs that are not owned by us, and any code generated from them
+app/.server/shared/api/interop
+other/specs/fsir-openapi.yml
