@@ -70,14 +70,19 @@ function getLanguageFromPath(pathname: string): Language | undefined {
 }
 
 /**
- * Retrieves a ResourceKey from a list of strings.
- * @param stringList - A list of strings, where each string may represent a Resource key.
- * @param index - An optional index to select a specific element (defaults to the first element).
- * @returns A ResourceKey from the string list, or undefined if no key is found.
+ * Retrieves a `ResourceKey` from a given value, handling both single values and arrays.
+ *
+ * This function serves two purposes:
+ *
+ * 1. **Extracting a `ResourceKey`** – If given an array, it selects an element at the specified index.
+ * 2. **Ensuring type compatibility with `i18next`** – Valibot returns plain strings when validation fails,
+ *    which does not match the expected `ResourceKey` type in i18next. By returning a `ResourceKey`,
+ *    this function effectively casts the input as a valid `ResourceKey`, preventing TypeScript errors.
+ *
+ * @param value - A single `ResourceKey` or an array of `ResourceKey` values.
+ * @param index - The index to select from the array (defaults to the first element).
+ * @returns A `ResourceKey` from the input or `undefined` if the value is not provided.
  */
-export function getSingleKey(
-  stringList: [string, ...string[]] | undefined,
-  index: number | undefined = 0,
-): ResourceKey | undefined {
-  return stringList?.at(index);
+export function getSingleKey<T extends ResourceKey>(value: T | [T, ...T[]] | undefined, index = 0): ResourceKey | undefined {
+  return Array.isArray(value) ? value.at(index) : value;
 }
