@@ -1,3 +1,9 @@
+/**
+ * This module provides utility functions for telemetry and metrics collection using OpenTelemetry.
+ * It includes functions for creating counters, handling exceptions within spans, and wrapping
+ * functions in spans for tracing. It also includes helper functions for extracting error
+ * information and managing telemetry attributes.
+ */
 import type { Attributes, Context, Counter, Span } from '@opentelemetry/api';
 import { metrics, SpanStatusCode, trace } from '@opentelemetry/api';
 import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';

@@ -1,3 +1,12 @@
+/**
+ * This module provides a centralized logging configuration for the application.
+ * It uses the `winston` library to create and manage loggers, allowing for
+ * structured logging with various levels (none, error, warn, info, audit, debug, trace).
+ * The module supports console logging and includes features for formatting log messages,
+ * handling exceptions and rejections, and dynamically adjusting the log level based on
+ * environment variables. It also provides a factory for creating and retrieving logger
+ * instances for different categories within the application.
+ */
 import util from 'node:util';
 import type { Logform, Logger } from 'winston';
 import winston, { format, transports } from 'winston';

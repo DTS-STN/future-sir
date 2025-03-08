@@ -1,3 +1,10 @@
+/**
+ * This module provides a singleton Redis client instance for the application.
+ * It configures and manages the connection to a Redis server, supporting both
+ * standalone and sentinel modes. The client is initialized with settings from
+ * the server environment variables and includes error handling and connection
+ * management. It uses the `ioredis` library for Redis interaction.
+ */
 import type { RedisOptions } from 'ioredis';
 import Redis from 'ioredis';
 

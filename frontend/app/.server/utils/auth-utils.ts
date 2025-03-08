@@ -1,3 +1,9 @@
+/**
+ * This module provides utility functions for handling user authentication and authorization.
+ * It includes functions for checking user roles, enforcing required authentication, and redirecting
+ * unauthenticated users to the login page. It also defines types for authenticated sessions
+ * and utilizes the logging module for logging authentication-related events.
+ */
 import { redirect } from 'react-router';
 
 import { LogFactory } from '~/.server/logging';
@@ -27,11 +33,7 @@ export function hasRole(session: AppSession, role: Role) {
  * Will redirect to the login page if the user is not authenticated.
  * @throws {AppError} If the user does not have the required roles.
  */
-export function requireAuth(
-  session: AppSession, //
-  currentUrl: URL,
-  roles: Role[] = [],
-): asserts session is AuthenticatedSession {
+export function requireAuth(session: AppSession, currentUrl: URL, roles: Role[] = []): asserts session is AuthenticatedSession {
   if (!session.authState) {
     log.debug('User is not authenticated; redirecting to login page');
 

@@ -1,4 +1,11 @@
 /**
+ * This module provides utility functions for security-related operations,
+ * including the redaction of sensitive data. It includes a `Redacted` class
+ * that wraps a value and ensures it is redacted when converted to a string
+ * or logged, enhancing the security of sensitive information.
+ */
+
+/**
  * A container class that wraps a value and ensures it is redacted when converted to a string or logged.
  * The original value can only be accessed through the explicit `value()` method.
  *
