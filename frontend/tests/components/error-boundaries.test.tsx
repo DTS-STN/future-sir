@@ -11,6 +11,7 @@ import {
 } from '~/components/error-boundaries';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
+import { HttpStatusCodes } from '~/errors/http-status-codes';
 
 describe('error-boundaries', () => {
   describe('BilingualErrorBoundary', () => {
@@ -57,7 +58,9 @@ describe('error-boundaries', () => {
       const RoutesStub = createRoutesStub([
         {
           path: '/',
-          Component: () => <BilingualNotFound params={{}} error={new Response('Not found', { status: 404 })} />,
+          Component: () => (
+            <BilingualNotFound params={{}} error={new Response('Not found', { status: HttpStatusCodes.NOT_FOUND })} />
+          ),
         },
       ]);
 
@@ -111,7 +114,9 @@ describe('error-boundaries', () => {
       const RoutesStub = createRoutesStub([
         {
           path: '/',
-          Component: () => <UnilingualNotFound params={{}} error={new Response('Not found', { status: 404 })} />,
+          Component: () => (
+            <UnilingualNotFound params={{}} error={new Response('Not found', { status: HttpStatusCodes.NOT_FOUND })} />
+          ),
         },
       ]);
 

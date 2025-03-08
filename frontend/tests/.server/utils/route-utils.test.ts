@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { ErrorCodes } from '~/errors/error-codes';
+import { HttpStatusCodes } from '~/errors/http-status-codes';
 
 describe('route-utils', () => {
   describe('i18nRedirect', () => {
@@ -17,14 +18,14 @@ describe('route-utils', () => {
     it('should redirect to the correct path if language is found', () => {
       const result = i18nRedirect('routes/public/index.tsx', '/en/');
 
-      expect(result.status).toBe(302);
+      expect(result.status).toBe(HttpStatusCodes.FOUND);
       expect(result.headers.get('location')).toBe('/en/public');
     });
 
     it('should redirect to the correct path when search params are provided', () => {
       const result = i18nRedirect('routes/public/index.tsx', '/en/', { search: new URLSearchParams('foo=bar=baz') });
 
-      expect(result.status).toBe(302);
+      expect(result.status).toBe(HttpStatusCodes.FOUND);
       expect(result.headers.get('location')).toBe('/en/public?foo=bar%3Dbaz');
     });
   });

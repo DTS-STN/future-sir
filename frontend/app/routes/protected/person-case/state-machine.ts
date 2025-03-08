@@ -7,6 +7,7 @@ import { assign, createActor, setup } from 'xstate';
 import { LogFactory } from '~/.server/logging';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
+import { HttpStatusCodes } from '~/errors/http-status-codes';
 import type { I18nRouteFile } from '~/i18n-routes';
 import { i18nRoutes } from '~/i18n-routes';
 import type {
@@ -267,7 +268,7 @@ export function createMachineActor(session: AppSession, request: Request): Actor
 
   if (!tabId) {
     log.warn('Could not find tabId in request; returning 400 response.');
-    throw Response.json('The tabId could not be found in the request', { status: 400 });
+    throw Response.json('The tabId could not be found in the request', { status: HttpStatusCodes.BAD_REQUEST });
   }
 
   const actor = createActor(machine, { id: tabId });

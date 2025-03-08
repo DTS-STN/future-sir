@@ -25,6 +25,7 @@ import { InputSelect } from '~/components/input-select';
 import { PageTitle } from '~/components/page-title';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
+import { HttpStatusCodes } from '~/errors/http-status-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine';
@@ -211,7 +212,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
       const parseResult = v.safeParse(schema, input, { lang });
 
       if (!parseResult.success) {
-        return data({ errors: v.flatten(parseResult.issues).nested }, { status: 400 });
+        return data({ errors: v.flatten(parseResult.issues).nested }, { status: HttpStatusCodes.BAD_REQUEST });
       }
 
       machineActor.send({ type: 'submitPrimaryDocuments', data: parseResult.output });

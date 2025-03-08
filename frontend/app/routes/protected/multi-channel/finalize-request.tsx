@@ -19,6 +19,7 @@ import { InputSelect } from '~/components/input-select';
 import { PageTitle } from '~/components/page-title';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
+import { HttpStatusCodes } from '~/errors/http-status-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/layout';
 
@@ -77,7 +78,7 @@ export async function action({ context, request }: Route.ActionArgs) {
       const parseResult = v.safeParse(schema, input, { lang });
 
       if (!parseResult.success) {
-        return data({ errors: v.flatten<typeof schema>(parseResult.issues).nested }, { status: 400 });
+        return data({ errors: v.flatten<typeof schema>(parseResult.issues).nested }, { status: HttpStatusCodes.BAD_REQUEST });
       }
 
       throw i18nRedirect('routes/protected/multi-channel/sin-confirmation.tsx', request);

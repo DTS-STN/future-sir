@@ -1,6 +1,7 @@
 import type { Route } from './+types/translations';
 
 import { serverDefaults } from '~/.server/environment';
+import { HttpStatusCodes } from '~/errors/http-status-codes';
 import { initI18next } from '~/i18n-config.server';
 
 // we will aggressively cache the requested resource bundle for 1y
@@ -14,14 +15,20 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
   const buildRevision = url.searchParams.get('v');
 
   if (!language || !namespace) {
-    return Response.json({ message: 'You must provide a language (lng) and namespace (ns)' }, { status: 400 });
+    return Response.json(
+      { message: 'You must provide a language (lng) and namespace (ns)' },
+      { status: HttpStatusCodes.BAD_REQUEST },
+    );
   }
 
   const i18next = await initI18next();
   const resourceBundle = i18next.getResourceBundle(language, namespace);
 
   if (!resourceBundle) {
-    return Response.json({ message: 'No resource bundle found for this language and namespace' }, { status: 404 });
+    return Response.json(
+      { message: 'No resource bundle found for this language and namespace' },
+      { status: HttpStatusCodes.NOT_FOUND },
+    );
   }
 
   // cache if the build revision is anything other than the default value

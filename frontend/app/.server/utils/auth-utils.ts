@@ -3,6 +3,7 @@ import { redirect } from 'react-router';
 import { LogFactory } from '~/.server/logging';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
+import { HttpStatusCodes } from '~/errors/http-status-codes';
 
 const log = LogFactory.getLogger(import.meta.url);
 
@@ -44,7 +45,7 @@ export function requireAuth(
     throw new AppError(
       `User does not have the following required roles: [${missingRoles.join(', ')}]`,
       ErrorCodes.ACCESS_FORBIDDEN,
-      { httpStatusCode: 403 },
+      { httpStatusCode: HttpStatusCodes.FORBIDDEN },
     );
   }
 }

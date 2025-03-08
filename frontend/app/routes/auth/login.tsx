@@ -9,6 +9,7 @@ import { AzureADAuthenticationStrategy, LocalAuthenticationStrategy } from '~/.s
 import { serverEnvironment } from '~/.server/environment';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
+import { HttpStatusCodes } from '~/errors/http-status-codes';
 
 /**
  * Allows errors to be handled by root.tsx
@@ -56,7 +57,7 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
       const { ENABLE_DEVMODE_OIDC } = serverEnvironment;
 
       if (!ENABLE_DEVMODE_OIDC) {
-        return Response.json(null, { status: 404 });
+        return Response.json(null, { status: HttpStatusCodes.NOT_FOUND });
       }
 
       const authStrategy = new LocalAuthenticationStrategy(
@@ -70,7 +71,7 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
     }
 
     default: {
-      return Response.json({ message: 'Authentication provider not found' }, { status: 404 });
+      return Response.json({ message: 'Authentication provider not found' }, { status: HttpStatusCodes.NOT_FOUND });
     }
   }
 }
@@ -100,7 +101,7 @@ async function handleLogin(
 
   if (returnTo && !returnTo.startsWith('/')) {
     span?.addEvent('returnto.invalid');
-    return Response.json('Invalid returnto path', { status: 400 });
+    return Response.json('Invalid returnto path', { status: HttpStatusCodes.BAD_REQUEST });
   }
 
   const returnUrl = returnTo ? new URL(returnTo, currentUrl.origin) : undefined;
@@ -113,5 +114,5 @@ async function handleLogin(
     state: signinRequest.state,
   };
 
-  return redirect(signinRequest.authorizationEndpointUrl.toString(), 302);
+  return redirect(signinRequest.authorizationEndpointUrl.toString());
 }

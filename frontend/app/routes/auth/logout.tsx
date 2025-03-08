@@ -4,6 +4,8 @@ import { trace } from '@opentelemetry/api';
 
 import type { Route } from './+types/logout';
 
+import { HttpStatusCodes } from '~/errors/http-status-codes';
+
 /**
  * Allows errors to be handled by root.tsx
  */
@@ -33,7 +35,7 @@ function handleLogout({ context, params, request }: Route.LoaderArgs) {
 
   if (returnTo && !returnTo.startsWith('/')) {
     span?.addEvent('returnto.invalid');
-    return Response.json('Invalid returnto path', { status: 400 });
+    return Response.json('Invalid returnto path', { status: HttpStatusCodes.BAD_REQUEST });
   }
 
   const returnUrl = new URL(returnTo ?? '/', currentUrl.origin);

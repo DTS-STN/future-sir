@@ -7,6 +7,7 @@ import type { Route } from '../+types/root';
 import { AppLink } from '~/components/links';
 import { PageTitle } from '~/components/page-title';
 import { isAppError } from '~/errors/app-error';
+import { HttpStatusCodes } from '~/errors/http-status-codes';
 import { useLanguage } from '~/hooks/use-language';
 
 /**
@@ -55,7 +56,9 @@ export function BilingualErrorBoundary({ actionData, error, loaderData, params }
                 <span>{en('gcweb:server-error.page-title')}</span>
                 <small className="block text-2xl font-normal text-neutral-500">
                   {en('gcweb:server-error.page-subtitle', {
-                    statusCode: isAppError(error) ? error.httpStatusCode : 500,
+                    statusCode: isAppError(error)
+                      ? error.httpStatusCode //
+                      : HttpStatusCodes.INTERNAL_SERVER_ERROR,
                   })}
                 </small>
               </PageTitle>
@@ -86,7 +89,9 @@ export function BilingualErrorBoundary({ actionData, error, loaderData, params }
                 <span>{fr('gcweb:server-error.page-title')}</span>
                 <small className="block text-2xl font-normal text-neutral-500">
                   {fr('gcweb:server-error.page-subtitle', {
-                    statusCode: isAppError(error) ? error.httpStatusCode : 500,
+                    statusCode: isAppError(error)
+                      ? error.httpStatusCode //
+                      : HttpStatusCodes.INTERNAL_SERVER_ERROR,
                   })}
                 </small>
               </PageTitle>
@@ -268,7 +273,11 @@ export function UnilingualErrorBoundary({ actionData, error, loaderData, params 
           <PageTitle className="my-8">
             <span>{t('gcweb:server-error.page-title')}</span>
             <small className="block text-2xl font-normal text-neutral-500">
-              {t('gcweb:server-error.page-subtitle', { statusCode: isAppError(error) ? error.httpStatusCode : 500 })}
+              {t('gcweb:server-error.page-subtitle', {
+                statusCode: isAppError(error)
+                  ? error.httpStatusCode //
+                  : HttpStatusCodes.INTERNAL_SERVER_ERROR,
+              })}
             </small>
           </PageTitle>
           <p className="mb-8 text-lg text-gray-500">{t('gcweb:server-error.page-message')}</p>

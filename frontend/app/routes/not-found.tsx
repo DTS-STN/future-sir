@@ -6,12 +6,14 @@
  */
 import type { Route } from './+types/not-found';
 
+import { HttpStatusCodes } from '~/errors/http-status-codes';
+
 /**
  * This loader functoin throws a 404 response to indicate that the requested resource was not found.
  * Actual rendering of the 404 page content should be handled in a global error boundary.
  */
 export function loader(args: Route.LoaderArgs) {
-  throw new Response('Not found', { status: 404 });
+  throw new Response('Not found', { status: HttpStatusCodes.NOT_FOUND });
 }
 
 /**

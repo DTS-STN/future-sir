@@ -6,6 +6,7 @@ import type { ViteDevServer } from 'vite';
 
 import { serverEnvironment } from '~/.server/environment';
 import { LogFactory } from '~/.server/logging';
+import { HttpStatusCodes } from '~/errors/http-status-codes';
 
 const log = LogFactory.getLogger(import.meta.url);
 
@@ -24,7 +25,7 @@ export function globalErrorHandler(): ErrorRequestHandler {
     // ex: 401, 403, 504, 500, 503, etc
 
     const errorFile =
-      response.statusCode === 403 //
+      response.statusCode === HttpStatusCodes.FORBIDDEN //
         ? './assets/403.html'
         : './assets/500.html';
 
@@ -33,7 +34,7 @@ export function globalErrorHandler(): ErrorRequestHandler {
     response.status(response.statusCode).sendFile(errorFilePath, (dispatchError: unknown) => {
       if (dispatchError) {
         log.error('Unexpected error while dispatching error page... this is bad!', dispatchError);
-        response.status(500).send('Internal Server Error');
+        response.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send('Internal Server Error');
       }
     });
   };

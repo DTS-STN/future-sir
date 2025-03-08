@@ -8,6 +8,7 @@ import { serverEnvironment } from '~/.server/environment';
 import { withSpan } from '~/.server/utils/telemetry-utils';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
+import { HttpStatusCodes } from '~/errors/http-status-codes';
 
 /**
  * Allows errors to be handled by root.tsx
@@ -48,7 +49,7 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
       const { ENABLE_DEVMODE_OIDC } = serverEnvironment;
 
       if (!ENABLE_DEVMODE_OIDC) {
-        return Response.json(null, { status: 404 });
+        return Response.json(null, { status: HttpStatusCodes.NOT_FOUND });
       }
 
       const authStrategy = new LocalAuthenticationStrategy(
@@ -62,7 +63,7 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
     }
 
     default: {
-      return Response.json('Authentication provider not found', { status: 404 });
+      return Response.json('Authentication provider not found', { status: HttpStatusCodes.NOT_FOUND });
     }
   }
 }
@@ -83,7 +84,7 @@ async function handleCallback(
 
     if (session.loginState === undefined) {
       span.addEvent('login_state.invalid');
-      return Response.json({ message: 'Invalid login state' }, { status: 400 });
+      return Response.json({ message: 'Invalid login state' }, { status: HttpStatusCodes.BAD_REQUEST });
     }
 
     const { codeVerifier, nonce, state } = session.loginState;

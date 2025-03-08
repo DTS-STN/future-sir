@@ -9,6 +9,7 @@ import type { Route } from './+types/oidc-provider';
 
 import type { TokenSet } from '~/.server/auth/auth-strategies';
 import { serverEnvironment } from '~/.server/environment';
+import { HttpStatusCodes } from '~/errors/http-status-codes';
 
 type AuthCode = string;
 
@@ -35,7 +36,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
 
   if (!ENABLE_DEVMODE_OIDC) {
     // return a 404 if devmode OIDC is not enabled
-    return Response.json(null, { status: 404 });
+    return Response.json(null, { status: HttpStatusCodes.NOT_FOUND });
   }
 
   const endpoint = params['*'];
@@ -46,7 +47,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     }
 
     default: {
-      return Response.json('OIDC endpoint not found', { status: 404 });
+      return Response.json('OIDC endpoint not found', { status: HttpStatusCodes.NOT_FOUND });
     }
   }
 }
@@ -57,7 +58,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
 export async function loader({ context, params, request }: Route.LoaderArgs) {
   if (!serverEnvironment.ENABLE_DEVMODE_OIDC) {
     // return a 404 if devmode OIDC is not enabled
-    return Response.json(null, { status: 404 });
+    return Response.json(null, { status: HttpStatusCodes.NOT_FOUND });
   }
 
   const endpoint = params['*'];
@@ -80,7 +81,7 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
     }
 
     default: {
-      return Response.json('OIDC endpoint not found', { status: 404 });
+      return Response.json('OIDC endpoint not found', { status: HttpStatusCodes.NOT_FOUND });
     }
   }
 }
@@ -100,23 +101,23 @@ async function handleAuthorizeRequest({ request }: Route.LoaderArgs): Promise<Re
   const state = searchParams.get('state');
 
   if (clientId !== config.clientId) {
-    return Response.json({ error: 'invalid_client_id' }, { status: 400 });
+    return Response.json({ error: 'invalid_client_id' }, { status: HttpStatusCodes.BAD_REQUEST });
   }
 
   if (!nonce) {
-    return Response.json({ error: 'invalid_nonce' }, { status: 400 });
+    return Response.json({ error: 'invalid_nonce' }, { status: HttpStatusCodes.BAD_REQUEST });
   }
 
   if (redirectUri && !config.allowedRedirectUris.includes(redirectUri)) {
-    return Response.json({ error: 'invalid_redirect_uri' }, { status: 400 });
+    return Response.json({ error: 'invalid_redirect_uri' }, { status: HttpStatusCodes.BAD_REQUEST });
   }
 
   if (!scope) {
-    return Response.json({ error: 'invalid_scope' }, { status: 400 });
+    return Response.json({ error: 'invalid_scope' }, { status: HttpStatusCodes.BAD_REQUEST });
   }
 
   if (!state) {
-    return Response.json({ error: 'invalid_state' }, { status: 400 });
+    return Response.json({ error: 'invalid_state' }, { status: HttpStatusCodes.BAD_REQUEST });
   }
 
   //
@@ -203,23 +204,23 @@ async function handleTokenRequest({ request }: Route.LoaderArgs): Promise<Respon
   const redirectUri = formData.get('redirect_uri')?.toString();
 
   if (clientId !== config.clientId) {
-    return Response.json({ error: 'invalid_client' }, { status: 400 });
+    return Response.json({ error: 'invalid_client' }, { status: HttpStatusCodes.BAD_REQUEST });
   }
 
   if (clientSecret !== config.clientSecret) {
-    return Response.json({ error: 'invalid_client' }, { status: 400 });
+    return Response.json({ error: 'invalid_client' }, { status: HttpStatusCodes.BAD_REQUEST });
   }
 
   if (!code) {
-    return Response.json({ error: 'invalid_code' }, { status: 400 });
+    return Response.json({ error: 'invalid_code' }, { status: HttpStatusCodes.BAD_REQUEST });
   }
 
   if (grantType !== 'authorization_code') {
-    return Response.json({ error: 'invalid_grant_type' }, { status: 400 });
+    return Response.json({ error: 'invalid_grant_type' }, { status: HttpStatusCodes.BAD_REQUEST });
   }
 
   if (redirectUri && !config.allowedRedirectUris.includes(redirectUri)) {
-    return Response.json({ error: 'invalid_redirect_uri' }, { status: 400 });
+    return Response.json({ error: 'invalid_redirect_uri' }, { status: HttpStatusCodes.BAD_REQUEST });
   }
 
   //
@@ -230,7 +231,7 @@ async function handleTokenRequest({ request }: Route.LoaderArgs): Promise<Respon
   tokenCache.delete(code);
 
   if (!tokenSet) {
-    return Response.json({ error: 'invalid_code' }, { status: 400 });
+    return Response.json({ error: 'invalid_code' }, { status: HttpStatusCodes.BAD_REQUEST });
   }
 
   //

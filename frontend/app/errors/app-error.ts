@@ -1,6 +1,7 @@
 import type { ErrorCode } from '~/errors/error-codes';
 import { ErrorCodes } from '~/errors/error-codes';
 import type { HttpStatusCode } from '~/errors/http-status-codes';
+import { HttpStatusCodes } from '~/errors/http-status-codes';
 import { randomString } from '~/utils/string-utils';
 
 type AppErrorOptions = {
@@ -31,7 +32,7 @@ export class AppError {
     this.msg = msg;
 
     this.correlationId = opts?.correlationId ?? generateCorrelationId();
-    this.httpStatusCode = opts?.httpStatusCode ?? 500;
+    this.httpStatusCode = opts?.httpStatusCode ?? HttpStatusCodes.INTERNAL_SERVER_ERROR;
 
     Error.captureStackTrace(this, this.constructor);
   }

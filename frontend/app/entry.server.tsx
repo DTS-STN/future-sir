@@ -15,6 +15,7 @@ import { I18nextProvider } from 'react-i18next';
 import { LogFactory } from '~/.server/logging';
 import { createCounter, handleSpanException } from '~/.server/utils/telemetry-utils';
 import { isAppError } from '~/errors/app-error';
+import { HttpStatusCodes } from '~/errors/http-status-codes';
 import { initI18next } from '~/i18n-config.server';
 import { getLanguage } from '~/utils/i18n-utils';
 
@@ -69,7 +70,7 @@ export default async function handleRequest(
           reject(error);
         },
         onError(error) {
-          responseStatusCode = 500;
+          responseStatusCode = HttpStatusCodes.INTERNAL_SERVER_ERROR;
           // Log streaming rendering errors from inside the shell. Don't log
           // errors encountered during initial shell rendering since they'll
           // reject and get logged in handleDocumentRequest.

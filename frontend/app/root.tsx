@@ -12,6 +12,7 @@ import {
   UnilingualErrorBoundary,
   UnilingualNotFound,
 } from '~/components/error-boundaries';
+import { HttpStatusCodes } from '~/errors/http-status-codes';
 import { useLanguage } from '~/hooks/use-language';
 import indexStyleSheet from '~/index.css?url';
 import tailwindStyleSheet from '~/tailwind.css?url';
@@ -85,7 +86,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
 export function ErrorBoundary(props: Route.ErrorBoundaryProps) {
   const { currentLanguage } = useLanguage();
 
-  if (is404Error(props.error)) {
+  if (isNotFoundError(props.error)) {
     // prettier-ignore
     return currentLanguage
       ? <UnilingualNotFound {...props} />
@@ -98,6 +99,6 @@ export function ErrorBoundary(props: Route.ErrorBoundaryProps) {
     : <BilingualErrorBoundary {...props} />;
 }
 
-function is404Error(error: Route.ErrorBoundaryProps['error']) {
-  return isRouteErrorResponse(error) && error.status === 404;
+function isNotFoundError(error: Route.ErrorBoundaryProps['error']) {
+  return isRouteErrorResponse(error) && error.status === HttpStatusCodes.NOT_FOUND;
 }
