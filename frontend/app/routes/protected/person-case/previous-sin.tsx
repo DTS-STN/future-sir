@@ -28,6 +28,7 @@ import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine';
 import type { PreviousSinData } from '~/routes/protected/person-case/types';
+import { getSingleKey } from '~/utils/i18n-utils';
 import { formatSin, isValidSin, sinInputPatternFormat } from '~/utils/sin-utils';
 
 const log = LogFactory.getLogger(import.meta.url);
@@ -60,19 +61,19 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     }
 
     case 'next': {
-      const { lang, t } = await getTranslation(request, handle.i18nNamespace);
+      const { lang } = await getTranslation(request, handle.i18nNamespace);
 
       const schema = v.pipe(
         v.object({
           hasPreviousSin: v.picklist(
             getApplicantHadSinOptions().map(({ id }) => id),
-            t('protected:previous-sin.error-messages.has-previous-sin-required'),
+            'protected:previous-sin.error-messages.has-previous-sin-required',
           ),
           socialInsuranceNumber: v.optional(
             v.pipe(
               v.string(),
               v.trim(),
-              v.check((sin) => isValidSin(sin), t('protected:previous-sin.error-messages.sin-required')),
+              v.check((sin) => isValidSin(sin), 'protected:previous-sin.error-messages.sin-required'),
               v.transform((sin) => formatSin(sin, '')),
             ),
           ),
@@ -84,7 +85,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
               input.socialInsuranceNumber === undefined ||
               (input.hasPreviousSin === serverEnvironment.PP_HAS_HAD_PREVIOUS_SIN_CODE &&
                 isValidSin(input.socialInsuranceNumber ?? '')),
-            t('protected:previous-sin.error-messages.sin-required'),
+            'protected:previous-sin.error-messages.sin-required',
           ),
           ['socialInsuranceNumber'],
         ),
@@ -160,7 +161,7 @@ export default function PreviousSin({ loaderData, actionData, params }: Route.Co
               name="hasPreviousSin"
               options={hasPreviousSinOptions}
               required
-              errorMessage={errors?.hasPreviousSin?.at(0)}
+              errorMessage={t(getSingleKey(errors?.hasPreviousSin))}
             />
             {hasPreviousSin === globalThis.__appEnvironment.PP_HAS_HAD_PREVIOUS_SIN_CODE && (
               <InputPatternField
@@ -170,7 +171,7 @@ export default function PreviousSin({ loaderData, actionData, params }: Route.Co
                 id="social-insurance-number"
                 name="socialInsuranceNumber"
                 label={t('protected:previous-sin.social-insurance-number-label')}
-                errorMessage={errors?.socialInsuranceNumber?.at(0)}
+                errorMessage={t(getSingleKey(errors?.socialInsuranceNumber))}
               />
             )}
           </div>

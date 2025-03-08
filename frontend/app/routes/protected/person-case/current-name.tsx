@@ -26,6 +26,7 @@ import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine';
 import type { CurrentNameData } from '~/routes/protected/person-case/types';
+import { getSingleKey } from '~/utils/i18n-utils';
 import { REGEX_PATTERNS } from '~/utils/regex-utils';
 import { trimToUndefined } from '~/utils/string-utils';
 
@@ -76,7 +77,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     }
 
     case 'next': {
-      const { lang, t } = await getTranslation(request, handle.i18nNamespace);
+      const { lang } = await getTranslation(request, handle.i18nNamespace);
 
       const schema = v.variant(
         'preferredSameAsDocumentName',
@@ -85,26 +86,26 @@ export async function action({ context, params, request }: Route.ActionArgs) {
           v.object({
             preferredSameAsDocumentName: v.literal(false),
             firstName: v.pipe(
-              v.string(t('protected:current-name.first-name-error.required-error')),
+              v.string('protected:current-name.first-name-error.required-error'),
               v.trim(),
-              v.nonEmpty(t('protected:current-name.first-name-error.required-error')),
-              v.maxLength(100, t('protected:current-name.first-name-error.max-length-error')),
-              v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:current-name.first-name-error.format-error')),
+              v.nonEmpty('protected:current-name.first-name-error.required-error'),
+              v.maxLength(100, 'protected:current-name.first-name-error.max-length-error'),
+              v.regex(REGEX_PATTERNS.NON_DIGIT, 'protected:current-name.first-name-error.format-error'),
             ),
             middleName: v.optional(
               v.pipe(
-                v.string(t('protected:current-name.middle-name-error.required-error')),
+                v.string('protected:current-name.middle-name-error.required-error'),
                 v.trim(),
-                v.maxLength(100, t('protected:current-name.middle-name-error.max-length-error')),
-                v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:current-name.middle-name-error.format-error')),
+                v.maxLength(100, 'protected:current-name.middle-name-error.max-length-error'),
+                v.regex(REGEX_PATTERNS.NON_DIGIT, 'protected:current-name.middle-name-error.format-error'),
               ),
             ),
             lastName: v.pipe(
-              v.string(t('protected:current-name.last-name-error.required-error')),
+              v.string('protected:current-name.last-name-error.required-error'),
               v.trim(),
-              v.nonEmpty(t('protected:current-name.last-name-error.required-error')),
-              v.maxLength(100, t('protected:current-name.last-name-error.max-length-error')),
-              v.regex(REGEX_PATTERNS.NON_DIGIT, t('protected:current-name.last-name-error.format-error')),
+              v.nonEmpty('protected:current-name.last-name-error.required-error'),
+              v.maxLength(100, 'protected:current-name.last-name-error.max-length-error'),
+              v.regex(REGEX_PATTERNS.NON_DIGIT, 'protected:current-name.last-name-error.format-error'),
             ),
             supportingDocuments: v.variant(
               'required',
@@ -113,20 +114,20 @@ export async function action({ context, params, request }: Route.ActionArgs) {
                 v.object({
                   required: v.literal(true),
                   documentTypes: v.pipe(
-                    v.array(v.string(), t('protected:current-name.supporting-error.required-error')),
-                    v.nonEmpty(t('protected:current-name.supporting-error.required-error')),
+                    v.array(v.string(), 'protected:current-name.supporting-error.required-error'),
+                    v.nonEmpty('protected:current-name.supporting-error.required-error'),
                     v.checkItems(
                       (item, index, array) => array.indexOf(item) === index && VALID_DOC_TYPES.includes(item),
-                      t('protected:current-name.supporting-error.invalid-error'),
+                      'protected:current-name.supporting-error.invalid-error',
                     ),
                   ),
                 }),
               ],
-              t('protected:current-name.supporting-error.required-error'),
+              'protected:current-name.supporting-error.required-error',
             ),
           }),
         ],
-        t('protected:current-name.preferred-name.required-error'),
+        'protected:current-name.preferred-name.required-error',
       ) satisfies v.GenericSchema<CurrentNameData>;
 
       const input = {
@@ -258,7 +259,7 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
 
           <div className="space-y-6">
             <InputRadios
-              errorMessage={errors?.preferredSameAsDocumentName?.at(0)}
+              errorMessage={t(getSingleKey(errors?.preferredSameAsDocumentName))}
               id="same-name-id"
               legend={t('protected:current-name.preferred-name.description')}
               name="same-name"
@@ -268,7 +269,7 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
             {sameName === false && (
               <>
                 <InputField
-                  errorMessage={errors?.firstName?.at(0)}
+                  errorMessage={t(getSingleKey(errors?.firstName), { maximum: 100 })}
                   label={t('protected:current-name.preferred-name.first-name')}
                   name="first-name"
                   defaultValue={
@@ -281,7 +282,7 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
                   className="w-full rounded-sm sm:w-104"
                 />
                 <InputField
-                  errorMessage={errors?.middleName?.at(0)}
+                  errorMessage={t(getSingleKey(errors?.middleName), { maximum: 100 })}
                   label={t('protected:current-name.preferred-name.middle-name')}
                   name="middle-name"
                   defaultValue={
@@ -294,7 +295,7 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
                   className="w-full rounded-sm sm:w-104"
                 />
                 <InputField
-                  errorMessage={errors?.lastName?.at(0)}
+                  errorMessage={t(getSingleKey(errors?.lastName), { maximum: 100 })}
                   label={t('protected:current-name.preferred-name.last-name')}
                   name="last-name"
                   defaultValue={
@@ -310,7 +311,7 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
                 <p>{t('protected:current-name.supporting-docs.description')}</p>
                 <InputRadios
                   id="docs-required-id"
-                  errorMessage={errors?.['supportingDocuments.required']?.at(0)}
+                  errorMessage={t(getSingleKey(errors?.['supportingDocuments.required']))}
                   legend={t('protected:current-name.supporting-docs.docs-required')}
                   name="docs-required"
                   options={requireOptions}
@@ -319,7 +320,7 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
                 {requireDoc && (
                   <InputCheckboxes
                     id="doc-type-id"
-                    errorMessage={errors?.['supportingDocuments.documentTypes']?.at(0)}
+                    errorMessage={t(getSingleKey(errors?.['supportingDocuments.documentTypes']))}
                     legend={t('protected:current-name.supporting-docs.doc-type')}
                     name="doc-type"
                     options={docTypes}

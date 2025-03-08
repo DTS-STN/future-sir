@@ -21,6 +21,7 @@ import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import { createMachineActor, getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine';
 import type { PrivacyStatementData } from '~/routes/protected/person-case/types';
+import { getSingleKey } from '~/utils/i18n-utils';
 
 const log = LogFactory.getLogger(import.meta.url);
 
@@ -47,10 +48,10 @@ export async function action({ context, params, request }: Route.ActionArgs) {
 
   switch (action) {
     case 'next': {
-      const { lang, t } = await getTranslation(request, handle.i18nNamespace);
+      const { lang } = await getTranslation(request, handle.i18nNamespace);
 
       const schema = v.object({
-        agreedToTerms: v.literal(true, t('protected:privacy-statement.confirm-privacy-notice-checkbox.required')),
+        agreedToTerms: v.literal(true, 'protected:privacy-statement.confirm-privacy-notice-checkbox.required'),
       }) satisfies v.GenericSchema<PrivacyStatementData>;
 
       const input = {
@@ -130,7 +131,7 @@ export default function PrivacyStatement({ loaderData, params }: Route.Component
             <InputCheckbox
               id="agreed-to-terms"
               name="agreedToTerms"
-              errorMessage={errors?.agreedToTerms?.at(0)}
+              errorMessage={t(getSingleKey(errors?.agreedToTerms))}
               required={true}
             >
               {t('protected:privacy-statement.confirm-privacy-notice-checkbox.title')}

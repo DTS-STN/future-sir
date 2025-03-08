@@ -2,7 +2,7 @@ import type { RouteModule } from 'react-router';
 
 import { describe, expect, it } from 'vitest';
 
-import { getAltLanguage, getI18nNamespace, getLanguage } from '~/utils/i18n-utils';
+import { getAltLanguage, getI18nNamespace, getLanguage, getSingleKey } from '~/utils/i18n-utils';
 
 describe('i18n-utils', () => {
   describe('getI18nNamespace', () => {
@@ -66,6 +66,30 @@ describe('i18n-utils', () => {
       expect(getAltLanguage('en')).toEqual('fr');
       expect(getAltLanguage('fr')).toEqual('en');
       expect(getAltLanguage('es')).toBeUndefined();
+    });
+  });
+
+  describe('getSingleKey', () => {
+    it('should return the single key if a single key is provided', () => {
+      expect(getSingleKey('key')).toBe('key');
+    });
+
+    it('should return the first key if an array of keys is provided', () => {
+      expect(getSingleKey(['key1', 'key2'])).toBe('key1');
+    });
+
+    it('should return the key at the specified index if an array of keys and an index are provided', () => {
+      expect(getSingleKey(['key1', 'key2', 'key3'], 1)).toBe('key2');
+      expect(getSingleKey(['key1', 'key2', 'key3'], 2)).toBe('key3');
+    });
+
+    it('should return undefined if no value is provided', () => {
+      expect(getSingleKey(undefined)).toBeUndefined();
+    });
+
+    it('should return undefined if index is out of bounds', () => {
+      expect(getSingleKey(['key1', 'key2'], 5)).toBeUndefined();
+      expect(getSingleKey(['key1', 'key2'], -1)).toBe('key2');
     });
   });
 });
