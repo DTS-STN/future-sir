@@ -26,7 +26,7 @@ import { HttpStatusCodes } from '~/errors/http-status-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine';
-import type { PersonalInfoData } from '~/routes/protected/person-case/types';
+import { personalInfoSchema } from '~/routes/protected/person-case/validation';
 import { getSingleKey } from '~/utils/i18n-utils';
 import { REGEX_PATTERNS } from '~/utils/regex-utils';
 
@@ -60,53 +60,18 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     }
 
     case 'next': {
-      const { lang } = await getTranslation(request, handle.i18nNamespace);
-
-      const schema = v.object({
-        firstNamePreviouslyUsed: v.optional(
-          v.array(
-            v.pipe(
-              v.string(),
-              v.trim(),
-              v.maxLength(100, 'protected:personal-information.first-name-previously-used.max-length'),
-              v.regex(REGEX_PATTERNS.NON_DIGIT, 'protected:personal-information.first-name-previously-used.format'),
-            ),
-          ),
-        ),
-        lastNameAtBirth: v.pipe(
-          v.string('protected:personal-information.last-name-at-birth.required'),
-          v.trim(),
-          v.nonEmpty('protected:personal-information.last-name-at-birth.required'),
-          v.maxLength(100, 'protected:personal-information.last-name-at-birth.max-length'),
-          v.regex(REGEX_PATTERNS.NON_DIGIT, 'protected:personal-information.last-name-at-birth.format'),
-        ),
-        lastNamePreviouslyUsed: v.optional(
-          v.array(
-            v.pipe(
-              v.string(),
-              v.trim(),
-              v.maxLength(100, 'protected:personal-information.last-name-previously-used.max-length'),
-              v.regex(REGEX_PATTERNS.NON_DIGIT, 'protected:personal-information.last-name-previously-used.format'),
-            ),
-          ),
-        ),
-        gender: v.picklist(
-          applicantGenderService.getApplicantGenders().map(({ id }) => id),
-          'protected:personal-information.gender.required',
-        ),
-      }) satisfies v.GenericSchema<PersonalInfoData>;
-
-      const input = {
+      const parseResult = v.safeParse(personalInfoSchema, {
         firstNamePreviouslyUsed: formData.getAll('firstNamePreviouslyUsed').map(String).filter(Boolean),
         lastNameAtBirth: String(formData.get('lastNameAtBirth')),
         lastNamePreviouslyUsed: formData.getAll('lastNamePreviouslyUsed').map(String).filter(Boolean),
         gender: String(formData.get('gender')),
-      } satisfies Partial<PersonalInfoData>;
-
-      const parseResult = v.safeParse(schema, input, { lang });
+      });
 
       if (!parseResult.success) {
-        return data({ errors: v.flatten<typeof schema>(parseResult.issues).nested }, { status: HttpStatusCodes.BAD_REQUEST });
+        return data(
+          { errors: v.flatten<typeof personalInfoSchema>(parseResult.issues).nested },
+          { status: HttpStatusCodes.BAD_REQUEST },
+        );
       }
 
       machineActor.send({ type: 'submitPersonalInfo', data: parseResult.output });

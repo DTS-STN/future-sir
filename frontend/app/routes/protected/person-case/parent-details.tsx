@@ -9,7 +9,6 @@ import * as v from 'valibot';
 
 import type { Info, Route } from './+types/parent-details';
 
-import { serverEnvironment } from '~/.server/environment';
 import { LogFactory } from '~/.server/logging';
 import { countryService, provinceService } from '~/.server/shared/services';
 import { requireAuth } from '~/.server/utils/auth-utils';
@@ -26,12 +25,9 @@ import { HttpStatusCodes } from '~/errors/http-status-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine';
-import type { ParentDetailsData } from '~/routes/protected/person-case/types';
+import { maxParents, parentDetailsSchema } from '~/routes/protected/person-case/validation';
 import { getSingleKey } from '~/utils/i18n-utils';
-import { REGEX_PATTERNS } from '~/utils/regex-utils';
 import { trimToUndefined } from '~/utils/string-utils';
-
-const MAX_PARENTS = 4;
 
 const log = LogFactory.getLogger(import.meta.url);
 
@@ -63,115 +59,28 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     }
 
     case 'next': {
-      const { lang } = await getTranslation(request, handle.i18nNamespace);
-
-      const schema = v.pipe(
-        v.array(
-          v.variant(
-            'unavailable',
-            [
-              v.object({
-                unavailable: v.literal(true),
-              }),
-              v.object({
-                unavailable: v.literal(false),
-                givenName: v.pipe(
-                  v.string('protected:parent-details.given-name-error.required-error'),
-                  v.trim(),
-                  v.nonEmpty('protected:parent-details.given-name-error.required-error'),
-                  v.maxLength(100, 'protected:parent-details.given-name-error.max-length-error'),
-                  v.regex(REGEX_PATTERNS.NON_DIGIT, 'protected:parent-details.given-name-error.format-error'),
-                ),
-                lastName: v.pipe(
-                  v.string('protected:parent-details.last-name-error.required-error'),
-                  v.trim(),
-                  v.nonEmpty('protected:parent-details.last-name-error.required-error'),
-                  v.maxLength(100, 'protected:parent-details.last-name-error.max-length-error'),
-                  v.regex(REGEX_PATTERNS.NON_DIGIT, 'protected:parent-details.last-name-error.format-error'),
-                ),
-                birthLocation: v.variant(
-                  'country',
-                  [
-                    v.object({
-                      country: v.literal(
-                        serverEnvironment.PP_CANADA_COUNTRY_CODE,
-                        'protected:parent-details.country-error.invalid-country',
-                      ),
-                      province: v.picklist(
-                        provinceService.getProvinces().map(({ id }) => id),
-                        'protected:parent-details.province-error.required-province',
-                      ),
-                      city: v.pipe(
-                        v.string('protected:parent-details.city-error.required-city'),
-                        v.trim(),
-                        v.nonEmpty('protected:parent-details.city-error.required-city'),
-                        v.maxLength(100, 'protected:parent-details.city-error.invalid-city'),
-                        v.regex(REGEX_PATTERNS.NON_DIGIT, 'protected:parent-details.city-error.invalid-city'),
-                      ),
-                    }),
-                    v.object({
-                      country: v.pipe(
-                        v.string('protected:parent-details.country-error.required-country'),
-                        v.nonEmpty('protected:parent-details.country-error.required-country'),
-                        v.excludes(
-                          serverEnvironment.PP_CANADA_COUNTRY_CODE,
-                          'protected:parent-details.country-error.invalid-country',
-                        ),
-                        v.picklist(
-                          countryService.getCountries().map(({ id }) => id),
-                          'protected:parent-details.country-error.invalid-country',
-                        ),
-                      ),
-                      province: v.optional(
-                        v.pipe(
-                          v.string('protected:parent-details.province-error.required-province'),
-                          v.trim(),
-                          v.nonEmpty('protected:parent-details.province-error.required-province'),
-                          v.maxLength(100, 'protected:parent-details.province-error.invalid-province'),
-                          v.regex(REGEX_PATTERNS.NON_DIGIT, 'protected:parent-details.province-error.invalid-province'),
-                        ),
-                      ),
-                      city: v.optional(
-                        v.pipe(
-                          v.string('protected:parent-details.city-error.required-city'),
-                          v.trim(),
-                          v.nonEmpty('protected:parent-details.city-error.required-city'),
-                          v.maxLength(100, 'protected:parent-details.city-error.invalid-city'),
-                          v.regex(REGEX_PATTERNS.NON_DIGIT, 'protected:parent-details.city-error.invalid-city'),
-                        ),
-                      ),
-                    }),
-                  ],
-                  'protected:parent-details.country-error.required-country',
-                ),
-              }),
-            ],
-            'protected:parent-details.details-unavailable',
-          ),
-          'protected:parent-details.details-unavailable',
-        ),
-        v.minLength(1),
-        v.maxLength(MAX_PARENTS),
-      ) satisfies v.GenericSchema<ParentDetailsData>;
-
       const parentAmount = Number(formData.get('parent-amount')) || 0;
-      const inputLength = Math.min(parentAmount, MAX_PARENTS);
+      const inputLength = Math.min(parentAmount, maxParents);
 
-      const input = Array.from({ length: inputLength }).map((_, i) => ({
-        unavailable: Boolean(formData.get(`${i}-unavailable`)),
-        givenName: String(formData.get(`${i}-given-name`)),
-        lastName: String(formData.get(`${i}-last-name`)),
-        birthLocation: {
-          country: String(formData.get(`${i}-country`)),
-          province: trimToUndefined(String(formData.get(`${i}-province`))),
-          city: trimToUndefined(String(formData.get(`${i}-city`))),
-        },
-      })) satisfies ParentDetailsData;
-
-      const parseResult = v.safeParse(schema, input, { lang });
+      const parseResult = v.safeParse(
+        parentDetailsSchema,
+        Array.from({ length: inputLength }).map((_, i) => ({
+          unavailable: Boolean(formData.get(`${i}-unavailable`)),
+          givenName: String(formData.get(`${i}-given-name`)),
+          lastName: String(formData.get(`${i}-last-name`)),
+          birthLocation: {
+            country: String(formData.get(`${i}-country`)),
+            province: trimToUndefined(String(formData.get(`${i}-province`))),
+            city: trimToUndefined(String(formData.get(`${i}-city`))),
+          },
+        })),
+      );
 
       if (!parseResult.success) {
-        return data({ errors: v.flatten<typeof schema>(parseResult.issues).nested }, { status: HttpStatusCodes.BAD_REQUEST });
+        return data(
+          { errors: v.flatten<typeof parentDetailsSchema>(parseResult.issues).nested },
+          { status: HttpStatusCodes.BAD_REQUEST },
+        );
       }
 
       machineActor.send({ type: 'submitParentDetails', data: parseResult.output });
@@ -251,7 +160,7 @@ function ParentInformation({ loaderData, errors }: ParentInformationProps) {
   const { t } = useTranslation(handle.i18nNamespace);
   const { idList, addId, removeId } = useIdList(Math.max(loaderData.defaultFormValues.length, 1));
 
-  const canAddParent = idList.length < MAX_PARENTS;
+  const canAddParent = idList.length < maxParents;
 
   function onAddParent() {
     if (canAddParent) addId();

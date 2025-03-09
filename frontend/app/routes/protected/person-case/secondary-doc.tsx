@@ -8,11 +8,7 @@ import * as v from 'valibot';
 
 import type { Info, Route } from './+types/secondary-doc';
 
-import {
-  getApplicantSecondaryDocumentChoices,
-  getLocalizedApplicantSecondaryDocumentChoices,
-} from '~/.server/domain/person-case/services/applicant-secondary-document-service';
-import { serverEnvironment } from '~/.server/environment';
+import { getLocalizedApplicantSecondaryDocumentChoices } from '~/.server/domain/person-case/services/applicant-secondary-document-service';
 import { LogFactory } from '~/.server/logging';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
@@ -28,8 +24,7 @@ import { HttpStatusCodes } from '~/errors/http-status-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine';
-import type { SecondaryDocumentData } from '~/routes/protected/person-case/types';
-import { getStartOfDayInTimezone } from '~/utils/date-utils';
+import { secondaryDocumentSchema } from '~/routes/protected/person-case/validation';
 import { getSingleKey } from '~/utils/i18n-utils';
 
 const log = LogFactory.getLogger(import.meta.url);
@@ -62,51 +57,20 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     }
 
     case 'next': {
-      const { lang } = await getTranslation(request, handle.i18nNamespace);
-      const currentDate = getStartOfDayInTimezone(serverEnvironment.BASE_TIMEZONE);
-      const schema = v.pipe(
-        v.object({
-          documentType: v.picklist(
-            getApplicantSecondaryDocumentChoices().map(({ id }) => id),
-            'protected:secondary-identity-document.document-type.invalid',
-          ),
-          expiryYear: v.pipe(
-            v.number('protected:secondary-identity-document.expiry-date.required-year'),
-            v.integer('protected:secondary-identity-document.expiry-date.invalid-year'),
-            v.minValue(currentDate.getFullYear(), 'protected:secondary-identity-document.expiry-date.invalid-year'),
-          ),
-          expiryMonth: v.pipe(
-            v.number('protected:secondary-identity-document.expiry-date.required-month'),
-            v.integer('protected:secondary-identity-document.expiry-date.invalid-month'),
-            v.minValue(1, 'protected:secondary-identity-document.expiry-date.invalid-month'),
-            v.maxValue(12, 'protected:secondary-identity-document.expiry-date.invalid-month'),
-          ),
-        }),
-        v.forward(
-          v.partialCheck(
-            [['expiryYear'], ['expiryMonth']],
-            (input) =>
-              input.expiryYear > currentDate.getFullYear() ||
-              (input.expiryYear === currentDate.getFullYear() && input.expiryMonth >= currentDate.getMonth()),
-            'protected:secondary-identity-document.expiry-date.invalid',
-          ),
-          ['expiryMonth'],
-        ),
-      ) satisfies v.GenericSchema<SecondaryDocumentData>;
-
       const expiryYear = Number(formData.get('expiry-year'));
       const expiryMonth = Number(formData.get('expiry-month'));
 
-      const input = {
+      const parseResult = v.safeParse(secondaryDocumentSchema, {
         documentType: String(formData.get('document-type')),
         expiryYear: expiryYear,
         expiryMonth: expiryMonth,
-      } satisfies Partial<v.InferInput<typeof schema>>;
-
-      const parseResult = v.safeParse(schema, input, { lang });
+      });
 
       if (!parseResult.success) {
-        return data({ errors: v.flatten<typeof schema>(parseResult.issues).nested }, { status: HttpStatusCodes.BAD_REQUEST });
+        return data(
+          { errors: v.flatten<typeof secondaryDocumentSchema>(parseResult.issues).nested },
+          { status: HttpStatusCodes.BAD_REQUEST },
+        );
       }
 
       machineActor.send({ type: 'submitSecondaryDocuments', data: parseResult.output });

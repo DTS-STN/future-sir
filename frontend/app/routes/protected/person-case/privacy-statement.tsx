@@ -21,7 +21,7 @@ import { HttpStatusCodes } from '~/errors/http-status-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import { createMachineActor, getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine';
-import type { PrivacyStatementData } from '~/routes/protected/person-case/types';
+import { privacyStatementSchema } from '~/routes/protected/person-case/validation';
 import { getSingleKey } from '~/utils/i18n-utils';
 
 const log = LogFactory.getLogger(import.meta.url);
@@ -49,20 +49,15 @@ export async function action({ context, params, request }: Route.ActionArgs) {
 
   switch (action) {
     case 'next': {
-      const { lang } = await getTranslation(request, handle.i18nNamespace);
-
-      const schema = v.object({
-        agreedToTerms: v.literal(true, 'protected:privacy-statement.confirm-privacy-notice-checkbox.required'),
-      }) satisfies v.GenericSchema<PrivacyStatementData>;
-
-      const input = {
+      const parseResult = v.safeParse(privacyStatementSchema, {
         agreedToTerms: formData.get('agreedToTerms') ? true : undefined,
-      } satisfies Partial<PrivacyStatementData>;
-
-      const parseResult = v.safeParse(schema, input, { lang });
+      });
 
       if (!parseResult.success) {
-        return data({ errors: v.flatten<typeof schema>(parseResult.issues).nested }, { status: HttpStatusCodes.BAD_REQUEST });
+        return data(
+          { errors: v.flatten<typeof privacyStatementSchema>(parseResult.issues).nested },
+          { status: HttpStatusCodes.BAD_REQUEST },
+        );
       }
 
       machineActor.send({ type: 'submitPrivacyStatement', data: parseResult.output });

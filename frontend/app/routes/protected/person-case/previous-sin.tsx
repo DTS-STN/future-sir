@@ -9,10 +9,7 @@ import * as v from 'valibot';
 
 import type { Info, Route } from './+types/previous-sin';
 
-import {
-  getApplicantHadSinOptions,
-  getLocalizedApplicantHadSinOptions,
-} from '~/.server/domain/person-case/services/applicant-sin-service';
+import { getLocalizedApplicantHadSinOptions } from '~/.server/domain/person-case/services/applicant-sin-service';
 import { serverEnvironment } from '~/.server/environment';
 import { LogFactory } from '~/.server/logging';
 import { requireAuth } from '~/.server/utils/auth-utils';
@@ -28,9 +25,9 @@ import { HttpStatusCodes } from '~/errors/http-status-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine';
-import type { PreviousSinData } from '~/routes/protected/person-case/types';
+import { previousSinSchema } from '~/routes/protected/person-case/validation';
 import { getSingleKey } from '~/utils/i18n-utils';
-import { formatSin, isValidSin, sinInputPatternFormat } from '~/utils/sin-utils';
+import { sinInputPatternFormat } from '~/utils/sin-utils';
 
 const log = LogFactory.getLogger(import.meta.url);
 
@@ -62,48 +59,19 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     }
 
     case 'next': {
-      const { lang } = await getTranslation(request, handle.i18nNamespace);
-
-      const schema = v.pipe(
-        v.object({
-          hasPreviousSin: v.picklist(
-            getApplicantHadSinOptions().map(({ id }) => id),
-            'protected:previous-sin.error-messages.has-previous-sin-required',
-          ),
-          socialInsuranceNumber: v.optional(
-            v.pipe(
-              v.string(),
-              v.trim(),
-              v.check((sin) => isValidSin(sin), 'protected:previous-sin.error-messages.sin-required'),
-              v.transform((sin) => formatSin(sin, '')),
-            ),
-          ),
-        }),
-        v.forward(
-          v.partialCheck(
-            [['hasPreviousSin'], ['socialInsuranceNumber']],
-            (input) =>
-              input.socialInsuranceNumber === undefined ||
-              (input.hasPreviousSin === serverEnvironment.PP_HAS_HAD_PREVIOUS_SIN_CODE &&
-                isValidSin(input.socialInsuranceNumber ?? '')),
-            'protected:previous-sin.error-messages.sin-required',
-          ),
-          ['socialInsuranceNumber'],
-        ),
-      ) satisfies v.GenericSchema<PreviousSinData>;
-
-      const input = {
+      const parseResult = v.safeParse(previousSinSchema, {
         hasPreviousSin: formData.get('hasPreviousSin') as string,
         socialInsuranceNumber:
           formData.get('hasPreviousSin') === serverEnvironment.PP_HAS_HAD_PREVIOUS_SIN_CODE
             ? (formData.get('socialInsuranceNumber') as string)
             : undefined,
-      } satisfies Partial<PreviousSinData>;
-
-      const parseResult = v.safeParse(schema, input, { lang });
+      });
 
       if (!parseResult.success) {
-        return data({ errors: v.flatten<typeof schema>(parseResult.issues).nested }, { status: HttpStatusCodes.BAD_REQUEST });
+        return data(
+          { errors: v.flatten<typeof previousSinSchema>(parseResult.issues).nested },
+          { status: HttpStatusCodes.BAD_REQUEST },
+        );
       }
 
       machineActor.send({ type: 'submitPreviousSin', data: parseResult.output });

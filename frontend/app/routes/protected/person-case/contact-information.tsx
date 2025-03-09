@@ -3,14 +3,12 @@ import { useId, useState } from 'react';
 import type { RouteHandle } from 'react-router';
 import { data, redirect, useFetcher } from 'react-router';
 
-import { parsePhoneNumberWithError } from 'libphonenumber-js';
 import { useTranslation } from 'react-i18next';
 import * as v from 'valibot';
 
 import type { Info, Route } from './+types/contact-information';
 
 import { languageCorrespondenceService } from '~/.server/domain/person-case/services';
-import { serverEnvironment } from '~/.server/environment';
 import { LogFactory } from '~/.server/logging';
 import { countryService, provinceService } from '~/.server/shared/services';
 import { requireAuth } from '~/.server/utils/auth-utils';
@@ -28,7 +26,7 @@ import { HttpStatusCodes } from '~/errors/http-status-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine';
-import type { ContactInformationData } from '~/routes/protected/person-case/types';
+import { contactInformationSchema } from '~/routes/protected/person-case/validation';
 import { getSingleKey } from '~/utils/i18n-utils';
 
 const log = LogFactory.getLogger(import.meta.url);
@@ -61,77 +59,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     }
 
     case 'next': {
-      const { lang } = await getTranslation(request, handle.i18nNamespace);
-
-      const schema = v.intersect([
-        v.object({
-          preferredLanguage: v.picklist(
-            languageCorrespondenceService.getLanguagesOfCorrespondence().map(({ id }) => id),
-            'protected:contact-information.error-messages.preferred-language-required',
-          ),
-          primaryPhoneNumber: v.pipe(
-            v.string(),
-            v.trim(),
-            v.nonEmpty('protected:contact-information.error-messages.primary-phone-required'),
-            v.transform((val) => parsePhoneNumberWithError(val, 'CA').formatInternational().replace(/ /g, '')),
-          ),
-          secondaryPhoneNumber: v.optional(
-            v.pipe(
-              v.string(),
-              v.trim(),
-              v.transform((val) => parsePhoneNumberWithError(val, 'CA').formatInternational().replace(/ /g, '')),
-            ),
-          ),
-          emailAddress: v.optional(
-            v.pipe(v.string(), v.trim(), v.email('protected:contact-information.error-messages.email-address-invalid-format')),
-          ),
-        }),
-        v.variant(
-          'country',
-          [
-            v.object({
-              country: v.literal(serverEnvironment.PP_CANADA_COUNTRY_CODE),
-              province: v.picklist(
-                provinceService.getProvinces().map(({ id }) => id),
-                'protected:contact-information.error-messages.province-required',
-              ),
-              address: v.pipe(
-                v.string(),
-                v.trim(),
-                v.nonEmpty('protected:contact-information.error-messages.address-required'),
-              ),
-              postalCode: v.pipe(
-                v.string(),
-                v.trim(),
-                v.nonEmpty('protected:contact-information.error-messages.postal-code-required'),
-              ),
-              city: v.pipe(v.string(), v.trim(), v.nonEmpty('protected:contact-information.error-messages.city-required')),
-            }),
-            v.object({
-              country: v.picklist(countryService.getCountries().map(({ id }) => id)),
-              province: v.pipe(
-                v.string(),
-                v.trim(),
-                v.nonEmpty('protected:contact-information.error-messages.province-required'),
-              ),
-              address: v.pipe(
-                v.string(),
-                v.trim(),
-                v.nonEmpty('protected:contact-information.error-messages.address-required'),
-              ),
-              postalCode: v.pipe(
-                v.string(),
-                v.trim(),
-                v.nonEmpty('protected:contact-information.error-messages.postal-code-required'),
-              ),
-              city: v.pipe(v.string(), v.trim(), v.nonEmpty('protected:contact-information.error-messages.city-required')),
-            }),
-          ],
-          'protected:contact-information.error-messages.country-required',
-        ),
-      ]) satisfies v.GenericSchema<ContactInformationData>;
-
-      const input = {
+      const parseResult = v.safeParse(contactInformationSchema, {
         preferredLanguage: formData.get('preferredLanguage') as string,
         primaryPhoneNumber: formData.get('primaryPhoneNumber') as string,
         secondaryPhoneNumber: formData.get('secondaryPhoneNumber')
@@ -143,12 +71,13 @@ export async function action({ context, params, request }: Route.ActionArgs) {
         postalCode: formData.get('postalCode') as string,
         city: formData.get('city') as string,
         province: formData.get('province') as string,
-      } satisfies Partial<ContactInformationData>;
-
-      const parseResult = v.safeParse(schema, input, { lang });
+      });
 
       if (!parseResult.success) {
-        return data({ errors: v.flatten<typeof schema>(parseResult.issues).nested }, { status: HttpStatusCodes.BAD_REQUEST });
+        return data(
+          { errors: v.flatten<typeof contactInformationSchema>(parseResult.issues).nested },
+          { status: HttpStatusCodes.BAD_REQUEST },
+        );
       }
 
       machineActor.send({ type: 'submitContactInfo', data: parseResult.output });

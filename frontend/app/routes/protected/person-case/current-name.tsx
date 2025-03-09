@@ -5,7 +5,6 @@ import { data, redirect, useFetcher } from 'react-router';
 
 import type { ResourceKey } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import type { PartialDeep } from 'type-fest';
 import * as v from 'valibot';
 
 import type { Info, Route } from './+types/current-name';
@@ -26,27 +25,14 @@ import { HttpStatusCodes } from '~/errors/http-status-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine';
-import type { CurrentNameData } from '~/routes/protected/person-case/types';
+import { currentNameSchema, validCurrentNameDocTypes } from '~/routes/protected/person-case/validation';
 import { getSingleKey } from '~/utils/i18n-utils';
-import { REGEX_PATTERNS } from '~/utils/regex-utils';
 import { trimToUndefined } from '~/utils/string-utils';
 
 const REQUIRE_OPTIONS = {
   yes: 'Yes', //
   no: 'No',
 } as const;
-
-const VALID_DOC_TYPES: string[] = [
-  'marriage-document',
-  'divorce-decree',
-  'name-change',
-  'adoption-order',
-  'notarial-certificate',
-  'resident-record',
-  'replace-imm1442',
-  'birth-certificate',
-  'citizenship-certificate',
-] as const;
 
 const log = LogFactory.getLogger(import.meta.url);
 
@@ -78,60 +64,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     }
 
     case 'next': {
-      const { lang } = await getTranslation(request, handle.i18nNamespace);
-
-      const schema = v.variant(
-        'preferredSameAsDocumentName',
-        [
-          v.object({ preferredSameAsDocumentName: v.literal(true) }),
-          v.object({
-            preferredSameAsDocumentName: v.literal(false),
-            firstName: v.pipe(
-              v.string('protected:current-name.first-name-error.required-error'),
-              v.trim(),
-              v.nonEmpty('protected:current-name.first-name-error.required-error'),
-              v.maxLength(100, 'protected:current-name.first-name-error.max-length-error'),
-              v.regex(REGEX_PATTERNS.NON_DIGIT, 'protected:current-name.first-name-error.format-error'),
-            ),
-            middleName: v.optional(
-              v.pipe(
-                v.string('protected:current-name.middle-name-error.required-error'),
-                v.trim(),
-                v.maxLength(100, 'protected:current-name.middle-name-error.max-length-error'),
-                v.regex(REGEX_PATTERNS.NON_DIGIT, 'protected:current-name.middle-name-error.format-error'),
-              ),
-            ),
-            lastName: v.pipe(
-              v.string('protected:current-name.last-name-error.required-error'),
-              v.trim(),
-              v.nonEmpty('protected:current-name.last-name-error.required-error'),
-              v.maxLength(100, 'protected:current-name.last-name-error.max-length-error'),
-              v.regex(REGEX_PATTERNS.NON_DIGIT, 'protected:current-name.last-name-error.format-error'),
-            ),
-            supportingDocuments: v.variant(
-              'required',
-              [
-                v.object({ required: v.literal(false) }),
-                v.object({
-                  required: v.literal(true),
-                  documentTypes: v.pipe(
-                    v.array(v.string(), 'protected:current-name.supporting-error.required-error'),
-                    v.nonEmpty('protected:current-name.supporting-error.required-error'),
-                    v.checkItems(
-                      (item, index, array) => array.indexOf(item) === index && VALID_DOC_TYPES.includes(item),
-                      'protected:current-name.supporting-error.invalid-error',
-                    ),
-                  ),
-                }),
-              ],
-              'protected:current-name.supporting-error.required-error',
-            ),
-          }),
-        ],
-        'protected:current-name.preferred-name.required-error',
-      ) satisfies v.GenericSchema<CurrentNameData>;
-
-      const input = {
+      const parseResult = v.safeParse(currentNameSchema, {
         preferredSameAsDocumentName: formData.get('same-name')
           ? formData.get('same-name') === REQUIRE_OPTIONS.yes //
           : undefined,
@@ -144,12 +77,13 @@ export async function action({ context, params, request }: Route.ActionArgs) {
             : undefined,
           documentTypes: formData.getAll('doc-type').map(String),
         },
-      } satisfies PartialDeep<v.InferInput<typeof schema>>;
-
-      const parseResult = v.safeParse(schema, input, { lang });
+      });
 
       if (!parseResult.success) {
-        return data({ errors: v.flatten<typeof schema>(parseResult.issues).nested }, { status: HttpStatusCodes.BAD_REQUEST });
+        return data(
+          { errors: v.flatten<typeof currentNameSchema>(parseResult.issues).nested },
+          { status: HttpStatusCodes.BAD_REQUEST },
+        );
       }
 
       machineActor.send({ type: 'submitCurrentName', data: parseResult.output });
@@ -226,7 +160,7 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
     },
   ];
 
-  const docTypes = VALID_DOC_TYPES.map((value) => ({
+  const docTypes = validCurrentNameDocTypes.map((value) => ({
     value: value,
     children: t(`protected:current-name.doc-types.${value}` as ResourceKey),
     defaultChecked:

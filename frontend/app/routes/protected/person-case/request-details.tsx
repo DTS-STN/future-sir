@@ -8,14 +8,8 @@ import * as v from 'valibot';
 
 import type { Info, Route } from './+types/request-details';
 
-import {
-  getApplicationSubmissionScenarios,
-  getLocalizedApplicationSubmissionScenarios,
-} from '~/.server/domain/person-case/services/application-submission-scenario';
-import {
-  getLocalizedTypesOfApplicationToSubmit,
-  getTypesOfApplicationToSubmit,
-} from '~/.server/domain/person-case/services/application-type-service';
+import { getLocalizedApplicationSubmissionScenarios } from '~/.server/domain/person-case/services/application-submission-scenario';
+import { getLocalizedTypesOfApplicationToSubmit } from '~/.server/domain/person-case/services/application-type-service';
 import { LogFactory } from '~/.server/logging';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
@@ -30,7 +24,7 @@ import { HttpStatusCodes } from '~/errors/http-status-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine';
-import type { RequestDetailsData } from '~/routes/protected/person-case/types';
+import { requestDetailsSchema } from '~/routes/protected/person-case/validation';
 import { getSingleKey } from '~/utils/i18n-utils';
 
 const log = LogFactory.getLogger(import.meta.url);
@@ -63,28 +57,16 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     }
 
     case 'next': {
-      const { lang } = await getTranslation(request, handle.i18nNamespace);
-
-      const schema = v.object({
-        scenario: v.picklist(
-          getApplicationSubmissionScenarios().map(({ id }) => id),
-          'protected:request-details.required-scenario',
-        ),
-        type: v.picklist(
-          getTypesOfApplicationToSubmit().map(({ id }) => id),
-          'protected:request-details.required-request',
-        ),
-      }) satisfies v.GenericSchema<RequestDetailsData>;
-
-      const input = {
+      const parseResult = v.safeParse(requestDetailsSchema, {
         scenario: formData.get('scenario') as string,
         type: formData.get('request-type') as string,
-      } satisfies Partial<RequestDetailsData>;
-
-      const parseResult = v.safeParse(schema, input, { lang });
+      });
 
       if (!parseResult.success) {
-        return data({ errors: v.flatten<typeof schema>(parseResult.issues).nested }, { status: HttpStatusCodes.BAD_REQUEST });
+        return data(
+          { errors: v.flatten<typeof requestDetailsSchema>(parseResult.issues).nested },
+          { status: HttpStatusCodes.BAD_REQUEST },
+        );
       }
 
       machineActor.send({ type: 'submitRequestDetails', data: parseResult.output });

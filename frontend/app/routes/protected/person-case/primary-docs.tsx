@@ -11,7 +11,6 @@ import type { Info, Route } from './+types/primary-docs';
 
 import type { LocalizedApplicantGender } from '~/.server/domain/person-case/models';
 import { applicantGenderService } from '~/.server/domain/person-case/services';
-import { serverEnvironment } from '~/.server/environment';
 import { LogFactory } from '~/.server/logging';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
@@ -29,13 +28,9 @@ import { HttpStatusCodes } from '~/errors/http-status-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine';
-import type { PrimaryDocumentData } from '~/routes/protected/person-case/types';
-import { getStartOfDayInTimezone, isDateInPastOrTodayInTimeZone, isValidDateString, toISODateString } from '~/utils/date-utils';
+import { primaryDocumentSchema } from '~/routes/protected/person-case/validation';
+import { toISODateString } from '~/utils/date-utils';
 import { getSingleKey } from '~/utils/i18n-utils';
-import { REGEX_PATTERNS } from '~/utils/regex-utils';
-
-const VALID_CURRENT_STATUS = ['canadian-citizen-born-outside-canada'];
-const VALID_DOCTYPES = ['certificate-of-canadian-citizenship'];
 
 const log = LogFactory.getLogger(import.meta.url);
 
@@ -67,120 +62,6 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     }
 
     case 'next': {
-      const { lang } = await getTranslation(request, handle.i18nNamespace);
-
-      const schema = v.intersect([
-        v.object({
-          currentStatusInCanada: v.pipe(
-            v.string('protected:primary-identity-document.current-status-in-canada.required'),
-            v.trim(),
-            v.nonEmpty('protected:primary-identity-document.current-status-in-canada.required'),
-            v.picklist(VALID_CURRENT_STATUS, 'protected:primary-identity-document.current-status-in-canada.invalid'),
-          ),
-        }),
-        v.variant(
-          'documentType',
-          [
-            v.object({
-              documentType: v.picklist(VALID_DOCTYPES, 'protected:primary-identity-document.document-type.invalid'),
-              registrationNumber: v.pipe(
-                v.string('protected:primary-identity-document.registration-number.required'),
-                v.trim(),
-                v.nonEmpty('protected:primary-identity-document.registration-number.required'),
-                v.length(8, 'protected:primary-identity-document.registration-number.invalid'),
-                v.regex(REGEX_PATTERNS.DIGIT_ONLY, 'protected:primary-identity-document.registration-number.invalid'),
-              ),
-              clientNumber: v.pipe(
-                v.string('protected:primary-identity-document.client-number.required'),
-                v.trim(),
-                v.nonEmpty('protected:primary-identity-document.client-number.required'),
-                v.length(10, 'protected:primary-identity-document.client-number.invalid'),
-                v.regex(REGEX_PATTERNS.DIGIT_ONLY, 'protected:primary-identity-document.client-number.invalid'),
-              ),
-              givenName: v.pipe(
-                v.string('protected:primary-identity-document.given-name.required'),
-                v.trim(),
-                v.nonEmpty('protected:primary-identity-document.given-name.required'),
-                v.maxLength(100, 'protected:primary-identity-document.given-name.max-length'),
-                v.regex(REGEX_PATTERNS.NON_DIGIT, 'protected:primary-identity-document.given-name.format'),
-              ),
-              lastName: v.pipe(
-                v.string('protected:primary-identity-document.last-name.required'),
-                v.trim(),
-                v.nonEmpty('protected:primary-identity-document.last-name.required'),
-                v.maxLength(100, 'protected:primary-identity-document.last-name.max-length'),
-                v.regex(REGEX_PATTERNS.NON_DIGIT, 'protected:primary-identity-document.last-name.format'),
-              ),
-              dateOfBirthYear: v.pipe(
-                v.number('protected:primary-identity-document.date-of-birth.required-year'),
-                v.integer('protected:primary-identity-document.date-of-birth.invalid-year'),
-                v.minValue(1, 'protected:primary-identity-document.date-of-birth.invalid-year'),
-                v.maxValue(
-                  getStartOfDayInTimezone(serverEnvironment.BASE_TIMEZONE).getFullYear(),
-                  'protected:primary-identity-document.date-of-birth.invalid-year',
-                ),
-              ),
-              dateOfBirthMonth: v.pipe(
-                v.number('protected:primary-identity-document.date-of-birth.required-month'),
-                v.integer('protected:primary-identity-document.date-of-birth.invalid-month'),
-                v.minValue(1, 'protected:primary-identity-document.date-of-birth.invalid-month'),
-                v.maxValue(12, 'protected:primary-identity-document.date-of-birth.invalid-month'),
-              ),
-              dateOfBirthDay: v.pipe(
-                v.number('protected:primary-identity-document.date-of-birth.required-day'),
-                v.integer('protected:primary-identity-document.date-of-birth.invalid-day'),
-                v.minValue(1, 'protected:primary-identity-document.date-of-birth.invalid-day'),
-                v.maxValue(31, 'protected:primary-identity-document.date-of-birth.invalid-day'),
-              ),
-              dateOfBirth: v.pipe(
-                v.string(),
-                v.custom(
-                  (input) => isValidDateString(input as string),
-                  'protected:primary-identity-document.date-of-birth.invalid',
-                ),
-                v.custom(
-                  (input) => isDateInPastOrTodayInTimeZone(serverEnvironment.BASE_TIMEZONE, input as string),
-                  'protected:primary-identity-document.date-of-birth.invalid-future-date',
-                ),
-              ),
-              gender: v.picklist(
-                applicantGenderService.getApplicantGenders().map(({ id }) => id),
-                'protected:primary-identity-document.gender.required',
-              ),
-              citizenshipDateYear: v.pipe(
-                v.number('protected:primary-identity-document.citizenship-date.required-year'),
-                v.integer('protected:primary-identity-document.citizenship-date.invalid-year'),
-                v.minValue(1, 'protected:primary-identity-document.citizenship-date.invalid-year'),
-                v.maxValue(
-                  getStartOfDayInTimezone(serverEnvironment.BASE_TIMEZONE).getFullYear(),
-                  'protected:primary-identity-document.citizenship-date.invalid-year',
-                ),
-              ),
-              citizenshipDateMonth: v.pipe(
-                v.number('protected:primary-identity-document.citizenship-date.required-month'),
-                v.integer('protected:primary-identity-document.citizenship-date.invalid-month'),
-                v.minValue(1, 'protected:primary-identity-document.citizenship-date.invalid-month'),
-                v.maxValue(12, 'protected:primary-identity-document.citizenship-date.invalid-month'),
-              ),
-              citizenshipDateDay: v.pipe(
-                v.number('protected:primary-identity-document.citizenship-date.required-day'),
-                v.integer('protected:primary-identity-document.citizenship-date.invalid-day'),
-                v.minValue(1, 'protected:primary-identity-document.citizenship-date.invalid-day'),
-                v.maxValue(31, 'protected:primary-identity-document.citizenship-date.invalid-day'),
-              ),
-              citizenshipDate: v.pipe(
-                v.string(),
-                v.custom(
-                  (input) => isValidDateString(input as string),
-                  'protected:primary-identity-document.citizenship-date.invalid',
-                ),
-              ),
-            }),
-          ],
-          'protected:primary-identity-document.document-type.required',
-        ),
-      ]) satisfies v.GenericSchema<PrimaryDocumentData>;
-
       const dateOfBirthYear = Number(formData.get('dateOfBirthYear'));
       const dateOfBirthMonth = Number(formData.get('dateOfBirthMonth'));
       const dateOfBirthDay = Number(formData.get('dateOfBirthDay'));
@@ -191,7 +72,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
       const citizenshipDateDay = Number(formData.get('citizenshipDateDay'));
       const citizenshipDate = toDateString(citizenshipDateYear, citizenshipDateMonth, citizenshipDateDay);
 
-      const input = {
+      const parseResult = v.safeParse(primaryDocumentSchema, {
         currentStatusInCanada: String(formData.get('currentStatusInCanada')),
         documentType: String(formData.get('documentType')),
         registrationNumber: String(formData.get('registrationNumber')),
@@ -207,9 +88,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
         citizenshipDateMonth: citizenshipDateMonth,
         citizenshipDateDay: citizenshipDateDay,
         citizenshipDate: citizenshipDate,
-      } satisfies Partial<v.InferInput<typeof schema>>;
-
-      const parseResult = v.safeParse(schema, input, { lang });
+      });
 
       if (!parseResult.success) {
         return data({ errors: v.flatten(parseResult.issues).nested }, { status: HttpStatusCodes.BAD_REQUEST });

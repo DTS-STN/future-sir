@@ -8,7 +8,6 @@ import * as v from 'valibot';
 
 import type { Info, Route } from './+types/birth-details';
 
-import { serverEnvironment } from '~/.server/environment';
 import { LogFactory } from '~/.server/logging';
 import { countryService, provinceService } from '~/.server/shared/services';
 import { requireAuth } from '~/.server/utils/auth-utils';
@@ -26,9 +25,8 @@ import { HttpStatusCodes } from '~/errors/http-status-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine';
-import type { BirthDetailsData } from '~/routes/protected/person-case/types';
+import { birthDetailsSchema } from '~/routes/protected/person-case/validation';
 import { getSingleKey } from '~/utils/i18n-utils';
-import { REGEX_PATTERNS } from '~/utils/regex-utils';
 import { trimToUndefined } from '~/utils/string-utils';
 
 const REQUIRE_OPTIONS = { yes: 'Yes', no: 'No' } as const;
@@ -63,73 +61,20 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     }
 
     case 'next': {
-      const { lang } = await getTranslation(request, handle.i18nNamespace);
-
-      const schema = v.variant(
-        'country',
-        [
-          v.object({
-            country: v.literal(serverEnvironment.PP_CANADA_COUNTRY_CODE, 'protected:birth-details.country.invalid-country'),
-            province: v.picklist(
-              provinceService.getProvinces().map(({ id }) => id),
-              'protected:birth-details.province.required-province',
-            ),
-            city: v.pipe(
-              v.string('protected:birth-details.city.required-city'),
-              v.trim(),
-              v.nonEmpty('protected:birth-details.city.required-city'),
-              v.maxLength(100, 'protected:birth-details.city.invalid-city'),
-              v.regex(REGEX_PATTERNS.NON_DIGIT, 'protected:birth-details.city.invalid-city'),
-            ),
-            fromMultipleBirth: v.boolean('protected:birth-details.from-multiple.required-from-multiple'),
-          }),
-          v.object({
-            country: v.pipe(
-              v.string('protected:birth-details.country.required-country'),
-              v.nonEmpty('protected:birth-details.country.required-country'),
-              v.excludes(serverEnvironment.PP_CANADA_COUNTRY_CODE, 'protected:birth-details.country.invalid-country'),
-              v.picklist(
-                countryService.getCountries().map(({ id }) => id),
-                'protected:birth-details.country.invalid-country',
-              ),
-            ),
-            province: v.optional(
-              v.pipe(
-                v.string('protected:birth-details.province.required-province'),
-                v.trim(),
-                v.nonEmpty('protected:birth-details.province.required-province'),
-                v.maxLength(100, 'protected:birth-details.province.invalid-province'),
-                v.regex(REGEX_PATTERNS.NON_DIGIT, 'protected:birth-details.province.invalid-province'),
-              ),
-            ),
-            city: v.optional(
-              v.pipe(
-                v.string('protected:birth-details.city.required-city'),
-                v.trim(),
-                v.nonEmpty('protected:birth-details.city.required-city'),
-                v.maxLength(100, 'protected:birth-details.city.invalid-city'),
-                v.regex(REGEX_PATTERNS.NON_DIGIT, 'protected:birth-details.city.invalid-city'),
-              ),
-            ),
-            fromMultipleBirth: v.boolean('protected:birth-details.from-multiple.required-from-multiple'),
-          }),
-        ],
-        'protected:birth-details.country.required-country',
-      ) satisfies v.GenericSchema<BirthDetailsData>;
-
-      const input = {
+      const parseResult = v.safeParse(birthDetailsSchema, {
         country: formData.get('country') as string,
         province: trimToUndefined(formData.get('province') as string),
         city: trimToUndefined(formData.get('city') as string),
         fromMultipleBirth: formData.get('from-multiple')
           ? formData.get('from-multiple') === REQUIRE_OPTIONS.yes //
           : undefined,
-      } satisfies Partial<v.InferInput<typeof schema>>;
-
-      const parseResult = v.safeParse(schema, input, { lang });
+      });
 
       if (!parseResult.success) {
-        return data({ errors: v.flatten<typeof schema>(parseResult.issues).nested }, { status: HttpStatusCodes.BAD_REQUEST });
+        return data(
+          { errors: v.flatten<typeof birthDetailsSchema>(parseResult.issues).nested },
+          { status: HttpStatusCodes.BAD_REQUEST },
+        );
       }
 
       machineActor.send({ type: 'submitBirthDetails', data: parseResult.output });
