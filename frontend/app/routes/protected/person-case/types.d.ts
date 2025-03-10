@@ -1,12 +1,14 @@
 import 'express-session';
 import type { SnapshotFrom } from 'xstate';
 
-import type { ServerEnvironment } from '~/.server/environment';
 import type { Machine } from '~/routes/protected/person-case/state-machine.server';
 
-export type BirthDetailsData =
-  | { country: ServerEnvironment['PP_CANADA_COUNTRY_CODE']; province: string; city: string; fromMultipleBirth: boolean }
-  | { country: string; province?: string; city?: string; fromMultipleBirth: boolean };
+export type BirthDetailsData = {
+  country: string;
+  province?: string;
+  city?: string;
+  fromMultipleBirth: boolean;
+};
 
 export type ContactInformationData = {
   preferredLanguage: string;
@@ -28,8 +30,11 @@ export type CurrentNameData =
       middleName?: string;
       lastName: string;
       supportingDocuments:
-        | { required: false } //
-        | { required: true; documentTypes: string[] };
+        | { required: false }
+        | {
+            required: true;
+            documentTypes: string[];
+          };
     };
 
 export type ParentDetailsData = (
@@ -38,9 +43,11 @@ export type ParentDetailsData = (
       unavailable: false;
       givenName: string;
       lastName: string;
-      birthLocation:
-        | { country: 'CAN'; province: string; city: string } //
-        | { country: string; province?: string; city?: string };
+      birthLocation: {
+        country: string;
+        province?: string;
+        city?: string;
+      };
     }
 )[];
 
