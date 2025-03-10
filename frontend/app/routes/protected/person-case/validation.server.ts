@@ -8,43 +8,9 @@ import { getApplicationSubmissionScenarios } from '~/.server/domain/person-case/
 import { getTypesOfApplicationToSubmit } from '~/.server/domain/person-case/services/application-type-service';
 import { serverEnvironment } from '~/.server/environment';
 import { countryService, provinceService } from '~/.server/shared/services';
-import type {
-  BirthDetailsData,
-  ContactInformationData,
-  CurrentNameData,
-  ParentDetailsData,
-  PersonalInfoData,
-  PreviousSinData,
-  PrimaryDocumentData,
-  PrivacyStatementData,
-  RequestDetailsData,
-  SecondaryDocumentData,
-} from '~/routes/protected/person-case/types';
 import { getStartOfDayInTimezone, isDateInPastOrTodayInTimeZone, isValidDateString } from '~/utils/date-utils';
 import { REGEX_PATTERNS } from '~/utils/regex-utils';
 import { formatSin, isValidSin } from '~/utils/sin-utils';
-
-export const maxParents = 4;
-
-const validBornOutsideOfCanadaDocuments: string[] = [
-  'certificate-of-canadian-citizenship', //
-] as const;
-
-const validCanadianStatuses: string[] = [
-  'canadian-citizen-born-outside-canada', //
-] as const;
-
-export const validCurrentNameDocTypes: string[] = [
-  'marriage-document',
-  'divorce-decree',
-  'name-change',
-  'adoption-order',
-  'notarial-certificate',
-  'resident-record',
-  'replace-imm1442',
-  'birth-certificate',
-  'citizenship-certificate',
-] as const;
 
 export const birthDetailsSchema = v.variant(
   'country',
@@ -96,7 +62,7 @@ export const birthDetailsSchema = v.variant(
     }),
   ],
   'protected:birth-details.country.required-country',
-) satisfies v.GenericSchema<BirthDetailsData>;
+);
 
 export const contactInformationSchema = v.intersect([
   v.object({
@@ -152,7 +118,19 @@ export const contactInformationSchema = v.intersect([
     ],
     'protected:contact-information.error-messages.country-required',
   ),
-]) satisfies v.GenericSchema<ContactInformationData>;
+]);
+
+export const validCurrentNameDocTypes = [
+  'marriage-document',
+  'divorce-decree',
+  'name-change',
+  'adoption-order',
+  'notarial-certificate',
+  'resident-record',
+  'replace-imm1442',
+  'birth-certificate',
+  'citizenship-certificate',
+] as const;
 
 export const currentNameSchema = v.variant(
   'preferredSameAsDocumentName',
@@ -192,7 +170,9 @@ export const currentNameSchema = v.variant(
               v.array(v.string(), 'protected:current-name.supporting-error.required-error'),
               v.nonEmpty('protected:current-name.supporting-error.required-error'),
               v.checkItems(
-                (item, index, array) => array.indexOf(item) === index && validCurrentNameDocTypes.includes(item),
+                (item, index, array) =>
+                  array.indexOf(item) === index &&
+                  validCurrentNameDocTypes.includes(item as (typeof validCurrentNameDocTypes)[number]),
                 'protected:current-name.supporting-error.invalid-error',
               ),
             ),
@@ -203,7 +183,9 @@ export const currentNameSchema = v.variant(
     }),
   ],
   'protected:current-name.preferred-name.required-error',
-) satisfies v.GenericSchema<CurrentNameData>;
+);
+
+export const maxNumberOfParents = 4;
 
 export const parentDetailsSchema = v.pipe(
   v.array(
@@ -291,8 +273,8 @@ export const parentDetailsSchema = v.pipe(
     'protected:parent-details.details-unavailable',
   ),
   v.minLength(1),
-  v.maxLength(maxParents),
-) satisfies v.GenericSchema<ParentDetailsData>;
+  v.maxLength(maxNumberOfParents),
+);
 
 export const personalInfoSchema = v.object({
   firstNamePreviouslyUsed: v.optional(
@@ -326,7 +308,7 @@ export const personalInfoSchema = v.object({
     applicantGenderService.getApplicantGenders().map(({ id }) => id),
     'protected:personal-information.gender.required',
   ),
-}) satisfies v.GenericSchema<PersonalInfoData>;
+});
 
 export const previousSinSchema = v.pipe(
   v.object({
@@ -354,7 +336,15 @@ export const previousSinSchema = v.pipe(
     ),
     ['socialInsuranceNumber'],
   ),
-) satisfies v.GenericSchema<PreviousSinData>;
+);
+
+const validBornOutsideOfCanadaDocuments = [
+  'certificate-of-canadian-citizenship', //
+] as const;
+
+const validCanadianStatuses = [
+  'canadian-citizen-born-outside-canada', //
+] as const;
 
 export const primaryDocumentSchema = v.intersect([
   v.object({
@@ -466,11 +456,11 @@ export const primaryDocumentSchema = v.intersect([
     ],
     'protected:primary-identity-document.document-type.required',
   ),
-]) satisfies v.GenericSchema<PrimaryDocumentData>;
+]);
 
 export const privacyStatementSchema = v.object({
   agreedToTerms: v.literal(true, 'protected:privacy-statement.confirm-privacy-notice-checkbox.required'),
-}) satisfies v.GenericSchema<PrivacyStatementData>;
+});
 
 export const requestDetailsSchema = v.object({
   scenario: v.picklist(
@@ -481,7 +471,7 @@ export const requestDetailsSchema = v.object({
     getTypesOfApplicationToSubmit().map(({ id }) => id),
     'protected:request-details.required-request',
   ),
-}) satisfies v.GenericSchema<RequestDetailsData>;
+});
 
 export const secondaryDocumentSchema = v.pipe(
   v.object({
@@ -515,4 +505,4 @@ export const secondaryDocumentSchema = v.pipe(
     ),
     ['expiryMonth'],
   ),
-) satisfies v.GenericSchema<SecondaryDocumentData>;
+);

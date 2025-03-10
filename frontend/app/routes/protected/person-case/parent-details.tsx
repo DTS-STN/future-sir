@@ -24,8 +24,8 @@ import { ErrorCodes } from '~/errors/error-codes';
 import { HttpStatusCodes } from '~/errors/http-status-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
-import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine';
-import { maxParents, parentDetailsSchema } from '~/routes/protected/person-case/validation';
+import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine.server';
+import { maxNumberOfParents, parentDetailsSchema } from '~/routes/protected/person-case/validation.server';
 import { getSingleKey } from '~/utils/i18n-utils';
 import { trimToUndefined } from '~/utils/string-utils';
 
@@ -60,7 +60,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
 
     case 'next': {
       const parentAmount = Number(formData.get('parent-amount')) || 0;
-      const inputLength = Math.min(parentAmount, maxParents);
+      const inputLength = Math.min(parentAmount, maxNumberOfParents);
 
       const parseResult = v.safeParse(
         parentDetailsSchema,
@@ -106,7 +106,7 @@ export async function loader({ context, request }: Route.LoaderArgs) {
     documentTitle: t('protected:parent-details.page-title'),
     localizedCountries: countryService.getLocalizedCountries(lang),
     localizedProvincesTerritoriesStates: provinceService.getLocalizedProvinces(lang),
-    maxParents: maxParents,
+    maxParents: maxNumberOfParents,
     defaultFormValues: parentDetails.map((details) =>
       details.unavailable
         ? { unavailable: true }

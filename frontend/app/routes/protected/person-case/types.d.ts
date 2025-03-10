@@ -2,7 +2,7 @@ import 'express-session';
 import type { SnapshotFrom } from 'xstate';
 
 import type { ServerEnvironment } from '~/.server/environment';
-import type { Machine } from '~/routes/protected/person-case/state-machine';
+import type { Machine } from '~/routes/protected/person-case/state-machine.server';
 
 export type BirthDetailsData =
   | { country: ServerEnvironment['PP_CANADA_COUNTRY_CODE']; province: string; city: string; fromMultipleBirth: boolean }

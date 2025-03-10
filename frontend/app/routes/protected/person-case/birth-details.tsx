@@ -24,8 +24,8 @@ import { ErrorCodes } from '~/errors/error-codes';
 import { HttpStatusCodes } from '~/errors/http-status-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
-import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine';
-import { birthDetailsSchema } from '~/routes/protected/person-case/validation';
+import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine.server';
+import { birthDetailsSchema } from '~/routes/protected/person-case/validation.server';
 import { getSingleKey } from '~/utils/i18n-utils';
 import { trimToUndefined } from '~/utils/string-utils';
 
