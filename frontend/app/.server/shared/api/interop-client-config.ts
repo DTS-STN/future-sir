@@ -15,11 +15,11 @@ const log = LogFactory.getLogger(import.meta.url);
 export function createClientConfig<T extends ClientOptions>(
   config?: Config<ClientOptions & T>,
 ): Config<Required<ClientOptions> & T> {
-  const authHeader = serverEnvironment.INTEROP_API_AUTH_HEADER.value();
+  const authHeader = serverEnvironment.INTEROP_SIN_REG_API_AUTH_HEADER.value();
 
   return {
     ...config,
-    baseUrl: serverEnvironment.INTEROP_API_BASE_URL,
+    baseUrl: serverEnvironment.INTEROP_SIN_REG_API_BASE_URL,
     headers: { ...parseAuthorizationHeader(authHeader) },
   };
 }
