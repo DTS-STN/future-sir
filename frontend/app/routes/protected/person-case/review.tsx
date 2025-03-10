@@ -13,10 +13,12 @@ import {
   applicantSinService,
   applicantSecondaryDocumentService,
   languageCorrespondenceService,
+  sinApplicationService,
 } from '~/.server/domain/person-case/services';
 import { serverEnvironment } from '~/.server/environment';
 import { LogFactory } from '~/.server/logging';
-import { countryService, provinceService } from '~/.server/shared/services';
+import { countryService, provinceService, sinApplicationRequestService } from '~/.server/shared/services';
+import type { InPersonSinApplication } from '~/.server/shared/services/sin-application-service';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Address } from '~/components/address';
@@ -29,7 +31,6 @@ import { ErrorCodes } from '~/errors/error-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine.server';
-import type { InPersonSinApplication } from '~/routes/protected/person-case/types';
 
 const log = LogFactory.getLogger(import.meta.url);
 
@@ -51,6 +52,11 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     throw i18nRedirect('routes/protected/person-case/privacy-statement.tsx', request);
   }
 
+  const tabId = new URL(request.url).searchParams.get('tid') ?? undefined;
+  const sessionData = (context.session.inPersonSinApplications ??= {});
+  const inPersonSINCase = validateInPersonSINCaseSession(sessionData, tabId, request);
+  const sinApplicationRequest = sinApplicationRequestService.mapInPersonSINCaseToSinApplicationRequest(inPersonSINCase);
+
   const formData = await request.formData();
   const action = formData.get('action');
 
@@ -61,6 +67,14 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     }
 
     case 'next': {
+      try {
+        const response = await sinApplicationService.submitSinApplication(sinApplicationRequest);
+        //TODO: store the response in session
+        console.log('SIN Application submitted successfully:', response);
+      } catch (err) {
+        console.log('Error submitting SIN application:', err);
+      }
+
       machineActor.send({ type: 'submitReview' });
       break;
     }
