@@ -10,6 +10,7 @@ import type { Info, Route } from './+types/review';
 
 import {
   applicantGenderService,
+  applicantSinService,
   applicantSecondaryDocumentService,
   languageCorrespondenceService,
 } from '~/.server/domain/person-case/services';
@@ -151,6 +152,13 @@ export async function loader({ context, request }: Route.LoaderArgs) {
             ? inPersonSinApplication.contactInformation.province
             : provinceService.getLocalizedProvinceById(inPersonSinApplication.contactInformation.province, lang).name
           : undefined,
+      },
+      previousSin: {
+        ...inPersonSinApplication.previousSin,
+        hasPreviousSinText: applicantSinService.getLocalizedApplicantHadSinOptionById(
+          inPersonSinApplication.previousSin.hasPreviousSin,
+          lang,
+        ).name,
       },
     },
     tabId,
@@ -510,7 +518,7 @@ function PreviousSinData({ data, tabId }: DataProps) {
       <h2 className="font-lato text-2xl font-bold">{t('protected:previous-sin.page-title')}</h2>
       <DescriptionList className="divide-y border-y">
         <DescriptionListItem term={t('protected:previous-sin.has-previous-sin-label')}>
-          <p>{data.hasPreviousSin}</p>
+          <p>{data.hasPreviousSinText}</p>
         </DescriptionListItem>
         {data.socialInsuranceNumber && (
           <DescriptionListItem term={t('protected:previous-sin.social-insurance-number-label')}>
