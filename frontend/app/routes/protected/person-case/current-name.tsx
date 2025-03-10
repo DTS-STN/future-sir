@@ -107,6 +107,7 @@ export async function loader({ context, request }: Route.LoaderArgs) {
   return {
     documentTitle: t('protected:primary-identity-document.page-title'),
     defaultFormValues: machineActor?.getSnapshot().context.currentNameInfo,
+    validCurrentNameDocTypes: validCurrentNameDocTypes,
     primaryDocName: {
       firstName: machineActor?.getSnapshot().context.primaryDocuments?.givenName,
       lastName: machineActor?.getSnapshot().context.primaryDocuments?.lastName,
@@ -160,7 +161,7 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
     },
   ];
 
-  const docTypes = validCurrentNameDocTypes.map((value) => ({
+  const docTypes = loaderData.validCurrentNameDocTypes.map((value) => ({
     value: value,
     children: t(`protected:current-name.doc-types.${value}` as ResourceKey),
     defaultChecked:

@@ -106,6 +106,7 @@ export async function loader({ context, request }: Route.LoaderArgs) {
     documentTitle: t('protected:parent-details.page-title'),
     localizedCountries: countryService.getLocalizedCountries(lang),
     localizedProvincesTerritoriesStates: provinceService.getLocalizedProvinces(lang),
+    maxParents: maxParents,
     defaultFormValues: parentDetails.map((details) =>
       details.unavailable
         ? { unavailable: true }
@@ -160,7 +161,7 @@ function ParentInformation({ loaderData, errors }: ParentInformationProps) {
   const { t } = useTranslation(handle.i18nNamespace);
   const { idList, addId, removeId } = useIdList(Math.max(loaderData.defaultFormValues.length, 1));
 
-  const canAddParent = idList.length < maxParents;
+  const canAddParent = idList.length < loaderData.maxParents;
 
   function onAddParent() {
     if (canAddParent) addId();
