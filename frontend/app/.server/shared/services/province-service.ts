@@ -33,6 +33,21 @@ export function getProvinceById(id: string): Province {
 }
 
 /**
+ * Retrieves a single province by its alphaCode.
+ *
+ * @param alphaCode The alphaCode of the province to retrieve (ex. 'ON').
+ * @returns The province object if found.
+ * @throws {AppError} If the province is not found.
+ */
+export function getProvinceByAlphaCode(alphaCode: string): Province {
+  const province = getProvinces().find((p) => p.alphaCode === alphaCode);
+  if (!province) {
+    throw new AppError(`Province with alphaCode '${alphaCode}' not found.`, ErrorCodes.NO_PROVINCE_FOUND);
+  }
+  return province;
+}
+
+/**
  * Retrieves a list of provinces localized to the specified language.
  *
  * @param language The language to localize the province names to.
@@ -60,6 +75,22 @@ export function getLocalizedProvinceById(id: string, language: Language): Locali
   const province = getLocalizedProvinces(language).find((p) => p.id === id);
   if (!province) {
     throw new AppError(`Localized province with ID '${id}' not found.`, ErrorCodes.NO_PROVINCE_FOUND);
+  }
+  return province;
+}
+
+/**
+ * Retrieves a single localized province by its alphaCode.
+ *
+ * @param alphaCode The alphaCode of the province to retrieve (ex. 'ON').
+ * @param language The language to localize the province name to.
+ * @returns The localized province object if found.
+ * @throws {AppError} If the province is not found.
+ */
+export function getLocalizedProvinceByAlphaCode(alphaCode: string, language: Language): LocalizedProvince {
+  const province = getLocalizedProvinces(language).find((p) => p.alphaCode === alphaCode);
+  if (!province) {
+    throw new AppError(`Localized province with alphaCode '${alphaCode}' not found.`, ErrorCodes.NO_PROVINCE_FOUND);
   }
   return province;
 }
