@@ -128,6 +128,14 @@ export const i18nRoutes = [
         },
       },
       {
+        id: 'MCF-0004',
+        file: 'routes/protected/multi-channel/send-validation.tsx',
+        paths: {
+          en: '/en/protected/multi-channel/send-validation',
+          fr: '/fr/protege/multi-chaine/send-validation',
+        },
+      },
+      {
         file: 'routes/protected/person-case/layout.tsx',
         children: [
           {
