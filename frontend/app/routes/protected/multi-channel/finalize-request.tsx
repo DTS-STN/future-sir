@@ -8,6 +8,8 @@ import * as v from 'valibot';
 
 import type { Info, Route } from './+types/finalize-request';
 
+import { serverEnvironment } from '~/.server/environment';
+import { getLocalizedProvinceByAlphaCode } from '~/.server/shared/services/province-service';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { stringToIntegerSchema } from '~/.server/validation/string-to-integer-schema';
@@ -23,9 +25,6 @@ import { HttpStatusCodes } from '~/errors/http-status-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/layout';
 
-// TODO: make codes configurable
-const RC_CODES = [5013, 4613, 4313, 4013, 3013, 2013, 1213, 1713, 1013, 1913, 4913];
-
 export const handle = {
   i18nNamespace: [...parentHandle.i18nNamespace, 'protected'],
 } as const satisfies RouteHandle;
@@ -33,10 +32,14 @@ export const handle = {
 export async function loader({ context, request }: Route.LoaderArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
 
-  const { t } = await getTranslation(request, handle.i18nNamespace);
+  const { t, lang } = await getTranslation(request, handle.i18nNamespace);
 
   return {
     documentTitle: t('protected:finalize-request.page-title'),
+    localizedRcCodeData: serverEnvironment.RC_CODES.map(({ RC_CODE, alphaCode }) => ({
+      RC_CODE,
+      province: getLocalizedProvinceByAlphaCode(alphaCode, lang).name,
+    })),
     defaultFormValues: {
       originOfSin: undefined,
       declaration: undefined,
@@ -65,7 +68,10 @@ export async function action({ context, request }: Route.ActionArgs) {
       const schema = v.object({
         originOfSin: v.pipe(
           stringToIntegerSchema(),
-          v.picklist(RC_CODES, t('protected:finalize-request.error-messages.origin-of-sin-required')),
+          v.picklist(
+            serverEnvironment.RC_CODES.map(({ RC_CODE }) => RC_CODE),
+            t('protected:finalize-request.error-messages.origin-of-sin-required'),
+          ),
         ),
         declaration: v.literal(true, t('protected:finalize-request.error-messages.declaration-required')),
       });
@@ -108,7 +114,10 @@ export default function PidVerification({ loaderData, actionData, params }: Rout
               id="origin-of-sin"
               name="originOfSin"
               label={t('protected:finalize-request.origin-of-sin-label')}
-              options={RC_CODES.map((code) => ({ value: code, children: code }))}
+              options={loaderData.localizedRcCodeData.map(({ RC_CODE, province }) => ({
+                value: RC_CODE,
+                children: `${province} - ${RC_CODE}`,
+              }))}
               errorMessage={errors?.originOfSin?.at(0)}
               defaultValue={loaderData.defaultFormValues.originOfSin}
               required
