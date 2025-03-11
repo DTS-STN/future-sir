@@ -57,18 +57,24 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     }
 
     case 'next': {
-      const parseResult = v.safeParse(requestDetailsSchema, {
+      const rawFormData = {
         scenario: formData.get('scenario') as string,
         type: formData.get('request-type') as string,
-      });
+      };
+      const parseResult = v.safeParse(requestDetailsSchema, rawFormData);
 
       if (!parseResult.success) {
+        machineActor.send({
+          type: 'setRawDataMap',
+          data: { requestDetails: { formData: rawFormData, errors: v.flatten(parseResult.issues).nested } },
+        });
         return data(
           { errors: v.flatten<typeof requestDetailsSchema>(parseResult.issues).nested },
           { status: HttpStatusCodes.BAD_REQUEST },
         );
       }
 
+      machineActor.send({ type: 'setRawDataMap', data: { requestDetails: undefined } });
       machineActor.send({ type: 'submitRequestDetails', data: parseResult.output });
       break;
     }
@@ -97,6 +103,7 @@ export async function loader({ context, request }: Route.LoaderArgs) {
     localizedSubmissionScenarios: getLocalizedApplicationSubmissionScenarios(lang),
     localizedTypeofApplicationToSubmit: getLocalizedTypesOfApplicationToSubmit(lang),
     defaultFormValues: machineActor?.getSnapshot().context.requestDetails,
+    rawData: machineActor?.getSnapshot().context.rawDataMap?.requestDetails,
   };
 }
 
@@ -107,12 +114,13 @@ export default function RequestDetails({ loaderData, actionData, params }: Route
   const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
 
   const isSubmitting = fetcher.state !== 'idle';
-  const errors = fetcher.data?.errors;
+  const errors = fetcher.data?.errors ?? loaderData.rawData?.errors;
+  const defaultFormValues = loaderData.defaultFormValues ?? loaderData.rawData?.formData;
 
   const scenarioOptions = loaderData.localizedSubmissionScenarios.map(({ id, name }) => ({
     value: id,
     children: name,
-    defaultChecked: id === loaderData.defaultFormValues?.scenario,
+    defaultChecked: id === defaultFormValues?.scenario,
   }));
 
   const requestOptions = [{ id: 'select-option', name: '' }, ...loaderData.localizedTypeofApplicationToSubmit].map(
@@ -125,7 +133,6 @@ export default function RequestDetails({ loaderData, actionData, params }: Route
   return (
     <>
       <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:request-details.page-title')}</PageTitle>
-
       <FetcherErrorSummary fetcherKey={fetcherKey}>
         <fetcher.Form method="post" noValidate>
           <div className="space-y-6">
@@ -142,7 +149,7 @@ export default function RequestDetails({ loaderData, actionData, params }: Route
               id="request-type"
               name="request-type"
               label={t('protected:request-details.type-request')}
-              defaultValue={loaderData.defaultFormValues?.type ?? ''}
+              defaultValue={defaultFormValues?.type ?? ''}
               options={requestOptions}
               errorMessage={t(getSingleKey(errors?.type))}
             />

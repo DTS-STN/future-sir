@@ -220,7 +220,7 @@ function validateInPersonSINCaseSession(
   sessionData: Partial<InPersonSinApplication> | undefined,
   tabId: string | undefined,
   request: Request,
-): Required<InPersonSinApplication> {
+): Omit<Required<InPersonSinApplication>, 'rawDataMap'> {
   const search = tabId ? new URLSearchParams({ tid: tabId }) : undefined;
 
   if (sessionData === undefined) {

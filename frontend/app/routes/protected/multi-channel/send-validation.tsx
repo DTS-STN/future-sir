@@ -172,7 +172,7 @@ export default function SendValidation({ loaderData, actionData, params }: Route
 }
 
 function fetchInPersonSinApplication(): {
-  inPersonSinApplication: Required<InPersonSinApplication>;
+  inPersonSinApplication: Omit<Required<InPersonSinApplication>, 'rawDataMap'>;
   caseId: string;
 } {
   const birthDetails = {
