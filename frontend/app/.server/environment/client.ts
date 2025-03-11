@@ -47,10 +47,10 @@ export const client = v.object({
   PP_FRENCH_LANGUAGE_CODE: v.optional(v.pipe(stringToIntegerSchema()), defaults.PP_FRENCH_LANGUAGE_CODE),
   PP_CANADA_COUNTRY_CODE: v.optional(v.string(), defaults.PP_CANADA_COUNTRY_CODE),
   PP_HAS_HAD_PREVIOUS_SIN_CODE: v.optional(v.string(), defaults.PP_HAS_HAD_PREVIOUS_SIN_CODE),
-  isProduction: v.boolean(),
   RC_CODES: v.pipe(
     v.optional(v.string(), defaults.RC_CODES),
     v.transform((input) => JSON.parse(input)),
     v.array(v.object({ RC_CODE: v.number(), alphaCode: v.string() })),
   ),
+  isProduction: v.boolean(),
 });
