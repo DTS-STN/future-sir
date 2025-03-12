@@ -17,9 +17,11 @@ export const birthDetailsSchema = v.variant(
   [
     v.object({
       country: v.literal(serverEnvironment.PP_CANADA_COUNTRY_CODE, 'protected:birth-details.country.invalid-country'),
-      province: v.picklist(
-        provinceService.getProvinces().map(({ id }) => id),
-        'protected:birth-details.province.required-province',
+      province: v.lazy(() =>
+        v.picklist(
+          provinceService.getProvinces().map(({ id }) => id),
+          'protected:birth-details.province.required-province',
+        ),
       ),
       city: v.pipe(
         v.string('protected:birth-details.city.required-city'),
@@ -35,9 +37,11 @@ export const birthDetailsSchema = v.variant(
         v.string('protected:birth-details.country.required-country'),
         v.nonEmpty('protected:birth-details.country.required-country'),
         v.excludes(serverEnvironment.PP_CANADA_COUNTRY_CODE, 'protected:birth-details.country.invalid-country'),
-        v.picklist(
-          countryService.getCountries().map(({ id }) => id),
-          'protected:birth-details.country.invalid-country',
+        v.lazy(() =>
+          v.picklist(
+            countryService.getCountries().map(({ id }) => id),
+            'protected:birth-details.country.invalid-country',
+          ),
         ),
       ),
       province: v.optional(
@@ -66,9 +70,11 @@ export const birthDetailsSchema = v.variant(
 
 export const contactInformationSchema = v.intersect([
   v.object({
-    preferredLanguage: v.picklist(
-      languageCorrespondenceService.getLanguagesOfCorrespondence().map(({ id }) => id),
-      'protected:contact-information.error-messages.preferred-language-required',
+    preferredLanguage: v.lazy(() =>
+      v.picklist(
+        languageCorrespondenceService.getLanguagesOfCorrespondence().map(({ id }) => id),
+        'protected:contact-information.error-messages.preferred-language-required',
+      ),
     ),
     primaryPhoneNumber: v.pipe(
       v.string(),
@@ -92,9 +98,11 @@ export const contactInformationSchema = v.intersect([
     [
       v.object({
         country: v.literal(serverEnvironment.PP_CANADA_COUNTRY_CODE),
-        province: v.picklist(
-          provinceService.getProvinces().map(({ id }) => id),
-          'protected:contact-information.error-messages.province-required',
+        province: v.lazy(() =>
+          v.picklist(
+            provinceService.getProvinces().map(({ id }) => id),
+            'protected:contact-information.error-messages.province-required',
+          ),
         ),
         address: v.pipe(v.string(), v.trim(), v.nonEmpty('protected:contact-information.error-messages.address-required')),
         postalCode: v.pipe(
@@ -105,7 +113,7 @@ export const contactInformationSchema = v.intersect([
         city: v.pipe(v.string(), v.trim(), v.nonEmpty('protected:contact-information.error-messages.city-required')),
       }),
       v.object({
-        country: v.picklist(countryService.getCountries().map(({ id }) => id)),
+        country: v.lazy(() => v.picklist(countryService.getCountries().map(({ id }) => id))),
         province: v.pipe(v.string(), v.trim(), v.nonEmpty('protected:contact-information.error-messages.province-required')),
         address: v.pipe(v.string(), v.trim(), v.nonEmpty('protected:contact-information.error-messages.address-required')),
         postalCode: v.pipe(
@@ -219,9 +227,11 @@ export const parentDetailsSchema = v.pipe(
                   serverEnvironment.PP_CANADA_COUNTRY_CODE,
                   'protected:parent-details.country-error.invalid-country',
                 ),
-                province: v.picklist(
-                  provinceService.getProvinces().map(({ id }) => id),
-                  'protected:parent-details.province-error.required-province',
+                province: v.lazy(() =>
+                  v.picklist(
+                    provinceService.getProvinces().map(({ id }) => id),
+                    'protected:parent-details.province-error.required-province',
+                  ),
                 ),
                 city: v.pipe(
                   v.string('protected:parent-details.city-error.required-city'),
@@ -239,9 +249,11 @@ export const parentDetailsSchema = v.pipe(
                     serverEnvironment.PP_CANADA_COUNTRY_CODE,
                     'protected:parent-details.country-error.invalid-country',
                   ),
-                  v.picklist(
-                    countryService.getCountries().map(({ id }) => id),
-                    'protected:parent-details.country-error.invalid-country',
+                  v.lazy(() =>
+                    v.picklist(
+                      countryService.getCountries().map(({ id }) => id),
+                      'protected:parent-details.country-error.invalid-country',
+                    ),
                   ),
                 ),
                 province: v.optional(
@@ -304,17 +316,21 @@ export const personalInfoSchema = v.object({
       ),
     ),
   ),
-  gender: v.picklist(
-    applicantGenderService.getApplicantGenders().map(({ id }) => id),
-    'protected:personal-information.gender.required',
+  gender: v.lazy(() =>
+    v.picklist(
+      applicantGenderService.getApplicantGenders().map(({ id }) => id),
+      'protected:personal-information.gender.required',
+    ),
   ),
 });
 
 export const previousSinSchema = v.pipe(
   v.object({
-    hasPreviousSin: v.picklist(
-      getApplicantHadSinOptions().map(({ id }) => id),
-      'protected:previous-sin.error-messages.has-previous-sin-required',
+    hasPreviousSin: v.lazy(() =>
+      v.picklist(
+        getApplicantHadSinOptions().map(({ id }) => id),
+        'protected:previous-sin.error-messages.has-previous-sin-required',
+      ),
     ),
     socialInsuranceNumber: v.optional(
       v.pipe(
@@ -420,9 +436,11 @@ export const primaryDocumentSchema = v.intersect([
             'protected:primary-identity-document.date-of-birth.invalid-future-date',
           ),
         ),
-        gender: v.picklist(
-          applicantGenderService.getApplicantGenders().map(({ id }) => id),
-          'protected:primary-identity-document.gender.required',
+        gender: v.lazy(() =>
+          v.picklist(
+            applicantGenderService.getApplicantGenders().map(({ id }) => id),
+            'protected:primary-identity-document.gender.required',
+          ),
         ),
         citizenshipDateYear: v.pipe(
           v.number('protected:primary-identity-document.citizenship-date.required-year'),
@@ -463,21 +481,27 @@ export const privacyStatementSchema = v.object({
 });
 
 export const requestDetailsSchema = v.object({
-  scenario: v.picklist(
-    getApplicationSubmissionScenarios().map(({ id }) => id),
-    'protected:request-details.required-scenario',
+  scenario: v.lazy(() =>
+    v.picklist(
+      getApplicationSubmissionScenarios().map(({ id }) => id),
+      'protected:request-details.required-scenario',
+    ),
   ),
-  type: v.picklist(
-    getTypesOfApplicationToSubmit().map(({ id }) => id),
-    'protected:request-details.required-request',
+  type: v.lazy(() =>
+    v.picklist(
+      getTypesOfApplicationToSubmit().map(({ id }) => id),
+      'protected:request-details.required-request',
+    ),
   ),
 });
 
 export const secondaryDocumentSchema = v.pipe(
   v.object({
-    documentType: v.picklist(
-      getApplicantSecondaryDocumentChoices().map(({ id }) => id),
-      'protected:secondary-identity-document.document-type.invalid',
+    documentType: v.lazy(() =>
+      v.picklist(
+        getApplicantSecondaryDocumentChoices().map(({ id }) => id),
+        'protected:secondary-identity-document.document-type.invalid',
+      ),
     ),
     expiryYear: v.pipe(
       v.number('protected:secondary-identity-document.expiry-date.required-year'),
