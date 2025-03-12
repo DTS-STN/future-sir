@@ -74,3 +74,14 @@ export type LocalizedPreferredLanguage = Readonly<{
   id: string;
   name: string;
 }>;
+
+export type ApplicantStatusInCanadaChoice = Readonly<{
+  id: string;
+  nameEn: string;
+  nameFr: string;
+}>;
+
+export type LocalizedApplicantStatusInCanadaChoice = Readonly<{
+  id: string;
+  name: string;
+}>;
