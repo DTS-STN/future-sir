@@ -121,8 +121,9 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
 
   const [sameName, setSameName] = useState(loaderData.defaultFormValues?.preferredSameAsDocumentName);
   const [requireDoc, setRequireDoc] = useState(
-    loaderData.defaultFormValues?.preferredSameAsDocumentName !== true &&
-      loaderData.defaultFormValues?.supportingDocuments.required === true,
+    loaderData.defaultFormValues && loaderData.defaultFormValues.preferredSameAsDocumentName == false
+      ? loaderData.defaultFormValues.supportingDocuments.required
+      : false,
   );
 
   const fetcherKey = useId();
