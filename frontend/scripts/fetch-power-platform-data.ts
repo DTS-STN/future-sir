@@ -64,6 +64,13 @@ const endpoints: readonly Endpoint[] = [
     jsonFilter: optionSetJsonFilter,
   },
   {
+    name: 'esdc_applicantstatusincanada',
+    description: 'ESDC Applicant status in Canada choices',
+    pathname: "/api/data/v9.2/GlobalOptionSetDefinitions(Name='esdc_applicantstatusincanada')",
+    outputFile: 'esdc_applicantstatusincanada.json',
+    jsonFilter: optionSetJsonFilter,
+  },
+  {
     name: 'esdc_didtheapplicanteverhadasinnumber',
     description: 'ESDC Did the applicant ever had a sin number choices',
     pathname: "/api/data/v9.2/GlobalOptionSetDefinitions(Name='esdc_didtheapplicanteverhadasinnumber')",
