@@ -238,10 +238,9 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
                   label={t('protected:current-name.preferred-name.last-name')}
                   name="last-name"
                   defaultValue={
-                    ((loaderData.defaultFormValues?.preferredSameAsDocumentName !== true &&
-                      loaderData.defaultFormValues?.lastName) ??
-                      '') ||
-                    ''
+                    loaderData.defaultFormValues && loaderData.defaultFormValues.preferredSameAsDocumentName === false
+                      ? loaderData.defaultFormValues.lastName
+                      : ''
                   }
                   required
                   type="text"
