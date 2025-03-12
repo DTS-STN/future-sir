@@ -96,39 +96,21 @@ export default function PrivacyStatement({ loaderData, params }: Route.Component
   return (
     <>
       <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:privacy-statement.page-title')}</PageTitle>
-
       <FetcherErrorSummary fetcherKey={fetcherKey}>
         <fetcher.Form method="post" noValidate>
-          <div className="space-y-6">
-            <p>
-              Lorem ipsum odor amet, consectetuer adipiscing elit. Gravida pulvinar fringilla augue per lacinia cubilia aliquam.
-              Nibh egestas pharetra; at sit ipsum aliquet fames pellentesque. Posuere mauris pretium commodo hendrerit maecenas
-              neque imperdiet. Phasellus tempor metus phasellus eu malesuada. Mi fusce dapibus nam metus est sagittis nisl sem
-              fringilla. Iaculis gravida netus aptent mattis dignissim massa. Dolor curae donec hac dui, neque proin erat.
-              Nullam sem ullamcorper commodo phasellus hendrerit ex. Curabitur venenatis ex, vitae fermentum finibus nibh.
-            </p>
-
-            <p>
-              Himenaeos turpis id pretium mauris pellentesque quis curae. Facilisi sollicitudin justo erat habitasse turpis
-              consequat taciti. Scelerisque suspendisse hac dictumst mattis in odio. Molestie molestie parturient arcu iaculis
-              lacinia. Ut est vel massa fusce congue laoreet posuere pulvinar. Consectetur pharetra ipsum tortor cubilia ut.
-              Placerat a pellentesque commodo bibendum posuere vivamus. Senectus imperdiet sit praesent adipiscing accumsan nibh
-              consequat per. Aliquam turpis ut libero non malesuada tortor ac maximus dictum. Non vestibulum pellentesque
-              posuere dapibus eleifend cras tempus potenti.
-            </p>
-
-            <p>
-              Rhoncus semper dolor; scelerisque euismod justo integer. Rhoncus et cras cursus velit diam. Vehicula magna sem
-              eget urna vitae donec phasellus dignissim volutpat. Arcu mi neque ad nulla; dui maximus. Nulla ligula ultrices
-              facilisi urna rhoncus platea per platea. Nascetur nec dapibus augue dictum volutpat tristique nec dis. Dis ante
-              metus tortor lacus porta.
-            </p>
-
+          <div className="max-w-prose space-y-6">
+            <p>{t('protected:privacy-statement.ask-client')}</p>
+            <h2 className="font-lato text-2xl font-bold">{t('protected:privacy-statement.privacy-statement')}</h2>
+            <p>{t('protected:privacy-statement.personal-info')}</p>
+            <p>{t('protected:privacy-statement.participation')}</p>
+            <p>{t('protected:privacy-statement.info-and-docs')}</p>
+            <p>{t('protected:privacy-statement.your-rights')}</p>
             <InputCheckbox
               id="agreed-to-terms"
               name="agreedToTerms"
+              className="h-8 w-8"
               errorMessage={t(getSingleKey(errors?.agreedToTerms))}
-              required={true}
+              required
             >
               {t('protected:privacy-statement.confirm-privacy-notice-checkbox.title')}
             </InputCheckbox>
