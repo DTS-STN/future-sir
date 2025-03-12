@@ -1,0 +1,48 @@
+{
+  "name": "esdc_applicantstatusincanada",
+  "parentOptionSetName": null,
+  "displayNameEn": "Applicant Status in Canada",
+  "displayNameFr": "Statut du demandeur au Canada ",
+  "options": [
+    {
+      "value": 564190000,
+      "labelEn": "Canadian Citizen",
+      "labelFr": "Citoyen canadien"
+    },
+    {
+      "value": 564190001,
+      "labelEn": "Registered Indian",
+      "labelFr": "Indien inscrit"
+    },
+    {
+      "value": 564190002,
+      "labelEn": "Permanent Resident ",
+      "labelFr": "Résident permanent"
+    },
+    {
+      "value": 564190003,
+      "labelEn": "Temporary Resident",
+      "labelFr": "Résident temporaire"
+    },
+    {
+      "value": 564190004,
+      "labelEn": "Other",
+      "labelFr": "Autre"
+    },
+    {
+      "value": 564190005,
+      "labelEn": "Individual residing outside Canada with no legal status in Canada",
+      "labelFr": "Personne résidant à l'extérieur du Canada et n'ayant aucun statut légal au Canada"
+    },
+    {
+      "value": 564190007,
+      "labelEn": "Individual born outside Canada who is registered under the Indian Act",
+      "labelFr": "Individu née à l'extérieur du Canada qui est incrit conformément à la loi sur les Indiens"
+    },
+    {
+      "value": 564190006,
+      "labelEn": "None of the above",
+      "labelFr": "Aucun de ces choix"
+    }
+  ]
+}
