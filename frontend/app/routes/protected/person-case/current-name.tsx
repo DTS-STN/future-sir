@@ -166,10 +166,11 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
     value: value,
     children: t(`protected:current-name.doc-types.${value}` as ResourceKey),
     defaultChecked:
-      (loaderData.defaultFormValues?.preferredSameAsDocumentName !== true &&
-        loaderData.defaultFormValues?.supportingDocuments.required === true &&
-        loaderData.defaultFormValues.supportingDocuments.documentTypes.includes(value)) ||
-      false,
+      loaderData.defaultFormValues &&
+      loaderData.defaultFormValues.preferredSameAsDocumentName === false &&
+      loaderData.defaultFormValues.supportingDocuments.required === true
+        ? loaderData.defaultFormValues.supportingDocuments.documentTypes.includes(value)
+        : false,
   }));
 
   return (
