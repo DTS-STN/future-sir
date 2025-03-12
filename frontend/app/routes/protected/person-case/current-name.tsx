@@ -214,7 +214,6 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
                     loaderData.defaultFormValues && loaderData.defaultFormValues.preferredSameAsDocumentName === false
                       ? loaderData.defaultFormValues.firstName
                       : ''
-                    ''
                   }
                   required
                   type="text"
@@ -228,7 +227,6 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
                     loaderData.defaultFormValues && loaderData.defaultFormValues.preferredSameAsDocumentName === false
                       ? (loaderData.defaultFormValues.middleName ?? '')
                       : ''
-                    ''
                   }
                   type="text"
                   className="w-full rounded-sm sm:w-104"
