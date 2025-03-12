@@ -121,8 +121,9 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
 
   const [sameName, setSameName] = useState(loaderData.defaultFormValues?.preferredSameAsDocumentName);
   const [requireDoc, setRequireDoc] = useState(
-    loaderData.defaultFormValues?.preferredSameAsDocumentName === false &&
-      loaderData.defaultFormValues.supportingDocuments.required,
+    loaderData.defaultFormValues && loaderData.defaultFormValues.preferredSameAsDocumentName == false
+      ? loaderData.defaultFormValues.supportingDocuments.required
+      : false,
   );
 
   const fetcherKey = useId();
@@ -165,10 +166,11 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
     value: value,
     children: t(`protected:current-name.doc-types.${value}` as ResourceKey),
     defaultChecked:
-      (loaderData.defaultFormValues?.preferredSameAsDocumentName === false &&
-        loaderData.defaultFormValues.supportingDocuments.required &&
-        loaderData.defaultFormValues.supportingDocuments.documentTypes.includes(value)) ||
-      false,
+      loaderData.defaultFormValues &&
+      loaderData.defaultFormValues.preferredSameAsDocumentName === false &&
+      loaderData.defaultFormValues.supportingDocuments.required === true
+        ? loaderData.defaultFormValues.supportingDocuments.documentTypes.includes(value)
+        : false,
   }));
 
   return (
@@ -209,8 +211,9 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
                   label={t('protected:current-name.preferred-name.first-name')}
                   name="first-name"
                   defaultValue={
-                    (loaderData.defaultFormValues?.preferredSameAsDocumentName === false &&
-                      loaderData.defaultFormValues.firstName) ||
+                    loaderData.defaultFormValues && loaderData.defaultFormValues.preferredSameAsDocumentName === false
+                      ? loaderData.defaultFormValues.firstName
+                      : ''
                     ''
                   }
                   required
@@ -222,9 +225,9 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
                   label={t('protected:current-name.preferred-name.middle-name')}
                   name="middle-name"
                   defaultValue={
-                    ((loaderData.defaultFormValues?.preferredSameAsDocumentName === false &&
-                      loaderData.defaultFormValues.middleName) ??
-                      '') ||
+                    loaderData.defaultFormValues && loaderData.defaultFormValues.preferredSameAsDocumentName === false
+                      ? (loaderData.defaultFormValues.middleName ?? '')
+                      : ''
                     ''
                   }
                   type="text"
@@ -235,9 +238,9 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
                   label={t('protected:current-name.preferred-name.last-name')}
                   name="last-name"
                   defaultValue={
-                    (loaderData.defaultFormValues?.preferredSameAsDocumentName === false &&
-                      loaderData.defaultFormValues.lastName) ||
-                    ''
+                    loaderData.defaultFormValues && loaderData.defaultFormValues.preferredSameAsDocumentName === false
+                      ? loaderData.defaultFormValues.lastName
+                      : ''
                   }
                   required
                   type="text"
