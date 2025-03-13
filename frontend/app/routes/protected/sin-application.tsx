@@ -52,11 +52,7 @@ function PrimaryDocumentData({ data, tabId }: DataProps) {
       <h2 className="font-lato text-2xl font-bold">{t('protected:primary-identity-document.page-title')}</h2>
       <DescriptionList className="divide-y border-y">
         <DescriptionListItem className="py-3" term={t('protected:primary-identity-document.current-status-in-canada.title')}>
-          <p>
-            {t(
-              `protected:primary-identity-document.current-status-in-canada.options.${data.currentStatusInCanada}` as ResourceKey,
-            )}
-          </p>
+          <p>{data.currentStatusInCanadaName}</p>
         </DescriptionListItem>
         <DescriptionListItem className="py-3" term={t('protected:primary-identity-document.document-type.title')}>
           <p>{t(`protected:primary-identity-document.document-type.options.${data.documentType}` as ResourceKey)}</p>
