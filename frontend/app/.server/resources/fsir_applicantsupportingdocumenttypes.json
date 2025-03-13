@@ -1,0 +1,53 @@
+{
+  "name": "fsir_applicantsupportingdocumenttypes",
+  "parentOptionSetName": null,
+  "displayNameEn": "FSIR Custom -Supporting document types",
+  "displayNameFr": "FSIR Custom - Types de document de support",
+  "options": [
+    {
+      "value": 9900000000,
+      "labelEn": "Marriage Certificate or Marriage Registration",
+      "labelFr": "Jugement de divorce"
+    },
+    {
+      "value": 9900000001,
+      "labelEn": "Divorce Decree",
+      "labelFr": "Citoyen canadien né à l'extérieur du Canada"
+    },
+    {
+      "value": 9900000002,
+      "labelEn": "Certificate of legal change of name or Court Order",
+      "labelFr": "Certificat de changement de nom légal ou ordonnance du tribunal"
+    },
+    {
+      "value": 9900000003,
+      "labelEn": "Adoption Order",
+      "labelFr": "Ordonnance d'adoption"
+    },
+    {
+      "value": 9900000004,
+      "labelEn": "Notarial Certificate (also called Notarial Adoption Certificate)",
+      "labelFr": "Certificat notarié (également appelé certificat notarial d'adoption)"
+    },
+    {
+      "value": 9900000005,
+      "labelEn": "Request to Amend Record of Landing or Confirmation of Permanent Resident",
+      "labelFr": "Demande de modification du dossier d'arrivée ou confirmation de résident permanent"
+    },
+    {
+      "value": 9900000006,
+      "labelEn": "Replacement IMM1442 (WP, SP, or VR) with modification to name indicated in \"Remarks\"",
+      "labelFr": "IMM1442 de remplacement (WP, SP, ou VR) avec modification du nom indiqué dans les «\u00a0Remarques\u00a0»"
+    },
+    {
+      "value": 9900000007,
+      "labelEn": "Birth certificate contains family name to be registered",
+      "labelFr": "IL'acte de naissance contient le nom de famille à enregistrer"
+    },
+    {
+      "value": 9900000008,
+      "labelEn": "Certificate of Canadian Citizenship contains family name to be registered",
+      "labelFr": "Certificat de citoyenneté canadienne contient le nom de famille à enregistrer"
+    }
+  ]
+}
