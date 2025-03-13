@@ -5,11 +5,6 @@ import type { Actor } from 'xstate';
 import { assign, createActor, setup } from 'xstate';
 
 import { LogFactory } from '~/.server/logging';
-import { AppError } from '~/errors/app-error';
-import { ErrorCodes } from '~/errors/error-codes';
-import { HttpStatusCodes } from '~/errors/http-status-codes';
-import type { I18nRouteFile } from '~/i18n-routes';
-import { i18nRoutes } from '~/i18n-routes';
 import type {
   BirthDetailsData,
   ContactInformationData,
@@ -22,7 +17,12 @@ import type {
   PrivacyStatementData,
   RequestDetailsData,
   SecondaryDocumentData,
-} from '~/routes/protected/person-case/types';
+} from '~/.server/shared/services/sin-application-service';
+import { AppError } from '~/errors/app-error';
+import { ErrorCodes } from '~/errors/error-codes';
+import { HttpStatusCodes } from '~/errors/http-status-codes';
+import type { I18nRouteFile } from '~/i18n-routes';
+import { i18nRoutes } from '~/i18n-routes';
 import { getLanguage } from '~/utils/i18n-utils';
 import { getRouteByFile } from '~/utils/route-utils';
 
