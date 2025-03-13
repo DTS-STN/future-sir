@@ -2,7 +2,7 @@ import type {
   ApplicantStatusInCanadaChoice,
   LocalizedApplicantStatusInCanadaChoice,
 } from '~/.server/domain/person-case/models';
-import esdcApplicantStatusInCanadaChoicesData from '~/.server/resources/esdc_applicantstatusincanada.json';
+import applicantStatusInCanadaChoicesData from '~/.server/resources/fsir_applicantstatusincanada.json';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 
@@ -12,7 +12,7 @@ import { ErrorCodes } from '~/errors/error-codes';
  * @returns An array of applicant status in Canada choice objects.
  */
 export function getApplicantStatusInCanadaChoices(): readonly ApplicantStatusInCanadaChoice[] {
-  return esdcApplicantStatusInCanadaChoicesData.options.map((option) => ({
+  return applicantStatusInCanadaChoicesData.options.map((option) => ({
     id: option.value.toString(),
     nameEn: option.labelEn,
     nameFr: option.labelFr,

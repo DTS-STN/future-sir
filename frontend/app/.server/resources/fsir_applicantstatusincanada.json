@@ -1,0 +1,43 @@
+{
+  "name": "fsir_applicantstatusincanada",
+  "parentOptionSetName": null,
+  "displayNameEn": "FSIR Custom - Applicant Status in Canada",
+  "displayNameFr": "FSIR Custom - Statut du demandeur au Canada ",
+  "options": [
+    {
+      "value": 9000000000,
+      "labelEn": "Canadian Citizen born in Canada",
+      "labelFr": "Citoyen canadien né au Canada"
+    },
+    {
+      "value": 900000001,
+      "labelEn": "Canadian Citizen born outside Canada",
+      "labelFr": "Citoyen canadien né à l'extérieur du Canada"
+    },
+    {
+      "value": 900000002,
+      "labelEn": "Registered Indian born in Canada",
+      "labelFr": "Indien inscrit né au Canada"
+    },
+    {
+      "value": 900000003,
+      "labelEn": "Registered Indian born outside Canada",
+      "labelFr": "Indien inscrit né à l'extérieur du Canada"
+    },
+    {
+      "value": 900000004,
+      "labelEn": "Permanent Resident",
+      "labelFr": "Résident permanent"
+    },
+    {
+      "value": 900000005,
+      "labelEn": "Temporary Resident",
+      "labelFr": "Résident temporaire"
+    },
+    {
+      "value": 900000006,
+      "labelEn": "No Legal Status in Canada",
+      "labelFr": "Aucun statut légal au Canada"
+    }
+  ]
+}
