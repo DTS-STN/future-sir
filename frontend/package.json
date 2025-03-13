@@ -51,7 +51,7 @@
     "date-fns": "^4.1.0",
     "express": "^4.21.2",
     "express-session": "^1.18.1",
-    "i18next": "^24.2.2",
+    "i18next": "^24.2.3",
     "i18next-fetch-backend": "^6.0.0",
     "ioredis": "^5.6.0",
     "isbot": "^5.1.23",
