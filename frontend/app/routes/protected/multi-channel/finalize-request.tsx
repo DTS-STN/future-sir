@@ -34,6 +34,9 @@ export async function loader({ context, request }: Route.LoaderArgs) {
 
   const { t, lang } = await getTranslation(request, handle.i18nNamespace);
 
+  //TODO: Update with the province of the office that is in the session
+  const officeProvinceCode = 'ON';
+
   return {
     documentTitle: t('protected:finalize-request.page-title'),
     localizedRcCodeData: serverEnvironment.RC_CODES.map(({ RC_CODE, alphaCode }) => ({
@@ -41,7 +44,7 @@ export async function loader({ context, request }: Route.LoaderArgs) {
       province: getLocalizedProvinceByAlphaCode(alphaCode, lang).name,
     })),
     defaultFormValues: {
-      originOfSin: undefined,
+      originOfSin: serverEnvironment.RC_CODES.find(({ alphaCode }) => alphaCode === officeProvinceCode)?.RC_CODE,
       declaration: undefined,
     },
   };
