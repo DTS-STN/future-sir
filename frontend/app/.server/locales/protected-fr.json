@@ -441,5 +441,11 @@
       "title": "Pour plus de renseignements, consultez notre site Web\u00a0:",
       "description": "Canada.ca/numero-assurance-sociale"
     }
+  },
+  "send-validation": {
+    "page-title": "Sommaire",
+    "case-created": "Cas créé",
+    "id-number": "Numéro d'identification",
+    "send-for-validation": "Envoyer pour validation"
   }
 }

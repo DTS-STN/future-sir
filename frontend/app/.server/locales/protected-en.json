@@ -440,5 +440,11 @@
       "title": "For more information, visit our Web site:",
       "description": "Canada.ca/social-insurance-number"
     }
+  },
+  "send-validation": {
+    "page-title": "Summary",
+    "case-created": "Case created",
+    "id-number": "ID number",
+    "send-for-validation": "Send for validation"
   }
 }

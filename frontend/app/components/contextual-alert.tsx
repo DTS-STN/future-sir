@@ -40,10 +40,10 @@ export function ContextualAlert(props: ContextualAlertProps) {
 
   return (
     <div className={cn('relative pl-4 sm:pl-6', alertBackgroundColor)}>
-      <div className={cn('absolute top-3 left-1.5 pt-1 sm:left-3.5', alertBackgroundColor)}>
+      <div className={cn('absolute top-3 left-2 py-1 sm:left-4', alertBackgroundColor)}>
         <Icon type={type} />
       </div>
-      <div className={cn('overflow-auto border-l-4 pt-4 pb-2.5 pl-6', alertBorderColor)}>{children}</div>
+      <div className={cn('overflow-auto border-l-4 pt-3 pb-2.5 pl-6', alertBorderColor)}>{children}</div>
     </div>
   );
 }
@@ -51,15 +51,15 @@ export function ContextualAlert(props: ContextualAlertProps) {
 function Icon({ type }: { type: string }) {
   switch (type) {
     case 'warning':
-      return <FontAwesomeIcon icon={faExclamationTriangle} className="h-6 w-6 text-amber-700" data-testid="warning" />;
+      return <FontAwesomeIcon icon={faExclamationTriangle} className="size-5 text-amber-700" data-testid="warning" />;
     case 'success':
-      return <FontAwesomeIcon icon={faCheckCircle} className="h-6 w-6 text-green-700" data-testid="success" />;
+      return <FontAwesomeIcon icon={faCheckCircle} className="size-5 text-green-700" data-testid="success" />;
     case 'danger':
-      return <FontAwesomeIcon icon={faExclamationCircle} className="h-6 w-6 text-red-700" data-testid="danger" />;
+      return <FontAwesomeIcon icon={faExclamationCircle} className="size-5 text-red-700" data-testid="danger" />;
     case 'info':
-      return <FontAwesomeIcon icon={faCircleInfo} className="h-6 w-6 text-cyan-700" data-testid="info" />;
+      return <FontAwesomeIcon icon={faCircleInfo} className="size-5 text-cyan-700" data-testid="info" />;
     case 'comment':
-      return <FontAwesomeIcon icon={faCommentDots} className="h-6 w-6 text-sky-800" data-testid="comment" />;
+      return <FontAwesomeIcon icon={faCommentDots} className="size-5 text-sky-800" data-testid="comment" />;
     default:
       break;
   }

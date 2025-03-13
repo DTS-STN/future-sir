@@ -1,35 +1,30 @@
 import { useId } from 'react';
 
 import type { RouteHandle } from 'react-router';
-import { redirect, useFetcher } from 'react-router';
+import { useFetcher } from 'react-router';
 
 import { useTranslation } from 'react-i18next';
 
-import type { Info, Route } from './+types/review';
+import type { Info, Route } from './+types/send-validation';
 
 import {
   applicantGenderService,
-  applicantSinService,
   applicantSecondaryDocumentService,
   languageCorrespondenceService,
-  sinApplicationService,
 } from '~/.server/domain/person-case/services';
 import { serverEnvironment } from '~/.server/environment';
-import { LogFactory } from '~/.server/logging';
-import { countryService, provinceService, sinApplicationRequestService } from '~/.server/shared/services';
-import type { InPersonSinApplication } from '~/.server/shared/services/sin-application-service';
+import { countryService, provinceService } from '~/.server/shared/services';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
+import { ContextualAlert } from '~/components/contextual-alert';
 import { PageTitle } from '~/components/page-title';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
-import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine.server';
+import type { InPersonSinApplication } from '~/routes/protected/person-case/types';
 import { SinApplication } from '~/routes/protected/sin-application';
-
-const log = LogFactory.getLogger(import.meta.url);
 
 export const handle = {
   i18nNamespace: [...parentHandle.i18nNamespace, 'protected'],
@@ -42,65 +37,32 @@ export function meta({ data }: Route.MetaArgs) {
 export async function action({ context, params, request }: Route.ActionArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
 
-  const machineActor = loadMachineActor(context.session, request, 'review');
-
-  if (!machineActor) {
-    log.warn('Could not find a machine snapshot in session; redirecting to start of flow');
-    throw i18nRedirect('routes/protected/person-case/privacy-statement.tsx', request);
-  }
-
-  const tabId = new URL(request.url).searchParams.get('tid') ?? undefined;
-  const sessionData = (context.session.inPersonSinApplications ??= {});
-  const inPersonSINCase = validateInPersonSINCaseSession(sessionData, tabId, request);
-  const sinApplicationRequest = sinApplicationRequestService.mapInPersonSINCaseToSinApplicationRequest(inPersonSINCase);
-
   const formData = await request.formData();
   const action = formData.get('action');
 
   switch (action) {
-    case 'back': {
-      machineActor.send({ type: 'prev' });
-      break;
+    case 'send': {
+      throw i18nRedirect('routes/protected/multi-channel/pid-verification.tsx', request);
     }
-
-    case 'next': {
-      try {
-        const response = await sinApplicationService.submitSinApplication(sinApplicationRequest);
-        //TODO: store the response in session
-        console.log('SIN Application submitted successfully:', response);
-      } catch (err) {
-        console.log('Error submitting SIN application:', err);
-      }
-
-      machineActor.send({ type: 'submitReview' });
-      break;
-    }
-
-    case 'abandon': {
-      machineActor.send({ type: 'cancel' });
-      break;
-    }
-
     default: {
       throw new AppError(`Unrecognized action: ${action}`, ErrorCodes.UNRECOGNIZED_ACTION);
     }
   }
-
-  throw redirect(getStateRoute(machineActor, { context, params, request }));
 }
 
 export async function loader({ context, request }: Route.LoaderArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
-
   const tabId = new URL(request.url).searchParams.get('tid') ?? undefined;
   const { lang, t } = await getTranslation(request, handle.i18nNamespace);
-  const machineActor = loadMachineActor(context.session, request, 'review');
 
-  const sessionData = machineActor?.getSnapshot().context;
-  const inPersonSinApplication = validateInPersonSINCaseSession(sessionData, tabId, request);
+  // TODO: Update with the actual fetch method
+  const { inPersonSinApplication, caseId } = fetchInPersonSinApplication();
+
+  //TODO: Update Session with fetched SIN application
 
   return {
-    documentTitle: t('protected:review.page-title'),
+    documentTitle: t('protected:send-validation.page-title'),
+    caseId,
     tabId,
     inPersonSINCase: {
       ...inPersonSinApplication,
@@ -165,13 +127,6 @@ export async function loader({ context, request }: Route.LoaderArgs) {
             : provinceService.getLocalizedProvinceById(inPersonSinApplication.contactInformation.province, lang).name
           : undefined,
       },
-      previousSin: {
-        ...inPersonSinApplication.previousSin,
-        hasPreviousSinText: applicantSinService.getLocalizedApplicantHadSinOptionById(
-          inPersonSinApplication.previousSin.hasPreviousSin,
-          lang,
-        ).name,
-      },
       currentNameInfo: {
         ...inPersonSinApplication.currentNameInfo,
         firstName:
@@ -187,28 +142,28 @@ export async function loader({ context, request }: Route.LoaderArgs) {
   };
 }
 
-export default function Review({ loaderData, actionData, params }: Route.ComponentProps) {
+export default function SendValidation({ loaderData, actionData, params }: Route.ComponentProps) {
   const { t } = useTranslation(handle.i18nNamespace);
 
   const fetcherKey = useId();
   const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
 
   const isSubmitting = fetcher.state !== 'idle';
-  const { inPersonSINCase, tabId } = loaderData;
+  const { inPersonSINCase, caseId, tabId } = loaderData;
 
   return (
     <>
-      <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:review.page-title')}</PageTitle>
-
+      <PageTitle subTitle={t('protected:first-time.title')}>{t('protected:send-validation.page-title')}</PageTitle>
+      <ContextualAlert type="info">
+        <h3 className="text-lg font-semibold">{t('protected:send-validation.case-created')}</h3>
+        <p>{t('protected:send-validation.id-number')}</p>
+        <p>{caseId}</p>
+      </ContextualAlert>
+      <SinApplication inPersonSINCase={inPersonSINCase} tabId={tabId} />
       <fetcher.Form className="max-w-prose" method="post" noValidate>
-        <p className="mb-8 text-lg">{t('protected:review.read-carefully')}</p>
-        <SinApplication inPersonSINCase={inPersonSINCase} tabId={tabId} />
         <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
-          <Button name="action" value="next" variant="primary" id="continue-button" disabled={isSubmitting}>
-            {t('protected:person-case.create-case-button')}
-          </Button>
-          <Button name="action" value="back" id="back-button" disabled={isSubmitting}>
-            {t('protected:person-case.previous')}
+          <Button name="action" value="send" variant="primary" id="send-for-validation" disabled={isSubmitting}>
+            {t('protected:send-validation.send-for-validation')}
           </Button>
         </div>
       </fetcher.Form>
@@ -216,80 +171,108 @@ export default function Review({ loaderData, actionData, params }: Route.Compone
   );
 }
 
-function validateInPersonSINCaseSession(
-  sessionData: Partial<InPersonSinApplication> | undefined,
-  tabId: string | undefined,
-  request: Request,
-): Required<InPersonSinApplication> {
-  const search = tabId ? new URLSearchParams({ tid: tabId }) : undefined;
+function fetchInPersonSinApplication(): {
+  inPersonSinApplication: Required<InPersonSinApplication>;
+  caseId: string;
+} {
+  const birthDetails = {
+    country: 'f8914e7c-2c95-ea11-a812-000d3a0c2b5d',
+    province: '845808d0-3195-ea11-a812-000d3a0c2b5d',
+    city: 'CityOfBirth',
+    fromMultipleBirth: false,
+  };
 
-  if (sessionData === undefined) {
-    throw i18nRedirect('routes/protected/person-case/privacy-statement.tsx', request, { search });
-  }
+  const contactInformation = {
+    preferredLanguage: '564190000',
+    primaryPhoneNumber: '780111111',
+    secondaryPhoneNumber: undefined,
+    emailAddress: undefined,
+    country: 'f8914e7c-2c95-ea11-a812-000d3a0c2b5d',
+    address: '1111 111 Ave NW',
+    postalCode: 'T2Y 2H2',
+    city: 'ContactCity',
+    province: '845808d0-3195-ea11-a812-000d3a0c2b5d',
+  };
 
-  const {
-    birthDetails,
-    contactInformation,
-    currentNameInfo,
-    parentDetails,
-    personalInformation,
-    previousSin,
-    primaryDocuments,
-    privacyStatement,
-    requestDetails,
-    secondaryDocument,
-  } = sessionData;
+  const currentNameInfo = {
+    preferredSameAsDocumentName: true as const,
+  };
 
-  if (privacyStatement === undefined) {
-    throw i18nRedirect('routes/protected/index.tsx', request, { search });
-  }
+  const parentDetails = [
+    {
+      unavailable: false,
+      givenName: 'ParentName',
+      lastName: 'ParentLastName',
+      birthLocation: {
+        country: 'f8914e7c-2c95-ea11-a812-000d3a0c2b5d',
+        province: '845808d0-3195-ea11-a812-000d3a0c2b5d',
+        city: 'ParentCity',
+      },
+    },
+    {
+      unavailable: false,
+      givenName: 'ParentName',
+      lastName: 'ParentLastName',
+      birthLocation: {
+        country: 'f8914e7c-2c95-ea11-a812-000d3a0c2b5d',
+        province: '845808d0-3195-ea11-a812-000d3a0c2b5d',
+        city: 'ParentCity',
+      },
+    },
+  ];
 
-  if (requestDetails === undefined) {
-    throw i18nRedirect('routes/protected/person-case/request-details.tsx', request, { search });
-  }
+  const personalInformation = {
+    firstNamePreviouslyUsed: ['PreviousFirstName'],
+    lastNameAtBirth: 'LastNameAtBirth',
+    lastNamePreviouslyUsed: ['PreviousLastName'],
+    gender: '564190002',
+  };
 
-  if (primaryDocuments === undefined) {
-    throw i18nRedirect('routes/protected/person-case/primary-docs.tsx', request, { search });
-  }
+  const previousSin = {
+    hasPreviousSin: '564190000',
+    socialInsuranceNumber: '123456789',
+  };
 
-  if (secondaryDocument === undefined) {
-    throw i18nRedirect('routes/protected/person-case/secondary-doc.tsx', request, { search });
-  }
+  const primaryDocuments = {
+    citizenshipDate: '2000-01-01',
+    clientNumber: '1000000',
+    currentStatusInCanada: 'canadian-citizen-born-outside-canada',
+    dateOfBirth: '1999-01-01',
+    documentType: 'certificate-of-canadian-citizenship',
+    gender: '564190002',
+    givenName: 'GivenName',
+    lastName: 'LastName',
+    registrationNumber: '1000000000',
+  };
 
-  if (currentNameInfo === undefined) {
-    throw i18nRedirect('routes/protected/person-case/current-name.tsx', request, { search });
-  }
+  const privacyStatement = {
+    agreedToTerms: true as const,
+  };
 
-  if (personalInformation === undefined) {
-    throw i18nRedirect('routes/protected/person-case/personal-info.tsx', request, { search });
-  }
+  const requestDetails = {
+    type: '564190000',
+    scenario: '564190000',
+  };
 
-  if (birthDetails === undefined) {
-    throw i18nRedirect('routes/protected/person-case/birth-details.tsx', request, { search });
-  }
-
-  if (parentDetails === undefined) {
-    throw i18nRedirect('routes/protected/person-case/parent-details.tsx', request, { search });
-  }
-
-  if (previousSin === undefined) {
-    throw i18nRedirect('routes/protected/person-case/previous-sin.tsx', request, { search });
-  }
-
-  if (contactInformation === undefined) {
-    throw i18nRedirect('routes/protected/person-case/contact-information.tsx', request, { search });
-  }
+  const secondaryDocument = {
+    documentType: '564190000',
+    expiryMonth: 1,
+    expiryYear: 3000,
+  };
 
   return {
-    birthDetails,
-    contactInformation,
-    currentNameInfo,
-    parentDetails,
-    personalInformation,
-    previousSin,
-    primaryDocuments,
-    privacyStatement,
-    requestDetails,
-    secondaryDocument,
+    inPersonSinApplication: {
+      birthDetails,
+      contactInformation,
+      currentNameInfo,
+      parentDetails,
+      personalInformation,
+      previousSin,
+      primaryDocuments,
+      privacyStatement,
+      requestDetails,
+      secondaryDocument,
+    },
+    caseId: '1234567890123',
   };
 }
