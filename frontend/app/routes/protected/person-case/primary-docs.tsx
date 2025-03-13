@@ -73,13 +73,13 @@ export async function action({ context, params, request }: Route.ActionArgs) {
       const citizenshipDateDay = Number(formData.get('citizenshipDateDay'));
       const citizenshipDate = toDateString(citizenshipDateYear, citizenshipDateMonth, citizenshipDateDay);
 
-      const parseResult = v.safeParse(primaryDocumentSchema, {
+      const rawFormData = {
         currentStatusInCanada: String(formData.get('currentStatusInCanada')),
         documentType: String(formData.get('documentType')),
-        registrationNumber: String(formData.get('registrationNumber')),
-        clientNumber: String(formData.get('clientNumber')),
-        givenName: String(formData.get('givenName')),
-        lastName: String(formData.get('lastName')),
+        registrationNumber: formData.get('registrationNumber')?.toString() ?? '',
+        clientNumber: formData.get('clientNumber')?.toString() ?? '',
+        givenName: formData.get('givenName')?.toString() ?? '',
+        lastName: formData.get('lastName')?.toString() ?? '',
         dateOfBirthYear: dateOfBirthYear,
         dateOfBirthMonth: dateOfBirthMonth,
         dateOfBirthDay: dateOfBirthDay,
@@ -89,12 +89,18 @@ export async function action({ context, params, request }: Route.ActionArgs) {
         citizenshipDateMonth: citizenshipDateMonth,
         citizenshipDateDay: citizenshipDateDay,
         citizenshipDate: citizenshipDate,
-      });
+      };
+      const parseResult = v.safeParse(primaryDocumentSchema, rawFormData);
 
       if (!parseResult.success) {
+        machineActor.send({
+          type: 'setRawDataMap',
+          data: { primaryDocuments: { formData: rawFormData, errors: v.flatten(parseResult.issues).nested } },
+        });
         return data({ errors: v.flatten(parseResult.issues).nested }, { status: HttpStatusCodes.BAD_REQUEST });
       }
 
+      machineActor.send({ type: 'setRawDataMap', data: { primaryDocuments: undefined } });
       machineActor.send({ type: 'submitPrimaryDocuments', data: parseResult.output });
       break;
     }
@@ -118,6 +124,7 @@ export async function loader({ context, request }: Route.LoaderArgs) {
     defaultFormValues: machineActor?.getSnapshot().context.primaryDocuments,
     localizedStatusInCanada: applicantStatusInCanadaService.getLocalizedApplicantStatusInCanadaChoices(lang),
     localizedGenders: applicantGenderService.getLocalizedApplicantGenders(lang),
+    rawData: machineActor?.getSnapshot().context.rawDataMap?.primaryDocuments,
   };
 }
 
@@ -128,10 +135,11 @@ export default function PrimaryDocs({ loaderData, actionData, params }: Route.Co
   const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
 
   const isSubmitting = fetcher.state !== 'idle';
-  const errors = fetcher.data?.errors;
+  const errors = fetcher.data?.errors ?? loaderData.rawData?.errors;
+  const defaultFormValues = loaderData.defaultFormValues ?? loaderData.rawData?.formData;
 
-  const [currentStatus, setCurrentStatus] = useState(loaderData.defaultFormValues?.currentStatusInCanada);
-  const [documentType, setDocumentType] = useState(loaderData.defaultFormValues?.documentType);
+  const [currentStatus, setCurrentStatus] = useState(defaultFormValues?.currentStatusInCanada);
+  const [documentType, setDocumentType] = useState(defaultFormValues?.documentType);
 
   return (
     <>
@@ -141,7 +149,7 @@ export default function PrimaryDocs({ loaderData, actionData, params }: Route.Co
         <fetcher.Form method="post" noValidate encType="multipart/form-data">
           <div className="space-y-6">
             <CurrentStatusInCanada
-              defaultValue={loaderData.defaultFormValues?.currentStatusInCanada}
+              defaultValue={defaultFormValues?.currentStatusInCanada}
               errorMessage={t(getSingleKey(errors?.currentStatusInCanada))}
               onChange={({ target }) => setCurrentStatus(target.value)}
               statusInCanada={loaderData.localizedStatusInCanada}
@@ -149,7 +157,7 @@ export default function PrimaryDocs({ loaderData, actionData, params }: Route.Co
             {currentStatus && (
               <DocumentType
                 currentStatus={currentStatus}
-                defaultValue={loaderData.defaultFormValues?.documentType}
+                defaultValue={defaultFormValues?.documentType}
                 errorMessage={t(getSingleKey(errors?.documentType))}
                 onChange={({ target }) => setDocumentType(target.value)}
               />
@@ -158,7 +166,7 @@ export default function PrimaryDocs({ loaderData, actionData, params }: Route.Co
               <PrimaryDocsFields
                 genders={loaderData.localizedGenders}
                 currentStatus={currentStatus}
-                defaultValues={loaderData.defaultFormValues}
+                defaultValues={defaultFormValues}
                 documentType={documentType}
                 errors={errors}
               />

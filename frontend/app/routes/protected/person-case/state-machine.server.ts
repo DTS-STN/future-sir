@@ -4,7 +4,6 @@ import { generatePath } from 'react-router';
 import type { Actor } from 'xstate';
 import { assign, createActor, setup } from 'xstate';
 
-import { LogFactory } from '~/.server/logging';
 import type {
   BirthDetailsData,
   ContactInformationData,
@@ -17,7 +16,10 @@ import type {
   PrivacyStatementData,
   RequestDetailsData,
   SecondaryDocumentData,
-} from '~/.server/shared/services/sin-application-service';
+  RawDataMap,
+} from './types';
+
+import { LogFactory } from '~/.server/logging';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { HttpStatusCodes } from '~/errors/http-status-codes';
@@ -68,6 +70,7 @@ export const machine = setup({
     events: {} as
       | { type: 'prev' }
       | { type: 'cancel' }
+      | { type: 'setRawDataMap'; data: RawDataMap }
       | { type: 'submitBirthDetails'; data: BirthDetailsData }
       | { type: 'submitContactInfo'; data: ContactInformationData }
       | { type: 'submitCurrentName'; data: CurrentNameData }
@@ -94,6 +97,12 @@ export const machine = setup({
     cancel: {
       target: '.privacy-statement',
       actions: assign(initialContext),
+    },
+    setRawDataMap: {
+      actions: assign(({ context, event }) => {
+        const mergedRawDataMap = { ...context.rawDataMap, ...event.data };
+        return { rawDataMap: mergedRawDataMap };
+      }),
     },
   },
   states: {
