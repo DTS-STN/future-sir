@@ -13,6 +13,7 @@ import {
   applicantSecondaryDocumentService,
   languageCorrespondenceService,
   sinApplicationService,
+  applicantStatusInCanadaService,
 } from '~/.server/domain/person-case/services';
 import { serverEnvironment } from '~/.server/environment';
 import { LogFactory } from '~/.server/logging';
@@ -106,6 +107,10 @@ export async function loader({ context, request }: Route.LoaderArgs) {
       ...inPersonSinApplication,
       primaryDocuments: {
         ...inPersonSinApplication.primaryDocuments,
+        currentStatusInCanadaName: applicantStatusInCanadaService.getLocalizedApplicantStatusInCanadaChoiceById(
+          inPersonSinApplication.primaryDocuments.currentStatusInCanada,
+          lang,
+        ).name,
         genderName: applicantGenderService.getLocalizedApplicantGenderById(inPersonSinApplication.primaryDocuments.gender, lang)
           .name,
       },

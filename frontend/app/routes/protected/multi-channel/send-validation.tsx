@@ -14,6 +14,7 @@ import {
 } from '~/.server/domain/person-case/services';
 import { serverEnvironment } from '~/.server/environment';
 import { countryService, provinceService } from '~/.server/shared/services';
+import type { InPersonSinApplication } from '~/.server/shared/services/sin-application-service';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
@@ -23,7 +24,6 @@ import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
-import type { InPersonSinApplication } from '~/routes/protected/person-case/types';
 import { SinApplication } from '~/routes/protected/sin-application';
 
 export const handle = {

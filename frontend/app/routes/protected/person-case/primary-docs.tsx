@@ -9,8 +9,8 @@ import * as v from 'valibot';
 
 import type { Info, Route } from './+types/primary-docs';
 
-import type { LocalizedApplicantGender } from '~/.server/domain/person-case/models';
-import { applicantGenderService } from '~/.server/domain/person-case/services';
+import type { LocalizedApplicantGender, LocalizedApplicantStatusInCanadaChoice } from '~/.server/domain/person-case/models';
+import { applicantGenderService, applicantStatusInCanadaService } from '~/.server/domain/person-case/services';
 import { LogFactory } from '~/.server/logging';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
@@ -22,6 +22,7 @@ import { InputFile } from '~/components/input-file';
 import { InputRadios } from '~/components/input-radios';
 import { InputSelect } from '~/components/input-select';
 import { PageTitle } from '~/components/page-title';
+import { APPLICANT_STATUS_IN_CANADA } from '~/domain/constants';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { HttpStatusCodes } from '~/errors/http-status-codes';
@@ -115,6 +116,7 @@ export async function loader({ context, request }: Route.LoaderArgs) {
   return {
     documentTitle: t('protected:primary-identity-document.page-title'),
     defaultFormValues: machineActor?.getSnapshot().context.primaryDocuments,
+    localizedStatusInCanada: applicantStatusInCanadaService.getLocalizedApplicantStatusInCanadaChoices(lang),
     localizedGenders: applicantGenderService.getLocalizedApplicantGenders(lang),
   };
 }
@@ -142,6 +144,7 @@ export default function PrimaryDocs({ loaderData, actionData, params }: Route.Co
               defaultValue={loaderData.defaultFormValues?.currentStatusInCanada}
               errorMessage={t(getSingleKey(errors?.currentStatusInCanada))}
               onChange={({ target }) => setCurrentStatus(target.value)}
+              statusInCanada={loaderData.localizedStatusInCanada}
             />
             {currentStatus && (
               <DocumentType
@@ -179,31 +182,17 @@ interface CurrentStatusInCanadaProps {
   defaultValue?: string;
   errorMessage?: string;
   onChange?: React.ChangeEventHandler<HTMLSelectElement>;
+  statusInCanada: LocalizedApplicantStatusInCanadaChoice[];
 }
 
-function CurrentStatusInCanada({ defaultValue, errorMessage, onChange }: CurrentStatusInCanadaProps) {
+function CurrentStatusInCanada({ defaultValue, errorMessage, onChange, statusInCanada }: CurrentStatusInCanadaProps) {
   const { t } = useTranslation(handle.i18nNamespace);
-  const CurrentStatusInCanada = [
-    'canadian-citizen-born-in-canada',
-    'canadian-citizen-born-outside-canada',
-    'registered-indian-born-in-canada',
-    'registered-indian-born-outside-canada',
-    'permanent-resident',
-    'temporary-resident',
-    'no-legal-status-in-canada',
-  ] as const;
 
-  const currentStatusInCanadaOptions = [
-    {
-      children: t('protected:request-details.select-option'),
-      value: '',
-    },
-    ...CurrentStatusInCanada.map((value) => ({
-      value: value,
-      children: t(`protected:primary-identity-document.current-status-in-canada.options.${value}` as const),
-      disabled: value != 'canadian-citizen-born-outside-canada',
-    })),
-  ];
+  const currentStatusInCanadaOptions = [{ id: 'select-option', name: '' }, ...statusInCanada].map(({ id, name }) => ({
+    value: id === 'select-option' ? '' : id,
+    children: id === 'select-option' ? t('protected:request-details.select-option') : name,
+    disabled: id !== APPLICANT_STATUS_IN_CANADA.canadianCitizenBornOutsideCanada,
+  }));
 
   return (
     <>
@@ -211,7 +200,7 @@ function CurrentStatusInCanada({ defaultValue, errorMessage, onChange }: Current
         id="currentStatusInCanada"
         name="currentStatusInCanada"
         errorMessage={errorMessage}
-        defaultValue={defaultValue}
+        defaultValue={defaultValue ?? ''}
         required
         options={currentStatusInCanadaOptions}
         label={t('protected:primary-identity-document.current-status-in-canada.title')}
@@ -249,14 +238,14 @@ function DocumentType({ currentStatus, defaultValue, errorMessage, onChange }: D
     },
     ...(() => {
       switch (currentStatus) {
-        case 'canadian-citizen-born-outside-canada':
+        case APPLICANT_STATUS_IN_CANADA.canadianCitizenBornOutsideCanada:
           return canadianCitizenBornOutsideCanadaDocumentType.map((value) => ({
             value: value,
             children: t(`protected:primary-identity-document.document-type.options.${value}` as const),
             disabled: value != 'certificate-of-canadian-citizenship',
           }));
 
-        case 'registered-indian-born-in-canada':
+        case APPLICANT_STATUS_IN_CANADA.registeredIndianBornInCanada:
           return registeredIndianBornInCanadaDocumentType.map((value) => ({
             value: value,
             children: t(`protected:primary-identity-document.document-type.options.${value}` as const),
@@ -270,7 +259,8 @@ function DocumentType({ currentStatus, defaultValue, errorMessage, onChange }: D
 
   return (
     <>
-      {(currentStatus === 'canadian-citizen-born-outside-canada' || currentStatus === 'registered-indian-born-in-canada') && (
+      {(currentStatus === APPLICANT_STATUS_IN_CANADA.canadianCitizenBornOutsideCanada ||
+        currentStatus === APPLICANT_STATUS_IN_CANADA.registeredIndianBornInCanada) && (
         <InputSelect
           id="documentType"
           name="documentType"
@@ -319,102 +309,103 @@ function PrimaryDocsFields({
 
   return (
     <>
-      {currentStatus === 'canadian-citizen-born-outside-canada' && documentType === 'certificate-of-canadian-citizenship' && (
-        <>
-          <InputField
-            id="registration-number-id"
-            defaultValue={defaultValues?.registrationNumber}
-            errorMessage={t(getSingleKey(errors?.registrationNumber), { length: 8 })}
-            label={t('protected:primary-identity-document.registration-number.label')}
-            name="registrationNumber"
-            required
-            type="text"
-          />
-          <InputField
-            id="client-number-id"
-            defaultValue={defaultValues?.clientNumber}
-            errorMessage={t(getSingleKey(errors?.clientNumber), { length: 10 })}
-            label={t('protected:primary-identity-document.client-number.label')}
-            name="clientNumber"
-            required
-            type="text"
-          />
-          <InputField
-            id="given-name-id"
-            defaultValue={defaultValues?.givenName}
-            errorMessage={t(getSingleKey(errors?.givenName), { maximum: 100 })}
-            helpMessagePrimary={t('protected:primary-identity-document.given-name.help-message-primary')}
-            label={t('protected:primary-identity-document.given-name.label')}
-            name="givenName"
-            required
-            type="text"
-          />
-          <InputField
-            id="last-name-id"
-            defaultValue={defaultValues?.lastName}
-            errorMessage={t(getSingleKey(errors?.lastName), { maximum: 100 })}
-            helpMessagePrimary={t('protected:primary-identity-document.last-name.help-message-primary')}
-            label={t('protected:primary-identity-document.last-name.label')}
-            name="lastName"
-            required
-            type="text"
-          />
-          <DatePickerField
-            defaultValue={defaultValues?.dateOfBirth ?? ''}
-            id="date-of-birth-id"
-            legend={t('protected:primary-identity-document.date-of-birth.label')}
-            required
-            names={{
-              day: 'dateOfBirthDay',
-              month: 'dateOfBirthMonth',
-              year: 'dateOfBirthYear',
-            }}
-            errorMessages={{
-              all: t(getSingleKey(errors?.dateOfBirth)),
-              year: t(getSingleKey(errors?.dateOfBirthYear)),
-              month: t(getSingleKey(errors?.dateOfBirthMonth)),
-              day: t(getSingleKey(errors?.dateOfBirthDay)),
-            }}
-          />
-          <InputRadios
-            id="gender-id"
-            errorMessage={t(getSingleKey(errors?.gender))}
-            legend={t('protected:primary-identity-document.gender.label')}
-            name="gender"
-            options={genderOptions}
-            required
-          />
-          <DatePickerField
-            defaultValue={defaultValues?.citizenshipDate ?? ''}
-            id="citizenship-date-id"
-            legend={t('protected:primary-identity-document.citizenship-date.label')}
-            required
-            names={{
-              day: 'citizenshipDateDay',
-              month: 'citizenshipDateMonth',
-              year: 'citizenshipDateYear',
-            }}
-            errorMessages={{
-              all: t(getSingleKey(errors?.citizenshipDate)),
-              year: t(getSingleKey(errors?.citizenshipDateYear)),
-              month: t(getSingleKey(errors?.citizenshipDateMonth)),
-              day: t(getSingleKey(errors?.citizenshipDateDay)),
-            }}
-          />
-          <InputFile
-            disabled
-            accept=".jpg,.png,.heic"
-            id="primary-document-id"
-            name="document"
-            label={t('protected:primary-identity-document.upload-document.label')}
-            required
-            /*
+      {currentStatus === APPLICANT_STATUS_IN_CANADA.canadianCitizenBornOutsideCanada &&
+        documentType === 'certificate-of-canadian-citizenship' && (
+          <>
+            <InputField
+              id="registration-number-id"
+              defaultValue={defaultValues?.registrationNumber}
+              errorMessage={t(getSingleKey(errors?.registrationNumber), { length: 8 })}
+              label={t('protected:primary-identity-document.registration-number.label')}
+              name="registrationNumber"
+              required
+              type="text"
+            />
+            <InputField
+              id="client-number-id"
+              defaultValue={defaultValues?.clientNumber}
+              errorMessage={t(getSingleKey(errors?.clientNumber), { length: 10 })}
+              label={t('protected:primary-identity-document.client-number.label')}
+              name="clientNumber"
+              required
+              type="text"
+            />
+            <InputField
+              id="given-name-id"
+              defaultValue={defaultValues?.givenName}
+              errorMessage={t(getSingleKey(errors?.givenName), { maximum: 100 })}
+              helpMessagePrimary={t('protected:primary-identity-document.given-name.help-message-primary')}
+              label={t('protected:primary-identity-document.given-name.label')}
+              name="givenName"
+              required
+              type="text"
+            />
+            <InputField
+              id="last-name-id"
+              defaultValue={defaultValues?.lastName}
+              errorMessage={t(getSingleKey(errors?.lastName), { maximum: 100 })}
+              helpMessagePrimary={t('protected:primary-identity-document.last-name.help-message-primary')}
+              label={t('protected:primary-identity-document.last-name.label')}
+              name="lastName"
+              required
+              type="text"
+            />
+            <DatePickerField
+              defaultValue={defaultValues?.dateOfBirth ?? ''}
+              id="date-of-birth-id"
+              legend={t('protected:primary-identity-document.date-of-birth.label')}
+              required
+              names={{
+                day: 'dateOfBirthDay',
+                month: 'dateOfBirthMonth',
+                year: 'dateOfBirthYear',
+              }}
+              errorMessages={{
+                all: t(getSingleKey(errors?.dateOfBirth)),
+                year: t(getSingleKey(errors?.dateOfBirthYear)),
+                month: t(getSingleKey(errors?.dateOfBirthMonth)),
+                day: t(getSingleKey(errors?.dateOfBirthDay)),
+              }}
+            />
+            <InputRadios
+              id="gender-id"
+              errorMessage={t(getSingleKey(errors?.gender))}
+              legend={t('protected:primary-identity-document.gender.label')}
+              name="gender"
+              options={genderOptions}
+              required
+            />
+            <DatePickerField
+              defaultValue={defaultValues?.citizenshipDate ?? ''}
+              id="citizenship-date-id"
+              legend={t('protected:primary-identity-document.citizenship-date.label')}
+              required
+              names={{
+                day: 'citizenshipDateDay',
+                month: 'citizenshipDateMonth',
+                year: 'citizenshipDateYear',
+              }}
+              errorMessages={{
+                all: t(getSingleKey(errors?.citizenshipDate)),
+                year: t(getSingleKey(errors?.citizenshipDateYear)),
+                month: t(getSingleKey(errors?.citizenshipDateMonth)),
+                day: t(getSingleKey(errors?.citizenshipDateDay)),
+              }}
+            />
+            <InputFile
+              disabled
+              accept=".jpg,.png,.heic"
+              id="primary-document-id"
+              name="document"
+              label={t('protected:primary-identity-document.upload-document.label')}
+              required
+              /*
             TODO: Enable file upload
             errorMessage={t(getSingleKey(errors?.document))}
             */
-          />
-        </>
-      )}
+            />
+          </>
+        )}
     </>
   );
 }

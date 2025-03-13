@@ -8,6 +8,7 @@ import { getApplicationSubmissionScenarios } from '~/.server/domain/person-case/
 import { getTypesOfApplicationToSubmit } from '~/.server/domain/person-case/services/application-type-service';
 import { serverEnvironment } from '~/.server/environment';
 import { countryService, provinceService } from '~/.server/shared/services';
+import { APPLICANT_STATUS_IN_CANADA } from '~/domain/constants';
 import { getStartOfDayInTimezone, isDateInPastOrTodayInTimeZone, isValidDateString } from '~/utils/date-utils';
 import { REGEX_PATTERNS } from '~/utils/regex-utils';
 import { formatSin, isValidSin } from '~/utils/sin-utils';
@@ -358,9 +359,7 @@ const validBornOutsideOfCanadaDocuments = [
   'certificate-of-canadian-citizenship', //
 ] as const;
 
-const validCanadianStatuses = [
-  'canadian-citizen-born-outside-canada', //
-] as const;
+const validCanadianStatuses = [APPLICANT_STATUS_IN_CANADA.canadianCitizenBornOutsideCanada] as const;
 
 export const primaryDocumentSchema = v.intersect([
   v.object({
