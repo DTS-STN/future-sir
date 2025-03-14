@@ -101,7 +101,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
           },
         });
 
-        return data({ errors: formErrors }, { status: HttpStatusCodes.BAD_REQUEST });
+        return data({ formValues: formValues, formErrors: formErrors }, { status: HttpStatusCodes.BAD_REQUEST });
       }
 
       machineActor.send({ type: 'submitPrimaryDocuments', data: parseResult.output });
@@ -139,8 +139,8 @@ export default function PrimaryDocs({ actionData, loaderData, params }: Route.Co
   const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
   const isSubmitting = fetcher.state !== 'idle';
 
-  const formValues = loaderData.formValues;
-  const formErrors = loaderData.formErrors;
+  const formValues = fetcher.data?.formValues ?? loaderData.formValues;
+  const formErrors = fetcher.data?.formErrors ?? loaderData.formErrors;
 
   const [currentStatus, setCurrentStatus] = useState(formValues?.currentStatusInCanada);
   const [documentType, setDocumentType] = useState(formValues?.documentType);
