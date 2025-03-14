@@ -48,6 +48,11 @@ export async function action({ context, params, request }: Route.ActionArgs) {
   const action = formData.get('action');
 
   switch (action) {
+    case 'back': {
+      machineActor.send({ type: 'exit' });
+      throw i18nRedirect('routes/protected/index.tsx', request);
+    }
+
     case 'next': {
       const parseResult = v.safeParse(privacyStatementSchema, {
         agreedToTerms: formData.get('agreedToTerms') ? true : undefined,
@@ -118,6 +123,9 @@ export default function PrivacyStatement({ loaderData, params }: Route.Component
           <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
             <Button name="action" value="next" variant="primary" id="continue-button" disabled={isSubmitting}>
               {t('protected:person-case.next')}
+            </Button>
+            <Button name="action" value="back" id="back-button" disabled={isSubmitting}>
+              {t('protected:person-case.previous')}
             </Button>
           </div>
         </fetcher.Form>

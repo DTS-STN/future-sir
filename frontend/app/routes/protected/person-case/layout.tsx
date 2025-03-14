@@ -30,9 +30,7 @@ export default function Layout({ actionData, loaderData, matches, params }: Rout
   const abandonAction = i18n.language == 'fr' ? abandonRoute.paths.fr : abandonRoute.paths.en;
 
   if (!tabId) {
-    // if there is no tab id, render a spinner and wait for one to be generated
-    // TODO ::: GjB ::: this is horribly styled
-    return <FontAwesomeIcon className="m-8" icon={faSpinner} size="5x" spinPulse={true} />;
+    return <FontAwesomeIcon className="m-8 animate-[spin_3s_infinite_linear] text-slate-800" icon={faSpinner} size="3x" />;
   }
 
   return (

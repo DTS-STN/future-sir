@@ -34,6 +34,7 @@ type MachineContext = Partial<InPersonSinApplication> & Partial<{ formData: Form
 type MachineEvents =
   | { type: 'prev' }
   | { type: 'cancel' }
+  | { type: 'exit' }
   | { type: 'setFormData'; data: FormData }
   | { type: 'submitBirthDetails'; data: BirthDetailsData }
   | { type: 'submitContactInfo'; data: ContactInformationData }
@@ -101,13 +102,12 @@ export const machine = setup({
       target: '.privacy-statement',
       actions: assign(initialContext),
     },
-    setFormData: {
-      actions: assign(({ context, event }) => ({
-        formData: { ...context.formData, ...event.data },
-      })),
+    exit: {
+      target: '.exited',
     },
   },
   states: {
+    'exited': { type: 'final' },
     'privacy-statement': {
       meta: { route: 'routes/protected/person-case/privacy-statement.tsx' },
       on: {
