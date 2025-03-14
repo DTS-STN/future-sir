@@ -254,7 +254,7 @@ function DocumentType({ error, status, value, onChange }: DocumentTypeProps) {
           return canadianCitizenBornOutsideCanadaDocumentType.map((value) => ({
             value: value,
             children: t(`protected:primary-identity-document.document-type.options.${value}` as const),
-            disabled: value != 'certificate-of-canadian-citizenship',
+            disabled: value !== 'certificate-of-canadian-citizenship',
           }));
 
         case APPLICANT_STATUS_IN_CANADA.registeredIndianBornInCanada:

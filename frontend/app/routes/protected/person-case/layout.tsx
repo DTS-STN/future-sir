@@ -27,7 +27,7 @@ export default function Layout({ actionData, loaderData, matches, params }: Rout
   const tabId = useTabId({ reloadDocument: true }); // ensure we always have a tabId generated
 
   const abandonRoute = getRouteByFile('routes/protected/person-case/abandon.tsx', i18nRoutes);
-  const abandonAction = i18n.language == 'fr' ? abandonRoute.paths.fr : abandonRoute.paths.en;
+  const abandonAction = i18n.language === 'fr' ? abandonRoute.paths.fr : abandonRoute.paths.en;
 
   if (!tabId) {
     return <FontAwesomeIcon className="m-8 animate-[spin_3s_infinite_linear] text-slate-800" icon={faSpinner} size="3x" />;
