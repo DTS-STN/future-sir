@@ -7,3 +7,4 @@ export * as applicationTypeService from './application-type-service';
 export * as languageCorrespondenceService from './language-correspondence-service';
 export * as sinApplicationService from './sin-application-service';
 export * as applicantStatusInCanadaService from './applicant-status-in-canada-service';
+export * as applicantSupportingDocumentService from './applicant-supporting-document-service';

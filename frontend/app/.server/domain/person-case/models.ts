@@ -85,3 +85,14 @@ export type LocalizedApplicantStatusInCanadaChoice = Readonly<{
   id: string;
   name: string;
 }>;
+
+export type ApplicantSupportingDocumentType = Readonly<{
+  id: string;
+  nameEn: string;
+  nameFr: string;
+}>;
+
+export type LocalizedApplicantSupportingDocumentType = Readonly<{
+  id: string;
+  name: string;
+}>;
