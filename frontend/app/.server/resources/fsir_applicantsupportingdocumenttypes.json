@@ -7,12 +7,12 @@
     {
       "value": 9900000000,
       "labelEn": "Marriage Certificate or Marriage Registration",
-      "labelFr": "Jugement de divorce"
+      "labelFr": "Certificat de mariage ou enregistrement de mariage"
     },
     {
       "value": 9900000001,
       "labelEn": "Divorce Decree",
-      "labelFr": "Citoyen canadien né à l'extérieur du Canada"
+      "labelFr": "Jugement de divorce"
     },
     {
       "value": 9900000002,

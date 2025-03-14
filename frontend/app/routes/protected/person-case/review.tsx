@@ -14,6 +14,7 @@ import {
   languageCorrespondenceService,
   sinApplicationService,
   applicantStatusInCanadaService,
+  applicantSupportingDocumentService,
 } from '~/.server/domain/person-case/services';
 import { serverEnvironment } from '~/.server/environment';
 import { LogFactory } from '~/.server/logging';
@@ -187,6 +188,13 @@ export async function loader({ context, request }: Route.LoaderArgs) {
           inPersonSinApplication.currentNameInfo.preferredSameAsDocumentName === true
             ? inPersonSinApplication.primaryDocuments.lastName
             : inPersonSinApplication.currentNameInfo.lastName,
+        supportingDocumentsNames:
+          inPersonSinApplication.currentNameInfo.preferredSameAsDocumentName === false &&
+          inPersonSinApplication.currentNameInfo.supportingDocuments.required === true
+            ? inPersonSinApplication.currentNameInfo.supportingDocuments.documentTypes.map(
+                (doc) => applicantSupportingDocumentService.getLocalizedApplicantSupportingDocumentTypeById(doc, lang).name,
+              )
+            : undefined,
       },
     },
   };
