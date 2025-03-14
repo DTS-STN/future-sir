@@ -1,6 +1,7 @@
 import type { JSX } from 'react';
 import { useId, useState } from 'react';
 
+import type { RouteHandle } from 'react-router';
 import { data, redirect, useFetcher } from 'react-router';
 
 import { useTranslation } from 'react-i18next';
@@ -34,7 +35,9 @@ import { getSingleKey } from '~/utils/i18n-utils';
 
 const log = LogFactory.getLogger(import.meta.url);
 
-export const handle = parentHandle;
+export const handle = {
+  i18nNamespace: [...parentHandle.i18nNamespace, 'protected'],
+} as const satisfies RouteHandle;
 
 export function meta({ data }: Route.MetaArgs) {
   return [{ title: data.documentTitle }];
@@ -89,7 +92,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
       const parseResult = v.safeParse(primaryDocumentSchema, formValues);
 
       if (!parseResult.success) {
-        const formErrors = v.flatten(parseResult.issues).nested;
+        const formErrors = v.flatten<typeof primaryDocumentSchema>(parseResult.issues).nested;
 
         machineActor.send({
           type: 'setFormData',
