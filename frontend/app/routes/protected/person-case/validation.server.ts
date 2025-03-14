@@ -4,6 +4,7 @@ import * as v from 'valibot';
 import { applicantGenderService, languageCorrespondenceService } from '~/.server/domain/person-case/services';
 import { getApplicantSecondaryDocumentChoices } from '~/.server/domain/person-case/services/applicant-secondary-document-service';
 import { getApplicantHadSinOptions } from '~/.server/domain/person-case/services/applicant-sin-service';
+import { getApplicantSupportingDocumentTypes } from '~/.server/domain/person-case/services/applicant-supporting-document-service';
 import { getApplicationSubmissionScenarios } from '~/.server/domain/person-case/services/application-submission-scenario';
 import { getTypesOfApplicationToSubmit } from '~/.server/domain/person-case/services/application-type-service';
 import { serverEnvironment } from '~/.server/environment';
@@ -130,18 +131,6 @@ export const contactInformationSchema = v.intersect([
   ),
 ]);
 
-export const validCurrentNameDocTypes = [
-  'marriage-document',
-  'divorce-decree',
-  'name-change',
-  'adoption-order',
-  'notarial-certificate',
-  'resident-record',
-  'replace-imm1442',
-  'birth-certificate',
-  'citizenship-certificate',
-] as const;
-
 export const currentNameSchema = v.variant(
   'preferredSameAsDocumentName',
   [
@@ -182,7 +171,9 @@ export const currentNameSchema = v.variant(
               v.checkItems(
                 (item, index, array) =>
                   array.indexOf(item) === index &&
-                  validCurrentNameDocTypes.includes(item as (typeof validCurrentNameDocTypes)[number]),
+                  getApplicantSupportingDocumentTypes()
+                    .map((doc) => doc.id)
+                    .includes(item),
                 'protected:current-name.supporting-error.invalid-error',
               ),
             ),
