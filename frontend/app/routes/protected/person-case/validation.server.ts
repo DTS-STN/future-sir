@@ -498,16 +498,14 @@ export const secondaryDocumentSchema = v.pipe(
       ),
     ),
     expiryYear: v.pipe(
-      v.number('protected:secondary-identity-document.expiry-date.required-year'),
-      v.integer('protected:secondary-identity-document.expiry-date.invalid-year'),
+      stringToIntegerSchema('protected:secondary-identity-document.expiry-date.required-year'),
       v.minValue(
         getStartOfDayInTimezone(serverEnvironment.BASE_TIMEZONE).getFullYear(),
         'protected:secondary-identity-document.expiry-date.invalid-year',
       ),
     ),
     expiryMonth: v.pipe(
-      v.number('protected:secondary-identity-document.expiry-date.required-month'),
-      v.integer('protected:secondary-identity-document.expiry-date.invalid-month'),
+      stringToIntegerSchema('protected:secondary-identity-document.expiry-date.required-month'),
       v.minValue(1, 'protected:secondary-identity-document.expiry-date.invalid-month'),
       v.maxValue(12, 'protected:secondary-identity-document.expiry-date.invalid-month'),
     ),
@@ -515,10 +513,19 @@ export const secondaryDocumentSchema = v.pipe(
   v.forward(
     v.partialCheck(
       [['expiryYear'], ['expiryMonth']],
-      (input) =>
-        input.expiryYear > getStartOfDayInTimezone(serverEnvironment.BASE_TIMEZONE).getFullYear() ||
-        (input.expiryYear === getStartOfDayInTimezone(serverEnvironment.BASE_TIMEZONE).getFullYear() &&
-          input.expiryMonth >= getStartOfDayInTimezone(serverEnvironment.BASE_TIMEZONE).getMonth()),
+      ({ expiryYear, expiryMonth }) => {
+        const currentYear = getStartOfDayInTimezone(serverEnvironment.BASE_TIMEZONE).getFullYear();
+        const currentMonth = getStartOfDayInTimezone(serverEnvironment.BASE_TIMEZONE).getMonth();
+
+        // expiry date is valid if expiry year is in the future
+        if (expiryYear > currentYear) return true;
+
+        // expiry date is valid if expiry month is in the future
+        if (expiryYear === currentYear) return expiryMonth >= currentMonth;
+
+        // expiry date is invalid
+        return false;
+      },
       'protected:secondary-identity-document.expiry-date.invalid',
     ),
     ['expiryMonth'],

@@ -55,7 +55,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
 
     case 'next': {
       const parseResult = v.safeParse(privacyStatementSchema, {
-        agreedToTerms: formData.get('agreedToTerms') ? true : undefined,
+        agreedToTerms: formData.get('agreedToTerms')?.toString() === 'on',
       });
 
       if (!parseResult.success) {

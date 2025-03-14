@@ -57,20 +57,28 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     }
 
     case 'next': {
-      const expiryYear = Number(formData.get('expiry-year'));
-      const expiryMonth = Number(formData.get('expiry-month'));
+      const formValues = {
+        documentType: formData.get('document-type')?.toString(),
+        expiryYear: formData.get('expiry-year')?.toString(),
+        expiryMonth: formData.get('expiry-month')?.toString(),
+      };
 
-      const parseResult = v.safeParse(secondaryDocumentSchema, {
-        documentType: String(formData.get('document-type')),
-        expiryYear: expiryYear,
-        expiryMonth: expiryMonth,
-      });
+      const parseResult = v.safeParse(secondaryDocumentSchema, formValues);
 
       if (!parseResult.success) {
-        return data(
-          { errors: v.flatten<typeof secondaryDocumentSchema>(parseResult.issues).nested },
-          { status: HttpStatusCodes.BAD_REQUEST },
-        );
+        const formErrors = v.flatten<typeof secondaryDocumentSchema>(parseResult.issues).nested;
+
+        machineActor.send({
+          type: 'setFormData',
+          data: {
+            secondaryDocument: {
+              values: formValues,
+              errors: formErrors,
+            },
+          },
+        });
+
+        return data({ formValues: formValues, formErrors: formErrors }, { status: HttpStatusCodes.BAD_REQUEST });
       }
 
       machineActor.send({ type: 'submitSecondaryDocuments', data: parseResult.output });
@@ -90,27 +98,30 @@ export async function loader({ context, request }: Route.LoaderArgs) {
 
   const { lang, t } = await getTranslation(request, handle.i18nNamespace);
   const machineActor = loadMachineActor(context.session, request, 'secondary-docs');
+  const machineContext = machineActor?.getSnapshot().context;
 
   return {
     documentTitle: t('protected:secondary-identity-document.page-title'),
     localizedApplicantSecondaryDocumentChoices: getLocalizedApplicantSecondaryDocumentChoices(lang),
-    defaultFormValues: machineActor?.getSnapshot().context.secondaryDocument,
+    formValues: machineContext?.formData?.secondaryDocument?.values ?? machineContext?.secondaryDocument,
+    formErrors: machineContext?.formData?.secondaryDocument?.errors,
   };
 }
 
-export default function SecondaryDoc({ loaderData, actionData, params }: Route.ComponentProps) {
+export default function SecondaryDoc({ actionData, loaderData, params }: Route.ComponentProps) {
   const { t } = useTranslation(handle.i18nNamespace);
 
   const fetcherKey = useId();
   const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
-
   const isSubmitting = fetcher.state !== 'idle';
-  const errors = fetcher.data?.errors;
+
+  const formValues = fetcher.data?.formValues ?? loaderData.formValues;
+  const formErrors = fetcher.data?.formErrors ?? loaderData.formErrors;
 
   const docOptions = loaderData.localizedApplicantSecondaryDocumentChoices.map(({ id, name }) => ({
     value: id,
     children: name,
-    defaultChecked: id === loaderData.defaultFormValues?.documentType,
+    defaultChecked: id === loaderData.formValues?.documentType,
   }));
 
   return (
@@ -126,11 +137,11 @@ export default function SecondaryDoc({ loaderData, actionData, params }: Route.C
               name="document-type"
               options={docOptions}
               required
-              errorMessage={t(getSingleKey(errors?.documentType))}
+              errorMessage={t(getSingleKey(formErrors?.documentType))}
             />
             <DatePickerField
-              defaultMonth={loaderData.defaultFormValues?.expiryMonth}
-              defaultYear={loaderData.defaultFormValues?.expiryYear}
+              defaultMonth={Number(formValues?.expiryMonth)}
+              defaultYear={Number(formValues?.expiryYear)}
               id="expiry-date-id"
               legend={t('protected:secondary-identity-document.expiry-date.title')}
               required
@@ -139,8 +150,8 @@ export default function SecondaryDoc({ loaderData, actionData, params }: Route.C
                 year: 'expiry-year',
               }}
               errorMessages={{
-                year: t(getSingleKey(errors?.expiryYear)),
-                month: t(getSingleKey(errors?.expiryMonth)),
+                year: t(getSingleKey(formErrors?.expiryYear)),
+                month: t(getSingleKey(formErrors?.expiryMonth)),
               }}
             />
             <InputFile
@@ -150,10 +161,6 @@ export default function SecondaryDoc({ loaderData, actionData, params }: Route.C
               name="document"
               label={t('protected:secondary-identity-document.upload-document.title')}
               required
-              /*
-              TODO: Enable file upload
-              errorMessage={t(getSingleKey(errors?.document))}
-              */
             />
           </div>
           <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
