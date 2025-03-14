@@ -58,17 +58,7 @@
     "current-status-in-canada": {
       "title": "Current status in Canada",
       "required": "Current status in Canada is required.",
-      "invalid": "Please select Canadian Citizen born outside Canada.",
-      "options": {
-        "select-option": "Select option",
-        "canadian-citizen-born-in-canada": "Canadian citizen born in Canada",
-        "canadian-citizen-born-outside-canada": "Canadian citizen born outside Canada",
-        "registered-indian-born-in-canada": "Registered Indian born in Canada",
-        "registered-indian-born-outside-canada": "Registered Indian born outside Canada",
-        "permanent-resident": "Permanent Resident",
-        "temporary-resident": "Temporary Resident",
-        "no-legal-status-in-canada": "No Legal Status in Canada"
-      }
+      "invalid": "Please select Canadian Citizen born outside Canada."
     },
     "document-type": {
       "title": "Document type",
@@ -200,6 +190,7 @@
       "required-error": "Last name is required."
     },
     "supporting-error": {
+      "duplicate-error": "Duplicate items are not allowed.",
       "invalid-error": "Invalid supporting document(s) type.",
       "required-error": "Supporting document(s) type is required."
     },
@@ -208,17 +199,6 @@
       "description": "A supporting document containing the applicant's preferred name(s) is required if the primary identity document does not contain the applicant's preferred name(s), and the change does not comply with naming rules.",
       "docs-required": "Supporting document(s) required?",
       "doc-type": "Supporting document type"
-    },
-    "doc-types": {
-      "marriage-document": "Marriage Certificate or Marriage Registration",
-      "divorce-decree": "Divorce Decree",
-      "name-change": "Certificate of legal change of name or Court Order",
-      "adoption-order": "Adoption Order",
-      "notarial-certificate": "Notarial Certificate (also called Notarial Adoption Certificate)",
-      "resident-record": "Request to Amend Record of Landing or Confirmation of Permanent Resident",
-      "replace-imm1442": "Replacement IMM1442 (WP, SP, or VR) with modification to name indicated in \"Remarks\"",
-      "birth-certificate": "Birth certificate contains family name to be registered",
-      "citizenship-certificate": "Certificate of Canadian Citizenship contains family name to be registered"
     }
   },
   "personal-information": {

@@ -3,12 +3,12 @@ import { useId, useState } from 'react';
 import type { RouteHandle } from 'react-router';
 import { data, redirect, useFetcher } from 'react-router';
 
-import type { ResourceKey } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import * as v from 'valibot';
 
 import type { Info, Route } from './+types/current-name';
 
+import { applicantSupportingDocumentService } from '~/.server/domain/person-case/services';
 import { LogFactory } from '~/.server/logging';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
@@ -25,7 +25,7 @@ import { HttpStatusCodes } from '~/errors/http-status-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine.server';
-import { currentNameSchema, validCurrentNameDocTypes } from '~/routes/protected/person-case/validation.server';
+import { currentNameSchema } from '~/routes/protected/person-case/validation.server';
 import { getSingleKey } from '~/utils/i18n-utils';
 import { trimToUndefined } from '~/utils/string-utils';
 
@@ -101,13 +101,13 @@ export async function action({ context, params, request }: Route.ActionArgs) {
 export async function loader({ context, request }: Route.LoaderArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
 
-  const { t } = await getTranslation(request, handle.i18nNamespace);
+  const { lang, t } = await getTranslation(request, handle.i18nNamespace);
   const machineActor = loadMachineActor(context.session, request, 'name-info');
 
   return {
     documentTitle: t('protected:primary-identity-document.page-title'),
     defaultFormValues: machineActor?.getSnapshot().context.currentNameInfo,
-    validCurrentNameDocTypes: validCurrentNameDocTypes,
+    localizedSupportingDocTypes: applicantSupportingDocumentService.getLocalizedApplicantSupportingDocumentType(lang),
     primaryDocName: {
       firstName: machineActor?.getSnapshot().context.primaryDocuments?.givenName,
       lastName: machineActor?.getSnapshot().context.primaryDocuments?.lastName,
@@ -162,14 +162,14 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
     },
   ];
 
-  const docTypes = loaderData.validCurrentNameDocTypes.map((value) => ({
-    value: value,
-    children: t(`protected:current-name.doc-types.${value}` as ResourceKey),
+  const docTypes = loaderData.localizedSupportingDocTypes.map((doc) => ({
+    value: doc.id,
+    children: doc.name,
     defaultChecked:
       loaderData.defaultFormValues &&
       loaderData.defaultFormValues.preferredSameAsDocumentName === false &&
       loaderData.defaultFormValues.supportingDocuments.required === true
-        ? loaderData.defaultFormValues.supportingDocuments.documentTypes.includes(value)
+        ? loaderData.defaultFormValues.supportingDocuments.documentTypes.includes(doc.id)
         : false,
   }));
 
