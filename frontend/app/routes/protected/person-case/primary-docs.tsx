@@ -1,7 +1,6 @@
 import type { JSX } from 'react';
 import { useId, useState } from 'react';
 
-import type { RouteHandle } from 'react-router';
 import { data, redirect, useFetcher } from 'react-router';
 
 import { useTranslation } from 'react-i18next';
@@ -35,9 +34,7 @@ import { getSingleKey } from '~/utils/i18n-utils';
 
 const log = LogFactory.getLogger(import.meta.url);
 
-export const handle = {
-  i18nNamespace: [...parentHandle.i18nNamespace, 'protected'],
-} as const satisfies RouteHandle;
+export const handle = parentHandle;
 
 export function meta({ data }: Route.MetaArgs) {
   return [{ title: data.documentTitle }];
@@ -63,44 +60,50 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     }
 
     case 'next': {
-      const dateOfBirthYear = Number(formData.get('dateOfBirthYear'));
-      const dateOfBirthMonth = Number(formData.get('dateOfBirthMonth'));
-      const dateOfBirthDay = Number(formData.get('dateOfBirthDay'));
-      const dateOfBirth = toDateString(dateOfBirthYear, dateOfBirthMonth, dateOfBirthDay);
+      const dateOfBirthYear = formData.get('dateOfBirthYear')?.toString();
+      const dateOfBirthMonth = formData.get('dateOfBirthMonth')?.toString();
+      const dateOfBirthDay = formData.get('dateOfBirthDay')?.toString();
 
-      const citizenshipDateYear = Number(formData.get('citizenshipDateYear'));
-      const citizenshipDateMonth = Number(formData.get('citizenshipDateMonth'));
-      const citizenshipDateDay = Number(formData.get('citizenshipDateDay'));
-      const citizenshipDate = toDateString(citizenshipDateYear, citizenshipDateMonth, citizenshipDateDay);
+      const citizenshipDateYear = formData.get('citizenshipDateYear')?.toString();
+      const citizenshipDateMonth = formData.get('citizenshipDateMonth')?.toString();
+      const citizenshipDateDay = formData.get('citizenshipDateDay')?.toString();
 
-      const rawFormData = {
-        currentStatusInCanada: String(formData.get('currentStatusInCanada')),
-        documentType: String(formData.get('documentType')),
-        registrationNumber: formData.get('registrationNumber')?.toString() ?? '',
-        clientNumber: formData.get('clientNumber')?.toString() ?? '',
-        givenName: formData.get('givenName')?.toString() ?? '',
-        lastName: formData.get('lastName')?.toString() ?? '',
+      const formValues = {
+        currentStatusInCanada: formData.get('currentStatusInCanada')?.toString(),
+        documentType: formData.get('documentType')?.toString(),
+        registrationNumber: formData.get('registrationNumber')?.toString(),
+        clientNumber: formData.get('clientNumber')?.toString(),
+        givenName: formData.get('givenName')?.toString(),
+        lastName: formData.get('lastName')?.toString(),
+        gender: formData.get('gender')?.toString(),
         dateOfBirthYear: dateOfBirthYear,
         dateOfBirthMonth: dateOfBirthMonth,
         dateOfBirthDay: dateOfBirthDay,
-        dateOfBirth: dateOfBirth,
-        gender: String(formData.get('gender')),
+        dateOfBirth: toDateString(dateOfBirthYear, dateOfBirthMonth, dateOfBirthDay),
         citizenshipDateYear: citizenshipDateYear,
         citizenshipDateMonth: citizenshipDateMonth,
         citizenshipDateDay: citizenshipDateDay,
-        citizenshipDate: citizenshipDate,
+        citizenshipDate: toDateString(citizenshipDateYear, citizenshipDateMonth, citizenshipDateDay),
       };
-      const parseResult = v.safeParse(primaryDocumentSchema, rawFormData);
+
+      const parseResult = v.safeParse(primaryDocumentSchema, formValues);
 
       if (!parseResult.success) {
+        const formErrors = v.flatten(parseResult.issues).nested;
+
         machineActor.send({
-          type: 'setRawDataMap',
-          data: { primaryDocuments: { formData: rawFormData, errors: v.flatten(parseResult.issues).nested } },
+          type: 'setFormData',
+          data: {
+            primaryDocuments: {
+              values: formValues,
+              errors: formErrors,
+            },
+          },
         });
-        return data({ errors: v.flatten(parseResult.issues).nested }, { status: HttpStatusCodes.BAD_REQUEST });
+
+        return data({ errors: formErrors }, { status: HttpStatusCodes.BAD_REQUEST });
       }
 
-      machineActor.send({ type: 'setRawDataMap', data: { primaryDocuments: undefined } });
       machineActor.send({ type: 'submitPrimaryDocuments', data: parseResult.output });
       break;
     }
@@ -118,28 +121,29 @@ export async function loader({ context, request }: Route.LoaderArgs) {
 
   const { lang, t } = await getTranslation(request, handle.i18nNamespace);
   const machineActor = loadMachineActor(context.session, request, 'primary-docs');
+  const machineContext = machineActor?.getSnapshot().context;
 
   return {
     documentTitle: t('protected:primary-identity-document.page-title'),
-    defaultFormValues: machineActor?.getSnapshot().context.primaryDocuments,
     localizedStatusInCanada: applicantStatusInCanadaService.getLocalizedApplicantStatusInCanadaChoices(lang),
     localizedGenders: applicantGenderService.getLocalizedApplicantGenders(lang),
-    rawData: machineActor?.getSnapshot().context.rawDataMap?.primaryDocuments,
+    formValues: machineContext?.formData?.primaryDocuments?.values ?? machineContext?.primaryDocuments,
+    formErrors: machineContext?.formData?.primaryDocuments?.errors,
   };
 }
 
-export default function PrimaryDocs({ loaderData, actionData, params }: Route.ComponentProps) {
+export default function PrimaryDocs({ actionData, loaderData, params }: Route.ComponentProps) {
   const { t } = useTranslation(handle.i18nNamespace);
 
   const fetcherKey = useId();
   const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
-
   const isSubmitting = fetcher.state !== 'idle';
-  const errors = fetcher.data?.errors ?? loaderData.rawData?.errors;
-  const defaultFormValues = loaderData.defaultFormValues ?? loaderData.rawData?.formData;
 
-  const [currentStatus, setCurrentStatus] = useState(defaultFormValues?.currentStatusInCanada);
-  const [documentType, setDocumentType] = useState(defaultFormValues?.documentType);
+  const formValues = loaderData.formValues;
+  const formErrors = loaderData.formErrors;
+
+  const [currentStatus, setCurrentStatus] = useState(formValues?.currentStatusInCanada);
+  const [documentType, setDocumentType] = useState(formValues?.documentType);
 
   return (
     <>
@@ -149,26 +153,26 @@ export default function PrimaryDocs({ loaderData, actionData, params }: Route.Co
         <fetcher.Form method="post" noValidate encType="multipart/form-data">
           <div className="space-y-6">
             <CurrentStatusInCanada
-              defaultValue={defaultFormValues?.currentStatusInCanada}
-              errorMessage={t(getSingleKey(errors?.currentStatusInCanada))}
+              defaultValue={formValues?.currentStatusInCanada}
+              errorMessage={t(getSingleKey(formErrors?.currentStatusInCanada))}
               onChange={({ target }) => setCurrentStatus(target.value)}
               statusInCanada={loaderData.localizedStatusInCanada}
             />
             {currentStatus && (
               <DocumentType
-                currentStatus={currentStatus}
-                defaultValue={defaultFormValues?.documentType}
-                errorMessage={t(getSingleKey(errors?.documentType))}
+                status={currentStatus}
+                value={formValues?.documentType}
+                error={t(getSingleKey(formErrors?.documentType))}
                 onChange={({ target }) => setDocumentType(target.value)}
               />
             )}
             {currentStatus && documentType && (
               <PrimaryDocsFields
                 genders={loaderData.localizedGenders}
-                currentStatus={currentStatus}
-                defaultValues={defaultFormValues}
+                status={currentStatus}
+                formValues={formValues}
                 documentType={documentType}
-                errors={errors}
+                formErrors={formErrors}
               />
             )}
           </div>
@@ -218,14 +222,14 @@ function CurrentStatusInCanada({ defaultValue, errorMessage, onChange, statusInC
   );
 }
 
-interface DocumentTypeProps {
-  currentStatus?: string;
-  defaultValue?: string;
-  errorMessage?: string;
+type DocumentTypeProps = {
+  error?: string;
+  status?: string;
+  value?: string;
   onChange?: React.ChangeEventHandler<HTMLSelectElement>;
-}
+};
 
-function DocumentType({ currentStatus, defaultValue, errorMessage, onChange }: DocumentTypeProps) {
+function DocumentType({ error, status, value, onChange }: DocumentTypeProps) {
   const { t } = useTranslation(handle.i18nNamespace);
 
   const canadianCitizenBornOutsideCanadaDocumentType = [
@@ -245,7 +249,7 @@ function DocumentType({ currentStatus, defaultValue, errorMessage, onChange }: D
       hidden: true,
     },
     ...(() => {
-      switch (currentStatus) {
+      switch (status) {
         case APPLICANT_STATUS_IN_CANADA.canadianCitizenBornOutsideCanada:
           return canadianCitizenBornOutsideCanadaDocumentType.map((value) => ({
             value: value,
@@ -267,13 +271,13 @@ function DocumentType({ currentStatus, defaultValue, errorMessage, onChange }: D
 
   return (
     <>
-      {(currentStatus === APPLICANT_STATUS_IN_CANADA.canadianCitizenBornOutsideCanada ||
-        currentStatus === APPLICANT_STATUS_IN_CANADA.registeredIndianBornInCanada) && (
+      {(status === APPLICANT_STATUS_IN_CANADA.canadianCitizenBornOutsideCanada ||
+        status === APPLICANT_STATUS_IN_CANADA.registeredIndianBornInCanada) && (
         <InputSelect
           id="documentType"
           name="documentType"
-          errorMessage={errorMessage}
-          defaultValue={defaultValue}
+          errorMessage={error}
+          defaultValue={value}
           required
           options={documentTypeOptions}
           label={t('protected:primary-identity-document.document-type.title')}
@@ -284,46 +288,32 @@ function DocumentType({ currentStatus, defaultValue, errorMessage, onChange }: D
   );
 }
 
-interface PrimaryDocsFieldsProps {
-  genders: LocalizedApplicantGender[];
-  currentStatus?: string;
-  defaultValues?: {
-    citizenshipDate: string;
-    clientNumber: string;
-    dateOfBirth: string;
-    gender: string;
-    givenName: string;
-    lastName: string;
-    registrationNumber: string;
-  };
+type PrimaryDocsFieldsProps = {
   documentType?: string;
-  errors?: Record<string, [string, ...string[]] | undefined>;
-}
+  formErrors?: Record<string, [string, ...string[]] | undefined>;
+  formValues?: Record<string, string | undefined>;
+  genders: LocalizedApplicantGender[];
+  status?: string;
+};
 
-function PrimaryDocsFields({
-  genders,
-  currentStatus,
-  defaultValues,
-  errors,
-  documentType,
-}: PrimaryDocsFieldsProps): JSX.Element {
+function PrimaryDocsFields({ documentType, formErrors, formValues, genders, status }: PrimaryDocsFieldsProps): JSX.Element {
   const { t } = useTranslation(handle.i18nNamespace);
 
   const genderOptions = genders.map(({ id, name }) => ({
     value: id,
     children: name,
-    defaultChecked: id === defaultValues?.gender,
+    defaultChecked: id === formValues?.gender,
   }));
 
   return (
     <>
-      {currentStatus === APPLICANT_STATUS_IN_CANADA.canadianCitizenBornOutsideCanada &&
+      {status === APPLICANT_STATUS_IN_CANADA.canadianCitizenBornOutsideCanada &&
         documentType === 'certificate-of-canadian-citizenship' && (
           <>
             <InputField
               id="registration-number-id"
-              defaultValue={defaultValues?.registrationNumber}
-              errorMessage={t(getSingleKey(errors?.registrationNumber), { length: 8 })}
+              defaultValue={formValues?.registrationNumber}
+              errorMessage={t(getSingleKey(formErrors?.registrationNumber), { length: 8 })}
               label={t('protected:primary-identity-document.registration-number.label')}
               name="registrationNumber"
               required
@@ -331,8 +321,8 @@ function PrimaryDocsFields({
             />
             <InputField
               id="client-number-id"
-              defaultValue={defaultValues?.clientNumber}
-              errorMessage={t(getSingleKey(errors?.clientNumber), { length: 10 })}
+              defaultValue={formValues?.clientNumber}
+              errorMessage={t(getSingleKey(formErrors?.clientNumber), { length: 10 })}
               label={t('protected:primary-identity-document.client-number.label')}
               name="clientNumber"
               required
@@ -340,8 +330,8 @@ function PrimaryDocsFields({
             />
             <InputField
               id="given-name-id"
-              defaultValue={defaultValues?.givenName}
-              errorMessage={t(getSingleKey(errors?.givenName), { maximum: 100 })}
+              defaultValue={formValues?.givenName}
+              errorMessage={t(getSingleKey(formErrors?.givenName), { maximum: 100 })}
               helpMessagePrimary={t('protected:primary-identity-document.given-name.help-message-primary')}
               label={t('protected:primary-identity-document.given-name.label')}
               name="givenName"
@@ -350,8 +340,8 @@ function PrimaryDocsFields({
             />
             <InputField
               id="last-name-id"
-              defaultValue={defaultValues?.lastName}
-              errorMessage={t(getSingleKey(errors?.lastName), { maximum: 100 })}
+              defaultValue={formValues?.lastName}
+              errorMessage={t(getSingleKey(formErrors?.lastName), { maximum: 100 })}
               helpMessagePrimary={t('protected:primary-identity-document.last-name.help-message-primary')}
               label={t('protected:primary-identity-document.last-name.label')}
               name="lastName"
@@ -359,45 +349,37 @@ function PrimaryDocsFields({
               type="text"
             />
             <DatePickerField
-              defaultValue={defaultValues?.dateOfBirth ?? ''}
+              defaultValue={formValues?.dateOfBirth ?? ''}
               id="date-of-birth-id"
               legend={t('protected:primary-identity-document.date-of-birth.label')}
               required
-              names={{
-                day: 'dateOfBirthDay',
-                month: 'dateOfBirthMonth',
-                year: 'dateOfBirthYear',
-              }}
+              names={{ day: 'dateOfBirthDay', month: 'dateOfBirthMonth', year: 'dateOfBirthYear' }}
               errorMessages={{
-                all: t(getSingleKey(errors?.dateOfBirth)),
-                year: t(getSingleKey(errors?.dateOfBirthYear)),
-                month: t(getSingleKey(errors?.dateOfBirthMonth)),
-                day: t(getSingleKey(errors?.dateOfBirthDay)),
+                all: t(getSingleKey(formErrors?.dateOfBirth)),
+                year: t(getSingleKey(formErrors?.dateOfBirthYear)),
+                month: t(getSingleKey(formErrors?.dateOfBirthMonth)),
+                day: t(getSingleKey(formErrors?.dateOfBirthDay)),
               }}
             />
             <InputRadios
               id="gender-id"
-              errorMessage={t(getSingleKey(errors?.gender))}
+              errorMessage={t(getSingleKey(formErrors?.gender))}
               legend={t('protected:primary-identity-document.gender.label')}
               name="gender"
               options={genderOptions}
               required
             />
             <DatePickerField
-              defaultValue={defaultValues?.citizenshipDate ?? ''}
+              defaultValue={formValues?.citizenshipDate ?? ''}
               id="citizenship-date-id"
               legend={t('protected:primary-identity-document.citizenship-date.label')}
               required
-              names={{
-                day: 'citizenshipDateDay',
-                month: 'citizenshipDateMonth',
-                year: 'citizenshipDateYear',
-              }}
+              names={{ day: 'citizenshipDateDay', month: 'citizenshipDateMonth', year: 'citizenshipDateYear' }}
               errorMessages={{
-                all: t(getSingleKey(errors?.citizenshipDate)),
-                year: t(getSingleKey(errors?.citizenshipDateYear)),
-                month: t(getSingleKey(errors?.citizenshipDateMonth)),
-                day: t(getSingleKey(errors?.citizenshipDateDay)),
+                all: t(getSingleKey(formErrors?.citizenshipDate)),
+                year: t(getSingleKey(formErrors?.citizenshipDateYear)),
+                month: t(getSingleKey(formErrors?.citizenshipDateMonth)),
+                day: t(getSingleKey(formErrors?.citizenshipDateDay)),
               }}
             />
             <InputFile
@@ -407,10 +389,6 @@ function PrimaryDocsFields({
               name="document"
               label={t('protected:primary-identity-document.upload-document.label')}
               required
-              /*
-            TODO: Enable file upload
-            errorMessage={t(getSingleKey(errors?.document))}
-            */
             />
           </>
         )}
@@ -418,9 +396,9 @@ function PrimaryDocsFields({
   );
 }
 
-function toDateString(year: number, month: number, day: number): string {
+function toDateString(year?: string, month?: string, day?: string): string {
   try {
-    return toISODateString(year, month, day);
+    return toISODateString(Number(year), Number(month), Number(day));
   } catch {
     return '';
   }

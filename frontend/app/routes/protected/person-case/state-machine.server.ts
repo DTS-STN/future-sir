@@ -4,10 +4,17 @@ import { generatePath } from 'react-router';
 import type { Actor } from 'xstate';
 import { assign, createActor, setup } from 'xstate';
 
+import { LogFactory } from '~/.server/logging';
+import { AppError } from '~/errors/app-error';
+import { ErrorCodes } from '~/errors/error-codes';
+import { HttpStatusCodes } from '~/errors/http-status-codes';
+import type { I18nRouteFile } from '~/i18n-routes';
+import { i18nRoutes } from '~/i18n-routes';
 import type {
   BirthDetailsData,
   ContactInformationData,
   CurrentNameData,
+  FormData,
   InPersonSinApplication,
   ParentDetailsData,
   PersonalInfoData,
@@ -16,19 +23,33 @@ import type {
   PrivacyStatementData,
   RequestDetailsData,
   SecondaryDocumentData,
-  RawDataMap,
-} from './types';
-
-import { LogFactory } from '~/.server/logging';
-import { AppError } from '~/errors/app-error';
-import { ErrorCodes } from '~/errors/error-codes';
-import { HttpStatusCodes } from '~/errors/http-status-codes';
-import type { I18nRouteFile } from '~/i18n-routes';
-import { i18nRoutes } from '~/i18n-routes';
+} from '~/routes/protected/person-case/types';
 import { getLanguage } from '~/utils/i18n-utils';
 import { getRouteByFile } from '~/utils/route-utils';
 
 export type Machine = typeof machine;
+
+type MachineContext = Partial<InPersonSinApplication> & Partial<{ formData: FormData }>;
+
+type MachineEvents =
+  | { type: 'prev' }
+  | { type: 'cancel' }
+  | { type: 'setFormData'; data: FormData }
+  | { type: 'submitBirthDetails'; data: BirthDetailsData }
+  | { type: 'submitContactInfo'; data: ContactInformationData }
+  | { type: 'submitCurrentName'; data: CurrentNameData }
+  | { type: 'submitParentDetails'; data: ParentDetailsData }
+  | { type: 'submitPersonalInfo'; data: PersonalInfoData }
+  | { type: 'submitPreviousSin'; data: PreviousSinData }
+  | { type: 'submitPrimaryDocuments'; data: PrimaryDocumentData }
+  | { type: 'submitPrivacyStatement'; data: PrivacyStatementData }
+  | { type: 'submitRequestDetails'; data: RequestDetailsData }
+  | { type: 'submitSecondaryDocuments'; data: SecondaryDocumentData }
+  | { type: 'submitReview' };
+
+type MachineMeta = {
+  route: I18nRouteFile;
+};
 
 /**
  * Type representing the possible state names for the application process.
@@ -52,6 +73,7 @@ const log = LogFactory.getLogger(import.meta.url);
 const machineId = 'person-case';
 
 const initialContext = {
+  formData: undefined,
   birthDetails: undefined,
   contactInformation: undefined,
   currentNameInfo: undefined,
@@ -62,200 +84,187 @@ const initialContext = {
   privacyStatement: undefined,
   requestDetails: undefined,
   secondaryDocument: undefined,
-} satisfies Partial<InPersonSinApplication>;
+} satisfies MachineContext;
 
 export const machine = setup({
   types: {
-    context: {} as Partial<InPersonSinApplication>,
-    events: {} as
-      | { type: 'prev' }
-      | { type: 'cancel' }
-      | { type: 'setRawDataMap'; data: RawDataMap }
-      | { type: 'submitBirthDetails'; data: BirthDetailsData }
-      | { type: 'submitContactInfo'; data: ContactInformationData }
-      | { type: 'submitCurrentName'; data: CurrentNameData }
-      | { type: 'submitParentDetails'; data: ParentDetailsData }
-      | { type: 'submitPersonalInfo'; data: PersonalInfoData }
-      | { type: 'submitPreviousSin'; data: PreviousSinData }
-      | { type: 'submitPrimaryDocuments'; data: PrimaryDocumentData }
-      | { type: 'submitPrivacyStatement'; data: PrivacyStatementData }
-      | { type: 'submitRequestDetails'; data: RequestDetailsData }
-      | { type: 'submitSecondaryDocuments'; data: SecondaryDocumentData }
-      | { type: 'submitReview' },
-    meta: {} as {
-      route: I18nRouteFile;
-    },
+    context: {} as MachineContext,
+    events: {} as MachineEvents,
+    meta: {} as MachineMeta,
   },
 }).createMachine({
   id: machineId,
   initial: 'privacy-statement',
   context: initialContext,
-  //
-  // global state transitions
-  //
   on: {
     cancel: {
       target: '.privacy-statement',
       actions: assign(initialContext),
     },
-    setRawDataMap: {
-      actions: assign(({ context, event }) => {
-        const mergedRawDataMap = { ...context.rawDataMap, ...event.data };
-        return { rawDataMap: mergedRawDataMap };
-      }),
+    setFormData: {
+      actions: assign(({ context, event }) => ({
+        formData: { ...context.formData, ...event.data },
+      })),
     },
   },
   states: {
     'privacy-statement': {
-      meta: {
-        route: 'routes/protected/person-case/privacy-statement.tsx',
-      },
+      meta: { route: 'routes/protected/person-case/privacy-statement.tsx' },
       on: {
         submitPrivacyStatement: {
           target: 'request-details',
-          actions: assign(({ event }) => ({ privacyStatement: event.data })),
+          actions: assign(({ context, event }) => ({
+            formData: { ...context.formData, privacyStatement: undefined },
+            privacyStatement: event.data,
+          })),
         },
       },
     },
     'request-details': {
-      meta: {
-        route: 'routes/protected/person-case/request-details.tsx',
-      },
+      meta: { route: 'routes/protected/person-case/request-details.tsx' },
       on: {
         prev: {
           target: 'privacy-statement',
         },
         submitRequestDetails: {
           target: 'primary-docs',
-          actions: assign(({ event }) => ({ requestDetails: event.data })),
+          actions: assign(({ context, event }) => ({
+            formData: { ...context.formData, requestDetails: undefined },
+            requestDetails: event.data,
+          })),
         },
       },
     },
     'primary-docs': {
-      meta: {
-        route: 'routes/protected/person-case/primary-docs.tsx',
-      },
+      meta: { route: 'routes/protected/person-case/primary-docs.tsx' },
       on: {
         prev: {
           target: 'request-details',
         },
         submitPrimaryDocuments: {
           target: 'secondary-docs',
-          actions: assign(({ event }) => ({ primaryDocuments: event.data })),
+          actions: assign(({ context, event }) => ({
+            formData: { ...context.formData, primaryDocuments: undefined },
+            primaryDocuments: event.data,
+          })),
         },
       },
     },
     'secondary-docs': {
-      meta: {
-        route: 'routes/protected/person-case/secondary-doc.tsx',
-      },
+      meta: { route: 'routes/protected/person-case/secondary-doc.tsx' },
       on: {
         prev: {
           target: 'primary-docs',
         },
         submitSecondaryDocuments: {
           target: 'name-info',
-          actions: assign(({ event }) => ({ secondaryDocument: event.data })),
+          actions: assign(({ context, event }) => ({
+            formData: { ...context.formData, secondaryDocument: undefined },
+            secondaryDocument: event.data,
+          })),
         },
       },
     },
     'name-info': {
-      meta: {
-        route: 'routes/protected/person-case/current-name.tsx',
-      },
+      meta: { route: 'routes/protected/person-case/current-name.tsx' },
       on: {
         prev: {
           target: 'secondary-docs',
         },
         submitCurrentName: {
           target: 'personal-info',
-          actions: assign(({ event }) => ({ currentNameInfo: event.data })),
+          actions: assign(({ context, event }) => ({
+            currentNameInfo: event.data,
+          })),
         },
       },
     },
     'personal-info': {
-      meta: {
-        route: 'routes/protected/person-case/personal-info.tsx',
-      },
+      meta: { route: 'routes/protected/person-case/personal-info.tsx' },
       on: {
         prev: {
           target: 'name-info',
         },
         submitPersonalInfo: {
           target: 'birth-info',
-          actions: assign(({ event }) => ({ personalInformation: event.data })),
+          actions: assign(({ context, event }) => ({
+            formData: { ...context.formData, personalInformation: undefined },
+            personalInformation: event.data,
+          })),
         },
       },
     },
     'birth-info': {
-      meta: {
-        route: 'routes/protected/person-case/birth-details.tsx',
-      },
+      meta: { route: 'routes/protected/person-case/birth-details.tsx' },
       on: {
         prev: {
           target: 'personal-info',
         },
         submitBirthDetails: {
           target: 'parent-info',
-          actions: assign(({ event }) => ({ birthDetails: event.data })),
+          actions: assign(({ context, event }) => ({
+            formData: { ...context.formData, birthDetails: undefined },
+            birthDetails: event.data,
+          })),
         },
       },
     },
     'parent-info': {
-      meta: {
-        route: 'routes/protected/person-case/parent-details.tsx',
-      },
+      meta: { route: 'routes/protected/person-case/parent-details.tsx' },
       on: {
         prev: {
           target: 'birth-info',
         },
         submitParentDetails: {
           target: 'previous-sin-info',
-          actions: assign(({ event }) => ({ parentDetails: event.data })),
+          actions: assign(({ context, event }) => ({
+            formData: { ...context.formData, parentDetails: undefined },
+            parentDetails: event.data,
+          })),
         },
       },
     },
     'previous-sin-info': {
-      meta: {
-        route: 'routes/protected/person-case/previous-sin.tsx',
-      },
+      meta: { route: 'routes/protected/person-case/previous-sin.tsx' },
       on: {
         prev: {
           target: 'parent-info',
         },
         submitPreviousSin: {
           target: 'contact-info',
-          actions: assign(({ event }) => ({ previousSin: event.data })),
+          actions: assign(({ context, event }) => ({
+            formData: { ...context.formData, previousSin: undefined },
+            previousSin: event.data,
+          })),
         },
       },
     },
     'contact-info': {
-      meta: {
-        route: 'routes/protected/person-case/contact-information.tsx',
-      },
+      meta: { route: 'routes/protected/person-case/contact-information.tsx' },
       on: {
         prev: {
           target: 'previous-sin-info',
         },
         submitContactInfo: {
           target: 'review',
-          actions: assign(({ event }) => ({ contactInformation: event.data })),
+          actions: assign(({ context, event }) => ({
+            formData: { ...context.formData, contactInformation: undefined },
+            contactInformation: event.data,
+          })),
         },
       },
     },
     'review': {
-      meta: {
-        route: 'routes/protected/person-case/review.tsx',
-      },
+      meta: { route: 'routes/protected/person-case/review.tsx' },
       on: {
         prev: {
           target: 'contact-info',
         },
         submitReview: {
           target: 'privacy-statement',
-          actions: ({ event }) => {
+          actions: assign(({ context, event }) => ({
             // TODO ::: GjB ::: handle final submission
-          },
+          })),
         },
       },
     },

@@ -3,6 +3,13 @@ import type { SnapshotFrom } from 'xstate';
 
 import type { Machine } from '~/routes/protected/person-case/state-machine.server';
 
+export type FormData = {
+  [K in keyof InPersonSinApplication]?: {
+    values?: Record<string, string | undefined>;
+    errors?: Record<string, [string, ...string[]] | undefined>;
+  };
+};
+
 export type BirthDetailsData = {
   country: string;
   province?: string;
@@ -101,16 +108,6 @@ export type InPersonSinApplication = {
   privacyStatement: PrivacyStatementData;
   requestDetails: RequestDetailsData;
   secondaryDocument: SecondaryDocumentData;
-  rawDataMap: RawDataMap;
-};
-
-export type RawData<K extends keyof InPersonSinApplication> = {
-  formData: InPersonSinApplication[K];
-  errors?: Record<string, [string, ...string[]] | undefined>;
-};
-
-export type RawDataMap = {
-  [K in keyof InPersonSinApplication]?: RawData<K>;
 };
 
 declare module 'express-session' {
