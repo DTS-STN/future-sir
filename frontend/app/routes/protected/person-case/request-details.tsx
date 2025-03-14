@@ -57,24 +57,29 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     }
 
     case 'next': {
-      const rawFormData = {
-        scenario: formData.get('scenario') as string,
-        type: formData.get('request-type') as string,
+      const formValues = {
+        scenario: formData.get('scenario')?.toString(),
+        type: formData.get('request-type')?.toString(),
       };
-      const parseResult = v.safeParse(requestDetailsSchema, rawFormData);
+
+      const parseResult = v.safeParse(requestDetailsSchema, formValues);
 
       if (!parseResult.success) {
+        const formErrors = v.flatten(parseResult.issues).nested;
+
         machineActor.send({
-          type: 'setRawDataMap',
-          data: { requestDetails: { formData: rawFormData, errors: v.flatten(parseResult.issues).nested } },
+          type: 'setFormData',
+          data: {
+            requestDetails: {
+              values: formValues,
+              errors: formErrors,
+            },
+          },
         });
-        return data(
-          { errors: v.flatten<typeof requestDetailsSchema>(parseResult.issues).nested },
-          { status: HttpStatusCodes.BAD_REQUEST },
-        );
+
+        return data({ errors: formErrors }, { status: HttpStatusCodes.BAD_REQUEST });
       }
 
-      machineActor.send({ type: 'setRawDataMap', data: { requestDetails: undefined } });
       machineActor.send({ type: 'submitRequestDetails', data: parseResult.output });
       break;
     }
@@ -97,30 +102,31 @@ export async function loader({ context, request }: Route.LoaderArgs) {
 
   const { lang, t } = await getTranslation(request, handle.i18nNamespace);
   const machineActor = loadMachineActor(context.session, request, 'request-details');
+  const machineContext = machineActor?.getSnapshot().context;
 
   return {
     documentTitle: t('protected:request-details.page-title'),
     localizedSubmissionScenarios: getLocalizedApplicationSubmissionScenarios(lang),
     localizedTypeofApplicationToSubmit: getLocalizedTypesOfApplicationToSubmit(lang),
-    defaultFormValues: machineActor?.getSnapshot().context.requestDetails,
-    rawData: machineActor?.getSnapshot().context.rawDataMap?.requestDetails,
+    formValues: machineContext?.formData?.requestDetails?.values ?? machineContext?.requestDetails,
+    formErrors: machineContext?.formData?.requestDetails?.errors,
   };
 }
 
-export default function RequestDetails({ loaderData, actionData, params }: Route.ComponentProps) {
+export default function RequestDetails({ actionData, loaderData, params }: Route.ComponentProps) {
   const { t } = useTranslation(handle.i18nNamespace);
 
   const fetcherKey = useId();
   const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
-
   const isSubmitting = fetcher.state !== 'idle';
-  const errors = fetcher.data?.errors ?? loaderData.rawData?.errors;
-  const defaultFormValues = loaderData.defaultFormValues ?? loaderData.rawData?.formData;
+
+  const formValues = loaderData.formValues;
+  const formErrors = loaderData.formErrors;
 
   const scenarioOptions = loaderData.localizedSubmissionScenarios.map(({ id, name }) => ({
     value: id,
     children: name,
-    defaultChecked: id === defaultFormValues?.scenario,
+    defaultChecked: id === formValues?.scenario,
   }));
 
   const requestOptions = [{ id: 'select-option', name: '' }, ...loaderData.localizedTypeofApplicationToSubmit].map(
@@ -142,16 +148,16 @@ export default function RequestDetails({ loaderData, actionData, params }: Route
               name="scenario"
               options={scenarioOptions}
               required
-              errorMessage={t(getSingleKey(errors?.scenario))}
+              errorMessage={t(getSingleKey(formErrors?.scenario))}
             />
             <InputSelect
               className="w-max rounded-sm"
               id="request-type"
               name="request-type"
               label={t('protected:request-details.type-request')}
-              defaultValue={defaultFormValues?.type ?? ''}
+              defaultValue={formValues?.type ?? ''}
               options={requestOptions}
-              errorMessage={t(getSingleKey(errors?.type))}
+              errorMessage={t(getSingleKey(formErrors?.type))}
             />
           </div>
           <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
