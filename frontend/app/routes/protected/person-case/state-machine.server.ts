@@ -105,6 +105,11 @@ export const machine = setup({
     exit: {
       target: '.exited',
     },
+    setFormData: {
+      actions: assign(({ context, event }) => ({
+        formData: { ...context.formData, ...event.data },
+      })),
+    },
   },
   states: {
     'exited': { type: 'final' },

@@ -8,6 +8,7 @@ import { getApplicationSubmissionScenarios } from '~/.server/domain/person-case/
 import { getTypesOfApplicationToSubmit } from '~/.server/domain/person-case/services/application-type-service';
 import { serverEnvironment } from '~/.server/environment';
 import { countryService, provinceService } from '~/.server/shared/services';
+import { stringToIntegerSchema } from '~/.server/validation/string-to-integer-schema';
 import { APPLICANT_STATUS_IN_CANADA } from '~/domain/constants';
 import { getStartOfDayInTimezone, isDateInPastOrTodayInTimeZone, isValidDateString } from '~/utils/date-utils';
 import { REGEX_PATTERNS } from '~/utils/regex-utils';
@@ -407,8 +408,7 @@ export const primaryDocumentSchema = v.intersect([
           v.regex(REGEX_PATTERNS.NON_DIGIT, 'protected:primary-identity-document.last-name.format'),
         ),
         dateOfBirthYear: v.pipe(
-          v.number('protected:primary-identity-document.date-of-birth.required-year'),
-          v.integer('protected:primary-identity-document.date-of-birth.invalid-year'),
+          stringToIntegerSchema('protected:primary-identity-document.date-of-birth.required-year'),
           v.minValue(1, 'protected:primary-identity-document.date-of-birth.invalid-year'),
           v.maxValue(
             getStartOfDayInTimezone(serverEnvironment.BASE_TIMEZONE).getFullYear(),
@@ -416,14 +416,12 @@ export const primaryDocumentSchema = v.intersect([
           ),
         ),
         dateOfBirthMonth: v.pipe(
-          v.number('protected:primary-identity-document.date-of-birth.required-month'),
-          v.integer('protected:primary-identity-document.date-of-birth.invalid-month'),
+          stringToIntegerSchema('protected:primary-identity-document.date-of-birth.required-month'),
           v.minValue(1, 'protected:primary-identity-document.date-of-birth.invalid-month'),
           v.maxValue(12, 'protected:primary-identity-document.date-of-birth.invalid-month'),
         ),
         dateOfBirthDay: v.pipe(
-          v.number('protected:primary-identity-document.date-of-birth.required-day'),
-          v.integer('protected:primary-identity-document.date-of-birth.invalid-day'),
+          stringToIntegerSchema('protected:primary-identity-document.date-of-birth.required-day'),
           v.minValue(1, 'protected:primary-identity-document.date-of-birth.invalid-day'),
           v.maxValue(31, 'protected:primary-identity-document.date-of-birth.invalid-day'),
         ),
@@ -442,8 +440,7 @@ export const primaryDocumentSchema = v.intersect([
           ),
         ),
         citizenshipDateYear: v.pipe(
-          v.number('protected:primary-identity-document.citizenship-date.required-year'),
-          v.integer('protected:primary-identity-document.citizenship-date.invalid-year'),
+          stringToIntegerSchema('protected:primary-identity-document.citizenship-date.required-year'),
           v.minValue(1, 'protected:primary-identity-document.citizenship-date.invalid-year'),
           v.maxValue(
             getStartOfDayInTimezone(serverEnvironment.BASE_TIMEZONE).getFullYear(),
@@ -451,14 +448,12 @@ export const primaryDocumentSchema = v.intersect([
           ),
         ),
         citizenshipDateMonth: v.pipe(
-          v.number('protected:primary-identity-document.citizenship-date.required-month'),
-          v.integer('protected:primary-identity-document.citizenship-date.invalid-month'),
+          stringToIntegerSchema('protected:primary-identity-document.citizenship-date.required-month'),
           v.minValue(1, 'protected:primary-identity-document.citizenship-date.invalid-month'),
           v.maxValue(12, 'protected:primary-identity-document.citizenship-date.invalid-month'),
         ),
         citizenshipDateDay: v.pipe(
-          v.number('protected:primary-identity-document.citizenship-date.required-day'),
-          v.integer('protected:primary-identity-document.citizenship-date.invalid-day'),
+          stringToIntegerSchema('protected:primary-identity-document.citizenship-date.required-day'),
           v.minValue(1, 'protected:primary-identity-document.citizenship-date.invalid-day'),
           v.maxValue(31, 'protected:primary-identity-document.citizenship-date.invalid-day'),
         ),

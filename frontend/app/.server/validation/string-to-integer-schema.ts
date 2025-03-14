@@ -11,12 +11,12 @@ import * as v from 'valibot';
  *
  * const result = v.parse(stringToIntegerSchema(), '42'); // returns 42
  */
-export function stringToIntegerSchema(): v.GenericSchema<string, number> {
+export function stringToIntegerSchema(message?: string): v.GenericSchema<string, number> {
   return v.pipe(
-    v.string(), //
+    v.string(message), //
     v.trim(),
-    v.nonEmpty(),
+    v.nonEmpty(message),
     v.transform(Number),
-    v.integer(),
+    v.integer(message),
   );
 }
