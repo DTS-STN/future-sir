@@ -276,7 +276,7 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
             options={countryOptions}
             onChange={({ target }) => setCountry(target.value)}
           />
-          {country == globalThis.__appEnvironment.PP_CANADA_COUNTRY_CODE ? (
+          {country === globalThis.__appEnvironment.PP_CANADA_COUNTRY_CODE ? (
             <InputSelect
               errorMessage={t(getSingleKey(errors?.[`${index}.birthLocation.province`]))}
               className="w-full rounded-sm sm:w-104"
@@ -303,7 +303,7 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
             label={t('protected:parent-details.city')}
             name={`${index}-city`}
             defaultValue={defaultValues?.city}
-            required={country == globalThis.__appEnvironment.PP_CANADA_COUNTRY_CODE}
+            required={country === globalThis.__appEnvironment.PP_CANADA_COUNTRY_CODE}
             type="text"
           />
         </>

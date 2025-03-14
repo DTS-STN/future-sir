@@ -74,6 +74,7 @@ export default tseslint.config(
       '@typescript-eslint/prefer-nullish-coalescing': 'error',
       '@typescript-eslint/prefer-optional-chain': 'error',
       '@typescript-eslint/require-await': 'error',
+      'eqeqeq': 'error',
       'import/consistent-type-specifier-style': ['error', 'prefer-top-level'],
       'no-param-reassign': 'error',
       'no-restricted-imports': [
