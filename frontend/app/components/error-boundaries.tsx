@@ -5,6 +5,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import type { Route } from '../+types/root';
 
 import { AppLink } from '~/components/links';
+import { UnorderedList } from '~/components/lists';
 import { PageTitle } from '~/components/page-title';
 import { isAppError } from '~/errors/app-error';
 import { HttpStatusCodes } from '~/errors/http-status-codes';
@@ -64,7 +65,7 @@ export function BilingualErrorBoundary({ actionData, error, loaderData, params }
               </PageTitle>
               <p className="mb-8 text-lg text-gray-500">{en('gcweb:server-error.page-message')}</p>
               {isAppError(error) && (
-                <ul className="list-disc pl-10 text-gray-800">
+                <UnorderedList className="text-gray-800">
                   <li>
                     <Trans
                       t={en}
@@ -81,7 +82,7 @@ export function BilingualErrorBoundary({ actionData, error, loaderData, params }
                       values={{ correlationId: error.correlationId }}
                     />
                   </li>
-                </ul>
+                </UnorderedList>
               )}
             </div>
             <div id="french" lang="fr">
@@ -97,7 +98,7 @@ export function BilingualErrorBoundary({ actionData, error, loaderData, params }
               </PageTitle>
               <p className="mb-8 text-lg text-gray-500">{fr('gcweb:server-error.page-message')}</p>
               {isAppError(error) && (
-                <ul className="list-disc pl-10 text-gray-800">
+                <UnorderedList className="text-gray-800">
                   <li>
                     <Trans
                       t={fr}
@@ -114,7 +115,7 @@ export function BilingualErrorBoundary({ actionData, error, loaderData, params }
                       values={{ correlationId: error.correlationId }}
                     />
                   </li>
-                </ul>
+                </UnorderedList>
               )}
             </div>
           </div>
@@ -282,7 +283,7 @@ export function UnilingualErrorBoundary({ actionData, error, loaderData, params 
           </PageTitle>
           <p className="mb-8 text-lg text-gray-500">{t('gcweb:server-error.page-message')}</p>
           {isAppError(error) && (
-            <ul className="list-disc pl-10 text-gray-800">
+            <UnorderedList className="text-gray-800">
               <li>
                 <Trans
                   i18nKey="gcweb:server-error.error-code"
@@ -297,7 +298,7 @@ export function UnilingualErrorBoundary({ actionData, error, loaderData, params 
                   values={{ correlationId: error.correlationId }}
                 />
               </li>
-            </ul>
+            </UnorderedList>
           )}
         </main>
         <footer id="wb-info" tabIndex={-1} className="mt-8 bg-stone-50 print:hidden">

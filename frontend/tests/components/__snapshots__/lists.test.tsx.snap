@@ -1,0 +1,61 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`OrderedList > should render ordered list component > expected html 1`] = `
+<div>
+  <ol
+    class="list-decimal space-y-1 pl-7"
+  >
+    <li>
+      First item
+    </li>
+    <li>
+      Second item
+    </li>
+  </ol>
+</div>
+`;
+
+exports[`OrderedList > should render ordered list component with classes > expected html 1`] = `
+<div>
+  <ol
+    class="list-decimal space-y-1 pl-7 text-gray-700"
+  >
+    <li>
+      First item
+    </li>
+    <li>
+      Second item
+    </li>
+  </ol>
+</div>
+`;
+
+exports[`UnorderedList > should render unordered list component > expected html 1`] = `
+<div>
+  <ul
+    class="list-disc space-y-1 pl-7"
+  >
+    <li>
+      First item
+    </li>
+    <li>
+      Second item
+    </li>
+  </ul>
+</div>
+`;
+
+exports[`UnorderedList > should render unordered list component with classes > expected html 1`] = `
+<div>
+  <ul
+    class="list-disc space-y-1 pl-7 text-gray-700"
+  >
+    <li>
+      First item
+    </li>
+    <li>
+      Second item
+    </li>
+  </ul>
+</div>
+`;

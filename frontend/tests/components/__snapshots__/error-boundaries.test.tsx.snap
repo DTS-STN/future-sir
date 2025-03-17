@@ -236,7 +236,7 @@ exports[`error-boundaries > BilingualErrorBoundary > should correctly render the
             gcweb:server-error.page-message
           </p>
           <ul
-            class="list-disc pl-10 text-gray-800"
+            class="list-disc space-y-1 pl-7 text-gray-800"
           >
             <li>
               {"key":"gcweb:server-error.error-code","options":{"values":{"errorCode":"UNC-0000"}}}
@@ -274,7 +274,7 @@ exports[`error-boundaries > BilingualErrorBoundary > should correctly render the
             gcweb:server-error.page-message
           </p>
           <ul
-            class="list-disc pl-10 text-gray-800"
+            class="list-disc space-y-1 pl-7 text-gray-800"
           >
             <li>
               {"key":"gcweb:server-error.error-code","options":{"values":{"errorCode":"UNC-0000"}}}
@@ -647,7 +647,7 @@ exports[`error-boundaries > UnilingualErrorBoundary > should correctly render th
         gcweb:server-error.page-message
       </p>
       <ul
-        class="list-disc pl-10 text-gray-800"
+        class="list-disc space-y-1 pl-7 text-gray-800"
       >
         <li>
           {"key":"gcweb:server-error.error-code","options":{"values":{"errorCode":"UNC-0000"}}}
