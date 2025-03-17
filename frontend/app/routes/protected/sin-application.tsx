@@ -27,7 +27,7 @@ interface SinApplicationProps {
 
 export function SinApplication({ inPersonSINCase, tabId }: SinApplicationProps) {
   return (
-    <div className="mt-12 space-y-15">
+    <div className="mt-12 max-w-prose space-y-15">
       <PrimaryDocumentData data={inPersonSINCase.primaryDocuments} tabId={tabId} />
       <SecondayDocumentData data={inPersonSINCase.secondaryDocument} tabId={tabId} />
       <PreferredNameData data={inPersonSINCase.currentNameInfo} tabId={tabId} />
