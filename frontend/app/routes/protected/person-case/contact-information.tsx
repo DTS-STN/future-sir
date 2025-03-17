@@ -8,7 +8,7 @@ import * as v from 'valibot';
 
 import type { Info, Route } from './+types/contact-information';
 
-import { languageCorrespondenceService } from '~/.server/domain/person-case/services';
+import { getLocalizedLanguageOfCorrespondence } from '~/.server/domain/person-case/services/language-correspondence-service';
 import { LogFactory } from '~/.server/logging';
 import { getLocalizedCountries } from '~/.server/shared/services/country-service';
 import { getLocalizedProvinces } from '~/.server/shared/services/province-service';
@@ -102,7 +102,7 @@ export async function loader({ context, request }: Route.LoaderArgs) {
   return {
     documentTitle: t('protected:contact-information.page-title'),
     defaultFormValues: machineActor?.getSnapshot().context.contactInformation,
-    localizedpreferredLanguages: languageCorrespondenceService.getLocalizedLanguageOfCorrespondence(lang),
+    localizedpreferredLanguages: getLocalizedLanguageOfCorrespondence(lang),
     localizedCountries: getLocalizedCountries(lang),
     localizedProvincesTerritoriesStates: getLocalizedProvinces(lang),
   };

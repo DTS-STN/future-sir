@@ -7,15 +7,13 @@ import { useTranslation } from 'react-i18next';
 
 import type { Info, Route } from './+types/review';
 
-import {
-  applicantGenderService,
-  applicantSinService,
-  applicantSecondaryDocumentService,
-  languageCorrespondenceService,
-  sinApplicationService,
-  applicantStatusInCanadaService,
-  applicantSupportingDocumentService,
-} from '~/.server/domain/person-case/services';
+import { getLocalizedApplicantGenderById } from '~/.server/domain/person-case/services/applicant-gender-service';
+import { getLocalizedApplicantSecondaryDocumentChoiceById } from '~/.server/domain/person-case/services/applicant-secondary-document-service';
+import { getLocalizedApplicantHadSinOptionById } from '~/.server/domain/person-case/services/applicant-sin-service';
+import { getLocalizedApplicantStatusInCanadaChoiceById } from '~/.server/domain/person-case/services/applicant-status-in-canada-service';
+import { getLocalizedApplicantSupportingDocumentTypeById } from '~/.server/domain/person-case/services/applicant-supporting-document-service';
+import { getLocalizedLanguageOfCorrespondenceById } from '~/.server/domain/person-case/services/language-correspondence-service';
+import { submitSinApplication } from '~/.server/domain/person-case/services/sin-application-service';
 import { serverEnvironment } from '~/.server/environment';
 import { LogFactory } from '~/.server/logging';
 import { getLocalizedCountryById } from '~/.server/shared/services/country-service';
@@ -69,7 +67,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
 
     case 'next': {
       try {
-        const response = await sinApplicationService.submitSinApplication(sinApplicationRequest);
+        const response = await submitSinApplication(sinApplicationRequest);
         //TODO: store the response in session
         console.log('SIN Application submitted successfully:', response);
       } catch (err) {
@@ -110,26 +108,22 @@ export async function loader({ context, request }: Route.LoaderArgs) {
       ...inPersonSinApplication,
       primaryDocuments: {
         ...inPersonSinApplication.primaryDocuments,
-        currentStatusInCanadaName: applicantStatusInCanadaService.getLocalizedApplicantStatusInCanadaChoiceById(
+        currentStatusInCanadaName: getLocalizedApplicantStatusInCanadaChoiceById(
           inPersonSinApplication.primaryDocuments.currentStatusInCanada,
           lang,
         ).name,
-        genderName: applicantGenderService.getLocalizedApplicantGenderById(inPersonSinApplication.primaryDocuments.gender, lang)
-          .name,
+        genderName: getLocalizedApplicantGenderById(inPersonSinApplication.primaryDocuments.gender, lang).name,
       },
       secondaryDocument: {
         ...inPersonSinApplication.secondaryDocument,
-        documentTypeName: applicantSecondaryDocumentService.getLocalizedApplicantSecondaryDocumentChoiceById(
+        documentTypeName: getLocalizedApplicantSecondaryDocumentChoiceById(
           inPersonSinApplication.secondaryDocument.documentType,
           lang,
         ).name,
       },
       personalInformation: {
         ...inPersonSinApplication.personalInformation,
-        genderName: applicantGenderService.getLocalizedApplicantGenderById(
-          inPersonSinApplication.personalInformation.gender,
-          lang,
-        ).name,
+        genderName: getLocalizedApplicantGenderById(inPersonSinApplication.personalInformation.gender, lang).name,
       },
       birthDetails: {
         ...inPersonSinApplication.birthDetails,
@@ -162,7 +156,7 @@ export async function loader({ context, request }: Route.LoaderArgs) {
       ),
       contactInformation: {
         ...inPersonSinApplication.contactInformation,
-        preferredLanguageName: languageCorrespondenceService.getLocalizedLanguageOfCorrespondenceById(
+        preferredLanguageName: getLocalizedLanguageOfCorrespondenceById(
           inPersonSinApplication.contactInformation.preferredLanguage,
           lang,
         ).name,
@@ -175,10 +169,7 @@ export async function loader({ context, request }: Route.LoaderArgs) {
       },
       previousSin: {
         ...inPersonSinApplication.previousSin,
-        hasPreviousSinText: applicantSinService.getLocalizedApplicantHadSinOptionById(
-          inPersonSinApplication.previousSin.hasPreviousSin,
-          lang,
-        ).name,
+        hasPreviousSinText: getLocalizedApplicantHadSinOptionById(inPersonSinApplication.previousSin.hasPreviousSin, lang).name,
       },
       currentNameInfo: {
         ...inPersonSinApplication.currentNameInfo,
@@ -194,7 +185,7 @@ export async function loader({ context, request }: Route.LoaderArgs) {
           inPersonSinApplication.currentNameInfo.preferredSameAsDocumentName === false &&
           inPersonSinApplication.currentNameInfo.supportingDocuments.required === true
             ? inPersonSinApplication.currentNameInfo.supportingDocuments.documentTypes.map(
-                (doc) => applicantSupportingDocumentService.getLocalizedApplicantSupportingDocumentTypeById(doc, lang).name,
+                (doc) => getLocalizedApplicantSupportingDocumentTypeById(doc, lang).name,
               )
             : undefined,
       },

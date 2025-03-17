@@ -11,7 +11,7 @@ import * as v from 'valibot';
 
 import type { Info, Route } from './+types/personal-info';
 
-import { applicantGenderService } from '~/.server/domain/person-case/services';
+import { getLocalizedApplicantGenders } from '~/.server/domain/person-case/services/applicant-gender-service';
 import { LogFactory } from '~/.server/logging';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
@@ -107,7 +107,7 @@ export async function loader({ context, request }: Route.LoaderArgs) {
       lastNamePreviouslyUsed: personalInformation?.lastNamePreviouslyUsed ?? [],
       gender: personalInformation?.gender,
     },
-    genders: applicantGenderService.getLocalizedApplicantGenders(lang).map(({ id, name }) => ({
+    genders: getLocalizedApplicantGenders(lang).map(({ id, name }) => ({
       value: id,
       children: name,
       defaultChecked: id === (personalInformation?.gender ?? primaryDocuments?.gender),

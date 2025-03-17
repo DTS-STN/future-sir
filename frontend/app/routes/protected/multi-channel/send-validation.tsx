@@ -7,11 +7,9 @@ import { useTranslation } from 'react-i18next';
 
 import type { Info, Route } from './+types/send-validation';
 
-import {
-  applicantGenderService,
-  applicantSecondaryDocumentService,
-  languageCorrespondenceService,
-} from '~/.server/domain/person-case/services';
+import { getLocalizedApplicantGenderById } from '~/.server/domain/person-case/services/applicant-gender-service';
+import { getLocalizedApplicantSecondaryDocumentChoiceById } from '~/.server/domain/person-case/services/applicant-secondary-document-service';
+import { getLocalizedLanguageOfCorrespondenceById } from '~/.server/domain/person-case/services/language-correspondence-service';
 import { serverEnvironment } from '~/.server/environment';
 import { getLocalizedCountryById } from '~/.server/shared/services/country-service';
 import { getLocalizedProvinceById } from '~/.server/shared/services/province-service';
@@ -69,22 +67,18 @@ export async function loader({ context, request }: Route.LoaderArgs) {
       ...inPersonSinApplication,
       primaryDocuments: {
         ...inPersonSinApplication.primaryDocuments,
-        genderName: applicantGenderService.getLocalizedApplicantGenderById(inPersonSinApplication.primaryDocuments.gender, lang)
-          .name,
+        genderName: getLocalizedApplicantGenderById(inPersonSinApplication.primaryDocuments.gender, lang).name,
       },
       secondaryDocument: {
         ...inPersonSinApplication.secondaryDocument,
-        documentTypeName: applicantSecondaryDocumentService.getLocalizedApplicantSecondaryDocumentChoiceById(
+        documentTypeName: getLocalizedApplicantSecondaryDocumentChoiceById(
           inPersonSinApplication.secondaryDocument.documentType,
           lang,
         ).name,
       },
       personalInformation: {
         ...inPersonSinApplication.personalInformation,
-        genderName: applicantGenderService.getLocalizedApplicantGenderById(
-          inPersonSinApplication.personalInformation.gender,
-          lang,
-        ).name,
+        genderName: getLocalizedApplicantGenderById(inPersonSinApplication.personalInformation.gender, lang).name,
       },
       birthDetails: {
         ...inPersonSinApplication.birthDetails,
@@ -117,7 +111,7 @@ export async function loader({ context, request }: Route.LoaderArgs) {
       ),
       contactInformation: {
         ...inPersonSinApplication.contactInformation,
-        preferredLanguageName: languageCorrespondenceService.getLocalizedLanguageOfCorrespondenceById(
+        preferredLanguageName: getLocalizedLanguageOfCorrespondenceById(
           inPersonSinApplication.contactInformation.preferredLanguage,
           lang,
         ).name,

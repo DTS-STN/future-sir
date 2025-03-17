@@ -8,7 +8,7 @@ import * as v from 'valibot';
 
 import type { Info, Route } from './+types/current-name';
 
-import { applicantSupportingDocumentService } from '~/.server/domain/person-case/services';
+import { getLocalizedApplicantSupportingDocumentType } from '~/.server/domain/person-case/services/applicant-supporting-document-service';
 import { LogFactory } from '~/.server/logging';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
@@ -108,7 +108,7 @@ export async function loader({ context, request }: Route.LoaderArgs) {
   return {
     documentTitle: t('protected:primary-identity-document.page-title'),
     defaultFormValues: machineActor?.getSnapshot().context.currentNameInfo,
-    localizedSupportingDocTypes: applicantSupportingDocumentService.getLocalizedApplicantSupportingDocumentType(lang),
+    localizedSupportingDocTypes: getLocalizedApplicantSupportingDocumentType(lang),
     primaryDocName: {
       firstName: machineActor?.getSnapshot().context.primaryDocuments?.givenName,
       lastName: machineActor?.getSnapshot().context.primaryDocuments?.lastName,

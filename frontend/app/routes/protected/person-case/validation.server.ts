@@ -1,12 +1,13 @@
 import { parsePhoneNumberWithError } from 'libphonenumber-js';
 import * as v from 'valibot';
 
-import { applicantGenderService, languageCorrespondenceService } from '~/.server/domain/person-case/services';
+import { getApplicantGenders } from '~/.server/domain/person-case/services/applicant-gender-service';
 import { getApplicantSecondaryDocumentChoices } from '~/.server/domain/person-case/services/applicant-secondary-document-service';
 import { getApplicantHadSinOptions } from '~/.server/domain/person-case/services/applicant-sin-service';
 import { getApplicantSupportingDocumentTypes } from '~/.server/domain/person-case/services/applicant-supporting-document-service';
 import { getApplicationSubmissionScenarios } from '~/.server/domain/person-case/services/application-submission-scenario';
 import { getTypesOfApplicationToSubmit } from '~/.server/domain/person-case/services/application-type-service';
+import { getLanguagesOfCorrespondence } from '~/.server/domain/person-case/services/language-correspondence-service';
 import { serverEnvironment } from '~/.server/environment';
 import { getCountries } from '~/.server/shared/services/country-service';
 import { getProvinces } from '~/.server/shared/services/province-service';
@@ -76,7 +77,7 @@ export const contactInformationSchema = v.intersect([
   v.object({
     preferredLanguage: v.lazy(() =>
       v.picklist(
-        languageCorrespondenceService.getLanguagesOfCorrespondence().map(({ id }) => id),
+        getLanguagesOfCorrespondence().map(({ id }) => id),
         'protected:contact-information.error-messages.preferred-language-required',
       ),
     ),
@@ -315,7 +316,7 @@ export const personalInfoSchema = v.object({
   ),
   gender: v.lazy(() =>
     v.picklist(
-      applicantGenderService.getApplicantGenders().map(({ id }) => id),
+      getApplicantGenders().map(({ id }) => id),
       'protected:personal-information.gender.required',
     ),
   ),
@@ -430,7 +431,7 @@ export const primaryDocumentSchema = v.intersect([
         ),
         gender: v.lazy(() =>
           v.picklist(
-            applicantGenderService.getApplicantGenders().map(({ id }) => id),
+            getApplicantGenders().map(({ id }) => id),
             'protected:primary-identity-document.gender.required',
           ),
         ),
