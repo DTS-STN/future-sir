@@ -9,7 +9,8 @@ import * as v from 'valibot';
 import type { Info, Route } from './+types/birth-details';
 
 import { LogFactory } from '~/.server/logging';
-import { countryService, provinceService } from '~/.server/shared/services';
+import { getLocalizedCountries } from '~/.server/shared/services/country-service';
+import { getLocalizedProvinces } from '~/.server/shared/services/province-service';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
@@ -97,8 +98,8 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
 
   return {
     documentTitle: t('protected:birth-details.page-title'),
-    localizedCountries: countryService.getLocalizedCountries(lang),
-    localizedProvincesTerritoriesStates: provinceService.getLocalizedProvinces(lang),
+    localizedCountries: getLocalizedCountries(lang),
+    localizedProvincesTerritoriesStates: getLocalizedProvinces(lang),
     defaultFormValues: machineActor?.getSnapshot().context.birthDetails,
   };
 }

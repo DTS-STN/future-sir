@@ -10,7 +10,8 @@ import type { Info, Route } from './+types/contact-information';
 
 import { languageCorrespondenceService } from '~/.server/domain/person-case/services';
 import { LogFactory } from '~/.server/logging';
-import { countryService, provinceService } from '~/.server/shared/services';
+import { getLocalizedCountries } from '~/.server/shared/services/country-service';
+import { getLocalizedProvinces } from '~/.server/shared/services/province-service';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
@@ -102,8 +103,8 @@ export async function loader({ context, request }: Route.LoaderArgs) {
     documentTitle: t('protected:contact-information.page-title'),
     defaultFormValues: machineActor?.getSnapshot().context.contactInformation,
     localizedpreferredLanguages: languageCorrespondenceService.getLocalizedLanguageOfCorrespondence(lang),
-    localizedCountries: countryService.getLocalizedCountries(lang),
-    localizedProvincesTerritoriesStates: provinceService.getLocalizedProvinces(lang),
+    localizedCountries: getLocalizedCountries(lang),
+    localizedProvincesTerritoriesStates: getLocalizedProvinces(lang),
   };
 }
 
