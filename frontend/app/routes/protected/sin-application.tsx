@@ -131,6 +131,7 @@ interface PreferredNameDataProps {
     middleName?: string;
     lastName: string;
     supportingDocuments?: { required: boolean; documentTypes?: string[] };
+    supportingDocumentsNames?: string[];
   };
   tabId?: string;
 }
@@ -163,15 +164,13 @@ function PreferredNameData({ data, tabId }: PreferredNameDataProps) {
                 : t('protected:review.no')}
             </p>
           </DescriptionListItem>
-          {data.preferredSameAsDocumentName === false && data.supportingDocuments?.required && (
+          {data.supportingDocumentsNames && data.supportingDocumentsNames.length > 0 && (
             <DescriptionListItem className="py-3" term={t('protected:current-name.supporting-docs.title')}>
-              {data.supportingDocuments.documentTypes && data.supportingDocuments.documentTypes.length > 0 && (
-                <ul className="ml-6 list-disc">
-                  {data.supportingDocuments.documentTypes.map((value) => (
-                    <li key={value}>{t(`protected:current-name.doc-types.${value}` as ResourceKey)}</li>
-                  ))}
-                </ul>
-              )}
+              <ul className="list-disc space-y-1 pl-7">
+                {data.supportingDocumentsNames.map((name) => (
+                  <li key={name}>{name}</li>
+                ))}
+              </ul>
             </DescriptionListItem>
           )}
         </div>
