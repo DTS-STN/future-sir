@@ -46,8 +46,7 @@ export async function action({ context, request }: Route.ActionArgs) {
 
   switch (action) {
     case 'back': {
-      // TODO: update with proper route
-      throw i18nRedirect('routes/protected/multi-channel/pid-verification.tsx', request);
+      throw i18nRedirect('routes/protected/multi-channel/send-validation.tsx', request);
     }
 
     case 'next': {
@@ -68,7 +67,7 @@ export default function PidVerification({ loaderData, actionData, params }: Rout
 
   return (
     <>
-      <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:pid-verification.page-title')}</PageTitle>
+      <PageTitle subTitle={t('protected:first-time.title')}>{t('protected:pid-verification.page-title')}</PageTitle>
       <FetcherErrorSummary fetcherKey={fetcherKey}>
         <fetcher.Form method="post" noValidate>
           {/* TODO: refactor status message as reuseable component(s) and display*/}

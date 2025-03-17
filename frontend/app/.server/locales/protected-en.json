@@ -372,6 +372,8 @@
     "parents-legal-guardians": "Parents/legal guardians",
     "other-last-names": "Other last names",
     "search": "Search",
+    "next": "Next",
+    "previous": "Previous",
     "matches": "Matches",
     "table": {
       "headers": {

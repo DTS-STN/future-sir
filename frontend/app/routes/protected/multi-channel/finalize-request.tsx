@@ -108,7 +108,7 @@ export default function PidVerification({ loaderData, actionData, params }: Rout
 
   return (
     <>
-      <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:finalize-request.page-title')}</PageTitle>
+      <PageTitle subTitle={t('protected:first-time.title')}>{t('protected:finalize-request.page-title')}</PageTitle>
       <FetcherErrorSummary fetcherKey={fetcherKey}>
         <fetcher.Form method="post" noValidate>
           <div className="max-w-prose space-y-6">

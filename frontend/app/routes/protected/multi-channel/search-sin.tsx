@@ -8,10 +8,13 @@ import { useTranslation } from 'react-i18next';
 import type { Info, Route } from './+types/search-sin';
 
 import { requireAuth } from '~/.server/utils/auth-utils';
+import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
 import { DataTable } from '~/components/data-table';
 import { FetcherErrorSummary } from '~/components/error-summary';
 import { PageTitle } from '~/components/page-title';
+import { AppError } from '~/errors/app-error';
+import { ErrorCodes } from '~/errors/error-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/layout';
 
@@ -34,21 +37,40 @@ export function meta({ data }: Route.MetaArgs) {
   return [{ title: data.documentTitle }];
 }
 
-export function action({ context, request }: Route.ActionArgs) {
+export async function action({ context, request }: Route.ActionArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
 
-  //TODO: fetch and return mock table data
-  return {
-    tableData: {
-      rows: [
-        ['John Doe', 'January 1, 1980', 'Doe', '*** *** 000', '98%'],
-        ['Johnathan Doe', 'February 10, 1985', 'Doe', '*** *** 000', '95%'],
-        ['John D', 'March 15, 1990', 'N/A', '*** *** 000', '88%'],
-        ['Johnny Doe', 'April 20, 1978', 'Doe', '*** *** 000', '92%'],
-        ['J. Doe', 'May 25, 1992', 'Doe', '*** *** 000', '90%'],
-      ],
-    },
-  };
+  const formData = await request.formData();
+  const action = formData.get('action');
+
+  switch (action) {
+    case 'back': {
+      throw i18nRedirect('routes/protected/multi-channel/pid-verification.tsx', request);
+    }
+
+    case 'next': {
+      throw i18nRedirect('routes/protected/multi-channel/finalize-request.tsx', request);
+    }
+
+    case 'search': {
+      //TODO: fetch and return mock table data
+      return {
+        tableData: {
+          rows: [
+            ['John Doe', 'January 1, 1980', 'Doe', '*** *** 000', '98%'],
+            ['Johnathan Doe', 'February 10, 1985', 'Doe', '*** *** 000', '95%'],
+            ['John D', 'March 15, 1990', 'N/A', '*** *** 000', '88%'],
+            ['Johnny Doe', 'April 20, 1978', 'Doe', '*** *** 000', '92%'],
+            ['J. Doe', 'May 25, 1992', 'Doe', '*** *** 000', '90%'],
+          ],
+        },
+      };
+    }
+
+    default: {
+      throw new AppError(`Unrecognized action: ${action}`, ErrorCodes.UNRECOGNIZED_ACTION);
+    }
+  }
 }
 
 export default function SearchSin({ loaderData, actionData, params }: Route.ComponentProps) {
@@ -59,7 +81,7 @@ export default function SearchSin({ loaderData, actionData, params }: Route.Comp
 
   return (
     <>
-      <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:search-sin.page-title')}</PageTitle>
+      <PageTitle subTitle={t('protected:first-time.title')}>{t('protected:search-sin.page-title')}</PageTitle>
       <FetcherErrorSummary fetcherKey={fetcherKey}>
         <fetcher.Form method="post" noValidate>
           <div className="space-y-6">
@@ -106,6 +128,14 @@ export default function SearchSin({ loaderData, actionData, params }: Route.Comp
           <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
             <Button name="action" value="search" variant="primary" id="search-button" disabled={isSubmitting}>
               {t('protected:search-sin.search')}
+            </Button>
+          </div>
+          <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
+            <Button name="action" value="next" variant="primary" id="continue-button" disabled={isSubmitting}>
+              {t('protected:search-sin.next')}
+            </Button>
+            <Button name="action" value="back" id="back-button" disabled={isSubmitting}>
+              {t('protected:search-sin.previous')}
             </Button>
           </div>
         </fetcher.Form>
