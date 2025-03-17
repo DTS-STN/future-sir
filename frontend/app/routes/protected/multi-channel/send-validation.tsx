@@ -7,13 +7,12 @@ import { useTranslation } from 'react-i18next';
 
 import type { Info, Route } from './+types/send-validation';
 
-import {
-  applicantGenderService,
-  applicantSecondaryDocumentService,
-  languageCorrespondenceService,
-} from '~/.server/domain/person-case/services';
+import { getLocalizedApplicantGenderById } from '~/.server/domain/person-case/services/applicant-gender-service';
+import { getLocalizedApplicantSecondaryDocumentChoiceById } from '~/.server/domain/person-case/services/applicant-secondary-document-service';
+import { getLocalizedLanguageOfCorrespondenceById } from '~/.server/domain/person-case/services/language-correspondence-service';
 import { serverEnvironment } from '~/.server/environment';
-import { countryService, provinceService } from '~/.server/shared/services';
+import { getLocalizedCountryById } from '~/.server/shared/services/country-service';
+import { getLocalizedProvinceById } from '~/.server/shared/services/province-service';
 import type { InPersonSinApplication } from '~/.server/shared/services/sin-application-service';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
@@ -68,30 +67,26 @@ export async function loader({ context, request }: Route.LoaderArgs) {
       ...inPersonSinApplication,
       primaryDocuments: {
         ...inPersonSinApplication.primaryDocuments,
-        genderName: applicantGenderService.getLocalizedApplicantGenderById(inPersonSinApplication.primaryDocuments.gender, lang)
-          .name,
+        genderName: getLocalizedApplicantGenderById(inPersonSinApplication.primaryDocuments.gender, lang).name,
       },
       secondaryDocument: {
         ...inPersonSinApplication.secondaryDocument,
-        documentTypeName: applicantSecondaryDocumentService.getLocalizedApplicantSecondaryDocumentChoiceById(
+        documentTypeName: getLocalizedApplicantSecondaryDocumentChoiceById(
           inPersonSinApplication.secondaryDocument.documentType,
           lang,
         ).name,
       },
       personalInformation: {
         ...inPersonSinApplication.personalInformation,
-        genderName: applicantGenderService.getLocalizedApplicantGenderById(
-          inPersonSinApplication.personalInformation.gender,
-          lang,
-        ).name,
+        genderName: getLocalizedApplicantGenderById(inPersonSinApplication.personalInformation.gender, lang).name,
       },
       birthDetails: {
         ...inPersonSinApplication.birthDetails,
-        countryName: countryService.getLocalizedCountryById(inPersonSinApplication.birthDetails.country, lang).name,
+        countryName: getLocalizedCountryById(inPersonSinApplication.birthDetails.country, lang).name,
         provinceName: inPersonSinApplication.birthDetails.province
           ? inPersonSinApplication.birthDetails.country !== serverEnvironment.PP_CANADA_COUNTRY_CODE
             ? inPersonSinApplication.birthDetails.province
-            : provinceService.getLocalizedProvinceById(inPersonSinApplication.birthDetails.province, lang).name
+            : getLocalizedProvinceById(inPersonSinApplication.birthDetails.province, lang).name
           : undefined,
       },
       parentDetails: inPersonSinApplication.parentDetails.map((parentdetail) =>
@@ -106,25 +101,25 @@ export async function loader({ context, request }: Route.LoaderArgs) {
                 city: parentdetail.birthLocation.city,
                 province: parentdetail.birthLocation.province,
               },
-              countryName: countryService.getLocalizedCountryById(parentdetail.birthLocation.country, lang).name,
+              countryName: getLocalizedCountryById(parentdetail.birthLocation.country, lang).name,
               provinceName: parentdetail.birthLocation.province
                 ? parentdetail.birthLocation.country !== serverEnvironment.PP_CANADA_COUNTRY_CODE
                   ? parentdetail.birthLocation.province
-                  : provinceService.getLocalizedProvinceById(parentdetail.birthLocation.province, lang).name
+                  : getLocalizedProvinceById(parentdetail.birthLocation.province, lang).name
                 : undefined,
             },
       ),
       contactInformation: {
         ...inPersonSinApplication.contactInformation,
-        preferredLanguageName: languageCorrespondenceService.getLocalizedLanguageOfCorrespondenceById(
+        preferredLanguageName: getLocalizedLanguageOfCorrespondenceById(
           inPersonSinApplication.contactInformation.preferredLanguage,
           lang,
         ).name,
-        countryName: countryService.getLocalizedCountryById(inPersonSinApplication.contactInformation.country, lang).name,
+        countryName: getLocalizedCountryById(inPersonSinApplication.contactInformation.country, lang).name,
         provinceName: inPersonSinApplication.contactInformation.province
           ? inPersonSinApplication.contactInformation.country !== serverEnvironment.PP_CANADA_COUNTRY_CODE
             ? inPersonSinApplication.contactInformation.province
-            : provinceService.getLocalizedProvinceById(inPersonSinApplication.contactInformation.province, lang).name
+            : getLocalizedProvinceById(inPersonSinApplication.contactInformation.province, lang).name
           : undefined,
       },
       currentNameInfo: {

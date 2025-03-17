@@ -1,14 +1,16 @@
 import { parsePhoneNumberWithError } from 'libphonenumber-js';
 import * as v from 'valibot';
 
-import { applicantGenderService, languageCorrespondenceService } from '~/.server/domain/person-case/services';
+import { getApplicantGenders } from '~/.server/domain/person-case/services/applicant-gender-service';
 import { getApplicantSecondaryDocumentChoices } from '~/.server/domain/person-case/services/applicant-secondary-document-service';
 import { getApplicantHadSinOptions } from '~/.server/domain/person-case/services/applicant-sin-service';
 import { getApplicantSupportingDocumentTypes } from '~/.server/domain/person-case/services/applicant-supporting-document-service';
 import { getApplicationSubmissionScenarios } from '~/.server/domain/person-case/services/application-submission-scenario';
 import { getTypesOfApplicationToSubmit } from '~/.server/domain/person-case/services/application-type-service';
+import { getLanguagesOfCorrespondence } from '~/.server/domain/person-case/services/language-correspondence-service';
 import { serverEnvironment } from '~/.server/environment';
-import { countryService, provinceService } from '~/.server/shared/services';
+import { getCountries } from '~/.server/shared/services/country-service';
+import { getProvinces } from '~/.server/shared/services/province-service';
 import { stringToIntegerSchema } from '~/.server/validation/string-to-integer-schema';
 import { APPLICANT_STATUS_IN_CANADA } from '~/domain/constants';
 import { getStartOfDayInTimezone, isDateInPastOrTodayInTimeZone, isValidDateString } from '~/utils/date-utils';
@@ -22,7 +24,7 @@ export const birthDetailsSchema = v.variant(
       country: v.literal(serverEnvironment.PP_CANADA_COUNTRY_CODE, 'protected:birth-details.country.invalid-country'),
       province: v.lazy(() =>
         v.picklist(
-          provinceService.getProvinces().map(({ id }) => id),
+          getProvinces().map(({ id }) => id),
           'protected:birth-details.province.required-province',
         ),
       ),
@@ -42,7 +44,7 @@ export const birthDetailsSchema = v.variant(
         v.excludes(serverEnvironment.PP_CANADA_COUNTRY_CODE, 'protected:birth-details.country.invalid-country'),
         v.lazy(() =>
           v.picklist(
-            countryService.getCountries().map(({ id }) => id),
+            getCountries().map(({ id }) => id),
             'protected:birth-details.country.invalid-country',
           ),
         ),
@@ -75,7 +77,7 @@ export const contactInformationSchema = v.intersect([
   v.object({
     preferredLanguage: v.lazy(() =>
       v.picklist(
-        languageCorrespondenceService.getLanguagesOfCorrespondence().map(({ id }) => id),
+        getLanguagesOfCorrespondence().map(({ id }) => id),
         'protected:contact-information.error-messages.preferred-language-required',
       ),
     ),
@@ -103,7 +105,7 @@ export const contactInformationSchema = v.intersect([
         country: v.literal(serverEnvironment.PP_CANADA_COUNTRY_CODE),
         province: v.lazy(() =>
           v.picklist(
-            provinceService.getProvinces().map(({ id }) => id),
+            getProvinces().map(({ id }) => id),
             'protected:contact-information.error-messages.province-required',
           ),
         ),
@@ -116,7 +118,7 @@ export const contactInformationSchema = v.intersect([
         city: v.pipe(v.string(), v.trim(), v.nonEmpty('protected:contact-information.error-messages.city-required')),
       }),
       v.object({
-        country: v.lazy(() => v.picklist(countryService.getCountries().map(({ id }) => id))),
+        country: v.lazy(() => v.picklist(getCountries().map(({ id }) => id))),
         province: v.pipe(v.string(), v.trim(), v.nonEmpty('protected:contact-information.error-messages.province-required')),
         address: v.pipe(v.string(), v.trim(), v.nonEmpty('protected:contact-information.error-messages.address-required')),
         postalCode: v.pipe(
@@ -225,7 +227,7 @@ export const parentDetailsSchema = v.pipe(
                 ),
                 province: v.lazy(() =>
                   v.picklist(
-                    provinceService.getProvinces().map(({ id }) => id),
+                    getProvinces().map(({ id }) => id),
                     'protected:parent-details.province-error.required-province',
                   ),
                 ),
@@ -247,7 +249,7 @@ export const parentDetailsSchema = v.pipe(
                   ),
                   v.lazy(() =>
                     v.picklist(
-                      countryService.getCountries().map(({ id }) => id),
+                      getCountries().map(({ id }) => id),
                       'protected:parent-details.country-error.invalid-country',
                     ),
                   ),
@@ -314,7 +316,7 @@ export const personalInfoSchema = v.object({
   ),
   gender: v.lazy(() =>
     v.picklist(
-      applicantGenderService.getApplicantGenders().map(({ id }) => id),
+      getApplicantGenders().map(({ id }) => id),
       'protected:personal-information.gender.required',
     ),
   ),
@@ -429,7 +431,7 @@ export const primaryDocumentSchema = v.intersect([
         ),
         gender: v.lazy(() =>
           v.picklist(
-            applicantGenderService.getApplicantGenders().map(({ id }) => id),
+            getApplicantGenders().map(({ id }) => id),
             'protected:primary-identity-document.gender.required',
           ),
         ),

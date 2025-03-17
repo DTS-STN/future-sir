@@ -10,7 +10,8 @@ import * as v from 'valibot';
 import type { Info, Route } from './+types/primary-docs';
 
 import type { LocalizedApplicantGender, LocalizedApplicantStatusInCanadaChoice } from '~/.server/domain/person-case/models';
-import { applicantGenderService, applicantStatusInCanadaService } from '~/.server/domain/person-case/services';
+import { getLocalizedApplicantGenders } from '~/.server/domain/person-case/services/applicant-gender-service';
+import { getLocalizedApplicantStatusInCanadaChoices } from '~/.server/domain/person-case/services/applicant-status-in-canada-service';
 import { LogFactory } from '~/.server/logging';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
@@ -128,8 +129,8 @@ export async function loader({ context, request }: Route.LoaderArgs) {
 
   return {
     documentTitle: t('protected:primary-identity-document.page-title'),
-    localizedStatusInCanada: applicantStatusInCanadaService.getLocalizedApplicantStatusInCanadaChoices(lang),
-    localizedGenders: applicantGenderService.getLocalizedApplicantGenders(lang),
+    localizedStatusInCanada: getLocalizedApplicantStatusInCanadaChoices(lang),
+    localizedGenders: getLocalizedApplicantGenders(lang),
     formValues: machineContext?.formData?.primaryDocuments?.values ?? machineContext?.primaryDocuments,
     formErrors: machineContext?.formData?.primaryDocuments?.errors,
   };
