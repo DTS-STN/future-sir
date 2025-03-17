@@ -2,12 +2,14 @@ import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentation
 import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-proto';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-proto';
 import { CompressionAlgorithm } from '@opentelemetry/otlp-exporter-base';
-import { Resource } from '@opentelemetry/resources';
+import type { Resource } from '@opentelemetry/resources';
+import { resourceFromAttributes } from '@opentelemetry/resources';
 import { AggregationTemporality, PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
 import { NodeSDK } from '@opentelemetry/sdk-node';
 import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';
 import { ATTR_DEPLOYMENT_ENVIRONMENT_NAME } from '@opentelemetry/semantic-conventions/incubating';
 import { describe, expect, it, vi } from 'vitest';
+import { mock } from 'vitest-mock-extended';
 
 vi.mock('@opentelemetry/resources');
 vi.mock('@opentelemetry/sdk-metrics');
@@ -36,20 +38,25 @@ vi.mock('@opentelemetry/sdk-node', () => {
 
 describe('NodeSDK', () => {
   it('should create a NodeSDK instance with the correct configuration', async () => {
+    const mockedResource = mock<Resource>({ attributes: { [ATTR_SERVICE_NAME]: 'service' } });
+    vi.mocked(resourceFromAttributes).mockReturnValueOnce(mockedResource);
+
     await import('~/.server/telemetry');
 
     expect(NodeSDK).toHaveBeenCalledWith({
-      resource: expect.any(Resource),
+      resource: mockedResource,
       instrumentations: expect.any(Array),
       metricReader: expect.any(PeriodicExportingMetricReader),
       traceExporter: expect.any(OTLPTraceExporter),
     });
+
+    expect(resourceFromAttributes).toHaveBeenCalledOnce();
   });
 
   it('should configure the Resource with correct attributes', async () => {
     await import('~/.server/telemetry');
 
-    expect(Resource).toHaveBeenCalledWith({
+    expect(resourceFromAttributes).toHaveBeenCalledWith({
       [ATTR_SERVICE_NAME]: 'service',
       [ATTR_SERVICE_VERSION]: '1.0.0',
       [ATTR_DEPLOYMENT_ENVIRONMENT_NAME]: 'test',
