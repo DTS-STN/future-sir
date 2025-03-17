@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { Address } from '~/components/address';
 import { DescriptionList, DescriptionListItem } from '~/components/description-list';
 import { InlineLink } from '~/components/links';
+import { UnorderedList } from '~/components/lists';
 
 const handle = {
   i18nNamespace: ['protected'],
@@ -166,11 +167,11 @@ function PreferredNameData({ data, tabId }: PreferredNameDataProps) {
           </DescriptionListItem>
           {data.supportingDocumentsNames && data.supportingDocumentsNames.length > 0 && (
             <DescriptionListItem className="py-3" term={t('protected:current-name.supporting-docs.title')}>
-              <ul className="list-disc space-y-1 pl-7">
+              <UnorderedList>
                 {data.supportingDocumentsNames.map((name) => (
                   <li key={name}>{name}</li>
                 ))}
-              </ul>
+              </UnorderedList>
             </DescriptionListItem>
           )}
         </div>
@@ -201,11 +202,11 @@ function PersonalDetailsData({ data, tabId }: PersonalDetailsDataProps) {
       <DescriptionList className="divide-y border-y">
         <DescriptionListItem className="py-3" term={t('protected:personal-information.first-name-previously-used.label')}>
           {data.firstNamePreviouslyUsed && data.firstNamePreviouslyUsed.length > 0 && (
-            <ul className="ml-6 list-disc">
+            <UnorderedList>
               {data.firstNamePreviouslyUsed.map((value, index) => (
                 <li key={`${index}-${value}`}>{value}</li>
               ))}
-            </ul>
+            </UnorderedList>
           )}
         </DescriptionListItem>
         <DescriptionListItem className="py-3" term={t('protected:personal-information.last-name-at-birth.label')}>
@@ -213,11 +214,11 @@ function PersonalDetailsData({ data, tabId }: PersonalDetailsDataProps) {
         </DescriptionListItem>
         <DescriptionListItem className="py-3" term={t('protected:personal-information.last-name-previously-used.label')}>
           {data.lastNamePreviouslyUsed && data.lastNamePreviouslyUsed.length > 0 && (
-            <ul className="ml-6 list-disc">
+            <UnorderedList>
               {data.lastNamePreviouslyUsed.map((value, index) => (
                 <li key={`${index}-${value}`}>{value}</li>
               ))}
-            </ul>
+            </UnorderedList>
           )}
         </DescriptionListItem>
         <DescriptionListItem className="py-3" term={t('protected:personal-information.gender.label')}>

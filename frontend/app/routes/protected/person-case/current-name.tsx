@@ -18,6 +18,7 @@ import { InputCheckboxes } from '~/components/input-checkboxes';
 import { InputField } from '~/components/input-field';
 import type { InputRadiosProps } from '~/components/input-radios';
 import { InputRadios } from '~/components/input-radios';
+import { UnorderedList } from '~/components/lists';
 import { PageTitle } from '~/components/page-title';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
@@ -180,7 +181,7 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
       <FetcherErrorSummary fetcherKey={fetcherKey}>
         <fetcher.Form method="post" noValidate>
           <p className="mb-4">{t('protected:current-name.recorded-name.description')}</p>
-          <ul className="mb-8 list-disc pl-5 font-bold">
+          <UnorderedList className="mb-8 font-bold">
             <li>
               {t('protected:current-name.recorded-name.first-name')}
               <span className="ml-[1ch] font-normal">{loaderData.primaryDocName.firstName}</span>
@@ -193,7 +194,7 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
               {t('protected:current-name.recorded-name.last-name')}
               <span className="ml-[1ch] font-normal">{loaderData.primaryDocName.lastName}</span>
             </li>
-          </ul>
+          </UnorderedList>
 
           <div className="space-y-6">
             <InputRadios
