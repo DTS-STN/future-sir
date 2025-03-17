@@ -1,4 +1,11 @@
-import type { SinApplicationRequest, SinApplicationResponse } from '~/.server/shared/api/interop';
+import {
+  mapSinApplicationResponseToSubmitSinApplicationResponse,
+  mapSubmitSinApplicationRequestToSinApplicationRequest,
+} from '~/.server/domain/sin-application/sin-application-mappers';
+import type {
+  SubmitSinApplicationRequest,
+  SubmitSinApplicationResponse,
+} from '~/.server/domain/sin-application/sin-application-models';
 import { sinapplication } from '~/.server/shared/api/interop';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
@@ -16,9 +23,11 @@ import { ErrorCodes } from '~/errors/error-codes';
  * @throws {AppError} If the API call fails or the response data is missing.
  */
 export async function submitSinApplication(
-  submitSinApplicationRequest: SinApplicationRequest,
-): Promise<SinApplicationResponse> {
-  const { response, data } = await sinapplication({ body: submitSinApplicationRequest });
+  submitSinApplicationRequest: SubmitSinApplicationRequest,
+): Promise<SubmitSinApplicationResponse> {
+  const { response, data } = await sinapplication({
+    body: mapSubmitSinApplicationRequestToSinApplicationRequest(submitSinApplicationRequest),
+  });
 
   if (data === undefined) {
     const content = await response.text();
@@ -28,5 +37,5 @@ export async function submitSinApplication(
     );
   }
 
-  return data;
+  return mapSinApplicationResponseToSubmitSinApplicationResponse(data);
 }
