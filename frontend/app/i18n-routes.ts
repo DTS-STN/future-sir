@@ -104,36 +104,41 @@ export const i18nRoutes = [
         paths: { en: '/en/protected/request', fr: '/fr/protege/requete' },
       },
       {
-        id: 'MCF-0001',
-        file: 'routes/protected/multi-channel/pid-verification.tsx',
-        paths: {
-          en: '/en/protected/multi-channel/pid-verification',
-          fr: '/fr/protege/multi-chaine/pid-verification',
-        },
-      },
-      {
-        id: 'MCF-0002',
-        file: 'routes/protected/multi-channel/search-sin.tsx',
-        paths: {
-          en: '/en/protected/multi-channel/search-sin',
-          fr: '/fr/protege/multi-chaine/search-sin',
-        },
-      },
-      {
-        id: 'MCF-0003',
-        file: 'routes/protected/multi-channel/finalize-request.tsx',
-        paths: {
-          en: '/en/protected/multi-channel/finalize-request',
-          fr: '/fr/protege/multi-chaine/finalize-request',
-        },
-      },
-      {
-        id: 'MCF-0004',
-        file: 'routes/protected/multi-channel/send-validation.tsx',
-        paths: {
-          en: '/en/protected/multi-channel/send-validation',
-          fr: '/fr/protege/multi-chaine/send-validation',
-        },
+        file: 'routes/protected/multi-channel/layout.tsx',
+        children: [
+          {
+            id: 'MCF-0001',
+            file: 'routes/protected/multi-channel/pid-verification.tsx',
+            paths: {
+              en: '/en/protected/multi-channel/pid-verification',
+              fr: '/fr/protege/multi-chaine/pid-verification',
+            },
+          },
+          {
+            id: 'MCF-0002',
+            file: 'routes/protected/multi-channel/search-sin.tsx',
+            paths: {
+              en: '/en/protected/multi-channel/search-sin',
+              fr: '/fr/protege/multi-chaine/search-sin',
+            },
+          },
+          {
+            id: 'MCF-0003',
+            file: 'routes/protected/multi-channel/finalize-request.tsx',
+            paths: {
+              en: '/en/protected/multi-channel/finalize-request',
+              fr: '/fr/protege/multi-chaine/finalize-request',
+            },
+          },
+          {
+            id: 'MCF-0004',
+            file: 'routes/protected/multi-channel/send-validation.tsx',
+            paths: {
+              en: '/en/protected/multi-channel/send-validation',
+              fr: '/fr/protege/multi-chaine/send-validation',
+            },
+          },
+        ],
       },
       {
         file: 'routes/protected/person-case/layout.tsx',

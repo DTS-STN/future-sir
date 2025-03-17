@@ -36,6 +36,7 @@ type MachineEvents =
   | { type: 'cancel' }
   | { type: 'exit' }
   | { type: 'setFormData'; data: FormData }
+  | { type: 'setSinApplication'; data: InPersonSinApplication }
   | { type: 'submitBirthDetails'; data: BirthDetailsData }
   | { type: 'submitContactInfo'; data: ContactInformationData }
   | { type: 'submitCurrentName'; data: CurrentNameData }
@@ -108,6 +109,12 @@ export const machine = setup({
     setFormData: {
       actions: assign(({ context, event }) => ({
         formData: { ...context.formData, ...event.data },
+      })),
+    },
+    setSinApplication: {
+      actions: assign(({ context, event }) => ({
+        ...context,
+        ...event.data,
       })),
     },
   },

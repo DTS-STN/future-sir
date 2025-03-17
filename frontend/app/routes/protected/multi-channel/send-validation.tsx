@@ -24,6 +24,7 @@ import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
+import { createMachineActor } from '~/routes/protected/person-case/state-machine.server';
 import { SinApplication } from '~/routes/protected/sin-application';
 
 export const handle = {
@@ -58,7 +59,9 @@ export async function loader({ context, request }: Route.LoaderArgs) {
   // TODO: Update with the actual fetch method
   const { inPersonSinApplication, caseId } = fetchInPersonSinApplication();
 
-  //TODO: Update Session with fetched SIN application
+  if (tabId) {
+    createMachineActor(context.session, request).send({ type: 'setSinApplication', data: inPersonSinApplication });
+  }
 
   return {
     documentTitle: t('protected:send-validation.page-title'),
@@ -184,7 +187,7 @@ function fetchInPersonSinApplication(): {
 
   const contactInformation = {
     preferredLanguage: '564190000',
-    primaryPhoneNumber: '780111111',
+    primaryPhoneNumber: '+1780111111',
     secondaryPhoneNumber: undefined,
     emailAddress: undefined,
     country: 'f8914e7c-2c95-ea11-a812-000d3a0c2b5d',
