@@ -104,24 +104,19 @@ export type PersonSinCase = {
   secondaryDocument: SecondaryDocumentData;
 };
 
-// TODO: make URL configurable
-const API_BASE_URL = process.env.API_URL ?? 'https://api.example.com';
-
 // TODO: Build real implementation (the response will likely be a NIEM type and will have to be mapped)
 const realCaseApi = {
   getCases: async (): Promise<PersonSinCase[]> => {
-    const response = await fetch(`${API_BASE_URL}/cases`);
+    const response = await fetch(`${serverEnvironment.INTEROP_SIN_REG_API_BASE_URL}/cases`);
     if (!response.ok) throw new AppError(`Cases not found.`, ErrorCodes.SIN_CASE_NOT_FOUND);
     return response.json();
   },
 
   getCaseById: async (id: string): Promise<PersonSinCase> => {
-    const response = await fetch(`${API_BASE_URL}/cases/${id}`);
+    const response = await fetch(`${serverEnvironment.INTEROP_SIN_REG_API_BASE_URL}/cases/${id}`);
     if (!response.ok) throw new AppError(`Case with ID '${id}' not found.`, ErrorCodes.SIN_CASE_NOT_FOUND);
     return response.json();
   },
 };
 
-// TODO: make mock configurable and export the appropriate API implementation
-const mockEnabled = serverEnvironment.NODE_ENV === 'development';
-export const caseApi = mockEnabled ? mockCaseApi : realCaseApi;
+export const caseApi = serverEnvironment.ENABLE_SIN_API_SERVICE_MOCK ? mockCaseApi : realCaseApi;
