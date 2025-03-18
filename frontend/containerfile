@@ -33,7 +33,7 @@ ARG BUILD_REVISION="00000000"
 ARG BUILD_VERSION="0.0.0"
 ARG IMAGE_AUTHORS="Digital Technology Solutions"
 ARG IMAGE_DESCRIPTION="Future SIR -- Frontend Application"
-ARG IMAGE_TITLE="Future SIR frontend"
+ARG IMAGE_TITLE="future-sir-frontend"
 ARG IMAGE_URL="https://github.com/DTS-STN/future-sir/"
 ARG IMAGE_VENDOR="Employment and Social Development Canada"
 

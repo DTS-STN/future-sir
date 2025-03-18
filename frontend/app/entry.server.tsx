@@ -95,8 +95,8 @@ export function handleError(error: unknown, { context, params, request }: Loader
     log.error('Uncaught error while handling request:', error);
 
     createCounter('server.errors.total').add(1, {
-      error_class: getErrorClassName(error),
-      error_code: getErrorCode(error),
+      'error.class': getErrorClassName(error),
+      'error.code': getErrorCode(error),
     });
 
     handleSpanException(error, trace.getActiveSpan());
