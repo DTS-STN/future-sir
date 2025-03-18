@@ -13,13 +13,11 @@ import { getLocalizedApplicantHadSinOptionById } from '~/.server/domain/person-c
 import { getLocalizedApplicantStatusInCanadaChoiceById } from '~/.server/domain/person-case/services/applicant-status-in-canada-service';
 import { getLocalizedApplicantSupportingDocumentTypeById } from '~/.server/domain/person-case/services/applicant-supporting-document-service';
 import { getLocalizedLanguageOfCorrespondenceById } from '~/.server/domain/person-case/services/language-correspondence-service';
-import { submitSinApplication } from '~/.server/domain/person-case/services/sin-application-service';
+import { submitSinApplication } from '~/.server/domain/sin-application/sin-application-service';
 import { serverEnvironment } from '~/.server/environment';
 import { LogFactory } from '~/.server/logging';
 import { getLocalizedCountryById } from '~/.server/shared/services/country-service';
 import { getLocalizedProvinceById } from '~/.server/shared/services/province-service';
-import { mapInPersonSINCaseToSinApplicationRequest } from '~/.server/shared/services/sin-application-service';
-import type { InPersonSinApplication } from '~/.server/shared/services/sin-application-service';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
@@ -29,6 +27,7 @@ import { ErrorCodes } from '~/errors/error-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine.server';
+import type { InPersonSinApplication } from '~/routes/protected/person-case/types';
 import { SinApplication } from '~/routes/protected/sin-application';
 
 const log = LogFactory.getLogger(import.meta.url);
@@ -54,7 +53,6 @@ export async function action({ context, params, request }: Route.ActionArgs) {
   const tabId = new URL(request.url).searchParams.get('tid') ?? undefined;
   const sessionData = (context.session.inPersonSinApplications ??= {});
   const inPersonSINCase = validateInPersonSINCaseSession(sessionData, tabId, request);
-  const sinApplicationRequest = mapInPersonSINCaseToSinApplicationRequest(inPersonSINCase);
 
   const formData = await request.formData();
   const action = formData.get('action');
@@ -66,13 +64,10 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     }
 
     case 'next': {
-      try {
-        const response = await submitSinApplication(sinApplicationRequest);
-        //TODO: store the response in session
-        console.log('SIN Application submitted successfully:', response);
-      } catch (err) {
-        console.log('Error submitting SIN application:', err);
-      }
+      const response = await submitSinApplication(inPersonSINCase);
+
+      //TODO: store the response in session
+      console.log('SIN Application submitted successfully:', response);
 
       machineActor.send({ type: 'submitReview' });
       break;
