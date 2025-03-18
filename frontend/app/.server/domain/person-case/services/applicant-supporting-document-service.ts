@@ -27,14 +27,14 @@ export function getApplicantSupportingDocumentTypes(): readonly ApplicantSupport
  * @throws {AppError} If the type is not found.
  */
 export function getApplicantSupportingDocumentTypesById(id: string): ApplicantSupportingDocumentType {
-  const scenario = getApplicantSupportingDocumentTypes().find((s) => s.id === id);
-  if (!scenario) {
+  const applicantSupportingDocumentType = getApplicantSupportingDocumentTypes().find((s) => s.id === id);
+  if (!applicantSupportingDocumentType) {
     throw new AppError(
       `Application status in Canada with ID '${id}' not found.`,
       ErrorCodes.NO_APPLICANT_SUPPORTING_DOCUMENT_TYPE_FOUND,
     );
   }
-  return scenario;
+  return applicantSupportingDocumentType;
 }
 
 /**
@@ -62,12 +62,12 @@ export function getLocalizedApplicantSupportingDocumentTypeById(
   id: string,
   language: Language,
 ): LocalizedApplicantSupportingDocumentType {
-  const scenario = getLocalizedApplicantSupportingDocumentType(language).find((s) => s.id === id);
-  if (!scenario) {
+  const applicantSupportingDocumentType = getLocalizedApplicantSupportingDocumentType(language).find((s) => s.id === id);
+  if (!applicantSupportingDocumentType) {
     throw new AppError(
       `Localized applicant supporting document type with ID '${id}' not found.`,
       ErrorCodes.NO_APPLICANT_SUPPORTING_DOCUMENT_TYPE_FOUND,
     );
   }
-  return scenario;
+  return applicantSupportingDocumentType;
 }
