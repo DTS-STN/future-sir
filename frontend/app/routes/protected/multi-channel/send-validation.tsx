@@ -7,13 +7,13 @@ import { useTranslation } from 'react-i18next';
 
 import type { Info, Route } from './+types/send-validation';
 
+import { caseApi } from '~/.server/domain/multi-channel/services/case-api-service';
 import { getLocalizedApplicantGenderById } from '~/.server/domain/person-case/services/applicant-gender-service';
 import { getLocalizedApplicantSecondaryDocumentChoiceById } from '~/.server/domain/person-case/services/applicant-secondary-document-service';
 import { getLocalizedLanguageOfCorrespondenceById } from '~/.server/domain/person-case/services/language-correspondence-service';
 import { serverEnvironment } from '~/.server/environment';
 import { getLocalizedCountryById } from '~/.server/shared/services/country-service';
 import { getLocalizedProvinceById } from '~/.server/shared/services/province-service';
-import type { InPersonSinApplication } from '~/.server/shared/services/sin-application-service';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
@@ -51,45 +51,39 @@ export async function action({ context, params, request }: Route.ActionArgs) {
 
 export async function loader({ context, request }: Route.LoaderArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
-  const tabId = new URL(request.url).searchParams.get('tid') ?? undefined;
   const { lang, t } = await getTranslation(request, handle.i18nNamespace);
 
-  // TODO: Update with the actual fetch method
-  const { inPersonSinApplication, caseId } = fetchInPersonSinApplication();
-
-  //TODO: Update Session with fetched SIN application
+  // TODO: the id will likely come from a path param in the URL?
+  const personSinCase = await caseApi.getCaseById('00000000000000');
 
   return {
     documentTitle: t('protected:send-validation.page-title'),
-    caseId,
-    tabId,
+    caseId: personSinCase.caseId,
     inPersonSINCase: {
-      ...inPersonSinApplication,
+      ...personSinCase,
       primaryDocuments: {
-        ...inPersonSinApplication.primaryDocuments,
-        genderName: getLocalizedApplicantGenderById(inPersonSinApplication.primaryDocuments.gender, lang).name,
+        ...personSinCase.primaryDocuments,
+        genderName: getLocalizedApplicantGenderById(personSinCase.primaryDocuments.gender, lang).name,
       },
       secondaryDocument: {
-        ...inPersonSinApplication.secondaryDocument,
-        documentTypeName: getLocalizedApplicantSecondaryDocumentChoiceById(
-          inPersonSinApplication.secondaryDocument.documentType,
-          lang,
-        ).name,
+        ...personSinCase.secondaryDocument,
+        documentTypeName: getLocalizedApplicantSecondaryDocumentChoiceById(personSinCase.secondaryDocument.documentType, lang)
+          .name,
       },
       personalInformation: {
-        ...inPersonSinApplication.personalInformation,
-        genderName: getLocalizedApplicantGenderById(inPersonSinApplication.personalInformation.gender, lang).name,
+        ...personSinCase.personalInformation,
+        genderName: getLocalizedApplicantGenderById(personSinCase.personalInformation.gender, lang).name,
       },
       birthDetails: {
-        ...inPersonSinApplication.birthDetails,
-        countryName: getLocalizedCountryById(inPersonSinApplication.birthDetails.country, lang).name,
-        provinceName: inPersonSinApplication.birthDetails.province
-          ? inPersonSinApplication.birthDetails.country !== serverEnvironment.PP_CANADA_COUNTRY_CODE
-            ? inPersonSinApplication.birthDetails.province
-            : getLocalizedProvinceById(inPersonSinApplication.birthDetails.province, lang).name
+        ...personSinCase.birthDetails,
+        countryName: getLocalizedCountryById(personSinCase.birthDetails.country, lang).name,
+        provinceName: personSinCase.birthDetails.province
+          ? personSinCase.birthDetails.country !== serverEnvironment.PP_CANADA_COUNTRY_CODE
+            ? personSinCase.birthDetails.province
+            : getLocalizedProvinceById(personSinCase.birthDetails.province, lang).name
           : undefined,
       },
-      parentDetails: inPersonSinApplication.parentDetails.map((parentdetail) =>
+      parentDetails: personSinCase.parentDetails.map((parentdetail) =>
         parentdetail.unavailable
           ? { unavailable: true }
           : {
@@ -110,28 +104,28 @@ export async function loader({ context, request }: Route.LoaderArgs) {
             },
       ),
       contactInformation: {
-        ...inPersonSinApplication.contactInformation,
+        ...personSinCase.contactInformation,
         preferredLanguageName: getLocalizedLanguageOfCorrespondenceById(
-          inPersonSinApplication.contactInformation.preferredLanguage,
+          personSinCase.contactInformation.preferredLanguage,
           lang,
         ).name,
-        countryName: getLocalizedCountryById(inPersonSinApplication.contactInformation.country, lang).name,
-        provinceName: inPersonSinApplication.contactInformation.province
-          ? inPersonSinApplication.contactInformation.country !== serverEnvironment.PP_CANADA_COUNTRY_CODE
-            ? inPersonSinApplication.contactInformation.province
-            : getLocalizedProvinceById(inPersonSinApplication.contactInformation.province, lang).name
+        countryName: getLocalizedCountryById(personSinCase.contactInformation.country, lang).name,
+        provinceName: personSinCase.contactInformation.province
+          ? personSinCase.contactInformation.country !== serverEnvironment.PP_CANADA_COUNTRY_CODE
+            ? personSinCase.contactInformation.province
+            : getLocalizedProvinceById(personSinCase.contactInformation.province, lang).name
           : undefined,
       },
       currentNameInfo: {
-        ...inPersonSinApplication.currentNameInfo,
+        ...personSinCase.currentNameInfo,
         firstName:
-          inPersonSinApplication.currentNameInfo.preferredSameAsDocumentName === true
-            ? inPersonSinApplication.primaryDocuments.givenName
-            : inPersonSinApplication.currentNameInfo.firstName,
+          personSinCase.currentNameInfo.preferredSameAsDocumentName === true
+            ? personSinCase.primaryDocuments.givenName
+            : personSinCase.currentNameInfo.firstName,
         lastName:
-          inPersonSinApplication.currentNameInfo.preferredSameAsDocumentName === true
-            ? inPersonSinApplication.primaryDocuments.lastName
-            : inPersonSinApplication.currentNameInfo.lastName,
+          personSinCase.currentNameInfo.preferredSameAsDocumentName === true
+            ? personSinCase.primaryDocuments.lastName
+            : personSinCase.currentNameInfo.lastName,
       },
     },
   };
@@ -144,7 +138,7 @@ export default function SendValidation({ loaderData, actionData, params }: Route
   const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
 
   const isSubmitting = fetcher.state !== 'idle';
-  const { inPersonSINCase, caseId, tabId } = loaderData;
+  const { inPersonSINCase, caseId } = loaderData;
 
   return (
     <>
@@ -154,7 +148,7 @@ export default function SendValidation({ loaderData, actionData, params }: Route
         <p>{t('protected:send-validation.id-number')}</p>
         <p>{caseId}</p>
       </ContextualAlert>
-      <SinApplication inPersonSINCase={inPersonSINCase} tabId={tabId} />
+      <SinApplication inPersonSINCase={inPersonSINCase} />
       <fetcher.Form className="max-w-prose" method="post" noValidate>
         <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
           <Button name="action" value="send" variant="primary" id="send-for-validation" disabled={isSubmitting}>
@@ -164,110 +158,4 @@ export default function SendValidation({ loaderData, actionData, params }: Route
       </fetcher.Form>
     </>
   );
-}
-
-function fetchInPersonSinApplication(): {
-  inPersonSinApplication: Required<InPersonSinApplication>;
-  caseId: string;
-} {
-  const birthDetails = {
-    country: 'f8914e7c-2c95-ea11-a812-000d3a0c2b5d',
-    province: '845808d0-3195-ea11-a812-000d3a0c2b5d',
-    city: 'CityOfBirth',
-    fromMultipleBirth: false,
-  };
-
-  const contactInformation = {
-    preferredLanguage: '564190000',
-    primaryPhoneNumber: '780111111',
-    secondaryPhoneNumber: undefined,
-    emailAddress: undefined,
-    country: 'f8914e7c-2c95-ea11-a812-000d3a0c2b5d',
-    address: '1111 111 Ave NW',
-    postalCode: 'T2Y 2H2',
-    city: 'ContactCity',
-    province: '845808d0-3195-ea11-a812-000d3a0c2b5d',
-  };
-
-  const currentNameInfo = {
-    preferredSameAsDocumentName: true as const,
-  };
-
-  const parentDetails = [
-    {
-      unavailable: false,
-      givenName: 'ParentName',
-      lastName: 'ParentLastName',
-      birthLocation: {
-        country: 'f8914e7c-2c95-ea11-a812-000d3a0c2b5d',
-        province: '845808d0-3195-ea11-a812-000d3a0c2b5d',
-        city: 'ParentCity',
-      },
-    },
-    {
-      unavailable: false,
-      givenName: 'ParentName',
-      lastName: 'ParentLastName',
-      birthLocation: {
-        country: 'f8914e7c-2c95-ea11-a812-000d3a0c2b5d',
-        province: '845808d0-3195-ea11-a812-000d3a0c2b5d',
-        city: 'ParentCity',
-      },
-    },
-  ];
-
-  const personalInformation = {
-    firstNamePreviouslyUsed: ['PreviousFirstName'],
-    lastNameAtBirth: 'LastNameAtBirth',
-    lastNamePreviouslyUsed: ['PreviousLastName'],
-    gender: '564190002',
-  };
-
-  const previousSin = {
-    hasPreviousSin: '564190000',
-    socialInsuranceNumber: '123456789',
-  };
-
-  const primaryDocuments = {
-    citizenshipDate: '2000-01-01',
-    clientNumber: '1000000',
-    currentStatusInCanada: 'canadian-citizen-born-outside-canada',
-    dateOfBirth: '1999-01-01',
-    documentType: 'certificate-of-canadian-citizenship',
-    gender: '564190002',
-    givenName: 'GivenName',
-    lastName: 'LastName',
-    registrationNumber: '1000000000',
-  };
-
-  const privacyStatement = {
-    agreedToTerms: true as const,
-  };
-
-  const requestDetails = {
-    type: '564190000',
-    scenario: '564190000',
-  };
-
-  const secondaryDocument = {
-    documentType: '564190000',
-    expiryMonth: 1,
-    expiryYear: 3000,
-  };
-
-  return {
-    inPersonSinApplication: {
-      birthDetails,
-      contactInformation,
-      currentNameInfo,
-      parentDetails,
-      personalInformation,
-      previousSin,
-      primaryDocuments,
-      privacyStatement,
-      requestDetails,
-      secondaryDocument,
-    },
-    caseId: '1234567890123',
-  };
 }
