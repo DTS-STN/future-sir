@@ -25,6 +25,11 @@
 # Stage: Base image
 # The base image provides the foundation for all subsequent stages.
 # It uses a slim nodejs image optimized for production, based on Debian Bookworm.
+#
+# To quickly check if there is an update to the base image, run:
+#   $ podman search --limit 25000 --list-tags docker.io/library/node \
+#         | grep 'slim' | awk '{print $2}' | sort --version-sort
+#
 FROM docker.io/library/node:22.14.0-bookworm-slim AS base
 
 ARG BUILD_DATE="1970-01-01T00:00:00.000Z"
