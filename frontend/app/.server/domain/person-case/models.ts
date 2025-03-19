@@ -13,11 +13,13 @@ export type ApplicantPrimaryDocumentChoice = Readonly<{
   id: string;
   nameEn: string;
   nameFr: string;
+  applicantStatusInCanadaId: string;
 }>;
 
 export type LocalizedApplicantPrimaryDocumentChoice = Readonly<{
   id: string;
   name: string;
+  applicantStatusInCanadaId: string;
 }>;
 
 export type ApplicantSecondaryDocumentChoice = Readonly<{

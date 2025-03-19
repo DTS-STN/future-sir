@@ -2,7 +2,7 @@ import type {
   ApplicantPrimaryDocumentChoice,
   LocalizedApplicantPrimaryDocumentChoice,
 } from '~/.server/domain/person-case/models';
-import esdcApplicantPrimaryDocumentChoicesData from '~/.server/resources/esdc_applicantprimarydocumentchoices.json';
+import fsirApplicantPrimaryDocumentChoicesData from '~/.server/resources/fsir_applicantprimarydocumentchoices.json';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 
@@ -12,10 +12,11 @@ import { ErrorCodes } from '~/errors/error-codes';
  * @returns An array of applicant primary document choice objects.
  */
 export function getApplicantPrimaryDocumentChoices(): readonly ApplicantPrimaryDocumentChoice[] {
-  return esdcApplicantPrimaryDocumentChoicesData.options.map((option) => ({
+  return fsirApplicantPrimaryDocumentChoicesData.options.map((option) => ({
     id: option.value.toString(),
     nameEn: option.labelEn,
     nameFr: option.labelFr,
+    applicantStatusInCanadaId: option.applicantStatusInCanadaValue,
   }));
 }
 
@@ -38,6 +39,25 @@ export function getApplicantPrimaryDocumentChoiceById(id: string): ApplicantPrim
 }
 
 /**
+ * Retrieves a list of applicant primary document choices by status in Canada ID.
+ *
+ * @param applicantStatusInCanadaId The ID of the status in Canada to retreive the applicant primary document choices.
+ * @returns An array of applicant primary document choice objects.
+ */
+export function getApplicantPrimaryChoicesByApplicantStatusInCanadaId(
+  applicantStatusInCanadaId: string,
+): ApplicantPrimaryDocumentChoice[] {
+  return getApplicantPrimaryDocumentChoices()
+    .filter((c) => c.applicantStatusInCanadaId === applicantStatusInCanadaId)
+    .map((option) => ({
+      id: option.id,
+      nameEn: option.nameEn,
+      nameFr: option.nameFr,
+      applicantStatusInCanadaId: option.applicantStatusInCanadaId,
+    }));
+}
+
+/**
  * Retrieves a list of applicant primary document choices localized to the specified language.
  *
  * @param language The language to localize the choice names to.
@@ -47,7 +67,28 @@ export function getLocalizedApplicantPrimaryDocumentChoices(language: Language):
   return getApplicantPrimaryDocumentChoices().map((option) => ({
     id: option.id,
     name: language === 'fr' ? option.nameFr : option.nameEn,
+    applicantStatusInCanadaId: option.applicantStatusInCanadaId,
   }));
+}
+
+/**
+ * Retrieves a list of applicant primary document choices by status in Canada ID localized to the specified language.
+ *
+ * @param applicantStatusInCanadaId The ID of the status in Canada to retreive the applicant primary document choices.
+ * @param language The language to localize the choice names to.
+ * @returns An array of localized applicant primary document choice objects.
+ */
+export function getLocalizedApplicantPrimaryDocumentChoicesByApplicantStatusInCanadaId(
+  applicantStatusInCanadaId: string,
+  language: Language,
+): LocalizedApplicantPrimaryDocumentChoice[] {
+  return getApplicantPrimaryDocumentChoices()
+    .filter((c) => c.applicantStatusInCanadaId === applicantStatusInCanadaId)
+    .map((option) => ({
+      id: option.id,
+      name: language === 'fr' ? option.nameFr : option.nameEn,
+      applicantStatusInCanadaId: option.applicantStatusInCanadaId,
+    }));
 }
 
 /**
