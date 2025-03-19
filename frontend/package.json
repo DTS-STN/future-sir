@@ -43,7 +43,7 @@
     "@react-router/express": "^7.3.0",
     "@react-router/node": "^7.3.0",
     "@react-router/serve": "^7.3.0",
-    "@valibot/i18n": "^1.0.0-rc.0",
+    "@valibot/i18n": "^1.0.0",
     "clsx": "^2.1.1",
     "compression": "^1.8.0",
     "connect-redis": "^8.0.2",
