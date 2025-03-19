@@ -57,7 +57,7 @@ export function meta({ data }: Route.MetaArgs) {
 export async function action({ context, request }: Route.ActionArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
 
-  const { lang, t } = await getTranslation(request, handle.i18nNamespace);
+  const { t } = await getTranslation(request, handle.i18nNamespace);
 
   const formData = await request.formData();
   const action = formData.get('action');
@@ -84,7 +84,7 @@ export async function action({ context, request }: Route.ActionArgs) {
         declaration: formData.get('declaration') ? true : undefined,
       };
 
-      const parseResult = v.safeParse(schema, input, { lang });
+      const parseResult = v.safeParse(schema, input);
 
       if (!parseResult.success) {
         return data({ errors: v.flatten<typeof schema>(parseResult.issues).nested }, { status: HttpStatusCodes.BAD_REQUEST });
