@@ -1,0 +1,194 @@
+{
+  "name": "fsir_applicantprimarydocumentchoices",
+  "parentOptionSetName": null,
+  "displayNameEn": "Applicant Primary Document Choices",
+  "displayNameFr": "Choix de document d'identité principal du demandeur",
+  "options": [
+    {
+      "value": 9800000000,
+      "applicantStatusInCanadaValue": "9900000000",
+      "labelEn": "Alberta birth certificate",
+      "labelFr": "Alberta birth certificate"
+    },
+    {
+      "value": 9800000001,
+      "applicantStatusInCanadaValue": "9900000000",
+      "labelEn": "British Columbia birth certificates",
+      "labelFr": "British Columbia birth certificates"
+    },
+    {
+      "value": 9800000002,
+      "applicantStatusInCanadaValue": "9900000000",
+      "labelEn": "Manitoba birth certificates",
+      "labelFr": "Manitoba birth certificates"
+    },
+    {
+      "value": 9800000003,
+      "applicantStatusInCanadaValue": "9900000000",
+      "labelEn": "New Brunswick birth certificates",
+      "labelFr": "New Brunswick birth certificates"
+    },
+    {
+      "value": 9800000004,
+      "applicantStatusInCanadaValue": "9900000000",
+      "labelEn": "Newfoundlan and Labrador birth certificates",
+      "labelFr": "Newfoundlan and Labrador birth certificates"
+    },
+    {
+      "value": 9800000005,
+      "applicantStatusInCanadaValue": "9900000000",
+      "labelEn": "Northwest Territories birth certificates",
+      "labelFr": "Northwest Territories birth certificates"
+    },
+    {
+      "value": 9800000006,
+      "applicantStatusInCanadaValue": "9900000000",
+      "labelEn": "Nunavut birth certificates",
+      "labelFr": "Nunavut birth certificates"
+    },
+    {
+      "value": 9800000007,
+      "applicantStatusInCanadaValue": "9900000000",
+      "labelEn": "Ontario birth certificates - Certified True Photostatic Print of a record of a Statement of Live Birth",
+      "labelFr": "Ontario birth certificates - Certified True Photostatic Print of a record of a Statement of Live Birth"
+    },
+    {
+      "value": 9800000008,
+      "applicantStatusInCanadaValue": "9900000000",
+      "labelEn": "Prince Edward Island birth certificates",
+      "labelFr": "Prince Edward Island birth certificates"
+    },
+    {
+      "value": 9800000009,
+      "applicantStatusInCanadaValue": "9900000000",
+      "labelEn": "Quebec birth certificates",
+      "labelFr": "Quebec birth certificates"
+    },
+    {
+      "value": 9800000010,
+      "applicantStatusInCanadaValue": "9900000000",
+      "labelEn": "Saskatchewan birth certificates",
+      "labelFr": "Saskatchewan birth certificates"
+    },
+    {
+      "value": 9800000011,
+      "applicantStatusInCanadaValue": "9900000000",
+      "labelEn": "Yukon birth certificates",
+      "labelFr": "Yukon birth certificates"
+    },
+    {
+      "value": 9800000012,
+      "applicantStatusInCanadaValue": "9900000000",
+      "labelEn": "Population List",
+      "labelFr": "Population List"
+    },
+    {
+      "value": 9800000013,
+      "applicantStatusInCanadaValue": "9900000000",
+      "labelEn": "Certificates of Canadian Citizenship",
+      "labelFr": "Certificates of Canadian Citizenship"
+    },
+    {
+      "value": 9800000014,
+      "applicantStatusInCanadaValue": "9900000001",
+      "labelEn": "Certificates of Canadian Citizenship",
+      "labelFr": "Certificates of Canadian Citizenship"
+    },
+    {
+      "value": 9800000015,
+      "applicantStatusInCanadaValue": "9900000001",
+      "labelEn": "Certificates of Registration of Birth Abroad",
+      "labelFr": "Certificates of Registration of Birth Abroad"
+    },
+    {
+      "value": 9800000016,
+      "applicantStatusInCanadaValue": "9900000002",
+      "labelEn": "Birth Certificates + Certificates of Indian Status",
+      "labelFr": "Birth Certificates + Certificates of Indian Status"
+    },
+    {
+      "value": 9800000017,
+      "applicantStatusInCanadaValue": "9900000002",
+      "labelEn": "Certificates of Canadian Citizenship + Certificates of Indian Status",
+      "labelFr": "Certificates of Canadian Citizenship + Certificates of Indian Status"
+    },
+    {
+      "value": 9800000018,
+      "applicantStatusInCanadaValue": "9900000003",
+      "labelEn": "Foreign Birth Certificates + Certificates of Indian Status",
+      "labelFr": "Foreign Birth Certificates + Certificates of Indian Status"
+    },
+    {
+      "value": 9800000019,
+      "applicantStatusInCanadaValue": "9900000003",
+      "labelEn": "Certificates of Canadian Citizenship + Certificates of Indian Status",
+      "labelFr": "Certificates of Canadian Citizenship + Certificates of Indian Status"
+    },
+    {
+      "value": 9800000020,
+      "applicantStatusInCanadaValue": "9900000004",
+      "labelEn": "Permanent Resident Card",
+      "labelFr": "Permanent Resident Card"
+    },
+    {
+      "value": 9800000021,
+      "applicantStatusInCanadaValue": "9900000004",
+      "labelEn": "Confirmation of Permanent Residence",
+      "labelFr": "Confirmation of Permanent Residence"
+    },
+    {
+      "value": 9800000022,
+      "applicantStatusInCanadaValue": "9900000004",
+      "labelEn": "Records of Landing",
+      "labelFr": "Records of Landing"
+    },
+    {
+      "value": 9800000023,
+      "applicantStatusInCanadaValue": "9900000004",
+      "labelEn": "Verification of Landing",
+      "labelFr": "Verification of Landing"
+    },
+    {
+      "value": 9800000024,
+      "applicantStatusInCanadaValue": "9900000004",
+      "labelEn": "Status Verification",
+      "labelFr": "Status Verification"
+    },
+    {
+      "value": 9800000025,
+      "applicantStatusInCanadaValue": "9900000005",
+      "labelEn": "*If only one name appears on the document, refer to Names on SIN Record (301)",
+      "labelFr": "*If only one name appears on the document, refer to Names on SIN Record (301)"
+    },
+    {
+      "value": 9800000026,
+      "applicantStatusInCanadaValue": "9900000005",
+      "labelEn": "Work Permit",
+      "labelFr": "Work Permit"
+    },
+    {
+      "value": 9800000027,
+      "applicantStatusInCanadaValue": "9900000005",
+      "labelEn": "Study Permit (indicating \"may accept employment \" or \"may work\")",
+      "labelFr": "Study Permit (indicating \"may accept employment \" or \"may work\")"
+    },
+    {
+      "value": 9800000028,
+      "applicantStatusInCanadaValue": "9900000005",
+      "labelEn": "Visitor Record (indicating authorization to work)",
+      "labelFr": "Visitor Record (indicating authorization to work)"
+    },
+    {
+      "value": 9800000029,
+      "applicantStatusInCanadaValue": "9900000005",
+      "labelEn": "Diplomatic Identity Cards + note of permission of employment",
+      "labelFr": "Diplomatic Identity Cards + note of permission of employment"
+    },
+    {
+      "value": 9800000030,
+      "applicantStatusInCanadaValue": "9900000006",
+      "labelEn": "Foreign birth certificate + letter from CPP/CRA/RRQ/OAS (for non-resident only)",
+      "labelFr": "Foreign birth certificate + letter from CPP/CRA/RRQ/OAS (for non-resident only)"
+    }
+  ]
+}
