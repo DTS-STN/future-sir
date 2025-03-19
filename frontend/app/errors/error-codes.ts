@@ -15,6 +15,7 @@ export const ErrorCodes = {
   // form error codes
   MISSING_TAB_ID: 'FRM-0000',
   UNRECOGNIZED_ACTION: 'FRM-0001',
+  UNRECOGNIZED_SECTION: 'FRM-0002',
 
   // i18n error codes
   NO_LANGUAGE_FOUND: 'I18N-0001',

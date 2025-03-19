@@ -136,6 +136,14 @@ export const i18nRoutes = [
         },
       },
       {
+        id: 'MCF-0005',
+        file: 'routes/protected/multi-channel/edit-application.tsx',
+        paths: {
+          en: '/en/protected/multi-channel/edit-application',
+          fr: '/fr/protege/multi-chaine/edit-application',
+        },
+      },
+      {
         file: 'routes/protected/person-case/layout.tsx',
         children: [
           {
@@ -215,7 +223,7 @@ export const i18nRoutes = [
             file: 'routes/protected/person-case/previous-sin.tsx',
             paths: {
               en: '/en/protected/person-case/previous-sin',
-              fr: '/fr/protege/cas-personnel/previous-sin',
+              fr: '/fr/protege/cas-personnel/nas-precedent',
             },
           },
           {
@@ -223,7 +231,7 @@ export const i18nRoutes = [
             file: 'routes/protected/person-case/contact-information.tsx',
             paths: {
               en: '/en/protected/person-case/contact-information',
-              fr: '/fr/protege/cas-personnel/contact-information',
+              fr: '/fr/protege/cas-personnel/informations-de-contact',
             },
           },
           {

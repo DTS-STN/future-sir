@@ -1,3 +1,5 @@
+import type { ReactElement } from 'react';
+
 import type { RouteHandle } from 'react-router';
 
 import type { ResourceKey } from 'i18next';
@@ -5,14 +7,16 @@ import { useTranslation } from 'react-i18next';
 
 import { Address } from '~/components/address';
 import { DescriptionList, DescriptionListItem } from '~/components/description-list';
-import { InlineLink } from '~/components/links';
+import type { InlineLink } from '~/components/links';
 import { UnorderedList } from '~/components/lists';
 
 const handle = {
   i18nNamespace: ['protected'],
 } as const satisfies RouteHandle;
 
-interface SinApplicationProps {
+type LinkElement = ReactElement<typeof InlineLink>;
+
+interface ApplicationReviewProps {
   inPersonSINCase: {
     primaryDocuments: DataProps['data'];
     secondaryDocument: SecondayDocumentDataProps['data'];
@@ -23,30 +27,47 @@ interface SinApplicationProps {
     previousSin: DataProps['data'];
     contactInformation: ContactInformationDataProps['data'];
   };
-  tabId?: string;
+  primaryDocumentsLink: LinkElement;
+  secondaryDocumentLink: LinkElement;
+  currentNameInfoLink: LinkElement;
+  personalInformationLink: LinkElement;
+  birthDetailsLink: LinkElement;
+  parentDetailsLink: LinkElement;
+  previousSinLink: LinkElement;
+  contactInformationLink: LinkElement;
 }
 
-export function SinApplication({ inPersonSINCase, tabId }: SinApplicationProps) {
+export function ApplicationReview({
+  inPersonSINCase,
+  primaryDocumentsLink,
+  secondaryDocumentLink,
+  currentNameInfoLink,
+  personalInformationLink,
+  birthDetailsLink,
+  parentDetailsLink,
+  previousSinLink,
+  contactInformationLink,
+}: ApplicationReviewProps) {
   return (
     <div className="mt-12 max-w-prose space-y-15">
-      <PrimaryDocumentData data={inPersonSINCase.primaryDocuments} tabId={tabId} />
-      <SecondayDocumentData data={inPersonSINCase.secondaryDocument} tabId={tabId} />
-      <PreferredNameData data={inPersonSINCase.currentNameInfo} tabId={tabId} />
-      <PersonalDetailsData data={inPersonSINCase.personalInformation} tabId={tabId} />
-      <BirthDetailsData data={inPersonSINCase.birthDetails} tabId={tabId} />
-      <ParentDetailsData data={inPersonSINCase.parentDetails} tabId={tabId} />
-      <PreviousSinData data={inPersonSINCase.previousSin} tabId={tabId} />
-      <ContactInformationData data={inPersonSINCase.contactInformation} tabId={tabId} />
+      <PrimaryDocumentData data={inPersonSINCase.primaryDocuments} link={primaryDocumentsLink} />
+      <SecondayDocumentData data={inPersonSINCase.secondaryDocument} link={secondaryDocumentLink} />
+      <PreferredNameData data={inPersonSINCase.currentNameInfo} link={currentNameInfoLink} />
+      <PersonalDetailsData data={inPersonSINCase.personalInformation} link={personalInformationLink} />
+      <BirthDetailsData data={inPersonSINCase.birthDetails} link={birthDetailsLink} />
+      <ParentDetailsData data={inPersonSINCase.parentDetails} link={parentDetailsLink} />
+      <PreviousSinData data={inPersonSINCase.previousSin} link={previousSinLink} />
+      <ContactInformationData data={inPersonSINCase.contactInformation} link={contactInformationLink} />
     </div>
   );
 }
 
 interface DataProps {
   data: Record<string, string | undefined>;
-  tabId?: string;
+  link: LinkElement;
 }
 
-function PrimaryDocumentData({ data, tabId }: DataProps) {
+function PrimaryDocumentData({ data, link }: DataProps) {
   const { t } = useTranslation(handle.i18nNamespace);
   return (
     <section className="space-y-3">
@@ -83,9 +104,7 @@ function PrimaryDocumentData({ data, tabId }: DataProps) {
           <p>{t('protected:review.choosen-file')}</p>
         </DescriptionListItem>
       </DescriptionList>
-      <InlineLink file="routes/protected/person-case/primary-docs.tsx" search={`tid=${tabId}`}>
-        {t('protected:review.edit-primary-identity-document')}
-      </InlineLink>
+      {link}
     </section>
   );
 }
@@ -97,10 +116,10 @@ interface SecondayDocumentDataProps {
     expiryMonth: number;
     expiryYear: number;
   };
-  tabId?: string;
+  link: LinkElement;
 }
 
-function SecondayDocumentData({ data, tabId }: SecondayDocumentDataProps) {
+function SecondayDocumentData({ data, link }: SecondayDocumentDataProps) {
   const { t } = useTranslation(handle.i18nNamespace);
   return (
     <section className="space-y-3">
@@ -118,9 +137,7 @@ function SecondayDocumentData({ data, tabId }: SecondayDocumentDataProps) {
           <p>{t('protected:review.choosen-file')}</p>
         </DescriptionListItem>
       </DescriptionList>
-      <InlineLink file="routes/protected/person-case/secondary-doc.tsx" search={`tid=${tabId}`}>
-        {t('protected:review.edit-secondary-identity-document')}
-      </InlineLink>
+      {link}
     </section>
   );
 }
@@ -134,10 +151,10 @@ interface PreferredNameDataProps {
     supportingDocuments?: { required: boolean; documentTypes?: string[] };
     supportingDocumentsNames?: string[];
   };
-  tabId?: string;
+  link: LinkElement;
 }
 
-function PreferredNameData({ data, tabId }: PreferredNameDataProps) {
+function PreferredNameData({ data, link }: PreferredNameDataProps) {
   const { t } = useTranslation(handle.i18nNamespace);
 
   return (
@@ -176,9 +193,7 @@ function PreferredNameData({ data, tabId }: PreferredNameDataProps) {
           )}
         </div>
       </DescriptionList>
-      <InlineLink file="routes/protected/person-case/current-name.tsx" search={`tid=${tabId}`}>
-        {t('protected:review.edit-current-name')}
-      </InlineLink>
+      {link}
     </section>
   );
 }
@@ -191,10 +206,10 @@ interface PersonalDetailsDataProps {
     gender: string;
     genderName: string;
   };
-  tabId?: string;
+  link: LinkElement;
 }
 
-function PersonalDetailsData({ data, tabId }: PersonalDetailsDataProps) {
+function PersonalDetailsData({ data, link }: PersonalDetailsDataProps) {
   const { t } = useTranslation(handle.i18nNamespace);
   return (
     <section className="space-y-3">
@@ -225,9 +240,7 @@ function PersonalDetailsData({ data, tabId }: PersonalDetailsDataProps) {
           <p>{data.genderName}</p>
         </DescriptionListItem>
       </DescriptionList>
-      <InlineLink file="routes/protected/person-case/personal-info.tsx" search={`tid=${tabId}`}>
-        {t('protected:review.edit-personal-details')}
-      </InlineLink>
+      {link}
     </section>
   );
 }
@@ -241,10 +254,10 @@ interface BirthDetailsDataProps {
     countryName: string;
     fromMultipleBirth: boolean;
   };
-  tabId?: string;
+  link: LinkElement;
 }
 
-function BirthDetailsData({ data, tabId }: BirthDetailsDataProps) {
+function BirthDetailsData({ data, link }: BirthDetailsDataProps) {
   const { t } = useTranslation(handle.i18nNamespace);
   return (
     <section className="space-y-3">
@@ -263,9 +276,7 @@ function BirthDetailsData({ data, tabId }: BirthDetailsDataProps) {
           <p>{data.fromMultipleBirth ? t('protected:review.yes') : t('protected:review.no')}</p>
         </DescriptionListItem>
       </DescriptionList>
-      <InlineLink file="routes/protected/person-case/birth-details.tsx" search={`tid=${tabId}`}>
-        {t('protected:review.edit-birth-details')}
-      </InlineLink>
+      {link}
     </section>
   );
 }
@@ -282,10 +293,10 @@ interface ParentDetailsDataProps {
       }
     | undefined
   )[];
-  tabId?: string;
+  link: LinkElement;
 }
 
-function ParentDetailsData({ data, tabId }: ParentDetailsDataProps) {
+function ParentDetailsData({ data, link }: ParentDetailsDataProps) {
   const { t } = useTranslation(handle.i18nNamespace);
   return (
     <section className="space-y-3">
@@ -328,14 +339,12 @@ function ParentDetailsData({ data, tabId }: ParentDetailsDataProps) {
             </li>
           ))}
       </ul>
-      <InlineLink file="routes/protected/person-case/parent-details.tsx" search={`tid=${tabId}`}>
-        {t('protected:review.edit-parent-details')}
-      </InlineLink>
+      {link}
     </section>
   );
 }
 
-function PreviousSinData({ data, tabId }: DataProps) {
+function PreviousSinData({ data, link }: DataProps) {
   const { t } = useTranslation(handle.i18nNamespace);
   return (
     <section className="space-y-3">
@@ -350,9 +359,7 @@ function PreviousSinData({ data, tabId }: DataProps) {
           </DescriptionListItem>
         )}
       </DescriptionList>
-      <InlineLink file="routes/protected/person-case/previous-sin.tsx" search={`tid=${tabId}`}>
-        {t('protected:review.edit-previous-sin')}
-      </InlineLink>
+      {link}
     </section>
   );
 }
@@ -372,10 +379,10 @@ interface ContactInformationDataProps {
     province: string;
     provinceName?: string;
   };
-  tabId?: string;
+  link: LinkElement;
 }
 
-function ContactInformationData({ data, tabId }: ContactInformationDataProps) {
+function ContactInformationData({ data, link }: ContactInformationDataProps) {
   const { t } = useTranslation(handle.i18nNamespace);
   return (
     <section className="space-y-3">
@@ -417,9 +424,7 @@ function ContactInformationData({ data, tabId }: ContactInformationDataProps) {
           </DescriptionListItem>
         </DescriptionList>
       </div>
-      <InlineLink file="routes/protected/person-case/contact-information.tsx" search={`tid=${tabId}`}>
-        {t('protected:review.edit-contact-information')}
-      </InlineLink>
+      {link}
     </section>
   );
 }

@@ -1,5 +1,4 @@
-import type { ChangeEvent } from 'react';
-import { useId, useState } from 'react';
+import { useId } from 'react';
 
 import type { RouteHandle } from 'react-router';
 import { data, redirect, useFetcher } from 'react-router';
@@ -10,14 +9,11 @@ import * as v from 'valibot';
 import type { Info, Route } from './+types/previous-sin';
 
 import { getLocalizedApplicantHadSinOptions } from '~/.server/domain/person-case/services/applicant-sin-service';
-import { serverEnvironment } from '~/.server/environment';
 import { LogFactory } from '~/.server/logging';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
 import { FetcherErrorSummary } from '~/components/error-summary';
-import { InputPatternField } from '~/components/input-pattern-field';
-import { InputRadios } from '~/components/input-radios';
 import { PageTitle } from '~/components/page-title';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
@@ -25,9 +21,9 @@ import { HttpStatusCodes } from '~/errors/http-status-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine.server';
-import { previousSinSchema } from '~/routes/protected/person-case/validation.server';
-import { getSingleKey } from '~/utils/i18n-utils';
-import { sinInputPatternFormat } from '~/utils/sin-utils';
+import PreviousSinForm from '~/routes/protected/sin-application/previous-sin-form';
+import type { previousSinSchema } from '~/routes/protected/sin-application/validation.server';
+import { parsePreviousSin } from '~/routes/protected/sin-application/validation.server';
 
 const log = LogFactory.getLogger(import.meta.url);
 
@@ -59,13 +55,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     }
 
     case 'next': {
-      const parseResult = v.safeParse(previousSinSchema, {
-        hasPreviousSin: formData.get('hasPreviousSin') as string,
-        socialInsuranceNumber:
-          formData.get('hasPreviousSin') === serverEnvironment.PP_HAS_HAD_PREVIOUS_SIN_CODE
-            ? (formData.get('socialInsuranceNumber') as string)
-            : undefined,
-      });
+      const parseResult = parsePreviousSin(formData);
 
       if (!parseResult.success) {
         return data(
@@ -102,20 +92,11 @@ export async function loader({ context, request }: Route.LoaderArgs) {
 export default function PreviousSin({ loaderData, actionData, params }: Route.ComponentProps) {
   const { t } = useTranslation(handle.i18nNamespace);
 
-  const [hasPreviousSin, setHasPreviousSin] = useState(loaderData.defaultFormValues?.hasPreviousSin);
-
   const fetcherKey = useId();
   const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
 
   const isSubmitting = fetcher.state !== 'idle';
   const errors = fetcher.data?.errors;
-
-  const hasPreviousSinOptions = loaderData.localizedApplicantHadSinOptions.map(({ id, name }) => ({
-    value: id,
-    children: name,
-    defaultChecked: id === loaderData.defaultFormValues?.hasPreviousSin,
-    onChange: ({ target }: ChangeEvent<HTMLInputElement>) => setHasPreviousSin(target.value),
-  }));
 
   return (
     <>
@@ -123,27 +104,11 @@ export default function PreviousSin({ loaderData, actionData, params }: Route.Co
 
       <FetcherErrorSummary fetcherKey={fetcherKey}>
         <fetcher.Form method="post" noValidate>
-          <div className="space-y-6">
-            <InputRadios
-              id="has-previous-sin"
-              legend={t('protected:previous-sin.has-previous-sin-label')}
-              name="hasPreviousSin"
-              options={hasPreviousSinOptions}
-              required
-              errorMessage={t(getSingleKey(errors?.hasPreviousSin))}
-            />
-            {hasPreviousSin === globalThis.__appEnvironment.PP_HAS_HAD_PREVIOUS_SIN_CODE && (
-              <InputPatternField
-                defaultValue={loaderData.defaultFormValues?.socialInsuranceNumber ?? ''}
-                inputMode="numeric"
-                format={sinInputPatternFormat}
-                id="social-insurance-number"
-                name="socialInsuranceNumber"
-                label={t('protected:previous-sin.social-insurance-number-label')}
-                errorMessage={t(getSingleKey(errors?.socialInsuranceNumber))}
-              />
-            )}
-          </div>
+          <PreviousSinForm
+            defaultFormValues={loaderData.defaultFormValues}
+            localizedApplicantHadSinOptions={loaderData.localizedApplicantHadSinOptions}
+            errors={errors}
+          />
           <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
             <Button name="action" value="next" variant="primary" id="continue-button" disabled={isSubmitting}>
               {t('protected:person-case.next')}

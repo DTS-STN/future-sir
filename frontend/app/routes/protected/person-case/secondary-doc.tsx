@@ -13,10 +13,7 @@ import { LogFactory } from '~/.server/logging';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
-import { DatePickerField } from '~/components/date-picker-field';
 import { FetcherErrorSummary } from '~/components/error-summary';
-import { InputFile } from '~/components/input-file';
-import { InputRadios } from '~/components/input-radios';
 import { PageTitle } from '~/components/page-title';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
@@ -24,8 +21,9 @@ import { HttpStatusCodes } from '~/errors/http-status-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine.server';
-import { secondaryDocumentSchema } from '~/routes/protected/person-case/validation.server';
-import { getSingleKey } from '~/utils/i18n-utils';
+import SecondaryDocForm from '~/routes/protected/sin-application/secondary-doc-form';
+import type { secondaryDocumentSchema } from '~/routes/protected/sin-application/validation.server';
+import { parseSecondaryDocument } from '~/routes/protected/sin-application/validation.server';
 
 const log = LogFactory.getLogger(import.meta.url);
 
@@ -57,28 +55,13 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     }
 
     case 'next': {
-      const formValues = {
-        documentType: formData.get('document-type')?.toString(),
-        expiryYear: formData.get('expiry-year')?.toString(),
-        expiryMonth: formData.get('expiry-month')?.toString(),
-      };
-
-      const parseResult = v.safeParse(secondaryDocumentSchema, formValues);
+      const parseResult = parseSecondaryDocument(formData);
 
       if (!parseResult.success) {
-        const formErrors = v.flatten<typeof secondaryDocumentSchema>(parseResult.issues).nested;
-
-        machineActor.send({
-          type: 'setFormData',
-          data: {
-            secondaryDocument: {
-              values: formValues,
-              errors: formErrors,
-            },
-          },
-        });
-
-        return data({ formValues: formValues, formErrors: formErrors }, { status: HttpStatusCodes.BAD_REQUEST });
+        return data(
+          { errors: v.flatten<typeof secondaryDocumentSchema>(parseResult.issues).nested },
+          { status: HttpStatusCodes.BAD_REQUEST },
+        );
       }
 
       machineActor.send({ type: 'submitSecondaryDocuments', data: parseResult.output });
@@ -98,13 +81,11 @@ export async function loader({ context, request }: Route.LoaderArgs) {
 
   const { lang, t } = await getTranslation(request, handle.i18nNamespace);
   const machineActor = loadMachineActor(context.session, request, 'secondary-docs');
-  const machineContext = machineActor?.getSnapshot().context;
 
   return {
     documentTitle: t('protected:secondary-identity-document.page-title'),
+    defaultFormValues: machineActor?.getSnapshot().context.secondaryDocument,
     localizedApplicantSecondaryDocumentChoices: getLocalizedApplicantSecondaryDocumentChoices(lang),
-    formValues: machineContext?.formData?.secondaryDocument?.values ?? machineContext?.secondaryDocument,
-    formErrors: machineContext?.formData?.secondaryDocument?.errors,
   };
 }
 
@@ -113,16 +94,9 @@ export default function SecondaryDoc({ actionData, loaderData, params }: Route.C
 
   const fetcherKey = useId();
   const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
+
   const isSubmitting = fetcher.state !== 'idle';
-
-  const formValues = fetcher.data?.formValues ?? loaderData.formValues;
-  const formErrors = fetcher.data?.formErrors ?? loaderData.formErrors;
-
-  const docOptions = loaderData.localizedApplicantSecondaryDocumentChoices.map(({ id, name }) => ({
-    value: id,
-    children: name,
-    defaultChecked: id === loaderData.formValues?.documentType,
-  }));
+  const errors = fetcher.data?.errors;
 
   return (
     <>
@@ -130,39 +104,11 @@ export default function SecondaryDoc({ actionData, loaderData, params }: Route.C
 
       <FetcherErrorSummary fetcherKey={fetcherKey}>
         <fetcher.Form method="post" noValidate encType="multipart/form-data">
-          <div className="space-y-10">
-            <InputRadios
-              id="document-type-id"
-              legend={t('protected:secondary-identity-document.document-type.title')}
-              name="document-type"
-              options={docOptions}
-              required
-              errorMessage={t(getSingleKey(formErrors?.documentType))}
-            />
-            <DatePickerField
-              defaultMonth={Number(formValues?.expiryMonth)}
-              defaultYear={Number(formValues?.expiryYear)}
-              id="expiry-date-id"
-              legend={t('protected:secondary-identity-document.expiry-date.title')}
-              required
-              names={{
-                month: 'expiry-month',
-                year: 'expiry-year',
-              }}
-              errorMessages={{
-                year: t(getSingleKey(formErrors?.expiryYear)),
-                month: t(getSingleKey(formErrors?.expiryMonth)),
-              }}
-            />
-            <InputFile
-              disabled
-              accept=".jpg,.png,.heic"
-              id="document-id"
-              name="document"
-              label={t('protected:secondary-identity-document.upload-document.title')}
-              required
-            />
-          </div>
+          <SecondaryDocForm
+            defaultFormValues={loaderData.defaultFormValues}
+            localizedApplicantSecondaryDocumentChoices={loaderData.localizedApplicantSecondaryDocumentChoices}
+            errors={errors}
+          />
           <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
             <Button name="action" value="next" variant="primary" id="continue-button" disabled={isSubmitting}>
               {t('protected:person-case.next')}

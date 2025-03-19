@@ -428,6 +428,8 @@
     "page-title": "Sommaire",
     "case-created": "Cas créé",
     "id-number": "Numéro d'identification",
-    "send-for-validation": "Envoyer pour validation"
+    "send-for-validation": "Envoyer pour validation",
+    "back": "Retour",
+    "confirm": "Valider"
   }
 }

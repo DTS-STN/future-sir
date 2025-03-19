@@ -13,7 +13,6 @@ import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
 import { FetcherErrorSummary } from '~/components/error-summary';
-import { InputCheckbox } from '~/components/input-checkbox';
 import { PageTitle } from '~/components/page-title';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
@@ -21,8 +20,9 @@ import { HttpStatusCodes } from '~/errors/http-status-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import { createMachineActor, getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine.server';
-import { privacyStatementSchema } from '~/routes/protected/person-case/validation.server';
-import { getSingleKey } from '~/utils/i18n-utils';
+import PrivacyStatementForm from '~/routes/protected/sin-application/privacy-statement-form';
+import type { privacyStatementSchema } from '~/routes/protected/sin-application/validation.server';
+import { parsePrivacyStatement } from '~/routes/protected/sin-application/validation.server';
 
 const log = LogFactory.getLogger(import.meta.url);
 
@@ -54,9 +54,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     }
 
     case 'next': {
-      const parseResult = v.safeParse(privacyStatementSchema, {
-        agreedToTerms: formData.get('agreedToTerms')?.toString() === 'on',
-      });
+      const parseResult = parsePrivacyStatement(formData);
 
       if (!parseResult.success) {
         return data(
@@ -103,23 +101,7 @@ export default function PrivacyStatement({ loaderData, params }: Route.Component
       <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:privacy-statement.page-title')}</PageTitle>
       <FetcherErrorSummary fetcherKey={fetcherKey}>
         <fetcher.Form method="post" noValidate>
-          <div className="max-w-prose space-y-6">
-            <p>{t('protected:privacy-statement.ask-client')}</p>
-            <h2 className="font-lato text-2xl font-bold">{t('protected:privacy-statement.privacy-statement')}</h2>
-            <p>{t('protected:privacy-statement.personal-info')}</p>
-            <p>{t('protected:privacy-statement.participation')}</p>
-            <p>{t('protected:privacy-statement.info-and-docs')}</p>
-            <p>{t('protected:privacy-statement.your-rights')}</p>
-            <InputCheckbox
-              id="agreed-to-terms"
-              name="agreedToTerms"
-              className="h-8 w-8"
-              errorMessage={t(getSingleKey(errors?.agreedToTerms))}
-              required
-            >
-              {t('protected:privacy-statement.confirm-privacy-notice-checkbox.title')}
-            </InputCheckbox>
-          </div>
+          <PrivacyStatementForm errors={errors} />
           <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
             <Button name="action" value="next" variant="primary" id="continue-button" disabled={isSubmitting}>
               {t('protected:person-case.next')}

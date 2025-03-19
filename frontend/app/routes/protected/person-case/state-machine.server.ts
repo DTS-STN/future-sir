@@ -10,11 +10,11 @@ import { ErrorCodes } from '~/errors/error-codes';
 import { HttpStatusCodes } from '~/errors/http-status-codes';
 import type { I18nRouteFile } from '~/i18n-routes';
 import { i18nRoutes } from '~/i18n-routes';
+import type { FormData } from '~/routes/protected/person-case/types';
 import type {
   BirthDetailsData,
   ContactInformationData,
   CurrentNameData,
-  FormData,
   InPersonSinApplication,
   ParentDetailsData,
   PersonalInfoData,
@@ -23,7 +23,7 @@ import type {
   PrivacyStatementData,
   RequestDetailsData,
   SecondaryDocumentData,
-} from '~/routes/protected/person-case/types';
+} from '~/routes/protected/sin-application/types';
 import { getLanguage } from '~/utils/i18n-utils';
 import { getRouteByFile } from '~/utils/route-utils';
 
