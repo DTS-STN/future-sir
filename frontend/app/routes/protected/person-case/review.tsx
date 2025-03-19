@@ -43,6 +43,8 @@ export function meta({ data }: Route.MetaArgs) {
 export async function action({ context, params, request }: Route.ActionArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
 
+  const tabId = new URL(request.url).searchParams.get('tid') ?? undefined;
+
   const machineActor = loadMachineActor(context.session, request, 'review');
 
   if (!machineActor) {
@@ -50,9 +52,8 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     throw i18nRedirect('routes/protected/person-case/privacy-statement.tsx', request);
   }
 
-  const tabId = new URL(request.url).searchParams.get('tid') ?? undefined;
-  const sessionData = (context.session.inPersonSinApplications ??= {});
-  const inPersonSINCase = validateInPersonSINCaseSession(sessionData, tabId, request);
+  const sessionData = machineActor.getSnapshot().context;
+  const inPersonSinApplication = validateInPersonSINCaseSession(sessionData, tabId, request);
 
   const formData = await request.formData();
   const action = formData.get('action');
@@ -65,7 +66,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
 
     case 'next': {
       const sinApplicationService = getSinApplicationService();
-      const response = await sinApplicationService.submitSinApplication(inPersonSINCase);
+      const response = await sinApplicationService.submitSinApplication(inPersonSinApplication);
 
       //TODO: store the response in session
       console.log('SIN Application submitted successfully:', response);
@@ -89,12 +90,18 @@ export async function action({ context, params, request }: Route.ActionArgs) {
 
 export async function loader({ context, request }: Route.LoaderArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
+  const { lang, t } = await getTranslation(request, handle.i18nNamespace);
 
   const tabId = new URL(request.url).searchParams.get('tid') ?? undefined;
-  const { lang, t } = await getTranslation(request, handle.i18nNamespace);
+
   const machineActor = loadMachineActor(context.session, request, 'review');
 
-  const sessionData = machineActor?.getSnapshot().context;
+  if (!machineActor) {
+    log.warn('Could not find a machine snapshot in session; redirecting to start of flow');
+    throw i18nRedirect('routes/protected/person-case/privacy-statement.tsx', request);
+  }
+
+  const sessionData = machineActor.getSnapshot().context;
   const inPersonSinApplication = validateInPersonSINCaseSession(sessionData, tabId, request);
 
   return {
@@ -219,15 +226,11 @@ export default function Review({ loaderData, actionData, params }: Route.Compone
 }
 
 function validateInPersonSINCaseSession(
-  sessionData: Partial<InPersonSinApplication> | undefined,
+  sessionData: Partial<InPersonSinApplication>,
   tabId: string | undefined,
   request: Request,
 ): Required<InPersonSinApplication> {
   const search = tabId ? new URLSearchParams({ tid: tabId }) : undefined;
-
-  if (sessionData === undefined) {
-    throw i18nRedirect('routes/protected/person-case/privacy-statement.tsx', request, { search });
-  }
 
   const {
     birthDetails,
@@ -243,7 +246,7 @@ function validateInPersonSINCaseSession(
   } = sessionData;
 
   if (privacyStatement === undefined) {
-    throw i18nRedirect('routes/protected/index.tsx', request, { search });
+    throw i18nRedirect('routes/protected/person-case/privacy-statement.tsx', request, { search });
   }
 
   if (requestDetails === undefined) {
