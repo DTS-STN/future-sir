@@ -26,8 +26,8 @@ import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
+import type { InPersonSinApplication } from '~/routes/protected/person-case/state-machine-models';
 import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine.server';
-import type { InPersonSinApplication } from '~/routes/protected/person-case/types';
 import { SinApplication } from '~/routes/protected/sin-application';
 
 const log = LogFactory.getLogger(import.meta.url);

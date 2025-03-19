@@ -23,7 +23,7 @@ import type {
   PrivacyStatementData,
   RequestDetailsData,
   SecondaryDocumentData,
-} from '~/routes/protected/person-case/types';
+} from '~/routes/protected/person-case/state-machine-models';
 import { getLanguage } from '~/utils/i18n-utils';
 import { getRouteByFile } from '~/utils/route-utils';
 
