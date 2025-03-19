@@ -27,14 +27,14 @@ export function getApplicantStatusInCanadaChoices(): readonly ApplicantStatusInC
  * @throws {AppError} If the choice is not found.
  */
 export function getApplicantStatusInCanadaChoicesById(id: string): ApplicantStatusInCanadaChoice {
-  const scenario = getApplicantStatusInCanadaChoices().find((s) => s.id === id);
-  if (!scenario) {
+  const applicantStatusInCanadaChoice = getApplicantStatusInCanadaChoices().find((s) => s.id === id);
+  if (!applicantStatusInCanadaChoice) {
     throw new AppError(
       `Application status in Canada with ID '${id}' not found.`,
       ErrorCodes.NO_APPLICANT_STATUS_IN_CANADA_CHOICE_FOUND,
     );
   }
-  return scenario;
+  return applicantStatusInCanadaChoice;
 }
 
 /**
@@ -62,12 +62,12 @@ export function getLocalizedApplicantStatusInCanadaChoiceById(
   id: string,
   language: Language,
 ): LocalizedApplicantStatusInCanadaChoice {
-  const scenario = getLocalizedApplicantStatusInCanadaChoices(language).find((s) => s.id === id);
-  if (!scenario) {
+  const applicantStatusInCanadaChoice = getLocalizedApplicantStatusInCanadaChoices(language).find((s) => s.id === id);
+  if (!applicantStatusInCanadaChoice) {
     throw new AppError(
       `Localized applicant status in Canada choice with ID '${id}' not found.`,
       ErrorCodes.NO_APPLICANT_STATUS_IN_CANADA_CHOICE_FOUND,
     );
   }
-  return scenario;
+  return applicantStatusInCanadaChoice;
 }

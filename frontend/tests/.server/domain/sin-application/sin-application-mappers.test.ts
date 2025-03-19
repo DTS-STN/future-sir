@@ -1,5 +1,8 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 
+import type { ApplicantStatusInCanadaChoice, ApplicantSupportingDocumentType } from '~/.server/domain/person-case/models';
+import { getApplicantStatusInCanadaChoicesById } from '~/.server/domain/person-case/services/applicant-status-in-canada-service';
+import { getApplicantSupportingDocumentTypesById } from '~/.server/domain/person-case/services/applicant-supporting-document-service';
 import {
   mapSinApplicationResponseToSubmitSinApplicationResponse,
   mapSubmitSinApplicationRequestToSinApplicationRequest,
@@ -10,8 +13,20 @@ import type {
 } from '~/.server/domain/sin-application/sin-application-models';
 import type { SinApplicationRequest, SinApplicationResponse } from '~/.server/shared/api/interop';
 
+vi.mock('~/.server/domain/person-case/services/applicant-status-in-canada-service');
+vi.mock('~/.server/domain/person-case/services/applicant-supporting-document-service');
+
 describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
   it('should map SubmitSinApplicationRequest to SinApplicationRequest correctly when preferredSameAsDocumentName is true', () => {
+    const applicantStatusInCanadaChoiceMock: ApplicantStatusInCanadaChoice = {
+      id: 'StatusInCanadaId',
+      nameEn: 'StatusInCanada NameEn',
+      nameFr: 'StatusInCanada NameFr',
+    };
+
+    vi.mocked(getApplicantStatusInCanadaChoicesById).mockReturnValueOnce(applicantStatusInCanadaChoiceMock);
+    vi.mocked(getApplicantSupportingDocumentTypesById);
+
     const submitSinApplicationRequest: SubmitSinApplicationRequest = {
       birthDetails: {
         city: 'City',
@@ -57,7 +72,7 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
       },
       primaryDocuments: {
         citizenshipDate: '2020-01-01',
-        currentStatusInCanada: 'Citizen',
+        currentStatusInCanada: applicantStatusInCanadaChoiceMock.id,
         registrationNumber: 'RegNumber',
         documentType: 'DocType',
         clientNumber: 'ClientNumber',
@@ -80,7 +95,7 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
                 CertificateIssueDate: { date: '2020-01-01' },
                 CertificateCategoryCode: {
                   ReferenceDataID: '564190000',
-                  ReferenceDataName: 'Citizen',
+                  ReferenceDataName: applicantStatusInCanadaChoiceMock.nameEn,
                 },
               },
             ],
@@ -319,10 +334,28 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
     };
 
     const result = mapSubmitSinApplicationRequestToSinApplicationRequest(submitSinApplicationRequest);
+
     expect(result).toStrictEqual(expected);
+    expect(getApplicantStatusInCanadaChoicesById).toHaveBeenCalledExactlyOnceWith(applicantStatusInCanadaChoiceMock.id);
+    expect(getApplicantSupportingDocumentTypesById).not.toHaveBeenCalled();
   });
 
   it('should map SubmitSinApplicationRequest to SinApplicationRequest correctly when preferredSameAsDocumentName is false', () => {
+    const applicantStatusInCanadaChoiceMock: ApplicantStatusInCanadaChoice = {
+      id: 'StatusInCanadaId',
+      nameEn: 'StatusInCanada NameEn',
+      nameFr: 'StatusInCanada NameFr',
+    };
+
+    const applicantSupportingDocumentTypeMock: ApplicantSupportingDocumentType = {
+      id: 'DocType1Id',
+      nameEn: 'DocType1 NameEn',
+      nameFr: 'DocType1 NameFr',
+    };
+
+    vi.mocked(getApplicantStatusInCanadaChoicesById).mockReturnValueOnce(applicantStatusInCanadaChoiceMock);
+    vi.mocked(getApplicantSupportingDocumentTypesById).mockReturnValueOnce(applicantSupportingDocumentTypeMock);
+
     const submitSinApplicationRequest: SubmitSinApplicationRequest = {
       birthDetails: {
         city: 'City',
@@ -348,7 +381,7 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
         lastName: 'LastName',
         supportingDocuments: {
           required: true,
-          documentTypes: ['DocType1'],
+          documentTypes: [applicantSupportingDocumentTypeMock.id],
         },
       },
       parentDetails: [
@@ -375,7 +408,7 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
       },
       primaryDocuments: {
         citizenshipDate: '2020-01-01',
-        currentStatusInCanada: 'Citizen',
+        currentStatusInCanada: applicantStatusInCanadaChoiceMock.id,
         registrationNumber: 'RegNumber',
         documentType: 'DocType',
         clientNumber: 'ClientNumber',
@@ -398,7 +431,7 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
                 CertificateIssueDate: { date: '2020-01-01' },
                 CertificateCategoryCode: {
                   ReferenceDataID: '564190000',
-                  ReferenceDataName: 'Citizen',
+                  ReferenceDataName: applicantStatusInCanadaChoiceMock.nameEn,
                 },
               },
             ],
@@ -445,8 +478,8 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
             },
             {
               CertificateCategoryCode: {
-                ReferenceDataID: 'DocType1',
-                ReferenceDataName: 'DocType1',
+                ReferenceDataID: applicantSupportingDocumentTypeMock.id,
+                ReferenceDataName: applicantSupportingDocumentTypeMock.nameEn,
               },
               ResourceReference: 'Supporting documents for name change',
             },
@@ -644,7 +677,10 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
     };
 
     const result = mapSubmitSinApplicationRequestToSinApplicationRequest(submitSinApplicationRequest);
+
     expect(result).toStrictEqual(expected);
+    expect(getApplicantStatusInCanadaChoicesById).toHaveBeenCalledExactlyOnceWith(applicantStatusInCanadaChoiceMock.id);
+    expect(getApplicantSupportingDocumentTypesById).toHaveBeenCalledExactlyOnceWith(applicantSupportingDocumentTypeMock.id);
   });
 });
 

@@ -1,3 +1,5 @@
+import { getApplicantStatusInCanadaChoicesById } from '~/.server/domain/person-case/services/applicant-status-in-canada-service';
+import { getApplicantSupportingDocumentTypesById } from '~/.server/domain/person-case/services/applicant-supporting-document-service';
 import type {
   SubmitSinApplicationRequest,
   SubmitSinApplicationResponse,
@@ -76,7 +78,7 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
             CertificateIssueDate: { date: primaryDocuments.citizenshipDate },
             CertificateCategoryCode: {
               ReferenceDataID: '564190000', // copied from esdc_applicantstatusincanada for Canadian citizen
-              ReferenceDataName: primaryDocuments.currentStatusInCanada,
+              ReferenceDataName: getApplicantStatusInCanadaChoicesById(primaryDocuments.currentStatusInCanada).nameEn,
             },
           },
         ],
@@ -154,12 +156,12 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
         ResourceReference: 'Secondary Documents',
       });
 
-      if (currentNameInfo.supportingDocuments?.documentTypes) {
+      if (currentNameInfo.supportingDocuments?.documentTypes && currentNameInfo.supportingDocuments.documentTypes.length > 0) {
         applicantCertificate.push(
           ...currentNameInfo.supportingDocuments.documentTypes.map((docType) => ({
             CertificateCategoryCode: {
               ReferenceDataID: docType,
-              ReferenceDataName: docType,
+              ReferenceDataName: getApplicantSupportingDocumentTypesById(docType).nameEn,
             },
             ResourceReference: 'Supporting documents for name change',
           })),
@@ -335,7 +337,7 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
         ApplicationDetailID: 'SIN Confirmation receiving method',
         ApplicationDetailValue: {
           ValueCode: {
-            ReferenceDataID: 'Mail', //need to check which value would go here
+            ReferenceDataID: 'Mail', //Mail or Email
           },
         },
       });
