@@ -1,16 +1,15 @@
-import {
-  mapSinApplicationResponseToSubmitSinApplicationResponse,
-  mapSubmitSinApplicationRequestToSinApplicationRequest,
-} from '~/.server/domain/sin-application/sin-application-mappers';
 import type {
   SubmitSinApplicationRequest,
   SubmitSinApplicationResponse,
 } from '~/.server/domain/sin-application/sin-application-models';
-import { sinapplication } from '~/.server/shared/api/interop';
-import { AppError } from '~/errors/app-error';
-import { ErrorCodes } from '~/errors/error-codes';
+import { getDefaultSinApplicationService } from '~/.server/domain/sin-application/sin-application-service-default';
+import { getMockSinApplicationService } from '~/.server/domain/sin-application/sin-application-service-mock';
+import { serverEnvironment } from '~/.server/environment';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { AppError } from '~/errors/app-error';
 
-/**
+export type SinApplicationService = {
+  /**
  * Submits a SIN application using the provided request data.
  *
  * This function sends a SIN application request to the backend API and handles the response.
@@ -22,20 +21,11 @@ import { ErrorCodes } from '~/errors/error-codes';
  * @returns A promise that resolves with the SIN application response data.
  * @throws {AppError} If the API call fails or the response data is missing.
  */
-export async function submitSinApplication(
-  submitSinApplicationRequest: SubmitSinApplicationRequest,
-): Promise<SubmitSinApplicationResponse> {
-  const { response, data } = await sinapplication({
-    body: mapSubmitSinApplicationRequestToSinApplicationRequest(submitSinApplicationRequest),
-  });
+  submitSinApplication(submitSinApplicationRequest: SubmitSinApplicationRequest): Promise<SubmitSinApplicationResponse>;
+};
 
-  if (data === undefined) {
-    const content = await response.text();
-    throw new AppError(
-      `Failed to submit SIN application; stastus: ${response.status}; content: ${content}`,
-      ErrorCodes.SUBMIT_SIN_APPLICATION_FAILED,
-    );
-  }
-
-  return mapSinApplicationResponseToSubmitSinApplicationResponse(data);
+export function getSinApplicationService(): SinApplicationService {
+  return serverEnvironment.ENABLE_SIN_APPLICATION_SERVICE_MOCK //
+    ? getMockSinApplicationService()
+    : getDefaultSinApplicationService();
 }

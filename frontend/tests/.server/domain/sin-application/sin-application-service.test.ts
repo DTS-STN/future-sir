@@ -1,80 +1,67 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mock } from 'vitest-mock-extended';
 import type { MockProxy } from 'vitest-mock-extended';
 
-import {
-  mapSinApplicationResponseToSubmitSinApplicationResponse,
-  mapSubmitSinApplicationRequestToSinApplicationRequest,
-} from '~/.server/domain/sin-application/sin-application-mappers';
-import type {
-  SubmitSinApplicationRequest,
-  SubmitSinApplicationResponse,
-} from '~/.server/domain/sin-application/sin-application-models';
-import { submitSinApplication } from '~/.server/domain/sin-application/sin-application-service';
-import { sinapplication } from '~/.server/shared/api/interop';
-import type { SinApplicationRequest, SinApplicationResponse } from '~/.server/shared/api/interop';
-import { AppError } from '~/errors/app-error';
-import { ErrorCodes } from '~/errors/error-codes';
+import type { SinApplicationService } from '~/.server/domain/sin-application/sin-application-service';
+import { getSinApplicationService } from '~/.server/domain/sin-application/sin-application-service';
+import { getDefaultSinApplicationService } from '~/.server/domain/sin-application/sin-application-service-default';
+import { getMockSinApplicationService } from '~/.server/domain/sin-application/sin-application-service-mock';
+import { serverEnvironment } from '~/.server/environment';
 
-vi.mock('~/.server/shared/api/interop');
-vi.mock('~/.server/domain/sin-application/sin-application-mappers');
+// vi.mock has to have a factory function. Otherwise, it tries to import the original module,
+// and if the original import has side effects, the tests will not work correctly.
+// We then have to mock other things to ensure side effects in other files are handled.
 
-describe('submitSinApplication', () => {
-  let mockHttpRequest: MockProxy<Request>;
-  let mockRequest: MockProxy<SubmitSinApplicationRequest>;
-  let mockMappedRequest: MockProxy<SinApplicationRequest>;
-  let mockResponseData: MockProxy<SinApplicationResponse>;
-  let mockMappedResponse: MockProxy<SubmitSinApplicationResponse>;
+vi.mock('~/.server/domain/sin-application/sin-application-service-default', () => ({
+  getDefaultSinApplicationService: vi.fn(),
+}));
+
+vi.mock('~/.server/domain/sin-application/sin-application-service-mock', () => ({
+  getMockSinApplicationService: vi.fn(),
+}));
+
+vi.mock('~/.server/environment', () => ({
+  serverEnvironment: {
+    ENABLE_SIN_APPLICATION_SERVICE_MOCK: undefined,
+  },
+}));
+
+describe('getSinApplicationService', () => {
+  let sinApplicationServiceMock: MockProxy<SinApplicationService>;
 
   beforeEach(() => {
-    mockHttpRequest = mock<Request>();
-    mockRequest = mock<SubmitSinApplicationRequest>();
-    mockMappedRequest = mock<SinApplicationRequest>();
-    mockResponseData = mock<SinApplicationResponse>();
-    mockMappedResponse = mock<SubmitSinApplicationResponse>({ identificationId: 'IdentificationId' });
+    sinApplicationServiceMock = mock<SinApplicationService>();
   });
 
-  it('should submit the SIN application and return the response data', async () => {
-    const mockHttpResponse = mock<Response>({ status: 200 });
+  it('should return the default service when mock service is disabled', () => {
+    const serverEnvironmentSpy = vi
+      .spyOn(serverEnvironment, 'ENABLE_SIN_APPLICATION_SERVICE_MOCK', 'get')
+      .mockReturnValueOnce(false);
 
-    vi.mocked(sinapplication).mockResolvedValue({
-      request: mockHttpRequest,
-      response: mockHttpResponse,
-      data: mockResponseData,
-    });
+    vi.mocked(getDefaultSinApplicationService).mockReturnValue(sinApplicationServiceMock);
+    vi.mocked(getMockSinApplicationService);
 
-    vi.mocked(mapSubmitSinApplicationRequestToSinApplicationRequest).mockReturnValue(mockMappedRequest);
-    vi.mocked(mapSinApplicationResponseToSubmitSinApplicationResponse).mockReturnValue(mockMappedResponse);
+    const result = getSinApplicationService();
 
-    const result = await submitSinApplication(mockRequest);
-
-    expect(sinapplication).toHaveBeenCalledWith({ body: mockMappedRequest });
-    expect(mapSubmitSinApplicationRequestToSinApplicationRequest).toHaveBeenCalledWith(mockRequest);
-    expect(mapSinApplicationResponseToSubmitSinApplicationResponse).toHaveBeenCalledWith(mockResponseData);
-    expect(result).toEqual(mockMappedResponse);
+    expect(result).toBe(sinApplicationServiceMock);
+    expect(serverEnvironmentSpy).toHaveBeenCalledOnce();
+    expect(getDefaultSinApplicationService).toHaveBeenCalledOnce();
+    expect(getMockSinApplicationService).not.toHaveBeenCalled();
   });
 
-  it('should throw an AppError if the response data is undefined', async () => {
-    const mockHttpResponse = mock<Response>({
-      status: 400,
-      text: vi.fn().mockResolvedValue('Error content'),
-    });
-    const mockError = new Error('AppError');
+  it('should return the mock service when mock service is enabled', () => {
+    const serverEnvironmentSpy = vi
+      .spyOn(serverEnvironment, 'ENABLE_SIN_APPLICATION_SERVICE_MOCK', 'get')
+      .mockReturnValueOnce(true);
 
-    vi.mocked(sinapplication).mockResolvedValue({
-      request: mockHttpRequest,
-      response: mockHttpResponse,
-      data: undefined,
-      error: mockError,
-    });
+    vi.mocked(getDefaultSinApplicationService);
+    vi.mocked(getMockSinApplicationService).mockReturnValue(sinApplicationServiceMock);
 
-    await expect(submitSinApplication(mockRequest)).rejects.toThrowError(AppError);
-    await expect(submitSinApplication(mockRequest)).rejects.toThrowError(
-      expect.objectContaining({
-        errorCode: ErrorCodes.SUBMIT_SIN_APPLICATION_FAILED,
-        msg: `Failed to submit SIN application; stastus: ${mockHttpResponse.status}; content: Error content`,
-        name: 'AppError',
-      }),
-    );
+    const result = getSinApplicationService();
+
+    expect(result).toBe(sinApplicationServiceMock);
+    expect(serverEnvironmentSpy).toHaveBeenCalledOnce();
+    expect(getDefaultSinApplicationService).not.toHaveBeenCalledOnce();
+    expect(getMockSinApplicationService).toHaveBeenCalled();
   });
 });

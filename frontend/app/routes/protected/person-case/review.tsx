@@ -13,7 +13,7 @@ import { getLocalizedApplicantHadSinOptionById } from '~/.server/domain/person-c
 import { getLocalizedApplicantStatusInCanadaChoiceById } from '~/.server/domain/person-case/services/applicant-status-in-canada-service';
 import { getLocalizedApplicantSupportingDocumentTypeById } from '~/.server/domain/person-case/services/applicant-supporting-document-service';
 import { getLocalizedLanguageOfCorrespondenceById } from '~/.server/domain/person-case/services/language-correspondence-service';
-import { submitSinApplication } from '~/.server/domain/sin-application/sin-application-service';
+import { getSinApplicationService } from '~/.server/domain/sin-application/sin-application-service';
 import { serverEnvironment } from '~/.server/environment';
 import { LogFactory } from '~/.server/logging';
 import { getLocalizedCountryById } from '~/.server/shared/services/country-service';
@@ -64,7 +64,8 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     }
 
     case 'next': {
-      const response = await submitSinApplication(inPersonSINCase);
+      const sinApplicationService = getSinApplicationService();
+      const response = await sinApplicationService.submitSinApplication(inPersonSINCase);
 
       //TODO: store the response in session
       console.log('SIN Application submitted successfully:', response);
