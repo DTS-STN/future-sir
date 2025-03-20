@@ -55,3 +55,31 @@ export function requireAllRoles(
     );
   }
 }
+
+/**
+ * Requires that the user possess at least one of the specified roles.
+ * Will redirect to the login page if the user is not authenticated.
+ * @throws {AppError} If the user does not have at least one of the required roles.
+ */
+export function requireAnyRole(
+  session: AppSession,
+  currentUrl: URL,
+  roles: Role[] = [],
+): asserts session is AuthenticatedSession {
+  if (!session.authState) {
+    log.debug('User is not authenticated; redirecting to login page');
+
+    const { pathname, search } = currentUrl;
+    throw redirect(`/auth/login?returnto=${pathname}${search}`);
+  }
+
+  const hasAnyRole = roles.some((role) => hasRole(session, role));
+
+  if (!hasAnyRole) {
+    throw new AppError(
+      `User does not have any of the following required roles: [${roles.join(', ')}]`,
+      ErrorCodes.ACCESS_FORBIDDEN,
+      { httpStatusCode: HttpStatusCodes.FORBIDDEN },
+    );
+  }
+}
