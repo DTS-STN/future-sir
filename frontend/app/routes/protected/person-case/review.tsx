@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import type { Info, Route } from './+types/review';
 
 import { getLocalizedApplicantGenderById } from '~/.server/domain/person-case/services/applicant-gender-service';
+import { getLocalizedApplicantPrimaryDocumentChoiceById } from '~/.server/domain/person-case/services/applicant-primary-document-service';
 import { getLocalizedApplicantSecondaryDocumentChoiceById } from '~/.server/domain/person-case/services/applicant-secondary-document-service';
 import { getLocalizedApplicantHadSinOptionById } from '~/.server/domain/person-case/services/applicant-sin-service';
 import { getLocalizedApplicantStatusInCanadaChoiceById } from '~/.server/domain/person-case/services/applicant-status-in-canada-service';
@@ -113,6 +114,10 @@ export async function loader({ context, request }: Route.LoaderArgs) {
         ...inPersonSinApplication.primaryDocuments,
         currentStatusInCanadaName: getLocalizedApplicantStatusInCanadaChoiceById(
           inPersonSinApplication.primaryDocuments.currentStatusInCanada,
+          lang,
+        ).name,
+        documentTypeName: getLocalizedApplicantPrimaryDocumentChoiceById(
+          inPersonSinApplication.primaryDocuments.documentType,
           lang,
         ).name,
         genderName: getLocalizedApplicantGenderById(inPersonSinApplication.primaryDocuments.gender, lang).name,

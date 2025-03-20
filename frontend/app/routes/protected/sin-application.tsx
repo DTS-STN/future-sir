@@ -1,6 +1,5 @@
 import type { RouteHandle } from 'react-router';
 
-import type { ResourceKey } from 'i18next';
 import { useTranslation } from 'react-i18next';
 
 import { Address } from '~/components/address';
@@ -56,7 +55,7 @@ function PrimaryDocumentData({ data, tabId }: DataProps) {
           <p>{data.currentStatusInCanadaName}</p>
         </DescriptionListItem>
         <DescriptionListItem className="py-3" term={t('protected:primary-identity-document.document-type.title')}>
-          <p>{t(`protected:primary-identity-document.document-type.options.${data.documentType}` as ResourceKey)}</p>
+          <p>{data.documentTypeName}</p>
         </DescriptionListItem>
         <DescriptionListItem className="py-3" term={t('protected:primary-identity-document.registration-number.label')}>
           <p>{data.registrationNumber}</p>

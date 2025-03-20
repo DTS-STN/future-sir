@@ -1,3 +1,4 @@
+import { getApplicantPrimaryDocumentChoiceById } from '~/.server/domain/person-case/services/applicant-primary-document-service';
 import { getApplicantStatusInCanadaChoicesById } from '~/.server/domain/person-case/services/applicant-status-in-canada-service';
 import { getApplicantSupportingDocumentTypesById } from '~/.server/domain/person-case/services/applicant-supporting-document-service';
 import type {
@@ -141,7 +142,7 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
       applicantCertificate.push({
         CertificateCategoryCode: {
           ReferenceDataID: '564190002', //copied from esdc_applicantprimarydocumentchoices.json
-          ReferenceDataName: primaryDocuments.documentType,
+          ReferenceDataName: getApplicantPrimaryDocumentChoiceById(primaryDocuments.documentType).nameEn,
         },
         ResourceReference: 'Primary Documents',
       });
