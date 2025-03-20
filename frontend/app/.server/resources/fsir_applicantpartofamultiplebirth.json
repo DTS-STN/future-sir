@@ -1,0 +1,18 @@
+{
+  "name": "fsir_applicantpartofamultiplebirth",
+  "parentOptionSetName": null,
+  "displayNameEn": "Is the applicant part of a multiple birth (twin, triplet, etc.)?",
+  "displayNameFr": "Le demandeur fait-il partie d'une naissance multiple (jumeau, triplé, etc.)?",
+  "options": [
+    {
+      "value": 9700000000,
+      "labelEn": "Yes",
+      "labelFr": "Oui"
+    },
+    {
+      "value": 9700000001,
+      "labelEn": "No",
+      "labelFr": "Non"
+    }
+  ]
+}

@@ -98,3 +98,14 @@ export type LocalizedApplicantSupportingDocumentType = Readonly<{
   id: string;
   name: string;
 }>;
+
+export type ApplicantPartOfAMultipleBirthOption = Readonly<{
+  id: string;
+  nameEn: string;
+  nameFr: string;
+}>;
+
+export type LocalizedApplicantPartOfAMultipleBirthOption = Readonly<{
+  id: string;
+  name: string;
+}>;
