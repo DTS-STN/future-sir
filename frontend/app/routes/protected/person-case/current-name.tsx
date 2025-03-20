@@ -1,4 +1,4 @@
-import { useId, useState } from 'react';
+import { useId } from 'react';
 
 import type { RouteHandle } from 'react-router';
 import { data, redirect, useFetcher } from 'react-router';
@@ -14,11 +14,6 @@ import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
 import { FetcherErrorSummary } from '~/components/error-summary';
-import { InputCheckboxes } from '~/components/input-checkboxes';
-import { InputField } from '~/components/input-field';
-import type { InputRadiosProps } from '~/components/input-radios';
-import { InputRadios } from '~/components/input-radios';
-import { UnorderedList } from '~/components/lists';
 import { PageTitle } from '~/components/page-title';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
@@ -26,14 +21,9 @@ import { HttpStatusCodes } from '~/errors/http-status-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine.server';
-import { currentNameSchema } from '~/routes/protected/person-case/validation.server';
-import { getSingleKey } from '~/utils/i18n-utils';
-import { trimToUndefined } from '~/utils/string-utils';
-
-const REQUIRE_OPTIONS = {
-  yes: 'Yes', //
-  no: 'No',
-} as const;
+import CurrentNameForm from '~/routes/protected/sin-application/current-name-form';
+import type { currentNameSchema } from '~/routes/protected/sin-application/validation.server';
+import { parseCurrentName } from '~/routes/protected/sin-application/validation.server';
 
 const log = LogFactory.getLogger(import.meta.url);
 
@@ -65,20 +55,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     }
 
     case 'next': {
-      const parseResult = v.safeParse(currentNameSchema, {
-        preferredSameAsDocumentName: formData.get('same-name')
-          ? formData.get('same-name') === REQUIRE_OPTIONS.yes //
-          : undefined,
-        firstName: String(formData.get('first-name')),
-        middleName: trimToUndefined(String(formData.get('middle-name'))),
-        lastName: String(formData.get('last-name')),
-        supportingDocuments: {
-          required: formData.get('docs-required')
-            ? formData.get('docs-required') === REQUIRE_OPTIONS.yes //
-            : undefined,
-          documentTypes: formData.getAll('doc-type').map(String),
-        },
-      });
+      const parseResult = parseCurrentName(formData);
 
       if (!parseResult.success) {
         return data(
@@ -106,7 +83,7 @@ export async function loader({ context, request }: Route.LoaderArgs) {
   const machineActor = loadMachineActor(context.session, request, 'name-info');
 
   return {
-    documentTitle: t('protected:primary-identity-document.page-title'),
+    documentTitle: t('protected:current-name.page-title'),
     defaultFormValues: machineActor?.getSnapshot().context.currentNameInfo,
     localizedSupportingDocTypes: getLocalizedApplicantSupportingDocumentType(lang),
     primaryDocName: {
@@ -120,59 +97,11 @@ export async function loader({ context, request }: Route.LoaderArgs) {
 export default function CurrentName({ loaderData, actionData, params }: Route.ComponentProps) {
   const { t } = useTranslation(handle.i18nNamespace);
 
-  const [sameName, setSameName] = useState(loaderData.defaultFormValues?.preferredSameAsDocumentName);
-  const [requireDoc, setRequireDoc] = useState(
-    loaderData.defaultFormValues && loaderData.defaultFormValues.preferredSameAsDocumentName === false
-      ? loaderData.defaultFormValues.supportingDocuments.required
-      : false,
-  );
-
   const fetcherKey = useId();
   const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
 
   const isSubmitting = fetcher.state !== 'idle';
   const errors = fetcher.data?.errors;
-
-  const nameOptions: InputRadiosProps['options'] = [
-    {
-      children: t('gcweb:input-option.yes'),
-      value: REQUIRE_OPTIONS.yes,
-      defaultChecked: sameName === true,
-      onChange: ({ target }) => setSameName(target.value === REQUIRE_OPTIONS.yes),
-    },
-    {
-      children: t('gcweb:input-option.no'),
-      value: REQUIRE_OPTIONS.no,
-      defaultChecked: sameName === false,
-      onChange: ({ target }) => setSameName(target.value === REQUIRE_OPTIONS.yes),
-    },
-  ];
-
-  const requireOptions: InputRadiosProps['options'] = [
-    {
-      children: t('gcweb:input-option.yes'),
-      value: REQUIRE_OPTIONS.yes,
-      defaultChecked: requireDoc === true,
-      onChange: ({ target }) => setRequireDoc(target.value === REQUIRE_OPTIONS.yes),
-    },
-    {
-      children: t('gcweb:input-option.no'),
-      value: REQUIRE_OPTIONS.no,
-      defaultChecked: requireDoc === false,
-      onChange: ({ target }) => setRequireDoc(target.value === REQUIRE_OPTIONS.yes),
-    },
-  ];
-
-  const docTypes = loaderData.localizedSupportingDocTypes.map((doc) => ({
-    value: doc.id,
-    children: doc.name,
-    defaultChecked:
-      loaderData.defaultFormValues &&
-      loaderData.defaultFormValues.preferredSameAsDocumentName === false &&
-      loaderData.defaultFormValues.supportingDocuments.required === true
-        ? loaderData.defaultFormValues.supportingDocuments.documentTypes.includes(doc.id)
-        : false,
-  }));
 
   return (
     <>
@@ -180,94 +109,12 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
 
       <FetcherErrorSummary fetcherKey={fetcherKey}>
         <fetcher.Form method="post" noValidate>
-          <p className="mb-4">{t('protected:current-name.recorded-name.description')}</p>
-          <UnorderedList className="mb-8 font-bold">
-            <li>
-              {t('protected:current-name.recorded-name.first-name')}
-              <span className="ml-[1ch] font-normal">{loaderData.primaryDocName.firstName}</span>
-            </li>
-            <li>
-              {t('protected:current-name.recorded-name.middle-name')}
-              <span className="ml-[1ch] font-normal">{loaderData.primaryDocName.middleName}</span>
-            </li>
-            <li>
-              {t('protected:current-name.recorded-name.last-name')}
-              <span className="ml-[1ch] font-normal">{loaderData.primaryDocName.lastName}</span>
-            </li>
-          </UnorderedList>
-
-          <div className="space-y-6">
-            <InputRadios
-              errorMessage={t(getSingleKey(errors?.preferredSameAsDocumentName))}
-              id="same-name-id"
-              legend={t('protected:current-name.preferred-name.description')}
-              name="same-name"
-              options={nameOptions}
-              required
-            />
-            {sameName === false && (
-              <>
-                <InputField
-                  errorMessage={t(getSingleKey(errors?.firstName), { maximum: 100 })}
-                  label={t('protected:current-name.preferred-name.first-name')}
-                  name="first-name"
-                  defaultValue={
-                    loaderData.defaultFormValues && loaderData.defaultFormValues.preferredSameAsDocumentName === false
-                      ? loaderData.defaultFormValues.firstName
-                      : ''
-                  }
-                  required
-                  type="text"
-                  className="w-full rounded-sm sm:w-104"
-                />
-                <InputField
-                  errorMessage={t(getSingleKey(errors?.middleName), { maximum: 100 })}
-                  label={t('protected:current-name.preferred-name.middle-name')}
-                  name="middle-name"
-                  defaultValue={
-                    loaderData.defaultFormValues && loaderData.defaultFormValues.preferredSameAsDocumentName === false
-                      ? (loaderData.defaultFormValues.middleName ?? '')
-                      : ''
-                  }
-                  type="text"
-                  className="w-full rounded-sm sm:w-104"
-                />
-                <InputField
-                  errorMessage={t(getSingleKey(errors?.lastName), { maximum: 100 })}
-                  label={t('protected:current-name.preferred-name.last-name')}
-                  name="last-name"
-                  defaultValue={
-                    loaderData.defaultFormValues && loaderData.defaultFormValues.preferredSameAsDocumentName === false
-                      ? loaderData.defaultFormValues.lastName
-                      : ''
-                  }
-                  required
-                  type="text"
-                  className="w-full rounded-sm sm:w-104"
-                />
-                <h2 className="font-lato mt-12 text-2xl font-bold">{t('protected:current-name.supporting-docs.title')}</h2>
-                <p>{t('protected:current-name.supporting-docs.description')}</p>
-                <InputRadios
-                  id="docs-required-id"
-                  errorMessage={t(getSingleKey(errors?.['supportingDocuments.required']))}
-                  legend={t('protected:current-name.supporting-docs.docs-required')}
-                  name="docs-required"
-                  options={requireOptions}
-                  required
-                />
-                {requireDoc && (
-                  <InputCheckboxes
-                    id="doc-type-id"
-                    errorMessage={t(getSingleKey(errors?.['supportingDocuments.documentTypes']))}
-                    legend={t('protected:current-name.supporting-docs.doc-type')}
-                    name="doc-type"
-                    options={docTypes}
-                    required
-                  />
-                )}
-              </>
-            )}
-          </div>
+          <CurrentNameForm
+            defaultFormValues={loaderData.defaultFormValues}
+            localizedSupportingDocTypes={loaderData.localizedSupportingDocTypes}
+            primaryDocName={loaderData.primaryDocName}
+            errors={errors}
+          />
           <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
             <Button name="action" value="next" variant="primary" id="continue-button" disabled={isSubmitting}>
               {t('protected:person-case.next')}

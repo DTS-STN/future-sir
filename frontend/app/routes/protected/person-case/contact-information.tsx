@@ -1,4 +1,4 @@
-import { useId, useState } from 'react';
+import { useId } from 'react';
 
 import type { RouteHandle } from 'react-router';
 import { data, redirect, useFetcher } from 'react-router';
@@ -16,10 +16,6 @@ import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
 import { FetcherErrorSummary } from '~/components/error-summary';
-import { InputField } from '~/components/input-field';
-import { InputPhoneField } from '~/components/input-phone-field';
-import { InputRadios } from '~/components/input-radios';
-import { InputSelect } from '~/components/input-select';
 import { PageTitle } from '~/components/page-title';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
@@ -27,8 +23,9 @@ import { HttpStatusCodes } from '~/errors/http-status-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine.server';
-import { contactInformationSchema } from '~/routes/protected/person-case/validation.server';
-import { getSingleKey } from '~/utils/i18n-utils';
+import ContactInformationForm from '~/routes/protected/sin-application/contact-information-form';
+import type { contactInformationSchema } from '~/routes/protected/sin-application/validation.server';
+import { parseContactInformation } from '~/routes/protected/sin-application/validation.server';
 
 const log = LogFactory.getLogger(import.meta.url);
 
@@ -60,19 +57,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     }
 
     case 'next': {
-      const parseResult = v.safeParse(contactInformationSchema, {
-        preferredLanguage: formData.get('preferredLanguage') as string,
-        primaryPhoneNumber: formData.get('primaryPhoneNumber') as string,
-        secondaryPhoneNumber: formData.get('secondaryPhoneNumber')
-          ? (formData.get('secondaryPhoneNumber') as string)
-          : undefined,
-        emailAddress: formData.get('emailAddress') ? (formData.get('emailAddress') as string) : undefined,
-        country: formData.get('country') as string,
-        address: formData.get('address') as string,
-        postalCode: formData.get('postalCode') as string,
-        city: formData.get('city') as string,
-        province: formData.get('province') as string,
-      });
+      const parseResult = parseContactInformation(formData);
 
       if (!parseResult.success) {
         return data(
@@ -102,7 +87,7 @@ export async function loader({ context, request }: Route.LoaderArgs) {
   return {
     documentTitle: t('protected:contact-information.page-title'),
     defaultFormValues: machineActor?.getSnapshot().context.contactInformation,
-    localizedpreferredLanguages: getLocalizedLanguageOfCorrespondence(lang),
+    localizedPreferredLanguages: getLocalizedLanguageOfCorrespondence(lang),
     localizedCountries: getLocalizedCountries(lang),
     localizedProvincesTerritoriesStates: getLocalizedProvinces(lang),
   };
@@ -117,140 +102,20 @@ export default function ContactInformation({ loaderData, actionData, params }: R
   const isSubmitting = fetcher.state !== 'idle';
   const errors = fetcher.data?.errors;
 
-  const [country, setCountry] = useState<string | undefined>(loaderData.defaultFormValues?.country);
-
-  const languageOptions = loaderData.localizedpreferredLanguages.map(({ id, name }) => ({
-    value: id,
-    children: name,
-    defaultChecked: id === loaderData.defaultFormValues?.preferredLanguage,
-  }));
-
-  const countryOptions = [{ id: 'select-option', name: '' }, ...loaderData.localizedCountries].map(({ id, name }) => ({
-    value: id === 'select-option' ? '' : id,
-    children: id === 'select-option' ? t('protected:contact-information.select-option') : name,
-  }));
-
-  const provinceTerritoryStateOptions = [
-    { id: 'select-option', name: '' },
-    ...loaderData.localizedProvincesTerritoriesStates,
-  ].map(({ id, name }) => ({
-    value: id === 'select-option' ? '' : id,
-    children: id === 'select-option' ? t('protected:contact-information.select-option') : name,
-  }));
-
   return (
     <>
       <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:contact-information.page-title')}</PageTitle>
 
       <FetcherErrorSummary fetcherKey={fetcherKey}>
         <fetcher.Form method="post" noValidate>
-          <div className="space-y-6">
-            <h2 className="font-lato text-2xl font-bold">{t('protected:contact-information.correspondence')}</h2>
-            <InputRadios
-              id="preferred-language"
-              legend={t('protected:contact-information.preferred-language-label')}
-              name="preferredLanguage"
-              options={languageOptions}
-              errorMessage={t(getSingleKey(errors?.preferredLanguage))}
-              required
-            />
-            <InputPhoneField
-              id="primary-phone-number"
-              label={t('protected:contact-information.primary-phone-label')}
-              name="primaryPhoneNumber"
-              type="tel"
-              inputMode="tel"
-              errorMessage={t(getSingleKey(errors?.primaryPhoneNumber))}
-              defaultValue={loaderData.defaultFormValues?.primaryPhoneNumber}
-              required
-            />
-            <InputPhoneField
-              id="secondary-phone-number"
-              label={t('protected:contact-information.secondary-phone-label')}
-              name="secondaryPhoneNumber"
-              type="tel"
-              inputMode="tel"
-              errorMessage={t(getSingleKey(errors?.secondaryPhoneNumber))}
-              defaultValue={loaderData.defaultFormValues?.secondaryPhoneNumber}
-            />
-            <div className="max-w-prose">
-              <InputField
-                id="email-address"
-                type="email"
-                inputMode="email"
-                label={t('protected:contact-information.email-label')}
-                name="emailAddress"
-                className="w-full"
-                errorMessage={t(getSingleKey(errors?.emailAddress))}
-                defaultValue={loaderData.defaultFormValues?.emailAddress}
-              />
-            </div>
-            <h2 className="font-lato text-2xl font-bold">{t('protected:contact-information.mailing-address')}</h2>
-            <InputSelect
-              className="w-max rounded-sm"
-              id="country"
-              name="country"
-              label={t('protected:contact-information.country-select-label')}
-              options={countryOptions}
-              errorMessage={t(getSingleKey(errors?.country))}
-              defaultValue={loaderData.defaultFormValues?.country}
-              onChange={({ target }) => setCountry(target.value)}
-              required
-            />
-            {country && (
-              <>
-                <InputField
-                  id="address"
-                  label={t('protected:contact-information.address-label')}
-                  helpMessagePrimary={t('protected:contact-information.address-help-message')}
-                  name="address"
-                  className="w-full"
-                  errorMessage={t(getSingleKey(errors?.address))}
-                  defaultValue={loaderData.defaultFormValues?.address}
-                  required
-                />
-                <InputField
-                  id="postal-code"
-                  label={t('protected:contact-information.postal-code-label')}
-                  name="postalCode"
-                  errorMessage={t(getSingleKey(errors?.postalCode))}
-                  defaultValue={loaderData.defaultFormValues?.postalCode}
-                  required
-                />
-                <InputField
-                  id="city"
-                  label={t('protected:contact-information.city-label')}
-                  name="city"
-                  className="w-full"
-                  errorMessage={t(getSingleKey(errors?.city))}
-                  defaultValue={loaderData.defaultFormValues?.city}
-                  required
-                />
-                {country === globalThis.__appEnvironment.PP_CANADA_COUNTRY_CODE ? (
-                  <InputSelect
-                    className="w-max rounded-sm"
-                    id="province"
-                    label={t('protected:contact-information.canada-province-label')}
-                    name="province"
-                    options={provinceTerritoryStateOptions}
-                    errorMessage={t(getSingleKey(errors?.province))}
-                    defaultValue={loaderData.defaultFormValues?.province}
-                    required
-                  />
-                ) : (
-                  <InputField
-                    id="province"
-                    label={t('protected:contact-information.other-country-province-label')}
-                    name="province"
-                    className="w-full"
-                    errorMessage={t(getSingleKey(errors?.province))}
-                    defaultValue={loaderData.defaultFormValues?.province}
-                    required
-                  />
-                )}
-              </>
-            )}
-          </div>
+          <ContactInformationForm
+            defaultFormValues={loaderData.defaultFormValues}
+            localizedPreferredLanguages={loaderData.localizedPreferredLanguages}
+            localizedCountries={loaderData.localizedCountries}
+            localizedProvincesTerritoriesStates={loaderData.localizedProvincesTerritoriesStates}
+            errors={errors}
+          />
+
           <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
             <Button name="action" value="next" variant="primary" id="continue-button" disabled={isSubmitting}>
               {t('protected:person-case.next')}

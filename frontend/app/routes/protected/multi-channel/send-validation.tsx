@@ -1,6 +1,6 @@
 import { useId } from 'react';
 
-import type { RouteHandle } from 'react-router';
+import type { AppLoadContext, RouteHandle } from 'react-router';
 import { useFetcher } from 'react-router';
 
 import { useTranslation } from 'react-i18next';
@@ -8,22 +8,19 @@ import { useTranslation } from 'react-i18next';
 import type { Info, Route } from './+types/send-validation';
 
 import { caseApi } from '~/.server/domain/multi-channel/services/case-api-service';
-import { getLocalizedApplicantGenderById } from '~/.server/domain/person-case/services/applicant-gender-service';
-import { getLocalizedApplicantSecondaryDocumentChoiceById } from '~/.server/domain/person-case/services/applicant-secondary-document-service';
-import { getLocalizedLanguageOfCorrespondenceById } from '~/.server/domain/person-case/services/language-correspondence-service';
-import { serverEnvironment } from '~/.server/environment';
-import { getLocalizedCountryById } from '~/.server/shared/services/country-service';
-import { getLocalizedProvinceById } from '~/.server/shared/services/province-service';
 import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
 import { ContextualAlert } from '~/components/contextual-alert';
+import { InlineLink } from '~/components/links';
 import { PageTitle } from '~/components/page-title';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { getTranslation } from '~/i18n-config.server';
+import { editSectionIds } from '~/routes/protected/multi-channel/edit-application';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
-import { SinApplication } from '~/routes/protected/sin-application';
+import { ApplicationReview } from '~/routes/protected/sin-application/application-review';
+import { formatSinApplication } from '~/routes/protected/sin-application/validation.server';
 
 export const handle = {
   i18nNamespace: [...parentHandle.i18nNamespace, 'protected'],
@@ -49,85 +46,27 @@ export async function action({ context, params, request }: Route.ActionArgs) {
   }
 }
 
+async function fetchSinCase(context: AppLoadContext, caseId: string) {
+  const existingSinCase = context.session.editingSinCase;
+  if (existingSinCase && existingSinCase.caseId === caseId) {
+    return existingSinCase;
+  }
+  // TODO: the id will likely come from a path param in the URL?
+  const sinCase = await caseApi.getCaseById(caseId);
+  context.session.editingSinCase = sinCase;
+  return sinCase;
+}
+
 export async function loader({ context, request }: Route.LoaderArgs) {
   requireAuth(context.session, new URL(request.url), ['user']);
   const { lang, t } = await getTranslation(request, handle.i18nNamespace);
 
-  // TODO: the id will likely come from a path param in the URL?
-  const personSinCase = await caseApi.getCaseById('00000000000000');
+  const sinCase = await fetchSinCase(context, '00000000000000');
 
   return {
     documentTitle: t('protected:send-validation.page-title'),
-    caseId: personSinCase.caseId,
-    inPersonSINCase: {
-      ...personSinCase,
-      primaryDocuments: {
-        ...personSinCase.primaryDocuments,
-        genderName: getLocalizedApplicantGenderById(personSinCase.primaryDocuments.gender, lang).name,
-      },
-      secondaryDocument: {
-        ...personSinCase.secondaryDocument,
-        documentTypeName: getLocalizedApplicantSecondaryDocumentChoiceById(personSinCase.secondaryDocument.documentType, lang)
-          .name,
-      },
-      personalInformation: {
-        ...personSinCase.personalInformation,
-        genderName: getLocalizedApplicantGenderById(personSinCase.personalInformation.gender, lang).name,
-      },
-      birthDetails: {
-        ...personSinCase.birthDetails,
-        countryName: getLocalizedCountryById(personSinCase.birthDetails.country, lang).name,
-        provinceName: personSinCase.birthDetails.province
-          ? personSinCase.birthDetails.country !== serverEnvironment.PP_CANADA_COUNTRY_CODE
-            ? personSinCase.birthDetails.province
-            : getLocalizedProvinceById(personSinCase.birthDetails.province, lang).name
-          : undefined,
-      },
-      parentDetails: personSinCase.parentDetails.map((parentdetail) =>
-        parentdetail.unavailable
-          ? { unavailable: true }
-          : {
-              unavailable: false,
-              givenName: parentdetail.givenName,
-              lastName: parentdetail.lastName,
-              birthLocation: {
-                country: parentdetail.birthLocation.country,
-                city: parentdetail.birthLocation.city,
-                province: parentdetail.birthLocation.province,
-              },
-              countryName: getLocalizedCountryById(parentdetail.birthLocation.country, lang).name,
-              provinceName: parentdetail.birthLocation.province
-                ? parentdetail.birthLocation.country !== serverEnvironment.PP_CANADA_COUNTRY_CODE
-                  ? parentdetail.birthLocation.province
-                  : getLocalizedProvinceById(parentdetail.birthLocation.province, lang).name
-                : undefined,
-            },
-      ),
-      contactInformation: {
-        ...personSinCase.contactInformation,
-        preferredLanguageName: getLocalizedLanguageOfCorrespondenceById(
-          personSinCase.contactInformation.preferredLanguage,
-          lang,
-        ).name,
-        countryName: getLocalizedCountryById(personSinCase.contactInformation.country, lang).name,
-        provinceName: personSinCase.contactInformation.province
-          ? personSinCase.contactInformation.country !== serverEnvironment.PP_CANADA_COUNTRY_CODE
-            ? personSinCase.contactInformation.province
-            : getLocalizedProvinceById(personSinCase.contactInformation.province, lang).name
-          : undefined,
-      },
-      currentNameInfo: {
-        ...personSinCase.currentNameInfo,
-        firstName:
-          personSinCase.currentNameInfo.preferredSameAsDocumentName === true
-            ? personSinCase.primaryDocuments.givenName
-            : personSinCase.currentNameInfo.firstName,
-        lastName:
-          personSinCase.currentNameInfo.preferredSameAsDocumentName === true
-            ? personSinCase.primaryDocuments.lastName
-            : personSinCase.currentNameInfo.lastName,
-      },
-    },
+    caseId: sinCase.caseId,
+    inPersonSINCase: formatSinApplication(sinCase, lang),
   };
 }
 
@@ -148,7 +87,73 @@ export default function SendValidation({ loaderData, actionData, params }: Route
         <p>{t('protected:send-validation.id-number')}</p>
         <p>{caseId}</p>
       </ContextualAlert>
-      <SinApplication inPersonSINCase={inPersonSINCase} />
+      <ApplicationReview
+        inPersonSINCase={inPersonSINCase}
+        primaryDocumentsLink={
+          <InlineLink
+            file="routes/protected/multi-channel/edit-application.tsx"
+            search={`section=${editSectionIds.primaryDocs}`}
+          >
+            {t('protected:review.edit-primary-identity-document')}
+          </InlineLink>
+        }
+        secondaryDocumentLink={
+          <InlineLink
+            file="routes/protected/multi-channel/edit-application.tsx"
+            search={`section=${editSectionIds.secondaryDoc}`}
+          >
+            {t('protected:review.edit-secondary-identity-document')}
+          </InlineLink>
+        }
+        currentNameInfoLink={
+          <InlineLink
+            file="routes/protected/multi-channel/edit-application.tsx"
+            search={`section=${editSectionIds.currentName}`}
+          >
+            {t('protected:review.edit-current-name')}
+          </InlineLink>
+        }
+        personalInformationLink={
+          <InlineLink
+            file="routes/protected/multi-channel/edit-application.tsx"
+            search={`section=${editSectionIds.personalInfo}`}
+          >
+            {t('protected:review.edit-personal-details')}
+          </InlineLink>
+        }
+        birthDetailsLink={
+          <InlineLink
+            file="routes/protected/multi-channel/edit-application.tsx"
+            search={`section=${editSectionIds.birthDetails}`}
+          >
+            {t('protected:review.edit-birth-details')}
+          </InlineLink>
+        }
+        parentDetailsLink={
+          <InlineLink
+            file="routes/protected/multi-channel/edit-application.tsx"
+            search={`section=${editSectionIds.parentDetails}`}
+          >
+            {t('protected:review.edit-parent-details')}
+          </InlineLink>
+        }
+        previousSinLink={
+          <InlineLink
+            file="routes/protected/multi-channel/edit-application.tsx"
+            search={`section=${editSectionIds.previousSin}`}
+          >
+            {t('protected:review.edit-previous-sin')}
+          </InlineLink>
+        }
+        contactInformationLink={
+          <InlineLink
+            file="routes/protected/multi-channel/edit-application.tsx"
+            search={`section=${editSectionIds.contactInformation}`}
+          >
+            {t('protected:review.edit-contact-information')}
+          </InlineLink>
+        }
+      />
       <fetcher.Form className="max-w-prose" method="post" noValidate>
         <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
           <Button name="action" value="send" variant="primary" id="send-for-validation" disabled={isSubmitting}>

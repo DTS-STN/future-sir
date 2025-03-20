@@ -15,8 +15,6 @@ import { requireAuth } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
 import { FetcherErrorSummary } from '~/components/error-summary';
-import { InputRadios } from '~/components/input-radios';
-import { InputSelect } from '~/components/input-select';
 import { PageTitle } from '~/components/page-title';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
@@ -24,8 +22,9 @@ import { HttpStatusCodes } from '~/errors/http-status-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine.server';
-import { requestDetailsSchema } from '~/routes/protected/person-case/validation.server';
-import { getSingleKey } from '~/utils/i18n-utils';
+import RequestDetailsForm from '~/routes/protected/sin-application/request-details-form';
+import type { requestDetailsSchema } from '~/routes/protected/sin-application/validation.server';
+import { parseRequestDetails } from '~/routes/protected/sin-application/validation.server';
 
 const log = LogFactory.getLogger(import.meta.url);
 
@@ -57,27 +56,12 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     }
 
     case 'next': {
-      const formValues = {
-        scenario: formData.get('scenario')?.toString(),
-        type: formData.get('request-type')?.toString(),
-      };
-
-      const parseResult = v.safeParse(requestDetailsSchema, formValues);
-
+      const parseResult = parseRequestDetails(formData);
       if (!parseResult.success) {
-        const formErrors = v.flatten(parseResult.issues).nested;
-
-        machineActor.send({
-          type: 'setFormData',
-          data: {
-            requestDetails: {
-              values: formValues,
-              errors: formErrors,
-            },
-          },
-        });
-
-        return data({ formValues: formValues, formErrors: formErrors }, { status: HttpStatusCodes.BAD_REQUEST });
+        return data(
+          { errors: v.flatten<typeof requestDetailsSchema>(parseResult.issues).nested },
+          { status: HttpStatusCodes.BAD_REQUEST },
+        );
       }
 
       machineActor.send({ type: 'submitRequestDetails', data: parseResult.output });
@@ -102,14 +86,12 @@ export async function loader({ context, request }: Route.LoaderArgs) {
 
   const { lang, t } = await getTranslation(request, handle.i18nNamespace);
   const machineActor = loadMachineActor(context.session, request, 'request-details');
-  const machineContext = machineActor?.getSnapshot().context;
 
   return {
     documentTitle: t('protected:request-details.page-title'),
+    defaultFormValues: machineActor?.getSnapshot().context.requestDetails,
     localizedSubmissionScenarios: getLocalizedApplicationSubmissionScenarios(lang),
     localizedTypeofApplicationToSubmit: getLocalizedTypesOfApplicationToSubmit(lang),
-    formValues: machineContext?.formData?.requestDetails?.values ?? machineContext?.requestDetails,
-    formErrors: machineContext?.formData?.requestDetails?.errors,
   };
 }
 
@@ -118,48 +100,21 @@ export default function RequestDetails({ actionData, loaderData, params }: Route
 
   const fetcherKey = useId();
   const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
+
   const isSubmitting = fetcher.state !== 'idle';
-
-  const formValues = fetcher.data?.formValues ?? loaderData.formValues;
-  const formErrors = fetcher.data?.formErrors ?? loaderData.formErrors;
-
-  const scenarioOptions = loaderData.localizedSubmissionScenarios.map(({ id, name }) => ({
-    value: id,
-    children: name,
-    defaultChecked: id === formValues?.scenario,
-  }));
-
-  const requestOptions = [{ id: 'select-option', name: '' }, ...loaderData.localizedTypeofApplicationToSubmit].map(
-    ({ id, name }) => ({
-      value: id === 'select-option' ? '' : id,
-      children: id === 'select-option' ? t('protected:contact-information.select-option') : name,
-    }),
-  );
+  const errors = fetcher.data?.errors;
 
   return (
     <>
       <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:request-details.page-title')}</PageTitle>
       <FetcherErrorSummary fetcherKey={fetcherKey}>
         <fetcher.Form method="post" noValidate>
-          <div className="space-y-6">
-            <InputRadios
-              id="scenario"
-              legend={t('protected:request-details.select-scenario')}
-              name="scenario"
-              options={scenarioOptions}
-              required
-              errorMessage={t(getSingleKey(formErrors?.scenario))}
-            />
-            <InputSelect
-              className="w-max rounded-sm"
-              id="request-type"
-              name="request-type"
-              label={t('protected:request-details.type-request')}
-              defaultValue={formValues?.type ?? ''}
-              options={requestOptions}
-              errorMessage={t(getSingleKey(formErrors?.type))}
-            />
-          </div>
+          <RequestDetailsForm
+            defaultFormValues={loaderData.defaultFormValues}
+            localizedSubmissionScenarios={loaderData.localizedSubmissionScenarios}
+            localizedTypeofApplicationToSubmit={loaderData.localizedTypeofApplicationToSubmit}
+            errors={errors}
+          />
           <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
             <Button name="action" value="next" variant="primary" id="continue-button" disabled={isSubmitting}>
               {t('protected:person-case.next')}

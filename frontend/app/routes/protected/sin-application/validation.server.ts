@@ -1,21 +1,49 @@
 import { parsePhoneNumberWithError } from 'libphonenumber-js';
 import * as v from 'valibot';
 
-import { getApplicantGenders } from '~/.server/domain/person-case/services/applicant-gender-service';
-import { getApplicantSecondaryDocumentChoices } from '~/.server/domain/person-case/services/applicant-secondary-document-service';
+import {
+  getApplicantGenders,
+  getLocalizedApplicantGenderById,
+} from '~/.server/domain/person-case/services/applicant-gender-service';
+import {
+  getApplicantSecondaryDocumentChoices,
+  getLocalizedApplicantSecondaryDocumentChoiceById,
+} from '~/.server/domain/person-case/services/applicant-secondary-document-service';
 import { getApplicantHadSinOptions } from '~/.server/domain/person-case/services/applicant-sin-service';
 import { getApplicantSupportingDocumentTypes } from '~/.server/domain/person-case/services/applicant-supporting-document-service';
 import { getApplicationSubmissionScenarios } from '~/.server/domain/person-case/services/application-submission-scenario';
 import { getTypesOfApplicationToSubmit } from '~/.server/domain/person-case/services/application-type-service';
-import { getLanguagesOfCorrespondence } from '~/.server/domain/person-case/services/language-correspondence-service';
+import {
+  getLanguagesOfCorrespondence,
+  getLocalizedLanguageOfCorrespondenceById,
+} from '~/.server/domain/person-case/services/language-correspondence-service';
 import { serverEnvironment } from '~/.server/environment';
-import { getCountries } from '~/.server/shared/services/country-service';
-import { getProvinces } from '~/.server/shared/services/province-service';
+import { getCountries, getLocalizedCountryById } from '~/.server/shared/services/country-service';
+import { getLocalizedProvinceById, getProvinces } from '~/.server/shared/services/province-service';
 import { stringToIntegerSchema } from '~/.server/validation/string-to-integer-schema';
 import { APPLICANT_STATUS_IN_CANADA } from '~/domain/constants';
-import { getStartOfDayInTimezone, isDateInPastOrTodayInTimeZone, isValidDateString } from '~/utils/date-utils';
+import type { InPersonSinApplication } from '~/routes/protected/sin-application/types';
+import { getStartOfDayInTimezone, isDateInPastOrTodayInTimeZone, isValidDateString, toISODateString } from '~/utils/date-utils';
 import { REGEX_PATTERNS } from '~/utils/regex-utils';
 import { formatSin, isValidSin } from '~/utils/sin-utils';
+import { trimToUndefined } from '~/utils/string-utils';
+
+const validBornOutsideOfCanadaDocuments = [
+  'certificate-of-canadian-citizenship', //
+] as const;
+
+const validCanadianStatuses = [APPLICANT_STATUS_IN_CANADA.canadianCitizenBornOutsideCanada] as const;
+
+function toDateString(year?: string, month?: string, day?: string): string {
+  try {
+    return toISODateString(Number(year), Number(month), Number(day));
+  } catch {
+    return '';
+  }
+}
+
+const REQUIRE_OPTIONS = { yes: 'Yes', no: 'No' } as const;
+export const maxNumberOfParents = 4 as const;
 
 export const birthDetailsSchema = v.variant(
   'country',
@@ -72,6 +100,16 @@ export const birthDetailsSchema = v.variant(
   ],
   'protected:birth-details.country.required-country',
 );
+
+export const parseBirthDetails = (formData: FormData) =>
+  v.safeParse(birthDetailsSchema, {
+    country: formData.get('country') as string,
+    province: trimToUndefined(formData.get('province') as string),
+    city: trimToUndefined(formData.get('city') as string),
+    fromMultipleBirth: formData.get('from-multiple')
+      ? formData.get('from-multiple') === REQUIRE_OPTIONS.yes //
+      : undefined,
+  });
 
 export const contactInformationSchema = v.intersect([
   v.object({
@@ -133,6 +171,19 @@ export const contactInformationSchema = v.intersect([
   ),
 ]);
 
+export const parseContactInformation = (formData: FormData) =>
+  v.safeParse(contactInformationSchema, {
+    preferredLanguage: formData.get('preferredLanguage') as string,
+    primaryPhoneNumber: formData.get('primaryPhoneNumber') as string,
+    secondaryPhoneNumber: formData.get('secondaryPhoneNumber') ? (formData.get('secondaryPhoneNumber') as string) : undefined,
+    emailAddress: formData.get('emailAddress') ? (formData.get('emailAddress') as string) : undefined,
+    country: formData.get('country') as string,
+    address: formData.get('address') as string,
+    postalCode: formData.get('postalCode') as string,
+    city: formData.get('city') as string,
+    province: formData.get('province') as string,
+  });
+
 export const currentNameSchema = v.variant(
   'preferredSameAsDocumentName',
   [
@@ -191,7 +242,21 @@ export const currentNameSchema = v.variant(
   'protected:current-name.preferred-name.required-error',
 );
 
-export const maxNumberOfParents = 4;
+export const parseCurrentName = (formData: FormData) =>
+  v.safeParse(currentNameSchema, {
+    preferredSameAsDocumentName: formData.get('same-name')
+      ? formData.get('same-name') === REQUIRE_OPTIONS.yes //
+      : undefined,
+    firstName: String(formData.get('first-name')),
+    middleName: trimToUndefined(String(formData.get('middle-name'))),
+    lastName: String(formData.get('last-name')),
+    supportingDocuments: {
+      required: formData.get('docs-required')
+        ? formData.get('docs-required') === REQUIRE_OPTIONS.yes //
+        : undefined,
+      documentTypes: formData.getAll('doc-type').map(String),
+    },
+  });
 
 export const parentDetailsSchema = v.pipe(
   v.array(
@@ -286,6 +351,21 @@ export const parentDetailsSchema = v.pipe(
   v.maxLength(maxNumberOfParents),
 );
 
+export const parseParentDetails = (formData: FormData) =>
+  v.safeParse(
+    parentDetailsSchema,
+    Array.from({ length: Math.min(Number(formData.get('parent-amount')) || 0, maxNumberOfParents) }).map((_, i) => ({
+      unavailable: Boolean(formData.get(`${i}-unavailable`)),
+      givenName: String(formData.get(`${i}-given-name`)),
+      lastName: String(formData.get(`${i}-last-name`)),
+      birthLocation: {
+        country: String(formData.get(`${i}-country`)),
+        province: trimToUndefined(String(formData.get(`${i}-province`))),
+        city: trimToUndefined(String(formData.get(`${i}-city`))),
+      },
+    })),
+  );
+
 export const personalInfoSchema = v.object({
   firstNamePreviouslyUsed: v.optional(
     v.array(
@@ -322,6 +402,14 @@ export const personalInfoSchema = v.object({
   ),
 });
 
+export const parsePersonalInfo = (formData: FormData) =>
+  v.safeParse(personalInfoSchema, {
+    firstNamePreviouslyUsed: formData.getAll('firstNamePreviouslyUsed').map(String).filter(Boolean),
+    lastNameAtBirth: String(formData.get('lastNameAtBirth')),
+    lastNamePreviouslyUsed: formData.getAll('lastNamePreviouslyUsed').map(String).filter(Boolean),
+    gender: String(formData.get('gender')),
+  });
+
 export const previousSinSchema = v.pipe(
   v.object({
     hasPreviousSin: v.lazy(() =>
@@ -352,11 +440,14 @@ export const previousSinSchema = v.pipe(
   ),
 );
 
-const validBornOutsideOfCanadaDocuments = [
-  'certificate-of-canadian-citizenship', //
-] as const;
-
-const validCanadianStatuses = [APPLICANT_STATUS_IN_CANADA.canadianCitizenBornOutsideCanada] as const;
+export const parsePreviousSin = (formData: FormData) =>
+  v.safeParse(previousSinSchema, {
+    hasPreviousSin: formData.get('hasPreviousSin') as string,
+    socialInsuranceNumber:
+      formData.get('hasPreviousSin') === serverEnvironment.PP_HAS_HAD_PREVIOUS_SIN_CODE
+        ? (formData.get('socialInsuranceNumber') as string)
+        : undefined,
+  });
 
 export const primaryDocumentSchema = v.intersect([
   v.object({
@@ -466,9 +557,41 @@ export const primaryDocumentSchema = v.intersect([
   ),
 ]);
 
+export const parsePrimaryDocument = (formData: FormData) => {
+  const dateOfBirthYear = formData.get('dateOfBirthYear')?.toString();
+  const dateOfBirthMonth = formData.get('dateOfBirthMonth')?.toString();
+  const dateOfBirthDay = formData.get('dateOfBirthDay')?.toString();
+  const citizenshipDateYear = formData.get('citizenshipDateYear')?.toString();
+  const citizenshipDateMonth = formData.get('citizenshipDateMonth')?.toString();
+  const citizenshipDateDay = formData.get('citizenshipDateDay')?.toString();
+
+  return v.safeParse(primaryDocumentSchema, {
+    currentStatusInCanada: formData.get('currentStatusInCanada')?.toString(),
+    documentType: formData.get('documentType')?.toString(),
+    registrationNumber: formData.get('registrationNumber')?.toString(),
+    clientNumber: formData.get('clientNumber')?.toString(),
+    givenName: formData.get('givenName')?.toString(),
+    lastName: formData.get('lastName')?.toString(),
+    gender: formData.get('gender')?.toString(),
+    dateOfBirthYear: dateOfBirthYear,
+    dateOfBirthMonth: dateOfBirthMonth,
+    dateOfBirthDay: dateOfBirthDay,
+    dateOfBirth: toDateString(dateOfBirthYear, dateOfBirthMonth, dateOfBirthDay),
+    citizenshipDateYear: citizenshipDateYear,
+    citizenshipDateMonth: citizenshipDateMonth,
+    citizenshipDateDay: citizenshipDateDay,
+    citizenshipDate: toDateString(citizenshipDateYear, citizenshipDateMonth, citizenshipDateDay),
+  });
+};
+
 export const privacyStatementSchema = v.object({
   agreedToTerms: v.literal(true, 'protected:privacy-statement.confirm-privacy-notice-checkbox.required'),
 });
+
+export const parsePrivacyStatement = (formData: FormData) =>
+  v.safeParse(privacyStatementSchema, {
+    agreedToTerms: formData.get('agreedToTerms')?.toString() === 'on',
+  });
 
 export const requestDetailsSchema = v.object({
   scenario: v.lazy(() =>
@@ -484,6 +607,12 @@ export const requestDetailsSchema = v.object({
     ),
   ),
 });
+
+export const parseRequestDetails = (formData: FormData) =>
+  v.safeParse(requestDetailsSchema, {
+    scenario: formData.get('scenario')?.toString(),
+    type: formData.get('request-type')?.toString(),
+  });
 
 export const secondaryDocumentSchema = v.pipe(
   v.object({
@@ -527,3 +656,84 @@ export const secondaryDocumentSchema = v.pipe(
     ['expiryMonth'],
   ),
 );
+
+export const parseSecondaryDocument = (formData: FormData) =>
+  v.safeParse(secondaryDocumentSchema, {
+    documentType: formData.get('document-type')?.toString(),
+    expiryYear: formData.get('expiry-year')?.toString(),
+    expiryMonth: formData.get('expiry-month')?.toString(),
+  });
+
+export const formatSinApplication = (inPersonSinApplication: InPersonSinApplication, lang: Language) => {
+  return {
+    ...inPersonSinApplication,
+    primaryDocuments: {
+      ...inPersonSinApplication.primaryDocuments,
+      genderName: getLocalizedApplicantGenderById(inPersonSinApplication.primaryDocuments.gender, lang).name,
+    },
+    secondaryDocument: {
+      ...inPersonSinApplication.secondaryDocument,
+      documentTypeName: getLocalizedApplicantSecondaryDocumentChoiceById(
+        inPersonSinApplication.secondaryDocument.documentType,
+        lang,
+      ).name,
+    },
+    personalInformation: {
+      ...inPersonSinApplication.personalInformation,
+      genderName: getLocalizedApplicantGenderById(inPersonSinApplication.personalInformation.gender, lang).name,
+    },
+    birthDetails: {
+      ...inPersonSinApplication.birthDetails,
+      countryName: getLocalizedCountryById(inPersonSinApplication.birthDetails.country, lang).name,
+      provinceName: inPersonSinApplication.birthDetails.province
+        ? inPersonSinApplication.birthDetails.country !== serverEnvironment.PP_CANADA_COUNTRY_CODE
+          ? inPersonSinApplication.birthDetails.province
+          : getLocalizedProvinceById(inPersonSinApplication.birthDetails.province, lang).name
+        : undefined,
+    },
+    parentDetails: inPersonSinApplication.parentDetails.map((parentdetail) =>
+      parentdetail.unavailable
+        ? { unavailable: true }
+        : {
+            unavailable: false,
+            givenName: parentdetail.givenName,
+            lastName: parentdetail.lastName,
+            birthLocation: {
+              country: parentdetail.birthLocation.country,
+              city: parentdetail.birthLocation.city,
+              province: parentdetail.birthLocation.province,
+            },
+            countryName: getLocalizedCountryById(parentdetail.birthLocation.country, lang).name,
+            provinceName: parentdetail.birthLocation.province
+              ? parentdetail.birthLocation.country !== serverEnvironment.PP_CANADA_COUNTRY_CODE
+                ? parentdetail.birthLocation.province
+                : getLocalizedProvinceById(parentdetail.birthLocation.province, lang).name
+              : undefined,
+          },
+    ),
+    contactInformation: {
+      ...inPersonSinApplication.contactInformation,
+      preferredLanguageName: getLocalizedLanguageOfCorrespondenceById(
+        inPersonSinApplication.contactInformation.preferredLanguage,
+        lang,
+      ).name,
+      countryName: getLocalizedCountryById(inPersonSinApplication.contactInformation.country, lang).name,
+      provinceName: inPersonSinApplication.contactInformation.province
+        ? inPersonSinApplication.contactInformation.country !== serverEnvironment.PP_CANADA_COUNTRY_CODE
+          ? inPersonSinApplication.contactInformation.province
+          : getLocalizedProvinceById(inPersonSinApplication.contactInformation.province, lang).name
+        : undefined,
+    },
+    currentNameInfo: {
+      ...inPersonSinApplication.currentNameInfo,
+      firstName:
+        inPersonSinApplication.currentNameInfo.preferredSameAsDocumentName === true
+          ? inPersonSinApplication.primaryDocuments.givenName
+          : inPersonSinApplication.currentNameInfo.firstName,
+      lastName:
+        inPersonSinApplication.currentNameInfo.preferredSameAsDocumentName === true
+          ? inPersonSinApplication.primaryDocuments.lastName
+          : inPersonSinApplication.currentNameInfo.lastName,
+    },
+  };
+};

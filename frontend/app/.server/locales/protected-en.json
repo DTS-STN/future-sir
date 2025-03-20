@@ -427,6 +427,8 @@
     "page-title": "Summary",
     "case-created": "Case created",
     "id-number": "ID number",
-    "send-for-validation": "Send for validation"
+    "send-for-validation": "Send for validation",
+    "back": "Back",
+    "confirm": "Confirm"
   }
 }
