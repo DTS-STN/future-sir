@@ -10,7 +10,7 @@ import type { Info, Route } from './+types/finalize-request';
 
 import { serverEnvironment } from '~/.server/environment';
 import { getLocalizedProvinceByAlphaCode } from '~/.server/shared/services/province-service';
-import { requireAuth } from '~/.server/utils/auth-utils';
+import { requireAllRoles } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { stringToIntegerSchema } from '~/.server/validation/string-to-integer-schema';
 import { Button } from '~/components/button';
@@ -30,7 +30,7 @@ export const handle = {
 } as const satisfies RouteHandle;
 
 export async function loader({ context, request }: Route.LoaderArgs) {
-  requireAuth(context.session, new URL(request.url), ['user']);
+  requireAllRoles(context.session, new URL(request.url), ['user']);
 
   const { t, lang } = await getTranslation(request, handle.i18nNamespace);
 
@@ -55,7 +55,7 @@ export function meta({ data }: Route.MetaArgs) {
 }
 
 export async function action({ context, request }: Route.ActionArgs) {
-  requireAuth(context.session, new URL(request.url), ['user']);
+  requireAllRoles(context.session, new URL(request.url), ['user']);
 
   const { t } = await getTranslation(request, handle.i18nNamespace);
 

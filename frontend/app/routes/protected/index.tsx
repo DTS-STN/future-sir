@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 
 import type { Route } from './+types/index';
 
-import { requireAuth } from '~/.server/utils/auth-utils';
+import { requireAllRoles } from '~/.server/utils/auth-utils';
 import { Card, CardDescription, CardHeader, CardIcon, CardTitle } from '~/components/card';
 import { AppLink } from '~/components/links';
 import { PageTitle } from '~/components/page-title';
@@ -22,7 +22,7 @@ export const handle = {
 } as const satisfies RouteHandle;
 
 export async function loader({ context, request }: Route.LoaderArgs) {
-  requireAuth(context.session, new URL(request.url), ['user']);
+  requireAllRoles(context.session, new URL(request.url), ['user']);
   const { t } = await getTranslation(request, handle.i18nNamespace);
   return { documentTitle: t('protected:index.page-title') };
 }

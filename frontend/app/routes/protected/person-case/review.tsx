@@ -18,7 +18,7 @@ import { serverEnvironment } from '~/.server/environment';
 import { LogFactory } from '~/.server/logging';
 import { getLocalizedCountryById } from '~/.server/shared/services/country-service';
 import { getLocalizedProvinceById } from '~/.server/shared/services/province-service';
-import { requireAuth } from '~/.server/utils/auth-utils';
+import { requireAllRoles } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
 import { PageTitle } from '~/components/page-title';
@@ -41,7 +41,7 @@ export function meta({ data }: Route.MetaArgs) {
 }
 
 export async function action({ context, params, request }: Route.ActionArgs) {
-  requireAuth(context.session, new URL(request.url), ['user']);
+  requireAllRoles(context.session, new URL(request.url), ['user']);
 
   const tabId = new URL(request.url).searchParams.get('tid') ?? undefined;
 
@@ -89,7 +89,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
 }
 
 export async function loader({ context, request }: Route.LoaderArgs) {
-  requireAuth(context.session, new URL(request.url), ['user']);
+  requireAllRoles(context.session, new URL(request.url), ['user']);
   const { lang, t } = await getTranslation(request, handle.i18nNamespace);
 
   const tabId = new URL(request.url).searchParams.get('tid') ?? undefined;

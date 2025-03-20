@@ -33,7 +33,11 @@ export function hasRole(session: AppSession, role: Role) {
  * Will redirect to the login page if the user is not authenticated.
  * @throws {AppError} If the user does not have the required roles.
  */
-export function requireAuth(session: AppSession, currentUrl: URL, roles: Role[] = []): asserts session is AuthenticatedSession {
+export function requireAllRoles(
+  session: AppSession,
+  currentUrl: URL,
+  roles: Role[] = [],
+): asserts session is AuthenticatedSession {
   if (!session.authState) {
     log.debug('User is not authenticated; redirecting to login page');
 

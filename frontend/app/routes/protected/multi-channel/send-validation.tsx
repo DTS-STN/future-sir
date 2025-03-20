@@ -14,7 +14,7 @@ import { getLocalizedLanguageOfCorrespondenceById } from '~/.server/domain/perso
 import { serverEnvironment } from '~/.server/environment';
 import { getLocalizedCountryById } from '~/.server/shared/services/country-service';
 import { getLocalizedProvinceById } from '~/.server/shared/services/province-service';
-import { requireAuth } from '~/.server/utils/auth-utils';
+import { requireAllRoles } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
 import { ContextualAlert } from '~/components/contextual-alert';
@@ -34,7 +34,7 @@ export function meta({ data }: Route.MetaArgs) {
 }
 
 export async function action({ context, params, request }: Route.ActionArgs) {
-  requireAuth(context.session, new URL(request.url), ['user']);
+  requireAllRoles(context.session, new URL(request.url), ['user']);
 
   const formData = await request.formData();
   const action = formData.get('action');
@@ -50,7 +50,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
 }
 
 export async function loader({ context, request }: Route.LoaderArgs) {
-  requireAuth(context.session, new URL(request.url), ['user']);
+  requireAllRoles(context.session, new URL(request.url), ['user']);
   const { lang, t } = await getTranslation(request, handle.i18nNamespace);
 
   // TODO: the id will likely come from a path param in the URL?

@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 
 import type { Info, Route } from './+types/pid-verification';
 
-import { requireAuth } from '~/.server/utils/auth-utils';
+import { requireAllRoles } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
 import { FetcherErrorSummary } from '~/components/error-summary';
@@ -24,7 +24,7 @@ export const handle = {
 } as const satisfies RouteHandle;
 
 export async function loader({ context, request }: Route.LoaderArgs) {
-  requireAuth(context.session, new URL(request.url), ['user']);
+  requireAllRoles(context.session, new URL(request.url), ['user']);
 
   const { t } = await getTranslation(request, handle.i18nNamespace);
 
@@ -39,7 +39,7 @@ export function meta({ data }: Route.MetaArgs) {
 }
 
 export async function action({ context, request }: Route.ActionArgs) {
-  requireAuth(context.session, new URL(request.url), ['user']);
+  requireAllRoles(context.session, new URL(request.url), ['user']);
 
   const formData = await request.formData();
   const action = formData.get('action');
