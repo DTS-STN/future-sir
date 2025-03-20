@@ -4,7 +4,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mock } from 'vitest-mock-extended';
 
 import {
-  AwsCognitoAuthenticationStrategy,
   AzureADAuthenticationStrategy,
   BaseAuthenticationStrategy,
   LocalAuthenticationStrategy,
@@ -183,47 +182,6 @@ describe('auth-strategies', () => {
           state: 'mock_state',
         });
       });
-    });
-  });
-
-  describe('AwsCognitoAuthenticationStrategy', () => {
-    it('should construct a new AwsCognitoAuthenticationStrategy with the correct constructor parameters', async () => {
-      vi.mocked(oauth.processAuthorizationCodeResponse, { partial: true }).mockResolvedValue({
-        access_token: 'access-token',
-      });
-
-      vi.mocked(oauth.validateAuthResponse).mockReturnThis();
-
-      const authenticationStrategy = new AwsCognitoAuthenticationStrategy(
-        new URL('https://auth.example.com/issuer'),
-        'client-id',
-        'client-secret',
-      );
-
-      await authenticationStrategy.exchangeAuthCode(
-        new URL('https://example.com/callback'),
-        new URLSearchParams(),
-        'nonce',
-        'state',
-        'verifier',
-      );
-
-      expect(authenticationStrategy.name).toEqual('awscognito');
-
-      expect(vi.mocked(oauth.discoveryRequest)).toHaveBeenCalledWith(new URL('https://auth.example.com/issuer'), {
-        [oauth.allowInsecureRequests]: false,
-      });
-
-      expect(vi.mocked(oauth.validateAuthResponse)).toHaveBeenCalledWith(
-        {
-          authorization_endpoint: 'https://auth.example.com/authorize',
-          issuer: 'https://auth.example.com/issuer',
-          jwks_uri: 'https://auth.example.com/jwks',
-        },
-        { client_id: 'client-id' },
-        new URLSearchParams(),
-        'state',
-      );
     });
   });
 

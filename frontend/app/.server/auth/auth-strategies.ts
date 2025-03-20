@@ -242,15 +242,6 @@ export abstract class BaseAuthenticationStrategy implements AuthenticationStrate
 }
 
 /**
- * Authentication strategy for AWS Cognito.
- */
-export class AwsCognitoAuthenticationStrategy extends BaseAuthenticationStrategy {
-  public constructor(issuerUrl: URL, clientId: string, clientSecret: string) {
-    super('awscognito', issuerUrl, { client_id: clientId }, oauth.ClientSecretPost(clientSecret));
-  }
-}
-
-/**
  * Authentication strategy for Azure AD (Microsoft Entra).
  */
 export class AzureADAuthenticationStrategy extends BaseAuthenticationStrategy {
