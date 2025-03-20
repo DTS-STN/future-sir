@@ -11,7 +11,11 @@ export const defaults = {
 } as const;
 
 export const authentication = v.object({
-  AUTH_DEFAULT_PROVIDER: v.optional(v.picklist(['azuread', 'local']), defaults.AUTH_DEFAULT_PROVIDER),
+  AUTH_DEFAULT_PROVIDER: v.optional(v.picklist(['awscognito', 'azuread', 'local']), defaults.AUTH_DEFAULT_PROVIDER),
+
+  AWSCOGNITO_ISSUER_URL: v.optional(v.string()),
+  AWSCOGNITO_CLIENT_ID: v.optional(v.string()),
+  AWSCOGNITO_CLIENT_SECRET: v.optional(v.pipe(v.string(), v.transform(Redacted.make))),
 
   AZUREAD_ISSUER_URL: v.optional(v.string()),
   AZUREAD_CLIENT_ID: v.optional(v.string()),
