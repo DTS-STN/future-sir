@@ -369,7 +369,11 @@
     "page-title": "Validation result",
     "status-passed": "Passed",
     "validation-passed": "Validation passed",
-    "all-input-successful": "All inputs have been successfully validated and match the primary identity document.",
+    "input-successful": "All inputs have been successfully validated and match the primary identity document.",
+    "status-failed": "Failed",
+    "validation-failed": "Validation failed",
+    "input-failure": "Please check the primary identity document inputs to ensure they match and try again.",
+    "edit": "Edit primary identity document",
     "next": "Next",
     "previous": "Previous",
     "matches": "Matches"
