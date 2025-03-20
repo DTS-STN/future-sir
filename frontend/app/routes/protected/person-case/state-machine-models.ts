@@ -54,7 +54,12 @@ export type CurrentNameData =
     };
 
 export type ParentDetailsData = (
-  | { unavailable: true }
+  | {
+      unavailable: true;
+      givenName?: undefined;
+      lastName?: undefined;
+      birthLocation?: undefined;
+    }
   | {
       unavailable: false;
       givenName: string;

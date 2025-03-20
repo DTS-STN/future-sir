@@ -132,31 +132,21 @@ export async function loader({ context, request }: Route.LoaderArgs) {
         ...inPersonSinApplication.birthDetails,
         countryName: getLocalizedCountryById(inPersonSinApplication.birthDetails.country, lang).name,
         provinceName: inPersonSinApplication.birthDetails.province
-          ? inPersonSinApplication.birthDetails.country !== serverEnvironment.PP_CANADA_COUNTRY_CODE
-            ? inPersonSinApplication.birthDetails.province
-            : getLocalizedProvinceById(inPersonSinApplication.birthDetails.province, lang).name
+          ? inPersonSinApplication.birthDetails.country === serverEnvironment.PP_CANADA_COUNTRY_CODE
+            ? getLocalizedProvinceById(inPersonSinApplication.birthDetails.province, lang).name
+            : inPersonSinApplication.birthDetails.province
           : undefined,
       },
-      parentDetails: inPersonSinApplication.parentDetails.map((parentdetail) =>
-        parentdetail.unavailable
-          ? { unavailable: true }
-          : {
-              unavailable: false,
-              givenName: parentdetail.givenName,
-              lastName: parentdetail.lastName,
-              birthLocation: {
-                country: parentdetail.birthLocation.country,
-                city: parentdetail.birthLocation.city,
-                province: parentdetail.birthLocation.province,
-              },
-              countryName: getLocalizedCountryById(parentdetail.birthLocation.country, lang).name,
-              provinceName: parentdetail.birthLocation.province
-                ? parentdetail.birthLocation.country !== serverEnvironment.PP_CANADA_COUNTRY_CODE
-                  ? parentdetail.birthLocation.province
-                  : getLocalizedProvinceById(parentdetail.birthLocation.province, lang).name
-                : undefined,
-            },
-      ),
+      parentDetails: inPersonSinApplication.parentDetails.map((parentdetail) => ({
+        ...parentdetail,
+        countryName:
+          parentdetail.birthLocation?.country && getLocalizedCountryById(parentdetail.birthLocation.country, lang).name,
+        provinceName: parentdetail.birthLocation?.province
+          ? parentdetail.birthLocation.country === serverEnvironment.PP_CANADA_COUNTRY_CODE
+            ? getLocalizedProvinceById(parentdetail.birthLocation.province, lang).name
+            : parentdetail.birthLocation.province
+          : undefined,
+      })),
       contactInformation: {
         ...inPersonSinApplication.contactInformation,
         preferredLanguageName: getLocalizedLanguageOfCorrespondenceById(
@@ -164,11 +154,10 @@ export async function loader({ context, request }: Route.LoaderArgs) {
           lang,
         ).name,
         countryName: getLocalizedCountryById(inPersonSinApplication.contactInformation.country, lang).name,
-        provinceName: inPersonSinApplication.contactInformation.province
-          ? inPersonSinApplication.contactInformation.country !== serverEnvironment.PP_CANADA_COUNTRY_CODE
-            ? inPersonSinApplication.contactInformation.province
-            : getLocalizedProvinceById(inPersonSinApplication.contactInformation.province, lang).name
-          : undefined,
+        provinceName:
+          inPersonSinApplication.contactInformation.country === serverEnvironment.PP_CANADA_COUNTRY_CODE
+            ? getLocalizedProvinceById(inPersonSinApplication.contactInformation.province, lang).name
+            : inPersonSinApplication.contactInformation.province,
       },
       previousSin: {
         ...inPersonSinApplication.previousSin,

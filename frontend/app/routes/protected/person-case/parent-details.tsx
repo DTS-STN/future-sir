@@ -108,18 +108,7 @@ export async function loader({ context, request }: Route.LoaderArgs) {
     localizedCountries: getLocalizedCountries(lang),
     localizedProvincesTerritoriesStates: getLocalizedProvinces(lang),
     maxParents: maxNumberOfParents,
-    defaultFormValues: parentDetails.map((details) =>
-      details.unavailable
-        ? { unavailable: true }
-        : {
-            unavailable: false,
-            givenName: details.givenName,
-            lastName: details.lastName,
-            country: details.birthLocation.country,
-            province: details.birthLocation.province,
-            city: details.birthLocation.city,
-          },
-    ),
+    defaultFormValues: parentDetails,
   };
 }
 
@@ -209,7 +198,7 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
   const defaultValues = loaderData.defaultFormValues.at(index);
 
   const [unavailable, setUnavailable] = useState(defaultValues?.unavailable);
-  const [country, setCountry] = useState(defaultValues?.country);
+  const [country, setCountry] = useState(defaultValues?.birthLocation?.country);
 
   const countryOptions = [{ id: 'select-option', name: '' }, ...loaderData.localizedCountries].map(({ id, name }) => ({
     value: id === 'select-option' ? '' : id,
@@ -240,7 +229,7 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
         errorMessage={t(getSingleKey(errors?.[`${index}.unavailable`]))}
         id={`${index}-unavailable-id`}
         name={`${index}-unavailable`}
-        defaultChecked={unavailable}
+        defaultChecked={unavailable ?? false}
         required
         onChange={({ target }) => setUnavailable(target.checked)}
         labelClassName="text-lg"
@@ -253,7 +242,7 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
             errorMessage={t(getSingleKey(errors?.[`${index}.givenName`]))}
             label={t('protected:parent-details.given-name')}
             name={`${index}-given-name`}
-            defaultValue={defaultValues?.givenName}
+            defaultValue={defaultValues?.givenName ?? ''}
             required
             type="text"
             className="w-full rounded-sm sm:w-104"
@@ -262,7 +251,7 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
             errorMessage={t(getSingleKey(errors?.[`${index}.lastName`]))}
             label={t('protected:parent-details.last-name')}
             name={`${index}-last-name`}
-            defaultValue={defaultValues?.lastName}
+            defaultValue={defaultValues?.lastName ?? ''}
             required
             type="text"
             className="w-full rounded-sm sm:w-104"
@@ -273,7 +262,7 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
             id={`${index}-country-id`}
             name={`${index}-country`}
             label={t('protected:parent-details.country')}
-            defaultValue={defaultValues?.country}
+            defaultValue={defaultValues?.birthLocation?.country ?? ''}
             options={countryOptions}
             onChange={({ target }) => setCountry(target.value)}
           />
@@ -285,7 +274,7 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
               name={`${index}-province`}
               label={t('protected:parent-details.province')}
               required
-              defaultValue={defaultValues?.province}
+              defaultValue={defaultValues?.birthLocation?.province ?? ''}
               options={provinceOptions}
             />
           ) : (
@@ -294,7 +283,7 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
               className="w-full rounded-sm sm:w-104"
               label={t('protected:parent-details.province')}
               name={`${index}-province`}
-              defaultValue={defaultValues?.province}
+              defaultValue={defaultValues?.birthLocation?.province ?? ''}
               type="text"
             />
           )}
@@ -303,7 +292,7 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
             className="w-full rounded-sm sm:w-104"
             label={t('protected:parent-details.city')}
             name={`${index}-city`}
-            defaultValue={defaultValues?.city}
+            defaultValue={defaultValues?.birthLocation?.city ?? ''}
             required={country === globalThis.__appEnvironment.PP_CANADA_COUNTRY_CODE}
             type="text"
           />
