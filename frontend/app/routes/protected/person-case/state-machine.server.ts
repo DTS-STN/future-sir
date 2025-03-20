@@ -56,7 +56,7 @@ type MachineMeta = {
  * Type representing the possible state names for the application process.
  * TODO ::: GjB ::: figure out if there is a way to infer these from the machine.
  */
-type StateName =
+export type StateName =
   | 'privacy-statement'
   | 'request-details'
   | 'primary-docs'
