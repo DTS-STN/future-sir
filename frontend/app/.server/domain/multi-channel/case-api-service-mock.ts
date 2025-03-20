@@ -1,21 +1,23 @@
-import type { PersonSinCase } from '~/.server/domain/multi-channel/services/case-api-service';
+import type { SinCaseService } from '~/.server/domain/multi-channel/case-api-service';
+import type { PersonSinCase } from '~/.server/domain/multi-channel/case-api-service-models';
 import { APPLICANT_PRIMARY_DOCUMENT_CHOICE, APPLICANT_STATUS_IN_CANADA } from '~/domain/constants';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 
-// Mock API implementation
-export const mockCaseApi = {
-  getCases: async (): Promise<PersonSinCase[]> => {
-    return new Promise((resolve) => resolve(mockCases));
-  },
+export function getMockSinCaseService(): SinCaseService {
+  return {
+    getCases: async (): Promise<PersonSinCase[]> => {
+      return new Promise((resolve) => resolve(mockCases));
+    },
 
-  getCaseById: async (id: string): Promise<PersonSinCase> =>
-    new Promise((resolve, reject) => {
-      const _case = mockCases.find(({ caseId }) => caseId === id);
-      if (_case) return resolve(_case);
-      reject(new AppError(`Case with ID '${id}' not found.`, ErrorCodes.SIN_CASE_NOT_FOUND));
-    }),
-};
+    getCaseById: async (id: string): Promise<PersonSinCase> =>
+      new Promise((resolve, reject) => {
+        const _case = mockCases.find(({ caseId }) => caseId === id);
+        if (_case) return resolve(_case);
+        reject(new AppError(`Case with ID '${id}' not found.`, ErrorCodes.SIN_CASE_NOT_FOUND));
+      }),
+  };
+}
 
 const mockCases = [
   {

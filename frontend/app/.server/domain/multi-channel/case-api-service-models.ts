@@ -1,8 +1,3 @@
-import { mockCaseApi } from '~/.server/domain/multi-channel/mocks/case-api-service.mock';
-import { serverEnvironment } from '~/.server/environment';
-import { AppError } from '~/errors/app-error';
-import { ErrorCodes } from '~/errors/error-codes';
-
 export type BirthDetailsData = {
   country: string;
   province?: string;
@@ -103,20 +98,3 @@ export type PersonSinCase = {
   requestDetails: RequestDetailsData;
   secondaryDocument: SecondaryDocumentData;
 };
-
-// TODO: Build real implementation (the response will likely be a NIEM type and will have to be mapped)
-const realCaseApi = {
-  getCases: async (): Promise<PersonSinCase[]> => {
-    const response = await fetch(`${serverEnvironment.INTEROP_SIN_REG_API_BASE_URL}/cases`);
-    if (!response.ok) throw new AppError(`Cases not found.`, ErrorCodes.SIN_CASE_NOT_FOUND);
-    return response.json();
-  },
-
-  getCaseById: async (id: string): Promise<PersonSinCase> => {
-    const response = await fetch(`${serverEnvironment.INTEROP_SIN_REG_API_BASE_URL}/cases/${id}`);
-    if (!response.ok) throw new AppError(`Case with ID '${id}' not found.`, ErrorCodes.SIN_CASE_NOT_FOUND);
-    return response.json();
-  },
-};
-
-export const caseApi = serverEnvironment.ENABLE_SIN_API_SERVICE_MOCK ? mockCaseApi : realCaseApi;
