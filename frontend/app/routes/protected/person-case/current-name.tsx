@@ -9,9 +9,7 @@ import * as v from 'valibot';
 import type { Info, Route } from './+types/current-name';
 
 import { getLocalizedApplicantSupportingDocumentType } from '~/.server/domain/person-case/services/applicant-supporting-document-service';
-import { LogFactory } from '~/.server/logging';
 import { requireAllRoles } from '~/.server/utils/auth-utils';
-import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
 import { FetcherErrorSummary } from '~/components/error-summary';
 import { InputCheckboxes } from '~/components/input-checkboxes';
@@ -25,7 +23,8 @@ import { ErrorCodes } from '~/errors/error-codes';
 import { HttpStatusCodes } from '~/errors/http-status-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
-import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine.server';
+import { loadMachineContextOrRedirect } from '~/routes/protected/person-case/route-helpers.server';
+import { getStateRoute } from '~/routes/protected/person-case/state-machine.server';
 import { currentNameSchema } from '~/routes/protected/person-case/validation.server';
 import { getSingleKey } from '~/utils/i18n-utils';
 import { trimToUndefined } from '~/utils/string-utils';
@@ -34,8 +33,6 @@ const REQUIRE_OPTIONS = {
   yes: 'Yes', //
   no: 'No',
 } as const;
-
-const log = LogFactory.getLogger(import.meta.url);
 
 export const handle = {
   i18nNamespace: [...parentHandle.i18nNamespace, 'protected'],
@@ -48,12 +45,7 @@ export function meta({ data }: Route.MetaArgs) {
 export async function action({ context, params, request }: Route.ActionArgs) {
   requireAllRoles(context.session, new URL(request.url), ['user']);
 
-  const machineActor = loadMachineActor(context.session, request, 'name-info');
-
-  if (!machineActor) {
-    log.warn('Could not find a machine snapshot in session; redirecting to start of flow');
-    throw i18nRedirect('routes/protected/person-case/privacy-statement.tsx', request);
-  }
+  const { machineActor } = loadMachineContextOrRedirect({ session: context.session, request, stateName: 'name-info' });
 
   const formData = await request.formData();
   const action = formData.get('action');
@@ -102,17 +94,19 @@ export async function action({ context, params, request }: Route.ActionArgs) {
 export async function loader({ context, request }: Route.LoaderArgs) {
   requireAllRoles(context.session, new URL(request.url), ['user']);
 
+  const { machineActor } = loadMachineContextOrRedirect({ session: context.session, request, stateName: 'name-info' });
+  const { currentNameInfo, primaryDocuments } = machineActor.getSnapshot().context;
+
   const { lang, t } = await getTranslation(request, handle.i18nNamespace);
-  const machineActor = loadMachineActor(context.session, request, 'name-info');
 
   return {
     documentTitle: t('protected:primary-identity-document.page-title'),
-    defaultFormValues: machineActor?.getSnapshot().context.currentNameInfo,
+    defaultFormValues: currentNameInfo,
     localizedSupportingDocTypes: getLocalizedApplicantSupportingDocumentType(lang),
     primaryDocName: {
-      firstName: machineActor?.getSnapshot().context.primaryDocuments?.givenName,
-      lastName: machineActor?.getSnapshot().context.primaryDocuments?.lastName,
-      middleName: '', // machineActor?.getSnapshot().context.primaryDocuments?.middleName
+      firstName: primaryDocuments?.givenName,
+      lastName: primaryDocuments?.lastName,
+      middleName: '', // primaryDocuments?.middleName
     },
   };
 }

@@ -9,11 +9,9 @@ import * as v from 'valibot';
 
 import type { Info, Route } from './+types/parent-details';
 
-import { LogFactory } from '~/.server/logging';
 import { getLocalizedCountries } from '~/.server/shared/services/country-service';
 import { getLocalizedProvinces } from '~/.server/shared/services/province-service';
 import { requireAllRoles } from '~/.server/utils/auth-utils';
-import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
 import { FetcherErrorSummary } from '~/components/error-summary';
 import { InputCheckbox } from '~/components/input-checkbox';
@@ -25,12 +23,11 @@ import { ErrorCodes } from '~/errors/error-codes';
 import { HttpStatusCodes } from '~/errors/http-status-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
-import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine.server';
+import { loadMachineContextOrRedirect } from '~/routes/protected/person-case/route-helpers.server';
+import { getStateRoute } from '~/routes/protected/person-case/state-machine.server';
 import { maxNumberOfParents, parentDetailsSchema } from '~/routes/protected/person-case/validation.server';
 import { getSingleKey } from '~/utils/i18n-utils';
 import { trimToUndefined } from '~/utils/string-utils';
-
-const log = LogFactory.getLogger(import.meta.url);
 
 export const handle = {
   i18nNamespace: [...parentHandle.i18nNamespace, 'protected'],
@@ -43,12 +40,7 @@ export function meta({ data }: Route.MetaArgs) {
 export async function action({ context, params, request }: Route.ActionArgs) {
   requireAllRoles(context.session, new URL(request.url), ['user']);
 
-  const machineActor = loadMachineActor(context.session, request, 'parent-info');
-
-  if (!machineActor) {
-    log.warn('Could not find a machine snapshot in session; redirecting to start of flow');
-    throw i18nRedirect('routes/protected/person-case/privacy-statement.tsx', request);
-  }
+  const { machineActor } = loadMachineContextOrRedirect({ session: context.session, request, stateName: 'parent-info' });
 
   const formData = await request.formData();
   const action = formData.get('action');
@@ -99,9 +91,10 @@ export async function action({ context, params, request }: Route.ActionArgs) {
 export async function loader({ context, request }: Route.LoaderArgs) {
   requireAllRoles(context.session, new URL(request.url), ['user']);
 
+  const { machineActor } = loadMachineContextOrRedirect({ session: context.session, request, stateName: 'parent-info' });
+  const { parentDetails = [] } = machineActor.getSnapshot().context;
+
   const { lang, t } = await getTranslation(request, handle.i18nNamespace);
-  const machineActor = loadMachineActor(context.session, request, 'parent-info');
-  const parentDetails = machineActor?.getSnapshot().context.parentDetails ?? [];
 
   return {
     documentTitle: t('protected:parent-details.page-title'),
