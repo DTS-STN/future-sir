@@ -48,6 +48,7 @@ exports[`DatePickerField > should render date picker field component > expected 
               disabled=""
               hidden=""
               id="date-picker-id-month-option-unselected"
+              selected=""
               value=""
             >
               gcweb:date-picker.month.placeholder
@@ -670,6 +671,7 @@ exports[`DatePickerField > should render date picker field component with error 
               disabled=""
               hidden=""
               id="date-picker-id-month-option-unselected"
+              selected=""
               value=""
             >
               gcweb:date-picker.month.placeholder
@@ -870,6 +872,7 @@ exports[`DatePickerField > should render date picker field component with help m
               disabled=""
               hidden=""
               id="date-picker-id-month-option-unselected"
+              selected=""
               value=""
             >
               gcweb:date-picker.month.placeholder
@@ -1078,6 +1081,7 @@ exports[`DatePickerField > should render date picker field component with requir
               disabled=""
               hidden=""
               id="date-picker-id-month-option-unselected"
+              selected=""
               value=""
             >
               gcweb:date-picker.month.placeholder
