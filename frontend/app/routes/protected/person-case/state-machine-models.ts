@@ -30,14 +30,23 @@ export type ContactInformationData = {
 };
 
 export type CurrentNameData =
-  | { preferredSameAsDocumentName: true }
+  | {
+      preferredSameAsDocumentName: true;
+      firstName?: undefined;
+      middleName?: undefined;
+      lastName?: undefined;
+      supportingDocuments?: undefined;
+    }
   | {
       preferredSameAsDocumentName: false;
       firstName: string;
       middleName?: string;
       lastName: string;
       supportingDocuments:
-        | { required: false }
+        | {
+            required: false;
+            documentTypes?: undefined;
+          }
         | {
             required: true;
             documentTypes: string[];

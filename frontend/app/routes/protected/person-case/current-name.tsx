@@ -121,11 +121,7 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
   const { t } = useTranslation(handle.i18nNamespace);
 
   const [sameName, setSameName] = useState(loaderData.defaultFormValues?.preferredSameAsDocumentName);
-  const [requireDoc, setRequireDoc] = useState(
-    loaderData.defaultFormValues && loaderData.defaultFormValues.preferredSameAsDocumentName === false
-      ? loaderData.defaultFormValues.supportingDocuments.required
-      : false,
-  );
+  const [requireDoc, setRequireDoc] = useState(loaderData.defaultFormValues?.supportingDocuments?.required);
 
   const fetcherKey = useId();
   const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
@@ -166,12 +162,7 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
   const docTypes = loaderData.localizedSupportingDocTypes.map((doc) => ({
     value: doc.id,
     children: doc.name,
-    defaultChecked:
-      loaderData.defaultFormValues &&
-      loaderData.defaultFormValues.preferredSameAsDocumentName === false &&
-      loaderData.defaultFormValues.supportingDocuments.required === true
-        ? loaderData.defaultFormValues.supportingDocuments.documentTypes.includes(doc.id)
-        : false,
+    defaultChecked: loaderData.defaultFormValues?.supportingDocuments?.documentTypes?.includes(doc.id) ?? false,
   }));
 
   return (
@@ -211,11 +202,7 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
                   errorMessage={t(getSingleKey(errors?.firstName), { maximum: 100 })}
                   label={t('protected:current-name.preferred-name.first-name')}
                   name="first-name"
-                  defaultValue={
-                    loaderData.defaultFormValues && loaderData.defaultFormValues.preferredSameAsDocumentName === false
-                      ? loaderData.defaultFormValues.firstName
-                      : ''
-                  }
+                  defaultValue={loaderData.defaultFormValues?.firstName ?? ''}
                   required
                   type="text"
                   className="w-full rounded-sm sm:w-104"
@@ -224,11 +211,7 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
                   errorMessage={t(getSingleKey(errors?.middleName), { maximum: 100 })}
                   label={t('protected:current-name.preferred-name.middle-name')}
                   name="middle-name"
-                  defaultValue={
-                    loaderData.defaultFormValues && loaderData.defaultFormValues.preferredSameAsDocumentName === false
-                      ? (loaderData.defaultFormValues.middleName ?? '')
-                      : ''
-                  }
+                  defaultValue={loaderData.defaultFormValues?.middleName ?? ''}
                   type="text"
                   className="w-full rounded-sm sm:w-104"
                 />
@@ -236,11 +219,7 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
                   errorMessage={t(getSingleKey(errors?.lastName), { maximum: 100 })}
                   label={t('protected:current-name.preferred-name.last-name')}
                   name="last-name"
-                  defaultValue={
-                    loaderData.defaultFormValues && loaderData.defaultFormValues.preferredSameAsDocumentName === false
-                      ? loaderData.defaultFormValues.lastName
-                      : ''
-                  }
+                  defaultValue={loaderData.defaultFormValues?.lastName ?? ''}
                   required
                   type="text"
                   className="w-full rounded-sm sm:w-104"
@@ -255,7 +234,7 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
                   options={requireOptions}
                   required
                 />
-                {requireDoc && (
+                {requireDoc === true && (
                   <InputCheckboxes
                     id="doc-type-id"
                     errorMessage={t(getSingleKey(errors?.['supportingDocuments.documentTypes']))}

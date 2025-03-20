@@ -176,21 +176,16 @@ export async function loader({ context, request }: Route.LoaderArgs) {
       },
       currentNameInfo: {
         ...inPersonSinApplication.currentNameInfo,
-        firstName:
-          inPersonSinApplication.currentNameInfo.preferredSameAsDocumentName === true
-            ? inPersonSinApplication.primaryDocuments.givenName
-            : inPersonSinApplication.currentNameInfo.firstName,
-        lastName:
-          inPersonSinApplication.currentNameInfo.preferredSameAsDocumentName === true
-            ? inPersonSinApplication.primaryDocuments.lastName
-            : inPersonSinApplication.currentNameInfo.lastName,
+        firstName: inPersonSinApplication.currentNameInfo.preferredSameAsDocumentName
+          ? inPersonSinApplication.primaryDocuments.givenName
+          : inPersonSinApplication.currentNameInfo.firstName,
+        lastName: inPersonSinApplication.currentNameInfo.preferredSameAsDocumentName
+          ? inPersonSinApplication.primaryDocuments.lastName
+          : inPersonSinApplication.currentNameInfo.lastName,
         supportingDocumentsNames:
-          inPersonSinApplication.currentNameInfo.preferredSameAsDocumentName === false &&
-          inPersonSinApplication.currentNameInfo.supportingDocuments.required === true
-            ? inPersonSinApplication.currentNameInfo.supportingDocuments.documentTypes.map(
-                (doc) => getLocalizedApplicantSupportingDocumentTypeById(doc, lang).name,
-              )
-            : undefined,
+          inPersonSinApplication.currentNameInfo.supportingDocuments?.documentTypes?.map(
+            (doc) => getLocalizedApplicantSupportingDocumentTypeById(doc, lang).name,
+          ) ?? undefined,
       },
     },
   };
