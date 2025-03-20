@@ -118,7 +118,7 @@ export default function BirthDetails({ actionData, loaderData, matches, params }
 
   const countryOptions = [{ id: 'select-option', name: '' }, ...loaderData.localizedCountries].map(({ id, name }) => ({
     value: id === 'select-option' ? '' : id,
-    children: id === 'select-option' ? t('protected:birth-details.select-option') : name,
+    children: id === 'select-option' ? t('protected:person-case.select-option') : name,
   }));
 
   const provinceTerritoryStateOptions = [
@@ -126,7 +126,7 @@ export default function BirthDetails({ actionData, loaderData, matches, params }
     ...loaderData.localizedProvincesTerritoriesStates,
   ].map(({ id, name }) => ({
     value: id === 'select-option' ? '' : id,
-    children: id === 'select-option' ? t('protected:contact-information.select-option') : name,
+    children: id === 'select-option' ? t('protected:person-case.select-option') : name,
   }));
 
   const fromMultipleBirthOptions: InputRadiosProps['options'] = [

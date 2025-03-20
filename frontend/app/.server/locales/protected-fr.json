@@ -38,7 +38,8 @@
     "create-case-button": "Créer un dossier",
     "previous": "Précédent",
     "next": "Suivant",
-    "refer-button": "Parrainer"
+    "refer-button": "Parrainer",
+    "select-option": "Sélectionner une option"
   },
   "privacy-statement": {
     "page-title": "Protection of information",
@@ -150,8 +151,7 @@
     "select-scenario": "Sélectionnez le scénario qui décrit le mieux la situation du client",
     "type-request": "Type de demande",
     "required-scenario": "Scénario client est requis.",
-    "required-request": "Type de demande est requis.",
-    "select-option": "Sélectionner une option"
+    "required-request": "Type de demande est requis."
   },
   "current-name": {
     "page-title": "Nom pour le NAS",
@@ -236,7 +236,6 @@
   "contact-information": {
     "page-title": "Contact information",
     "correspondence": "Correspondence",
-    "select-option": "Select option",
     "preferred-language-label": "Preferred language of correspondence",
     "primary-phone-label": "Primary phone number",
     "secondary-phone-label": "Secondary phone number",
@@ -262,7 +261,6 @@
   },
   "birth-details": {
     "page-title": "Détails de naissance",
-    "select-option": "Sélectionner une option",
     "country": {
       "label": "Pays de naissance",
       "required-country": "Le pays de naissance est requis.",
@@ -295,7 +293,6 @@
     "city": "Ville, commune ou village de naissance",
     "add-parent": "Ajouter un parent/tuteur légal",
     "remove": "Supprimer",
-    "select-option": "Sélectionner une option",
     "given-name-error": {
       "format-error": "Le prénom ne doit pas contenir de chiffres.",
       "max-length-error": "Le prénom ne doit pas contenir plus de {{maximum}} caractère(s).",
