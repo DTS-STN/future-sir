@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import type { Route } from './+types/layout';
 
-import { requireAuth } from '~/.server/utils/auth-utils';
+import { requireAllRoles } from '~/.server/utils/auth-utils';
 import { AppBar } from '~/components/app-bar';
 import { AppLink } from '~/components/links';
 import { MenuItem } from '~/components/menu';
@@ -19,7 +19,7 @@ export const handle = {
 } as const satisfies RouteHandle;
 
 export function loader({ context, request }: Route.LoaderArgs) {
-  requireAuth(context.session, new URL(request.url), ['user']);
+  requireAllRoles(context.session, new URL(request.url), ['user']);
   return { name: context.session.authState.idTokenClaims?.name };
 }
 

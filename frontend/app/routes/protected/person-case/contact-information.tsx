@@ -12,7 +12,7 @@ import { getLocalizedLanguageOfCorrespondence } from '~/.server/domain/person-ca
 import { LogFactory } from '~/.server/logging';
 import { getLocalizedCountries } from '~/.server/shared/services/country-service';
 import { getLocalizedProvinces } from '~/.server/shared/services/province-service';
-import { requireAuth } from '~/.server/utils/auth-utils';
+import { requireAllRoles } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
 import { FetcherErrorSummary } from '~/components/error-summary';
@@ -41,7 +41,7 @@ export function meta({ data }: Route.MetaArgs) {
 }
 
 export async function action({ context, params, request }: Route.ActionArgs) {
-  requireAuth(context.session, new URL(request.url), ['user']);
+  requireAllRoles(context.session, new URL(request.url), ['user']);
 
   const machineActor = loadMachineActor(context.session, request, 'contact-info');
 
@@ -94,7 +94,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
 }
 
 export async function loader({ context, request }: Route.LoaderArgs) {
-  requireAuth(context.session, new URL(request.url), ['user']);
+  requireAllRoles(context.session, new URL(request.url), ['user']);
 
   const { lang, t } = await getTranslation(request, handle.i18nNamespace);
   const machineActor = loadMachineActor(context.session, request, 'contact-info');
