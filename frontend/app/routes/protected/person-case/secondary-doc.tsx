@@ -140,8 +140,10 @@ export default function SecondaryDoc({ actionData, loaderData, params }: Route.C
               errorMessage={t(getSingleKey(formErrors?.documentType))}
             />
             <DatePickerField
-              defaultMonth={Number(formValues?.expiryMonth)}
-              defaultYear={Number(formValues?.expiryYear)}
+              defaultValue={{
+                year: formValues?.expiryYear,
+                month: formValues?.expiryMonth,
+              }}
               id="expiry-date-id"
               legend={t('protected:secondary-identity-document.expiry-date.title')}
               required

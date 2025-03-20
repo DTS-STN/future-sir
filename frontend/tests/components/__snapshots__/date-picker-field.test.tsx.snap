@@ -42,13 +42,12 @@ exports[`DatePickerField > should render date picker field component > expected 
             aria-labelledby="date-picker-id-month-label"
             class="rounded-lg border-gray-500 focus:border-blue-500 focus:ring-blue-500 block focus:ring focus:outline-none disabled:bg-gray-100 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-70 w-full sm:w-auto"
             id="date-picker-id-month-select"
-            name="month test"
+            name="monthTest"
           >
             <option
               disabled=""
               hidden=""
               id="date-picker-id-month-option-unselected"
-              selected=""
               value=""
             >
               gcweb:date-picker.month.placeholder
@@ -152,10 +151,9 @@ exports[`DatePickerField > should render date picker field component > expected 
             max="31"
             maxlength="2"
             min="1"
-            name="day test"
+            name="dayTest"
             pattern="[0-9]*"
             type="text"
-            value=""
           />
         </div>
         <div
@@ -182,10 +180,9 @@ exports[`DatePickerField > should render date picker field component > expected 
             inputmode="numeric"
             maxlength="4"
             min="1900"
-            name="year test"
+            name="yearTest"
             pattern="[0-9]*"
             type="text"
-            value=""
           />
         </div>
       </div>
@@ -194,7 +191,7 @@ exports[`DatePickerField > should render date picker field component > expected 
 </div>
 `;
 
-exports[`DatePickerField > should render date picker field component with default value > expected html 1`] = `
+exports[`DatePickerField > should render date picker field component with default value as object > expected html 1`] = `
 <div>
   <div
     id="date-picker-id"
@@ -236,7 +233,7 @@ exports[`DatePickerField > should render date picker field component with defaul
             aria-labelledby="date-picker-id-month-label"
             class="rounded-lg border-gray-500 focus:border-blue-500 focus:ring-blue-500 block focus:ring focus:outline-none disabled:bg-gray-100 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-70 w-full sm:w-auto"
             id="date-picker-id-month-select"
-            name="month test"
+            name="monthTest"
           >
             <option
               disabled=""
@@ -346,7 +343,201 @@ exports[`DatePickerField > should render date picker field component with defaul
             max="31"
             maxlength="2"
             min="1"
-            name="day test"
+            name="dayTest"
+            pattern="[0-9]*"
+            type="text"
+            value="31"
+          />
+        </div>
+        <div
+          class="space-y-2"
+          id="date-picker-id-year"
+        >
+          <label
+            class="block"
+            for="date-picker-id-year-input"
+            id="date-picker-id-year-label"
+          >
+            <span
+              class="font-semibold"
+            >
+              gcweb:date-picker.year.label
+            </span>
+          </label>
+          <input
+            aria-describedby="date-picker-id-legend"
+            aria-invalid="false"
+            aria-labelledby="date-picker-id-year-label"
+            class="rounded-lg border-gray-500 focus:border-blue-500 focus:ring-blue-500 block focus:ring focus:outline-none disabled:bg-gray-100 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-70 w-full sm:w-32"
+            id="date-picker-id-year-input"
+            inputmode="numeric"
+            maxlength="4"
+            min="1900"
+            name="yearTest"
+            pattern="[0-9]*"
+            type="text"
+            value="2025"
+          />
+        </div>
+      </div>
+    </fieldset>
+  </div>
+</div>
+`;
+
+exports[`DatePickerField > should render date picker field component with default value as string > expected html 1`] = `
+<div>
+  <div
+    id="date-picker-id"
+  >
+    <fieldset
+      class="space-y-2"
+    >
+      <legend
+        class="block"
+        id="date-picker-id-legend"
+      >
+        <span
+          class="font-semibold"
+        >
+          legend date picker field test
+        </span>
+      </legend>
+      <div
+        class="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2"
+      >
+        <div
+          class="space-y-2"
+          id="date-picker-id-month"
+        >
+          <label
+            class="block"
+            for="date-picker-id-month-select"
+            id="date-picker-id-month-label"
+          >
+            <span
+              class="font-semibold"
+            >
+              gcweb:date-picker.month.label
+            </span>
+          </label>
+          <select
+            aria-describedby="date-picker-id-legend"
+            aria-invalid="false"
+            aria-labelledby="date-picker-id-month-label"
+            class="rounded-lg border-gray-500 focus:border-blue-500 focus:ring-blue-500 block focus:ring focus:outline-none disabled:bg-gray-100 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-70 w-full sm:w-auto"
+            id="date-picker-id-month-select"
+            name="monthTest"
+          >
+            <option
+              disabled=""
+              hidden=""
+              id="date-picker-id-month-option-unselected"
+              value=""
+            >
+              gcweb:date-picker.month.placeholder
+            </option>
+            <option
+              id="date-picker-id-month-option-1"
+              selected=""
+              value="01"
+            >
+              January
+            </option>
+            <option
+              id="date-picker-id-month-option-2"
+              value="02"
+            >
+              February
+            </option>
+            <option
+              id="date-picker-id-month-option-3"
+              value="03"
+            >
+              March
+            </option>
+            <option
+              id="date-picker-id-month-option-4"
+              value="04"
+            >
+              April
+            </option>
+            <option
+              id="date-picker-id-month-option-5"
+              value="05"
+            >
+              May
+            </option>
+            <option
+              id="date-picker-id-month-option-6"
+              value="06"
+            >
+              June
+            </option>
+            <option
+              id="date-picker-id-month-option-7"
+              value="07"
+            >
+              July
+            </option>
+            <option
+              id="date-picker-id-month-option-8"
+              value="08"
+            >
+              August
+            </option>
+            <option
+              id="date-picker-id-month-option-9"
+              value="09"
+            >
+              September
+            </option>
+            <option
+              id="date-picker-id-month-option-10"
+              value="10"
+            >
+              October
+            </option>
+            <option
+              id="date-picker-id-month-option-11"
+              value="11"
+            >
+              November
+            </option>
+            <option
+              id="date-picker-id-month-option-12"
+              value="12"
+            >
+              December
+            </option>
+          </select>
+        </div>
+        <div
+          class="space-y-2"
+          id="date-picker-id-day"
+        >
+          <label
+            class="block"
+            for="date-picker-id-day-input"
+            id="date-picker-id-day-label"
+          >
+            <span
+              class="font-semibold"
+            >
+              gcweb:date-picker.day.label
+            </span>
+          </label>
+          <input
+            aria-describedby="date-picker-id-legend"
+            aria-invalid="false"
+            aria-labelledby="date-picker-id-day-label"
+            class="rounded-lg border-gray-500 focus:border-blue-500 focus:ring-blue-500 block focus:ring focus:outline-none disabled:bg-gray-100 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-70 w-full sm:w-20"
+            id="date-picker-id-day-input"
+            inputmode="numeric"
+            max="31"
+            maxlength="2"
+            min="1"
+            name="dayTest"
             pattern="[0-9]*"
             type="text"
             value="01"
@@ -376,7 +567,7 @@ exports[`DatePickerField > should render date picker field component with defaul
             inputmode="numeric"
             maxlength="4"
             min="1900"
-            name="year test"
+            name="yearTest"
             pattern="[0-9]*"
             type="text"
             value="2025"
@@ -473,13 +664,12 @@ exports[`DatePickerField > should render date picker field component with error 
             aria-labelledby="date-picker-id-month-label"
             class="rounded-lg block focus:ring focus:outline-none disabled:bg-gray-100 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-70 border-red-500 focus:border-red-500 focus:ring-red-500 w-full sm:w-auto"
             id="date-picker-id-month-select"
-            name="month test"
+            name="monthTest"
           >
             <option
               disabled=""
               hidden=""
               id="date-picker-id-month-option-unselected"
-              selected=""
               value=""
             >
               gcweb:date-picker.month.placeholder
@@ -584,10 +774,9 @@ exports[`DatePickerField > should render date picker field component with error 
             max="31"
             maxlength="2"
             min="1"
-            name="day test"
+            name="dayTest"
             pattern="[0-9]*"
             type="text"
-            value=""
           />
         </div>
         <div
@@ -615,10 +804,9 @@ exports[`DatePickerField > should render date picker field component with error 
             inputmode="numeric"
             maxlength="4"
             min="1900"
-            name="year test"
+            name="yearTest"
             pattern="[0-9]*"
             type="text"
-            value=""
           />
         </div>
       </div>
@@ -676,13 +864,12 @@ exports[`DatePickerField > should render date picker field component with help m
             aria-labelledby="date-picker-id-month-label"
             class="rounded-lg border-gray-500 focus:border-blue-500 focus:ring-blue-500 block focus:ring focus:outline-none disabled:bg-gray-100 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-70 w-full sm:w-auto"
             id="date-picker-id-month-select"
-            name="month test"
+            name="monthTest"
           >
             <option
               disabled=""
               hidden=""
               id="date-picker-id-month-option-unselected"
-              selected=""
               value=""
             >
               gcweb:date-picker.month.placeholder
@@ -786,10 +973,9 @@ exports[`DatePickerField > should render date picker field component with help m
             max="31"
             maxlength="2"
             min="1"
-            name="day test"
+            name="dayTest"
             pattern="[0-9]*"
             type="text"
-            value=""
           />
         </div>
         <div
@@ -816,10 +1002,9 @@ exports[`DatePickerField > should render date picker field component with help m
             inputmode="numeric"
             maxlength="4"
             min="1900"
-            name="year test"
+            name="yearTest"
             pattern="[0-9]*"
             type="text"
-            value=""
           />
         </div>
       </div>
@@ -886,14 +1071,13 @@ exports[`DatePickerField > should render date picker field component with requir
             aria-required="true"
             class="rounded-lg border-gray-500 focus:border-blue-500 focus:ring-blue-500 block focus:ring focus:outline-none disabled:bg-gray-100 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-70 w-full sm:w-auto"
             id="date-picker-id-month-select"
-            name="month test"
+            name="monthTest"
             required=""
           >
             <option
               disabled=""
               hidden=""
               id="date-picker-id-month-option-unselected"
-              selected=""
               value=""
             >
               gcweb:date-picker.month.placeholder
@@ -998,11 +1182,10 @@ exports[`DatePickerField > should render date picker field component with requir
             max="31"
             maxlength="2"
             min="1"
-            name="day test"
+            name="dayTest"
             pattern="[0-9]*"
             required=""
             type="text"
-            value=""
           />
         </div>
         <div
@@ -1030,11 +1213,10 @@ exports[`DatePickerField > should render date picker field component with requir
             inputmode="numeric"
             maxlength="4"
             min="1900"
-            name="year test"
+            name="yearTest"
             pattern="[0-9]*"
             required=""
             type="text"
-            value=""
           />
         </div>
       </div>

@@ -103,8 +103,8 @@ export type SubmitSinApplicationRequestRequestDetails = {
 
 export type SubmitSinApplicationRequestSecondaryDocument = {
   documentType: string;
-  expiryMonth: number;
-  expiryYear: number;
+  expiryMonth: string;
+  expiryYear: string;
 };
 
 export type SubmitSinApplicationResponse = {
