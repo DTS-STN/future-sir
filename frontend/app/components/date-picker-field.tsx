@@ -30,14 +30,13 @@ const inputStyles = {
   error: 'border-red-500 focus:border-red-500 focus:ring-red-500',
 } as const;
 
+type DatePickerDefaultValue = string | { year?: string; month?: string; day?: string };
+
 /**
  * Props for the DatePickerField component
  */
 export interface DatePickerFieldProps {
-  defaultValue?: string;
-  defaultYear?: number;
-  defaultMonth?: number;
-  defaultDay?: number;
+  defaultValue?: DatePickerDefaultValue;
   disabled?: boolean;
   errorMessages?: {
     all?: string;
@@ -67,9 +66,6 @@ export interface DatePickerFieldProps {
  */
 export const DatePickerField = ({
   defaultValue,
-  defaultYear,
-  defaultMonth,
-  defaultDay,
   disabled,
   errorMessages,
   helpMessagePrimary,
@@ -124,18 +120,14 @@ export const DatePickerField = ({
   }, {} as AriaErrorMessage);
 
   // Extract default date parts from the default value
-  const {
-    day = defaultDay ? padWithZero(defaultDay, 2) : '',
-    month = defaultMonth ? padWithZero(defaultMonth, 2) : '',
-    year = defaultYear ? padWithZero(defaultYear, 4) : '',
-  } = extractDateParts(defaultValue ?? '');
+  const defaultValues = defaultValue !== undefined ? extractDatePickerDefaultValues(defaultValue) : undefined;
 
   // Define date picker part fields
   const datePickerPartFields = {
     year: names.year ? (
       <DatePickerYearField
         id={id}
-        defaultValue={year}
+        defaultValue={defaultValues?.year}
         name={names.year}
         label={t('gcweb:date-picker.year.label')}
         className="w-full sm:w-32"
@@ -150,7 +142,7 @@ export const DatePickerField = ({
     month: names.month ? (
       <DatePickerMonthField
         id={id}
-        defaultValue={month}
+        defaultValue={defaultValues?.month}
         name={names.month}
         label={t('gcweb:date-picker.month.label')}
         placeholder={t('gcweb:date-picker.month.placeholder')}
@@ -167,7 +159,7 @@ export const DatePickerField = ({
     day: names.day ? (
       <DatePickerDayField
         id={id}
-        defaultValue={day}
+        defaultValue={defaultValues?.day}
         name={names.day}
         label={t('gcweb:date-picker.day.label')}
         className="w-full sm:w-20"
@@ -227,6 +219,14 @@ export const DatePickerField = ({
   );
 };
 
+function extractDatePickerDefaultValues(defaultValue: DatePickerDefaultValue): {
+  year?: string;
+  month?: string;
+  day?: string;
+} {
+  return typeof defaultValue === 'string' ? extractDateParts(defaultValue) : defaultValue;
+}
+
 /**
  * Props for the DatePickerMonthField component
  */
@@ -235,7 +235,7 @@ interface DatePickerMonthFieldProps {
   ariaErrorMessage?: string;
   className?: string;
   currentLanguage?: Language;
-  defaultValue: string;
+  defaultValue?: string;
   disabled?: boolean;
   id: string;
   label: string;
@@ -314,7 +314,7 @@ interface DatePickerYearFieldProps {
   ariaDescribedBy: string;
   ariaErrorMessage?: string;
   className?: string;
-  defaultValue: string;
+  defaultValue?: string;
   disabled?: boolean;
   id: string;
   label: string;
@@ -381,7 +381,7 @@ interface DatePickerDayFieldProps {
   ariaDescribedBy: string;
   ariaErrorMessage?: string;
   className?: string;
-  defaultValue: string;
+  defaultValue?: string;
   disabled?: boolean;
   id: string;
   label: string;

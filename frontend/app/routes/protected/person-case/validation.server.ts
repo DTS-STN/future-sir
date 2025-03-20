@@ -16,6 +16,7 @@ import { APPLICANT_STATUS_IN_CANADA } from '~/domain/constants';
 import { getStartOfDayInTimezone, isDateInPastOrTodayInTimeZone, isValidDateString } from '~/utils/date-utils';
 import { REGEX_PATTERNS } from '~/utils/regex-utils';
 import { formatSin, isValidSin } from '~/utils/sin-utils';
+import { padWithZero } from '~/utils/string-utils';
 
 export const birthDetailsSchema = v.variant(
   'country',
@@ -499,11 +500,13 @@ export const secondaryDocumentSchema = v.pipe(
         getStartOfDayInTimezone(serverEnvironment.BASE_TIMEZONE).getFullYear(),
         'protected:secondary-identity-document.expiry-date.invalid-year',
       ),
+      v.transform((year) => padWithZero(year, 4)),
     ),
     expiryMonth: v.pipe(
       stringToIntegerSchema('protected:secondary-identity-document.expiry-date.required-month'),
       v.minValue(1, 'protected:secondary-identity-document.expiry-date.invalid-month'),
       v.maxValue(12, 'protected:secondary-identity-document.expiry-date.invalid-month'),
+      v.transform((month) => padWithZero(month, 2)),
     ),
   }),
   v.forward(
@@ -511,16 +514,16 @@ export const secondaryDocumentSchema = v.pipe(
       [['expiryYear'], ['expiryMonth']],
       ({ expiryYear, expiryMonth }) => {
         const currentYear = getStartOfDayInTimezone(serverEnvironment.BASE_TIMEZONE).getFullYear();
-        const currentMonth = getStartOfDayInTimezone(serverEnvironment.BASE_TIMEZONE).getMonth();
+        const currentMonth = getStartOfDayInTimezone(serverEnvironment.BASE_TIMEZONE).getMonth() + 1; // JavaScript months are 0-indexed
 
-        // expiry date is valid if expiry year is in the future
-        if (expiryYear > currentYear) return true;
+        const year = Number.parseInt(expiryYear);
+        const month = Number.parseInt(expiryMonth);
 
-        // expiry date is valid if expiry month is in the future
-        if (expiryYear === currentYear) return expiryMonth >= currentMonth;
+        if (isNaN(year) || isNaN(month)) {
+          return false; // Handle invalid number formats, if necessary
+        }
 
-        // expiry date is invalid
-        return false;
+        return year > currentYear || (year === currentYear && month >= currentMonth);
       },
       'protected:secondary-identity-document.expiry-date.invalid',
     ),

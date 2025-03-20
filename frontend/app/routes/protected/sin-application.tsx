@@ -94,8 +94,8 @@ interface SecondayDocumentDataProps {
   data: {
     documentTypeName: string;
     documentType: string;
-    expiryMonth: number;
-    expiryYear: number;
+    expiryMonth: string;
+    expiryYear: string;
   };
   tabId?: string;
 }

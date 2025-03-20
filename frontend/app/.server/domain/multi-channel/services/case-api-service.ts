@@ -86,8 +86,8 @@ export type RequestDetailsData = {
 
 export type SecondaryDocumentData = {
   documentType: string;
-  expiryMonth: number;
-  expiryYear: number;
+  expiryMonth: string;
+  expiryYear: string;
 };
 
 export type PersonSinCase = {

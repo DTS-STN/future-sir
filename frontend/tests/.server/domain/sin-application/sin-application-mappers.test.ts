@@ -82,7 +82,7 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
         gender: 'M',
       },
       requestDetails: { type: 'RequestType', scenario: 'Scenario' },
-      secondaryDocument: { documentType: 'SecDocType', expiryYear: 2025, expiryMonth: 12 },
+      secondaryDocument: { documentType: 'SecDocType', expiryYear: '2025', expiryMonth: '12' },
     };
 
     const expected: SinApplicationRequest = {
@@ -418,7 +418,7 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
         gender: 'M',
       },
       requestDetails: { type: 'RequestType', scenario: 'Scenario' },
-      secondaryDocument: { documentType: 'SecDocType', expiryYear: 2025, expiryMonth: 12 },
+      secondaryDocument: { documentType: 'SecDocType', expiryYear: '2025', expiryMonth: '12' },
     };
 
     const expected: SinApplicationRequest = {
