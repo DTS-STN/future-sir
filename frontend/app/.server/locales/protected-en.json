@@ -63,14 +63,7 @@
     "document-type": {
       "title": "Document type",
       "required": "Document type is required.",
-      "invalid": "Please select Certificate of Canadian citizenship.",
-      "options": {
-        "select-option": "Select option",
-        "certificate-of-canadian-citizenship": "Certificate of Canadian citizenship",
-        "certificate-of-registration-of-birth-abroad": "Certificate of Registration of Birth Abroad",
-        "birth-certificate-and-certificate-of-indian-status": "Birth certificates and Certificates of Indian Status",
-        "certificate-of-canadian-citizenship-and-certificate-of-indian-status": "Certificate of Canadian Citizenship and Certificate of Indian Status"
-      }
+      "invalid": "Please select Certificate of Canadian citizenship."
     },
     "registration-number": {
       "label": "Registration number",

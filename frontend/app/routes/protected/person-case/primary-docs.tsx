@@ -9,8 +9,13 @@ import * as v from 'valibot';
 
 import type { Info, Route } from './+types/primary-docs';
 
-import type { LocalizedApplicantGender, LocalizedApplicantStatusInCanadaChoice } from '~/.server/domain/person-case/models';
+import type {
+  LocalizedApplicantGender,
+  LocalizedApplicantPrimaryDocumentChoice,
+  LocalizedApplicantStatusInCanadaChoice,
+} from '~/.server/domain/person-case/models';
 import { getLocalizedApplicantGenders } from '~/.server/domain/person-case/services/applicant-gender-service';
+import { getLocalizedApplicantPrimaryDocumentChoices } from '~/.server/domain/person-case/services/applicant-primary-document-service';
 import { getLocalizedApplicantStatusInCanadaChoices } from '~/.server/domain/person-case/services/applicant-status-in-canada-service';
 import { LogFactory } from '~/.server/logging';
 import { requireAllRoles } from '~/.server/utils/auth-utils';
@@ -23,7 +28,7 @@ import { InputFile } from '~/components/input-file';
 import { InputRadios } from '~/components/input-radios';
 import { InputSelect } from '~/components/input-select';
 import { PageTitle } from '~/components/page-title';
-import { APPLICANT_STATUS_IN_CANADA } from '~/domain/constants';
+import { APPLICANT_PRIMARY_DOCUMENT_CHOICE, APPLICANT_STATUS_IN_CANADA } from '~/domain/constants';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { HttpStatusCodes } from '~/errors/http-status-codes';
@@ -130,6 +135,7 @@ export async function loader({ context, request }: Route.LoaderArgs) {
   return {
     documentTitle: t('protected:primary-identity-document.page-title'),
     localizedStatusInCanada: getLocalizedApplicantStatusInCanadaChoices(lang),
+    localizedPrimaryDocumentChoices: getLocalizedApplicantPrimaryDocumentChoices(lang),
     localizedGenders: getLocalizedApplicantGenders(lang),
     formValues: machineContext?.formData?.primaryDocuments?.values ?? machineContext?.primaryDocuments,
     formErrors: machineContext?.formData?.primaryDocuments?.errors,
@@ -149,6 +155,16 @@ export default function PrimaryDocs({ actionData, loaderData, params }: Route.Co
   const [currentStatus, setCurrentStatus] = useState(formValues?.currentStatusInCanada);
   const [documentType, setDocumentType] = useState(formValues?.documentType);
 
+  function onCurrenStatusChange(currentStatusName: string): void {
+    setCurrentStatus(currentStatusName);
+    //TODO: remove setting the state for documentType when other options for document type are enabled
+    setDocumentType(
+      loaderData.localizedPrimaryDocumentChoices.find(
+        (c) => c.id === APPLICANT_PRIMARY_DOCUMENT_CHOICE.certificateOfCanadianCitizenship,
+      )?.id,
+    );
+  }
+
   return (
     <>
       <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:primary-identity-document.page-title')}</PageTitle>
@@ -159,7 +175,7 @@ export default function PrimaryDocs({ actionData, loaderData, params }: Route.Co
             <CurrentStatusInCanada
               defaultValue={formValues?.currentStatusInCanada}
               errorMessage={t(getSingleKey(formErrors?.currentStatusInCanada))}
-              onChange={({ target }) => setCurrentStatus(target.value)}
+              onChange={({ target }) => onCurrenStatusChange(target.value)}
               statusInCanada={loaderData.localizedStatusInCanada}
             />
             {currentStatus && (
@@ -168,6 +184,9 @@ export default function PrimaryDocs({ actionData, loaderData, params }: Route.Co
                 value={formValues?.documentType}
                 error={t(getSingleKey(formErrors?.documentType))}
                 onChange={({ target }) => setDocumentType(target.value)}
+                documentTypeChoices={loaderData.localizedPrimaryDocumentChoices.filter(
+                  (c) => c.applicantStatusInCanadaId === currentStatus,
+                )}
               />
             )}
             {currentStatus && documentType && (
@@ -228,51 +247,20 @@ function CurrentStatusInCanada({ defaultValue, errorMessage, onChange, statusInC
 
 type DocumentTypeProps = {
   error?: string;
+  documentTypeChoices: LocalizedApplicantPrimaryDocumentChoice[];
   status?: string;
   value?: string;
   onChange?: React.ChangeEventHandler<HTMLSelectElement>;
 };
 
-function DocumentType({ error, status, value, onChange }: DocumentTypeProps) {
+function DocumentType({ error, documentTypeChoices, status, value, onChange }: DocumentTypeProps) {
   const { t } = useTranslation(handle.i18nNamespace);
 
-  const canadianCitizenBornOutsideCanadaDocumentType = [
-    'certificate-of-canadian-citizenship',
-    'certificate-of-registration-of-birth-abroad',
-  ] as const;
-
-  const registeredIndianBornInCanadaDocumentType = [
-    'birth-certificate-and-certificate-of-indian-status',
-    'certificate-of-canadian-citizenship-and-certificate-of-indian-status',
-  ] as const;
-
-  const documentTypeOptions = [
-    {
-      children: t('protected:request-details.select-option'),
-      value: '',
-      hidden: true,
-    },
-    ...(() => {
-      switch (status) {
-        case APPLICANT_STATUS_IN_CANADA.canadianCitizenBornOutsideCanada:
-          return canadianCitizenBornOutsideCanadaDocumentType.map((value) => ({
-            value: value,
-            children: t(`protected:primary-identity-document.document-type.options.${value}` as const),
-            disabled: value !== 'certificate-of-canadian-citizenship',
-          }));
-
-        case APPLICANT_STATUS_IN_CANADA.registeredIndianBornInCanada:
-          return registeredIndianBornInCanadaDocumentType.map((value) => ({
-            value: value,
-            children: t(`protected:primary-identity-document.document-type.options.${value}` as const),
-          }));
-
-        default:
-          return [];
-      }
-    })(),
-  ];
-
+  const documentTypeOptions = [{ id: 'select-option', name: '' }, ...documentTypeChoices].map(({ id, name }) => ({
+    value: id === 'select-option' ? '' : id,
+    children: id === 'select-option' ? t('protected:request-details.select-option') : name,
+    disabled: id !== APPLICANT_PRIMARY_DOCUMENT_CHOICE.certificateOfCanadianCitizenship,
+  }));
   return (
     <>
       {(status === APPLICANT_STATUS_IN_CANADA.canadianCitizenBornOutsideCanada ||
@@ -312,7 +300,7 @@ function PrimaryDocsFields({ documentType, formErrors, formValues, genders, stat
   return (
     <>
       {status === APPLICANT_STATUS_IN_CANADA.canadianCitizenBornOutsideCanada &&
-        documentType === 'certificate-of-canadian-citizenship' && (
+        documentType === APPLICANT_PRIMARY_DOCUMENT_CHOICE.certificateOfCanadianCitizenship && (
           <>
             <InputField
               id="registration-number-id"

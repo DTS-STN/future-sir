@@ -1,4 +1,5 @@
 import type { PersonSinCase } from '~/.server/domain/multi-channel/services/case-api-service';
+import { APPLICANT_PRIMARY_DOCUMENT_CHOICE, APPLICANT_STATUS_IN_CANADA } from '~/domain/constants';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 
@@ -66,8 +67,8 @@ const mockCases = [
     },
     previousSin: { hasPreviousSin: '564190000', socialInsuranceNumber: '800000002' },
     primaryDocuments: {
-      currentStatusInCanada: '900000001',
-      documentType: 'certificate-of-canadian-citizenship',
+      currentStatusInCanada: APPLICANT_STATUS_IN_CANADA.canadianCitizenBornOutsideCanada,
+      documentType: APPLICANT_PRIMARY_DOCUMENT_CHOICE.certificateOfCanadianCitizenship,
       registrationNumber: '12345678',
       clientNumber: '1234567890',
       givenName: 'John',
@@ -130,8 +131,8 @@ const mockCases = [
     },
     previousSin: { hasPreviousSin: '564190001' },
     primaryDocuments: {
-      currentStatusInCanada: '900000001',
-      documentType: 'certificate-of-canadian-citizenship',
+      currentStatusInCanada: APPLICANT_STATUS_IN_CANADA.canadianCitizenBornOutsideCanada,
+      documentType: APPLICANT_PRIMARY_DOCUMENT_CHOICE.certificateOfCanadianCitizenship,
       registrationNumber: '12345678',
       clientNumber: '1234567890',
       givenName: 'John',

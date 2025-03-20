@@ -12,7 +12,7 @@ import { serverEnvironment } from '~/.server/environment';
 import { getCountries } from '~/.server/shared/services/country-service';
 import { getProvinces } from '~/.server/shared/services/province-service';
 import { stringToIntegerSchema } from '~/.server/validation/string-to-integer-schema';
-import { APPLICANT_STATUS_IN_CANADA } from '~/domain/constants';
+import { APPLICANT_PRIMARY_DOCUMENT_CHOICE, APPLICANT_STATUS_IN_CANADA } from '~/domain/constants';
 import { getStartOfDayInTimezone, isDateInPastOrTodayInTimeZone, isValidDateString } from '~/utils/date-utils';
 import { REGEX_PATTERNS } from '~/utils/regex-utils';
 import { formatSin, isValidSin } from '~/utils/sin-utils';
@@ -354,10 +354,12 @@ export const previousSinSchema = v.pipe(
 );
 
 const validBornOutsideOfCanadaDocuments = [
-  'certificate-of-canadian-citizenship', //
+  APPLICANT_PRIMARY_DOCUMENT_CHOICE.certificateOfCanadianCitizenship, //
 ] as const;
 
-const validCanadianStatuses = [APPLICANT_STATUS_IN_CANADA.canadianCitizenBornOutsideCanada] as const;
+const validCanadianStatuses = [
+  APPLICANT_STATUS_IN_CANADA.canadianCitizenBornOutsideCanada, //
+] as const;
 
 export const primaryDocumentSchema = v.intersect([
   v.object({
