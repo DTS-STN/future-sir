@@ -1,16 +1,12 @@
 {
-  "resource": "public/locales/protected-fr.json",
   "admin": {
     "page-title": "Interface d'administration"
   },
   "dashboard": {
-    "sin": "NAS",
     "sin-system": "NAS Interface Système",
-    "system": "Système",
     "assigned-cases": "Affaires attribuées",
     "get-started": "Commencer ici",
-    "no-cases": "Aucun dossier n'est actuellement assigné à vous.",
-    "coming-soon": "Bientôt disponible"
+    "no-cases": "Aucun dossier n'est actuellement assigné à vous."
   },
   "in-person": {
     "title": "Demande NAS en personne",
@@ -27,18 +23,14 @@
     "admin-dashboard": "Interface d'administration",
     "dashboard": "Interface",
     "home": "Accueil",
-    "in-person": "Accédez à la page «\u00a0Cas en personne\u00a0»",
     "page-title": "Bienvenue sur Future SIR (protégée)",
-    "protected": "Accédez au portail des employés",
-    "public": "Accédez à la page «\u00a0publique\u00a0»",
-    "resources": "ressources i18n chargées depuis : <mark>{{resource}}</mark>"
+    "public": "Accédez à la page «\u00a0publique\u00a0»"
   },
   "person-case": {
     "abandon-button": "Abandonner",
     "create-case-button": "Créer un dossier",
     "previous": "Précédent",
     "next": "Suivant",
-    "refer-button": "Parrainer",
     "select-option": "Sélectionner une option"
   },
   "privacy-statement": {
@@ -108,7 +100,6 @@
     "citizenship-date": {
       "label": "Date de citoyenneté",
       "invalid": "La date de citoyenneté est invalide.",
-      "invalid-future-date": "La date de naissance doit être dans le passé ou aujourd'hui.",
       "required-year": "L'année de citoyenneté est requise.",
       "invalid-year": "L'année de citoyenneté est invalide.",
       "required-month": "La date du mois de citoyenneté est requise.",
@@ -117,20 +108,16 @@
       "invalid-day": "La date du jour de citoyenneté est invalide."
     },
     "upload-document": {
-      "label": "Téléchargez le document d'identité principal",
-      "required": "Un document d'identité principal est requis.",
-      "invalid": "Le document d'identité principal est invalide."
+      "label": "Téléchargez le document d'identité principal"
     }
   },
   "secondary-identity-document": {
     "document-type": {
       "title": "Type de document",
-      "required": "Le type de document est requis.",
       "invalid": "Le type de document est invalide."
     },
     "expiry-date": {
       "title": "Date d'expiration",
-      "required": "La date d'expiration est requise.",
       "invalid": "La date d'expiration est invalide.",
       "required-year": "L'année d'expiration est requise.",
       "invalid-year": "L'année d'expiration est invalide.",
@@ -140,9 +127,7 @@
       "invalid-day": "Le jour d'expiration est invalide."
     },
     "upload-document": {
-      "title": "Téléversez le document secondaire",
-      "required": "Le document secondaire est requis.",
-      "invalid": "Le document secondaire est invalide."
+      "title": "Téléversez le document secondaire"
     },
     "page-title": "Document d'identité secondaire"
   },
@@ -366,8 +351,7 @@
     "input-failure": "Please check the primary identity document inputs to ensure they match and try again.",
     "edit": "Edit primary identity document",
     "next": "Next",
-    "previous": "Previous",
-    "matches": "Matches"
+    "previous": "Previous"
   },
   "finalize-request": {
     "page-title": "Finalize request",
