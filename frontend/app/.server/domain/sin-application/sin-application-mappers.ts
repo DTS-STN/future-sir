@@ -5,6 +5,7 @@ import type {
   SubmitSinApplicationRequest,
   SubmitSinApplicationResponse,
 } from '~/.server/domain/sin-application/sin-application-models';
+import { serverEnvironment } from '~/.server/environment';
 import type {
   CertificateType,
   ContactInformationType,
@@ -19,6 +20,24 @@ import type {
   SinApplicationRequest,
   SinApplicationResponse,
 } from '~/.server/shared/api/interop';
+
+//Power Platform esdc_applicantstatusincanada code for `Canadian Citizen`
+/*
+const APPLICANT_STATUS_IN_CANADA = {
+  canadianCitizen: '564190000',
+} as const;
+*/
+
+//Power Platform esdc_applicantprimarydocumentchoices code for `Certificate of Canadian Citizenship issued by IRCC or CIC`
+const APPLICANT_PRIMARY_DOCUMENT_CHOICES = {
+  certificateOfCanadianCitizenshipIssuedByIRCCorCIC: '564190002',
+} as const;
+
+//Power Platform SIN confirmation receiving codes for `EMAIL` and `MAIL`
+const SIN_CONFIRMATION_RECEIVING_METHOD = {
+  email: 'EMAIL',
+  mail: 'MAIL',
+};
 
 /**
  * Maps the SubmitSinApplicationRequest to SinApplicationRequest (NIEM).
@@ -78,7 +97,7 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
           {
             CertificateIssueDate: { date: primaryDocuments.citizenshipDate },
             CertificateCategoryCode: {
-              ReferenceDataID: '564190000', // copied from esdc_applicantstatusincanada for Canadian citizen
+              ReferenceDataID: serverEnvironment.PP_APPLICANT_STATUS_IN_CANADA_CANADIAN_CITIZEN_CODE,
               ReferenceDataName: getApplicantStatusInCanadaChoicesById(primaryDocuments.currentStatusInCanada).nameEn,
             },
           },
@@ -141,7 +160,7 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
 
       applicantCertificate.push({
         CertificateCategoryCode: {
-          ReferenceDataID: '564190002', //copied from esdc_applicantprimarydocumentchoices.json
+          ReferenceDataID: APPLICANT_PRIMARY_DOCUMENT_CHOICES.certificateOfCanadianCitizenshipIssuedByIRCCorCIC,
           ReferenceDataName: getApplicantPrimaryDocumentChoiceById(primaryDocuments.documentType).nameEn,
         },
         ResourceReference: 'Primary Documents',
@@ -338,7 +357,7 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
         ApplicationDetailID: 'SIN Confirmation receiving method',
         ApplicationDetailValue: {
           ValueCode: {
-            ReferenceDataID: 'Mail', //Mail or Email
+            ReferenceDataID: SIN_CONFIRMATION_RECEIVING_METHOD.mail,
           },
         },
       });
@@ -373,7 +392,7 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
       sinApplicationDetail.push({
         ApplicationDetailID: 'Already had a sin',
         ApplicationDetailValue: {
-          ValueBoolean: previousSin.hasPreviousSin === '564190000', //Yes value copied from esdc_didtheapplicanteverhadasinnumber
+          ValueBoolean: previousSin.hasPreviousSin === serverEnvironment.PP_HAS_HAD_PREVIOUS_SIN_CODE, //code for Yes value
         },
       });
 

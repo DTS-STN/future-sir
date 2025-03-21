@@ -16,6 +16,7 @@ export const defaults = {
   PP_ENGLISH_LANGUAGE_CODE: '1033',
   PP_FRENCH_LANGUAGE_CODE: '1036',
   PP_CANADA_COUNTRY_CODE: 'f8914e7c-2c95-ea11-a812-000d3a0c2b5d',
+  PP_APPLICANT_STATUS_IN_CANADA_CANADIAN_CITIZEN_CODE: '564190000',
   PP_HAS_HAD_PREVIOUS_SIN_CODE: '564190000',
   RC_CODES: JSON.stringify([
     { RC_CODE: 5013, alphaCode: 'BC' },
@@ -46,6 +47,10 @@ export const client = v.object({
   PP_ENGLISH_LANGUAGE_CODE: v.optional(v.pipe(stringToIntegerSchema()), defaults.PP_ENGLISH_LANGUAGE_CODE),
   PP_FRENCH_LANGUAGE_CODE: v.optional(v.pipe(stringToIntegerSchema()), defaults.PP_FRENCH_LANGUAGE_CODE),
   PP_CANADA_COUNTRY_CODE: v.optional(v.string(), defaults.PP_CANADA_COUNTRY_CODE),
+  PP_APPLICANT_STATUS_IN_CANADA_CANADIAN_CITIZEN_CODE: v.optional(
+    v.string(),
+    defaults.PP_APPLICANT_STATUS_IN_CANADA_CANADIAN_CITIZEN_CODE,
+  ),
   PP_HAS_HAD_PREVIOUS_SIN_CODE: v.optional(v.string(), defaults.PP_HAS_HAD_PREVIOUS_SIN_CODE),
   RC_CODES: v.pipe(
     v.optional(v.string(), defaults.RC_CODES),
