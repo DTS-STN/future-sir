@@ -128,43 +128,47 @@ export default function RequestDetails({ actionData, loaderData, params }: Route
     ({ id, name }) => ({
       value: id === 'select-option' ? '' : id,
       children: id === 'select-option' ? t('protected:person-case.select-option') : name,
+      disabled: id === 'select-option',
     }),
   );
 
   return (
     <>
       <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:request-details.page-title')}</PageTitle>
-      <FetcherErrorSummary fetcherKey={fetcherKey}>
-        <fetcher.Form method="post" noValidate>
-          <div className="space-y-6">
-            <InputRadios
-              id="scenario"
-              legend={t('protected:request-details.select-scenario')}
-              name="scenario"
-              options={scenarioOptions}
-              required
-              errorMessage={t(getSingleKey(formErrors?.scenario))}
-            />
-            <InputSelect
-              className="w-max rounded-sm"
-              id="request-type"
-              name="request-type"
-              label={t('protected:request-details.type-request')}
-              defaultValue={formValues?.type ?? ''}
-              options={requestOptions}
-              errorMessage={t(getSingleKey(formErrors?.type))}
-            />
-          </div>
-          <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
-            <Button name="action" value="next" variant="primary" id="continue-button" disabled={isSubmitting}>
-              {t('protected:person-case.next')}
-            </Button>
-            <Button name="action" value="back" id="back-button" disabled={isSubmitting}>
-              {t('protected:person-case.previous')}
-            </Button>
-          </div>
-        </fetcher.Form>
-      </FetcherErrorSummary>
+      <div className="max-w-prose">
+        <FetcherErrorSummary fetcherKey={fetcherKey}>
+          <fetcher.Form method="post" noValidate>
+            <div className="space-y-6">
+              <InputRadios
+                id="scenario"
+                legend={t('protected:request-details.select-scenario')}
+                name="scenario"
+                options={scenarioOptions}
+                required
+                errorMessage={t(getSingleKey(formErrors?.scenario))}
+              />
+              <InputSelect
+                className="w-max"
+                id="request-type"
+                name="request-type"
+                label={t('protected:request-details.type-request')}
+                defaultValue={formValues?.type ?? ''}
+                options={requestOptions}
+                errorMessage={t(getSingleKey(formErrors?.type))}
+                required
+              />
+            </div>
+            <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
+              <Button name="action" value="next" variant="primary" id="continue-button" disabled={isSubmitting}>
+                {t('protected:person-case.next')}
+              </Button>
+              <Button name="action" value="back" id="back-button" disabled={isSubmitting}>
+                {t('protected:person-case.previous')}
+              </Button>
+            </div>
+          </fetcher.Form>
+        </FetcherErrorSummary>
+      </div>
     </>
   );
 }
