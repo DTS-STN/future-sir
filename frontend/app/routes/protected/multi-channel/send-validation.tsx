@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 
 import type { Info, Route } from './+types/send-validation';
 
-import { caseApi } from '~/.server/domain/multi-channel/services/case-api-service';
+import { getSinCaseService } from '~/.server/domain/multi-channel/case-api-service';
 import { getLocalizedApplicantGenderById } from '~/.server/domain/person-case/services/applicant-gender-service';
 import { getLocalizedApplicantSecondaryDocumentChoiceById } from '~/.server/domain/person-case/services/applicant-secondary-document-service';
 import { getLocalizedLanguageOfCorrespondenceById } from '~/.server/domain/person-case/services/language-correspondence-service';
@@ -54,7 +54,7 @@ export async function loader({ context, request }: Route.LoaderArgs) {
   const { lang, t } = await getTranslation(request, handle.i18nNamespace);
 
   // TODO: the id will likely come from a path param in the URL?
-  const personSinCase = await caseApi.getCaseById('00000000000000');
+  const personSinCase = await getSinCaseService().getCaseById('00000000000000');
 
   return {
     documentTitle: t('protected:send-validation.page-title'),
