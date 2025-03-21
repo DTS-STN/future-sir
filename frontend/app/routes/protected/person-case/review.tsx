@@ -42,9 +42,9 @@ export function meta({ data }: Route.MetaArgs) {
 export async function action({ context, params, request }: Route.ActionArgs) {
   requireAllRoles(context.session, new URL(request.url), ['user']);
 
-  const { machineActor, tabId } = loadMachineContextOrRedirect({ session: context.session, request, stateName: 'review' });
+  const { machineActor, tabId } = loadMachineContextOrRedirect(context.session, request, { stateName: 'review' });
   const machineContext = machineActor.getSnapshot().context;
-  const inPersonSinApplication = validateInPersonSINCaseSession(machineContext, tabId, request);
+  const inPersonSinApplication = validateMachineContextData(machineContext, tabId, request);
 
   const formData = await request.formData();
   const action = formData.get('action');
@@ -82,9 +82,20 @@ export async function action({ context, params, request }: Route.ActionArgs) {
 export async function loader({ context, request }: Route.LoaderArgs) {
   requireAllRoles(context.session, new URL(request.url), ['user']);
 
-  const { machineActor, tabId } = loadMachineContextOrRedirect({ session: context.session, request, stateName: 'review' });
+  const { machineActor, tabId } = loadMachineContextOrRedirect(context.session, request, { stateName: 'review' });
   const machineContext = machineActor.getSnapshot().context;
-  const inPersonSinApplication = validateInPersonSINCaseSession(machineContext, tabId, request);
+  const {
+    birthDetails,
+    contactInformation,
+    currentNameInfo,
+    parentDetails,
+    personalInformation,
+    previousSin,
+    primaryDocuments,
+    // TODO - Check why request details is not displayed
+    // requestDetails,
+    secondaryDocument,
+  } = validateMachineContextData(machineContext, tabId, request);
 
   const { lang, t } = await getTranslation(request, handle.i18nNamespace);
 
@@ -92,40 +103,31 @@ export async function loader({ context, request }: Route.LoaderArgs) {
     documentTitle: t('protected:review.page-title'),
     tabId,
     inPersonSINCase: {
-      ...inPersonSinApplication,
       primaryDocuments: {
-        ...inPersonSinApplication.primaryDocuments,
-        currentStatusInCanadaName: getLocalizedApplicantStatusInCanadaChoiceById(
-          inPersonSinApplication.primaryDocuments.currentStatusInCanada,
-          lang,
-        ).name,
-        documentTypeName: getLocalizedApplicantPrimaryDocumentChoiceById(
-          inPersonSinApplication.primaryDocuments.documentType,
-          lang,
-        ).name,
-        genderName: getLocalizedApplicantGenderById(inPersonSinApplication.primaryDocuments.gender, lang).name,
+        ...primaryDocuments,
+        currentStatusInCanadaName: getLocalizedApplicantStatusInCanadaChoiceById(primaryDocuments.currentStatusInCanada, lang)
+          .name,
+        documentTypeName: getLocalizedApplicantPrimaryDocumentChoiceById(primaryDocuments.documentType, lang).name,
+        genderName: getLocalizedApplicantGenderById(primaryDocuments.gender, lang).name,
       },
       secondaryDocument: {
-        ...inPersonSinApplication.secondaryDocument,
-        documentTypeName: getLocalizedApplicantSecondaryDocumentChoiceById(
-          inPersonSinApplication.secondaryDocument.documentType,
-          lang,
-        ).name,
+        ...secondaryDocument,
+        documentTypeName: getLocalizedApplicantSecondaryDocumentChoiceById(secondaryDocument.documentType, lang).name,
       },
       personalInformation: {
-        ...inPersonSinApplication.personalInformation,
-        genderName: getLocalizedApplicantGenderById(inPersonSinApplication.personalInformation.gender, lang).name,
+        ...personalInformation,
+        genderName: getLocalizedApplicantGenderById(personalInformation.gender, lang).name,
       },
       birthDetails: {
-        ...inPersonSinApplication.birthDetails,
-        countryName: getLocalizedCountryById(inPersonSinApplication.birthDetails.country, lang).name,
-        provinceName: inPersonSinApplication.birthDetails.province
-          ? inPersonSinApplication.birthDetails.country === serverEnvironment.PP_CANADA_COUNTRY_CODE
-            ? getLocalizedProvinceById(inPersonSinApplication.birthDetails.province, lang).name
-            : inPersonSinApplication.birthDetails.province
+        ...birthDetails,
+        countryName: getLocalizedCountryById(birthDetails.country, lang).name,
+        provinceName: birthDetails.province
+          ? birthDetails.country === serverEnvironment.PP_CANADA_COUNTRY_CODE
+            ? getLocalizedProvinceById(birthDetails.province, lang).name
+            : birthDetails.province
           : undefined,
       },
-      parentDetails: inPersonSinApplication.parentDetails.map((parentdetail) => ({
+      parentDetails: parentDetails.map((parentdetail) => ({
         ...parentdetail,
         countryName:
           parentdetail.birthLocation?.country && getLocalizedCountryById(parentdetail.birthLocation.country, lang).name,
@@ -136,31 +138,24 @@ export async function loader({ context, request }: Route.LoaderArgs) {
           : undefined,
       })),
       contactInformation: {
-        ...inPersonSinApplication.contactInformation,
-        preferredLanguageName: getLocalizedLanguageOfCorrespondenceById(
-          inPersonSinApplication.contactInformation.preferredLanguage,
-          lang,
-        ).name,
-        countryName: getLocalizedCountryById(inPersonSinApplication.contactInformation.country, lang).name,
+        ...contactInformation,
+        preferredLanguageName: getLocalizedLanguageOfCorrespondenceById(contactInformation.preferredLanguage, lang).name,
+        countryName: getLocalizedCountryById(contactInformation.country, lang).name,
         provinceName:
-          inPersonSinApplication.contactInformation.country === serverEnvironment.PP_CANADA_COUNTRY_CODE
-            ? getLocalizedProvinceById(inPersonSinApplication.contactInformation.province, lang).name
-            : inPersonSinApplication.contactInformation.province,
+          contactInformation.country === serverEnvironment.PP_CANADA_COUNTRY_CODE
+            ? getLocalizedProvinceById(contactInformation.province, lang).name
+            : contactInformation.province,
       },
       previousSin: {
-        ...inPersonSinApplication.previousSin,
-        hasPreviousSinText: getLocalizedApplicantHadSinOptionById(inPersonSinApplication.previousSin.hasPreviousSin, lang).name,
+        ...previousSin,
+        hasPreviousSinText: getLocalizedApplicantHadSinOptionById(previousSin.hasPreviousSin, lang).name,
       },
       currentNameInfo: {
-        ...inPersonSinApplication.currentNameInfo,
-        firstName: inPersonSinApplication.currentNameInfo.preferredSameAsDocumentName
-          ? inPersonSinApplication.primaryDocuments.givenName
-          : inPersonSinApplication.currentNameInfo.firstName,
-        lastName: inPersonSinApplication.currentNameInfo.preferredSameAsDocumentName
-          ? inPersonSinApplication.primaryDocuments.lastName
-          : inPersonSinApplication.currentNameInfo.lastName,
+        ...currentNameInfo,
+        firstName: currentNameInfo.preferredSameAsDocumentName ? primaryDocuments.givenName : currentNameInfo.firstName,
+        lastName: currentNameInfo.preferredSameAsDocumentName ? primaryDocuments.lastName : currentNameInfo.lastName,
         supportingDocumentsNames:
-          inPersonSinApplication.currentNameInfo.supportingDocuments?.documentTypes?.map(
+          currentNameInfo.supportingDocuments?.documentTypes?.map(
             (doc) => getLocalizedApplicantSupportingDocumentTypeById(doc, lang).name,
           ) ?? undefined,
       },
@@ -197,7 +192,7 @@ export default function Review({ loaderData, actionData, params }: Route.Compone
   );
 }
 
-function validateInPersonSINCaseSession(
+function validateMachineContextData(
   machineContext: Partial<InPersonSinApplication>,
   tabId: string,
   request: Request,

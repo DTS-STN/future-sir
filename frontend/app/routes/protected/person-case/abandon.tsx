@@ -11,7 +11,7 @@ import { getStateRoute } from '~/routes/protected/person-case/state-machine.serv
 export async function action({ context, params, request }: Route.ActionArgs) {
   requireAllRoles(context.session, new URL(request.url), ['user']);
 
-  const { machineActor } = loadMachineContextOrRedirect({ session: context.session, request });
+  const { machineActor } = loadMachineContextOrRedirect(context.session, request);
 
   const formData = await request.formData();
   const action = formData.get('action');
