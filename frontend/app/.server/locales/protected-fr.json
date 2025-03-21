@@ -374,7 +374,8 @@
     "origin-of-sin-label": "Origin of SIN",
     "final-check": "Final check",
     "first-time": "You are processing a first-time SIN request.",
-    "before-processing": "Before processing the transaction, ensure that you have followed the SIN Application Review Process (SARP).",
+    "before-processing": "Before processing the transaction, ensure that you have followed the <sarpLink>SIN Application Review Process (SARP)</sarpLink>.",
+    "sarp-link": "https://esdc.prv/fr/service-canada/isb/sin/references/sinra/sin_app_review_pro_sarp_406.shtml",
     "warnings": {
       "heading": "Warnings",
       "following-warnings": "Based on the data entered, the system has retrieved the following warning(s):",

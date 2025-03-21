@@ -3,6 +3,8 @@ import type { ComponentProps, JSX, MouseEvent } from 'react';
 import type { Params, Path } from 'react-router';
 import { generatePath, Link } from 'react-router';
 
+import { useTranslation } from 'react-i18next';
+
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { useLanguage } from '~/hooks/use-language';
@@ -25,6 +27,7 @@ type BilingualLinkProps = OmitStrict<ComponentProps<typeof Link>, 'to'> & {
   params?: Params;
   search?: Path['search'];
   to?: never;
+  newTabIndicator?: boolean;
 };
 
 /**
@@ -41,6 +44,7 @@ type UnilingualLinkProps = OmitStrict<ComponentProps<typeof Link>, 'lang'> & {
   lang?: Language;
   params?: never;
   search?: never;
+  newTabIndicator?: boolean;
 };
 
 /**
@@ -70,13 +74,27 @@ type InlineLinkProps = ComponentProps<typeof AppLink>;
  *
  * @throws If the `lang` parameter is not provided and the current language cannot be determined.
  */
-export function AppLink({ children, disabled, hash, lang, params, file, search, to, ...props }: AppLinkProps): JSX.Element {
+export function AppLink({
+  children,
+  disabled,
+  hash,
+  lang,
+  params,
+  file,
+  search,
+  to,
+  newTabIndicator,
+  ...props
+}: AppLinkProps): JSX.Element {
   const { currentLanguage } = useLanguage();
+
+  const newTabProps = newTabIndicator ? { target: '_blank', rel: 'noopener noreferrer' } : {};
 
   if (to !== undefined) {
     return (
-      <Link lang={lang} to={to} {...props}>
+      <Link lang={lang} to={to} {...newTabProps} {...props}>
         {children}
+        {newTabIndicator && <NewTabIndicator />}
       </Link>
     );
   }
@@ -93,8 +111,9 @@ export function AppLink({ children, disabled, hash, lang, params, file, search, 
   if (disabled) {
     return (
       // see: "disabling a link" -- https://www.scottohara.me/blog/2021/05/28/disabled-links.html
-      <a role="link" aria-disabled="true" {...props}>
+      <a role="link" aria-disabled="true" {...newTabProps} {...props}>
         {children}
+        {newTabIndicator && <NewTabIndicator />}
       </a>
     );
   }
@@ -108,6 +127,7 @@ export function AppLink({ children, disabled, hash, lang, params, file, search, 
   return (
     <Link lang={langProp} to={{ hash, pathname, search }} reloadDocument={reloadDocumentProp} {...props}>
       {children}
+      {newTabIndicator && <NewTabIndicator />}
     </Link>
   );
 }
@@ -148,19 +168,37 @@ export function AnchorLink({ anchorElementId, children, onClick, ...restProps }:
  *
  * @throws If the `lang` parameter is not provided and the current language cannot be determined.
  */
-export function InlineLink({ className, children, file, hash, params, search, to, ...props }: InlineLinkProps): JSX.Element {
+export function InlineLink({
+  className,
+  children,
+  file,
+  hash,
+  params,
+  search,
+  to,
+  newTabIndicator,
+  ...props
+}: InlineLinkProps): JSX.Element {
   const baseClassName = cn('text-slate-700 underline hover:text-blue-700 focus:text-blue-700');
 
   if (file) {
     return (
-      <AppLink className={cn(baseClassName, className)} file={file} hash={hash} params={params} search={search} {...props}>
+      <AppLink
+        className={cn(baseClassName, className)}
+        file={file}
+        hash={hash}
+        params={params}
+        search={search}
+        newTabIndicator={newTabIndicator}
+        {...props}
+      >
         {children}
       </AppLink>
     );
   }
 
   return (
-    <AppLink className={cn(baseClassName, className)} to={to} {...props}>
+    <AppLink className={cn(baseClassName, className)} to={to} newTabIndicator={newTabIndicator} {...props}>
       {children}
     </AppLink>
   );
@@ -184,4 +222,14 @@ function scrollAndFocusFromAnchorLink(href: string): void {
       }
     }
   }
+}
+
+function NewTabIndicator({ className, ...props }: OmitStrict<ComponentProps<'span'>, 'children'>): JSX.Element {
+  const { t } = useTranslation('gcweb');
+  // Following whitespace is important to ensure the content's text is seperated for the screen-reader text
+  return (
+    <span className={cn('sr-only', className)} {...props}>
+      {` (${t('screen-reader.new-tab')})`}
+    </span>
+  );
 }
