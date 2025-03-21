@@ -142,7 +142,7 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
 
       applicantCertificate.push({
         CertificateCategoryCode: {
-          ReferenceDataID: '564190002', //copied from esdc_applicantprimarydocumentchoices.json
+          ReferenceDataID: serverEnvironment.PP_APPLICANT_PRIMARY_DOCUMENT_TYPE_CERTIFICATE_CANADIAN_CITIZENSHIP_CODE,
           ReferenceDataName: getApplicantPrimaryDocumentChoiceById(primaryDocuments.documentType).nameEn,
         },
         ResourceReference: 'Primary Documents',
