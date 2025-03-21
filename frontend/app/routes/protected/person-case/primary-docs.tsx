@@ -32,7 +32,7 @@ import { ErrorCodes } from '~/errors/error-codes';
 import { HttpStatusCodes } from '~/errors/http-status-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
-import { loadMachineContextOrRedirect } from '~/routes/protected/person-case/route-helpers.server';
+import { getTabIdOrRedirect, loadMachineActorOrRedirect } from '~/routes/protected/person-case/route-helpers.server';
 import { getStateRoute } from '~/routes/protected/person-case/state-machine.server';
 import { primaryDocumentSchema } from '~/routes/protected/person-case/validation.server';
 import { toISODateString } from '~/utils/date-utils';
@@ -49,7 +49,8 @@ export function meta({ data }: Route.MetaArgs) {
 export async function action({ context, params, request }: Route.ActionArgs) {
   requireAllRoles(context.session, new URL(request.url), ['user']);
 
-  const { machineActor } = loadMachineContextOrRedirect(context.session, request, { stateName: 'primary-docs' });
+  const tabId = getTabIdOrRedirect(request);
+  const machineActor = loadMachineActorOrRedirect(context.session, request, tabId, { stateName: 'primary-docs' });
 
   const formData = await request.formData();
   const action = formData.get('action');
@@ -120,7 +121,8 @@ export async function action({ context, params, request }: Route.ActionArgs) {
 export async function loader({ context, request }: Route.LoaderArgs) {
   requireAllRoles(context.session, new URL(request.url), ['user']);
 
-  const { machineActor } = loadMachineContextOrRedirect(context.session, request, { stateName: 'primary-docs' });
+  const tabId = getTabIdOrRedirect(request);
+  const machineActor = loadMachineActorOrRedirect(context.session, request, tabId, { stateName: 'primary-docs' });
   const { formData, primaryDocuments } = machineActor.getSnapshot().context;
 
   const { lang, t } = await getTranslation(request, handle.i18nNamespace);

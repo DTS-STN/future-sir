@@ -3,14 +3,18 @@ import { mock } from 'vitest-mock-extended';
 import type { MockProxy } from 'vitest-mock-extended';
 import type { Actor } from 'xstate';
 
-import {
-  DEFAULT_LOAD_MACHINE_CONTEXT_OR_REDIRECT_OPTIONS,
-  loadMachineContextOrRedirect,
-} from '../../../../app/routes/protected/person-case/route-helpers.server';
-import type { LoadMachineContextOrRedirectOptions } from '../../../../app/routes/protected/person-case/route-helpers.server';
-
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import type { I18nRouteFile } from '~/i18n-routes';
+import type {
+  GetTabIdOrRedirectOptions,
+  LoadMachineActorOrRedirectOptions,
+} from '~/routes/protected/person-case/route-helpers.server';
+import {
+  DEFAULT_GET_TAB_ID_OR_REDIRECT_OPTIONS,
+  DEFAULT_LOAD_MACHINE_ACTOR_OR_REDIRECT_OPTIONS,
+  getTabIdOrRedirect,
+  loadMachineActorOrRedirect,
+} from '~/routes/protected/person-case/route-helpers.server';
 import { loadMachineActor } from '~/routes/protected/person-case/state-machine.server';
 import type { Machine } from '~/routes/protected/person-case/state-machine.server';
 
@@ -33,7 +37,46 @@ vi.mock('~/.server/logging', () => ({
   },
 }));
 
-describe('loadMachineContextOrRedirect', () => {
+describe('getTabIdOrRedirect', () => {
+  it('should return tabId when exists', () => {
+    const requestMock = mock<Request>({ url: 'http://example.com/?tid=123' });
+    const optionsMock: GetTabIdOrRedirectOptions = {};
+
+    const expected = '123';
+
+    const result = getTabIdOrRedirect(requestMock, optionsMock);
+
+    expect(result).toEqual(expected);
+  });
+
+  it('should redirect to DEFAULT i18nRedirectRouteFile option if tabId is not found', () => {
+    const requestMock = mock<Request>({ url: 'http://example.com/' });
+    const optionsMock: GetTabIdOrRedirectOptions = {};
+
+    expect(() => getTabIdOrRedirect(requestMock, optionsMock)).toThrow(
+      expect.objectContaining({
+        i18nRouteFile: DEFAULT_GET_TAB_ID_OR_REDIRECT_OPTIONS.i18nRedirectRouteFile,
+        request: requestMock,
+      }),
+    );
+
+    expect(i18nRedirect).toHaveBeenCalledWith(DEFAULT_GET_TAB_ID_OR_REDIRECT_OPTIONS.i18nRedirectRouteFile, requestMock);
+  });
+
+  it('should redirect to i18nRedirectRouteFile option if tabId is not found', () => {
+    const requestMock = mock<Request>({ url: 'http://example.com/' });
+    const i18nRedirectRouteFile: I18nRouteFile = 'routes/protected/person-case/privacy-statement.tsx';
+    const optionsMock: GetTabIdOrRedirectOptions = { i18nRedirectRouteFile };
+
+    expect(() => getTabIdOrRedirect(requestMock, optionsMock)).toThrow(
+      expect.objectContaining({ i18nRouteFile: i18nRedirectRouteFile, request: requestMock }),
+    );
+
+    expect(i18nRedirect).toHaveBeenCalledWith(i18nRedirectRouteFile, requestMock);
+  });
+});
+
+describe('loadMachineActorOrRedirect', () => {
   let machineActorMock: MockProxy<Actor<Machine>>;
   let appSessionMock: MockProxy<AppSession>;
 
@@ -42,85 +85,58 @@ describe('loadMachineContextOrRedirect', () => {
     appSessionMock = mock<AppSession>({ inPersonSinApplications: {} });
   });
 
-  it('should return machineActor and tabId when both are found', () => {
+  it('should return machineActor when found', () => {
     const requestMock = mock<Request>({ url: 'http://example.com/?tid=123' });
-    const options: LoadMachineContextOrRedirectOptions = { stateName: 'review' };
+    const flowIdMock = '123';
+    const optionsMock: LoadMachineActorOrRedirectOptions = { stateName: 'review' };
 
     vi.mocked(loadMachineActor).mockReturnValue(machineActorMock);
 
-    const expected = { machineActor: machineActorMock, tabId: '123' };
+    const expected = machineActorMock;
 
-    const result = loadMachineContextOrRedirect(appSessionMock, requestMock, options);
+    const result = loadMachineActorOrRedirect(appSessionMock, requestMock, flowIdMock, optionsMock);
 
     expect(result).toEqual(expected);
-    expect(loadMachineActor).toHaveBeenCalledExactlyOnceWith(appSessionMock, requestMock, 'review');
-  });
-
-  it('should redirect to DEFAULT i18nRedirectRouteFile option if tabId is not found', () => {
-    const requestMock = mock<Request>({ url: 'http://example.com/' });
-
-    const options: LoadMachineContextOrRedirectOptions = { stateName: 'review' };
-
-    expect(() => loadMachineContextOrRedirect(appSessionMock, requestMock, options)).toThrow(
-      expect.objectContaining({
-        i18nRouteFile: DEFAULT_LOAD_MACHINE_CONTEXT_OR_REDIRECT_OPTIONS.i18nRedirectRouteFile,
-        request: requestMock,
-      }),
-    );
-
-    expect(i18nRedirect).toHaveBeenCalledWith(
-      DEFAULT_LOAD_MACHINE_CONTEXT_OR_REDIRECT_OPTIONS.i18nRedirectRouteFile,
-      requestMock,
-    );
-    expect(loadMachineActor).not.toHaveBeenCalled();
-  });
-
-  it('should redirect to i18nRedirectRouteFile option if tabId is not found', () => {
-    const requestMock = mock<Request>({ url: 'http://example.com/' });
-    const i18nRedirectRouteFile: I18nRouteFile = 'routes/protected/person-case/privacy-statement.tsx';
-    const options: LoadMachineContextOrRedirectOptions = { i18nRedirectRouteFile, stateName: 'review' };
-
-    expect(() => loadMachineContextOrRedirect(appSessionMock, requestMock, options)).toThrow(
-      expect.objectContaining({ i18nRouteFile: i18nRedirectRouteFile, request: requestMock }),
-    );
-
-    expect(i18nRedirect).toHaveBeenCalledWith(i18nRedirectRouteFile, requestMock);
-    expect(loadMachineActor).not.toHaveBeenCalled();
+    expect(loadMachineActor).toHaveBeenCalledExactlyOnceWith(appSessionMock, flowIdMock, 'review');
   });
 
   it('should redirect to DEFAULT i18nRedirectRouteFile option if machineActor is not found', () => {
     const requestMock = mock<Request>({ url: 'http://example.com/?tid=123' });
-
-    const options: LoadMachineContextOrRedirectOptions = { stateName: 'review' };
+    const flowIdMock = '123';
+    const optionsMock: LoadMachineActorOrRedirectOptions = { stateName: 'review' };
 
     vi.mocked(loadMachineActor).mockReturnValue(undefined);
 
-    expect(() => loadMachineContextOrRedirect(appSessionMock, requestMock, options)).toThrow(
+    expect(() => loadMachineActorOrRedirect(appSessionMock, requestMock, flowIdMock, optionsMock)).toThrow(
       expect.objectContaining({
-        i18nRouteFile: DEFAULT_LOAD_MACHINE_CONTEXT_OR_REDIRECT_OPTIONS.i18nRedirectRouteFile,
+        i18nRouteFile: DEFAULT_LOAD_MACHINE_ACTOR_OR_REDIRECT_OPTIONS.i18nRedirectRouteFile,
         request: requestMock,
       }),
     );
 
-    expect(loadMachineActor).toHaveBeenCalledExactlyOnceWith(appSessionMock, requestMock, 'review');
+    expect(loadMachineActor).toHaveBeenCalledExactlyOnceWith(appSessionMock, flowIdMock, 'review');
     expect(i18nRedirect).toHaveBeenCalledWith(
-      DEFAULT_LOAD_MACHINE_CONTEXT_OR_REDIRECT_OPTIONS.i18nRedirectRouteFile,
+      DEFAULT_LOAD_MACHINE_ACTOR_OR_REDIRECT_OPTIONS.i18nRedirectRouteFile,
       requestMock,
     );
   });
 
   it('should redirect to i18nRedirectRouteFile option if machineActor is not found', () => {
     const requestMock = mock<Request>({ url: 'http://example.com/?tid=123' });
-    const i18nRedirectRouteFile: I18nRouteFile = 'routes/protected/person-case/privacy-statement.tsx';
-    const options: LoadMachineContextOrRedirectOptions = { i18nRedirectRouteFile, stateName: 'review' };
+    const flowIdMock = '123';
+    const i18nRedirectRouteFileOptionMock: I18nRouteFile = 'routes/protected/person-case/privacy-statement.tsx';
+    const optionsMock: LoadMachineActorOrRedirectOptions = {
+      i18nRedirectRouteFile: i18nRedirectRouteFileOptionMock,
+      stateName: 'review',
+    };
 
     vi.mocked(loadMachineActor).mockReturnValue(undefined);
 
-    expect(() => loadMachineContextOrRedirect(appSessionMock, requestMock, options)).toThrow(
-      expect.objectContaining({ i18nRouteFile: i18nRedirectRouteFile, request: requestMock }),
+    expect(() => loadMachineActorOrRedirect(appSessionMock, requestMock, flowIdMock, optionsMock)).toThrow(
+      expect.objectContaining({ i18nRouteFile: i18nRedirectRouteFileOptionMock, request: requestMock }),
     );
 
-    expect(loadMachineActor).toHaveBeenCalledExactlyOnceWith(appSessionMock, requestMock, 'review');
-    expect(i18nRedirect).toHaveBeenCalledWith(i18nRedirectRouteFile, requestMock);
+    expect(loadMachineActor).toHaveBeenCalledExactlyOnceWith(appSessionMock, flowIdMock, 'review');
+    expect(i18nRedirect).toHaveBeenCalledWith(i18nRedirectRouteFileOptionMock, requestMock);
   });
 });

@@ -26,7 +26,7 @@ import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
-import { loadMachineContextOrRedirect } from '~/routes/protected/person-case/route-helpers.server';
+import { getTabIdOrRedirect, loadMachineActorOrRedirect } from '~/routes/protected/person-case/route-helpers.server';
 import type { InPersonSinApplication } from '~/routes/protected/person-case/state-machine-models';
 import { getStateRoute } from '~/routes/protected/person-case/state-machine.server';
 import { SinApplication } from '~/routes/protected/sin-application';
@@ -42,8 +42,10 @@ export function meta({ data }: Route.MetaArgs) {
 export async function action({ context, params, request }: Route.ActionArgs) {
   requireAllRoles(context.session, new URL(request.url), ['user']);
 
-  const { machineActor, tabId } = loadMachineContextOrRedirect(context.session, request, { stateName: 'review' });
+  const tabId = getTabIdOrRedirect(request);
+  const machineActor = loadMachineActorOrRedirect(context.session, request, tabId, { stateName: 'review' });
   const machineContext = machineActor.getSnapshot().context;
+
   const inPersonSinApplication = validateMachineContextData(machineContext, tabId, request);
 
   const formData = await request.formData();
@@ -82,8 +84,10 @@ export async function action({ context, params, request }: Route.ActionArgs) {
 export async function loader({ context, request }: Route.LoaderArgs) {
   requireAllRoles(context.session, new URL(request.url), ['user']);
 
-  const { machineActor, tabId } = loadMachineContextOrRedirect(context.session, request, { stateName: 'review' });
+  const tabId = getTabIdOrRedirect(request);
+  const machineActor = loadMachineActorOrRedirect(context.session, request, tabId, { stateName: 'review' });
   const machineContext = machineActor.getSnapshot().context;
+
   const {
     birthDetails,
     contactInformation,
