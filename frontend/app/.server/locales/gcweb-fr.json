@@ -108,5 +108,8 @@
   "input-file": {
     "choose-file": "Choisir un fichier",
     "no-file": "Aucun fichier choisi"
+  },
+  "screen-reader": {
+    "new-tab": "s'ouvre dans un nouvel onglet"
   }
 }

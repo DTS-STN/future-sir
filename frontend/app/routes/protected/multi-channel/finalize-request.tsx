@@ -3,7 +3,7 @@ import { useId } from 'react';
 import type { RouteHandle } from 'react-router';
 import { data, useFetcher } from 'react-router';
 
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import * as v from 'valibot';
 
 import type { Info, Route } from './+types/finalize-request';
@@ -18,6 +18,7 @@ import { ContextualAlert } from '~/components/contextual-alert';
 import { FetcherErrorSummary } from '~/components/error-summary';
 import { InputCheckbox } from '~/components/input-checkbox';
 import { InputSelect } from '~/components/input-select';
+import { InlineLink } from '~/components/links';
 import { PageTitle } from '~/components/page-title';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
@@ -127,7 +128,16 @@ export default function PidVerification({ loaderData, actionData, params }: Rout
             />
             <h2 className="font-lato text-2xl font-semibold">{t('protected:finalize-request.final-check')}</h2>
             <p>{t('protected:finalize-request.first-time')}</p>
-            <p>{t('protected:finalize-request.before-processing')}</p>
+            <p>
+              <Trans
+                i18nKey="protected:finalize-request.before-processing"
+                components={{
+                  sarpLink: (
+                    <InlineLink to={t('protected:finalize-request.sarp-link')} className="external-link" newTabIndicator />
+                  ),
+                }}
+              />
+            </p>
             <h3 className="font-lato text-lg font-semibold">{t('protected:finalize-request.warnings.heading')}</h3>
             <p>{t('protected:finalize-request.warnings.following-warnings')}</p>
             <ContextualAlert type={'warning'}>
