@@ -5,6 +5,7 @@ import type {
   SubmitSinApplicationRequest,
   SubmitSinApplicationResponse,
 } from '~/.server/domain/sin-application/sin-application-models';
+import { serverEnvironment } from '~/.server/environment';
 import type {
   CertificateType,
   ContactInformationType,
@@ -373,7 +374,7 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
       sinApplicationDetail.push({
         ApplicationDetailID: 'Already had a sin',
         ApplicationDetailValue: {
-          ValueBoolean: previousSin.hasPreviousSin === '564190000', //Yes value copied from esdc_didtheapplicanteverhadasinnumber
+          ValueBoolean: previousSin.hasPreviousSin === serverEnvironment.PP_HAS_HAD_PREVIOUS_SIN_CODE, //code for Yes value
         },
       });
 
