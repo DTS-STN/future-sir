@@ -32,6 +32,7 @@ export const defaults = {
     { RC_CODE: 4913, alphaCode: 'NT' },
   ]),
   PP_APPLICANT_PRIMARY_DOCUMENT_TYPE_CERTIFICATE_CANADIAN_CITIZENSHIP_CODE: '564190001',
+  PP_SIN_CONFIRMATION_RECEIVING_METHOD_CODE: 'Mail',
 } as const;
 
 /**
@@ -62,5 +63,6 @@ export const client = v.object({
     v.string(),
     defaults.PP_APPLICANT_PRIMARY_DOCUMENT_TYPE_CERTIFICATE_CANADIAN_CITIZENSHIP_CODE,
   ),
+  PP_SIN_CONFIRMATION_RECEIVING_METHOD_CODE: v.optional(v.string(), defaults.PP_SIN_CONFIRMATION_RECEIVING_METHOD_CODE),
   isProduction: v.boolean(),
 });
