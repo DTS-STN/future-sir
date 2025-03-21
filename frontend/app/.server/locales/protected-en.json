@@ -1,16 +1,12 @@
 {
-  "resource": "public/locales/protected-en.json",
   "admin": {
     "page-title": "Admin dashboard"
   },
   "dashboard": {
-    "sin": "SIN",
     "sin-system": "SIN Dashboard System",
-    "system": "System",
     "assigned-cases": "Assigned cases",
     "get-started": "Get started",
-    "no-cases": "No cases are currently assigned to you.",
-    "coming-soon": "Coming soon"
+    "no-cases": "No cases are currently assigned to you."
   },
   "in-person": {
     "title": "In-person SIN request",
@@ -27,18 +23,14 @@
     "admin-dashboard": "Admin dashboard",
     "dashboard": "Dashboard",
     "home": "Home",
-    "in-person": "Navigate to 'In person case' page",
     "page-title": "Welcome to Future SIR (protected)",
-    "protected": "Go to the employee portal",
-    "public": "Navigate to 'public' page",
-    "resources": "i18n resources loaded from: <mark>{{resource}}</mark>"
+    "public": "Navigate to 'public' page"
   },
   "person-case": {
     "abandon-button": "Abandon",
     "create-case-button": "Create case",
     "previous": "Previous",
     "next": "Next",
-    "refer-button": "Refer",
     "select-option": "Select option"
   },
   "privacy-statement": {
@@ -116,20 +108,16 @@
       "invalid-day": "Day of citizenship date is invalid."
     },
     "upload-document": {
-      "label": "Upload primary identity document",
-      "required": "Primary identity document is required.",
-      "invalid": "Primary identity document is invalid."
+      "label": "Upload primary identity document"
     }
   },
   "secondary-identity-document": {
     "document-type": {
       "title": "Document type",
-      "required": "Document type is required.",
       "invalid": "Document type is invalid."
     },
     "expiry-date": {
       "title": "Expiry date",
-      "required": "Expiry date is required.",
       "invalid": "Expiry date is invalid.",
       "required-year": "Expiry year is required.",
       "invalid-year": "Expiry year is invalid.",
@@ -139,9 +127,7 @@
       "invalid-day": "Expiry day is invalid."
     },
     "upload-document": {
-      "title": "Upload secondary document",
-      "required": "Secondary document is required.",
-      "invalid": "Secondary document is invalid."
+      "title": "Upload secondary document"
     },
     "page-title": "Secondary identity document"
   },
@@ -365,8 +351,7 @@
     "input-failure": "Please check the primary identity document inputs to ensure they match and try again.",
     "edit": "Edit primary identity document",
     "next": "Next",
-    "previous": "Previous",
-    "matches": "Matches"
+    "previous": "Previous"
   },
   "finalize-request": {
     "page-title": "Finalize request",
