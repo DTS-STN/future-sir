@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { useId, useRef } from 'react';
+import { useId, useState, useEffect } from 'react';
 
 import type { RouteHandle } from 'react-router';
 import { useFetcher } from 'react-router';
@@ -33,7 +33,6 @@ export async function loader({ context, request }: Route.LoaderArgs) {
     documentTitle: t('protected:sin-confirmation.page-title'),
     recordDetails: {
       date: dateToLocalizedText(serverEnvironment.BASE_TIMEZONE),
-      sinNumber: '123456789',
       firstName: 'Johnathan',
       middleNames: ['Joe', 'James'],
       familyNames: ['Doe', 'Smith'],
@@ -59,6 +58,10 @@ export async function action({ context, request }: Route.ActionArgs) {
     case 'finish': {
       throw i18nRedirect('routes/protected/request.tsx', request); //TODO: update redirect to proper page
     }
+    case 'print': {
+      // TODO: fetch the proper sin
+      return { sin: '123456789' };
+    }
     default: {
       throw new AppError(`Unrecognized action: ${action}`, ErrorCodes.UNRECOGNIZED_ACTION);
     }
@@ -70,16 +73,37 @@ export default function SinConfirmation({ loaderData, actionData, params }: Rout
   const fetcherKey = useId();
   const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
   const isSubmitting = fetcher.state !== 'idle';
-  const contentRef = useRef<HTMLDivElement>(null);
   const recordDetails = loaderData.recordDetails;
   const { dateEn, dateFr } = recordDetails.date;
+
+  const [isPrinting, setIsPrinting] = useState(false);
+  const [sinNumber, setSinNumber] = useState<string>();
+
+  useEffect(() => {
+    if (fetcher.data && isPrinting) {
+      setSinNumber(fetcher.data.sin);
+    }
+  }, [fetcher.data, isPrinting]);
+
+  useEffect(() => {
+    if (sinNumber && isPrinting) {
+      window.print();
+      setIsPrinting(false);
+      setSinNumber(undefined);
+    }
+  }, [sinNumber, isPrinting]);
+
+  async function handlePrint() {
+    setIsPrinting(true);
+    await fetcher.submit({ action: 'print' }, { method: 'post' });
+  }
 
   return (
     <>
       <PageTitle className="print:hidden" subTitleClassName="print:hidden" subTitle={t('protected:first-time.title')}>
         {t('protected:sin-confirmation.page-title')}
       </PageTitle>
-      <div className="space-y-8 print:m-3 print:text-xs" ref={contentRef}>
+      <div className="space-y-8 print:m-3 print:text-xs">
         <div className="grid items-center gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 print:grid-cols-3 print:sm:grid-cols-4">
           <dl className="flex items-center">
             <dt className="mr-[1ch]">Date:</dt>
@@ -98,11 +122,7 @@ export default function SinConfirmation({ loaderData, actionData, params }: Rout
             <BilingualText resourceKey="protected:sin-confirmation.social-insurance-number" />:
           </h3>
           <p className="mt-4 text-center font-semibold">
-            <HiddenNumbers>{recordDetails.sinNumber.slice(0, 3)}</HiddenNumbers>
-            <span className="mx-[0.5ch]">-</span>
-            <HiddenNumbers>{recordDetails.sinNumber.slice(3, 6)}</HiddenNumbers>
-            <span className="mx-[0.5ch]">-</span>
-            <HiddenNumbers>{recordDetails.sinNumber.slice(6, 9)}</HiddenNumbers>
+            <FormattedSIN sinNumber={sinNumber ?? '*********'} />
           </p>
         </section>
         <section>
@@ -157,7 +177,7 @@ export default function SinConfirmation({ loaderData, actionData, params }: Rout
         </section>
       </div>
       <fetcher.Form method="post" noValidate className="mt-12 space-x-3 print:hidden">
-        <Button type="button" variant="primary" onClick={() => print()}>
+        <Button id="print-button" type="button" variant="primary" disabled={isSubmitting} onClick={handlePrint}>
           {t('protected:sin-confirmation.print')}
         </Button>
         <Button name="action" value="finish" id="finish-button" disabled={isSubmitting}>
@@ -168,17 +188,13 @@ export default function SinConfirmation({ loaderData, actionData, params }: Rout
   );
 }
 
-interface HiddenNumbersProps {
-  children: ReactNode;
+interface FormattedSINProps {
+  sinNumber: string;
 }
 
-function HiddenNumbers({ children }: HiddenNumbersProps) {
-  return (
-    <>
-      <span className="hidden print:inline">{children}</span>
-      <span className="inline print:hidden">***</span>
-    </>
-  );
+function FormattedSIN({ sinNumber }: FormattedSINProps) {
+  const parts = sinNumber.match(/.../g) ?? [];
+  return <>{parts.join(' - ')}</>;
 }
 
 interface BilingualTextProps {
