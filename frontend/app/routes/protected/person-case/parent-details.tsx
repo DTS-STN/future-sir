@@ -227,7 +227,6 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
         defaultChecked={unavailable ?? false}
         required
         onChange={({ target }) => setUnavailable(target.checked)}
-        labelClassName="text-lg"
       >
         {t('protected:parent-details.details-unavailable')}
       </InputCheckbox>

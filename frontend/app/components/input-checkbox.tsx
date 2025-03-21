@@ -4,12 +4,6 @@ import type { ReactNode } from 'react';
 import { InputError } from '~/components/input-error';
 import { cn } from '~/utils/tailwind-utils';
 
-const baseClassName =
-  'size-4 rounded-sm border-gray-500 bg-gray-50 text-blue-600 focus:ring-2 focus:ring-blue-500 focus:outline-hidden';
-const disabledClassName = 'pointer-events-none cursor-not-allowed opacity-70';
-const errorClassName = 'border-red-500 text-red-700 focus:border-red-500 focus:ring-red-500';
-const readOnlyClassName = 'pointer-events-none cursor-not-allowed opacity-70';
-
 export interface InputCheckboxProps extends OmitStrict<React.ComponentProps<'input'>, 'aria-labelledby' | 'type'> {
   append?: ReactNode;
   appendClassName?: string;
@@ -53,11 +47,9 @@ export function InputCheckbox({
           aria-labelledby={ids.label}
           aria-errormessage={errorMessage ? ids.error : undefined}
           className={cn(
-            'size-4 rounded-sm border-gray-500 bg-gray-50 text-blue-600 focus:ring-2 focus:ring-blue-500 focus:outline-hidden',
-            baseClassName,
-            restProps.readOnly && readOnlyClassName,
-            restProps.disabled && disabledClassName,
-            (errorMessage ?? hasError) && errorClassName,
+            'size-5 rounded-sm border-gray-500 bg-gray-50 text-blue-600 focus:ring-2 focus:ring-blue-500 focus:outline-hidden',
+            (restProps.readOnly === true || restProps.disabled === true) && 'pointer-events-none cursor-not-allowed opacity-70',
+            (errorMessage ?? hasError) && 'border-red-500 text-red-700 focus:border-red-500 focus:ring-red-500',
             className,
           )}
           data-testid="input-checkbox"
@@ -68,8 +60,7 @@ export function InputCheckbox({
           htmlFor={ids.input}
           className={cn(
             'block pl-3 leading-6',
-            restProps.readOnly && readOnlyClassName,
-            restProps.disabled && disabledClassName,
+            (restProps.readOnly === true || restProps.disabled === true) && 'pointer-events-none cursor-not-allowed opacity-70',
             labelClassName,
           )}
         >
