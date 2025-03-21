@@ -132,7 +132,7 @@ export default function RequestDetails({ actionData, loaderData, params }: Route
   const requestOptions = [{ id: 'select-option', name: '' }, ...loaderData.localizedTypeofApplicationToSubmit].map(
     ({ id, name }) => ({
       value: id === 'select-option' ? '' : id,
-      children: id === 'select-option' ? t('protected:contact-information.select-option') : name,
+      children: id === 'select-option' ? t('protected:person-case.select-option') : name,
     }),
   );
 

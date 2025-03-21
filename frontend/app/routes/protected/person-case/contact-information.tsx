@@ -127,7 +127,7 @@ export default function ContactInformation({ loaderData, actionData, params }: R
 
   const countryOptions = [{ id: 'select-option', name: '' }, ...loaderData.localizedCountries].map(({ id, name }) => ({
     value: id === 'select-option' ? '' : id,
-    children: id === 'select-option' ? t('protected:contact-information.select-option') : name,
+    children: id === 'select-option' ? t('protected:person-case.select-option') : name,
   }));
 
   const provinceTerritoryStateOptions = [
@@ -135,7 +135,7 @@ export default function ContactInformation({ loaderData, actionData, params }: R
     ...loaderData.localizedProvincesTerritoriesStates,
   ].map(({ id, name }) => ({
     value: id === 'select-option' ? '' : id,
-    children: id === 'select-option' ? t('protected:contact-information.select-option') : name,
+    children: id === 'select-option' ? t('protected:person-case.select-option') : name,
   }));
 
   return (

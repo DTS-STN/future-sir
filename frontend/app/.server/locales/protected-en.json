@@ -38,7 +38,8 @@
     "create-case-button": "Create case",
     "previous": "Previous",
     "next": "Next",
-    "refer-button": "Refer"
+    "refer-button": "Refer",
+    "select-option": "Select option"
   },
   "privacy-statement": {
     "page-title": "Protection of information",
@@ -149,8 +150,7 @@
     "select-scenario": "Select the scenario that best describes the client's situation",
     "type-request": "Type of request",
     "required-scenario": "Client scenario is required.",
-    "required-request": "Type of request is required.",
-    "select-option": "Select option"
+    "required-request": "Type of request is required."
   },
   "current-name": {
     "page-title": "Name for SIN",
@@ -235,7 +235,6 @@
   "contact-information": {
     "page-title": "Contact information",
     "correspondence": "Correspondence",
-    "select-option": "Select option",
     "preferred-language-label": "Preferred language of correspondence",
     "primary-phone-label": "Primary phone number",
     "secondary-phone-label": "Secondary phone number",
@@ -261,7 +260,6 @@
   },
   "birth-details": {
     "page-title": "Birth details",
-    "select-option": "Select option",
     "country": {
       "label": "Country of birth",
       "required-country": "Country of birth is required.",
@@ -294,7 +292,6 @@
     "city": "City, town, or village of birth",
     "add-parent": "Add a parent/legal guardian",
     "remove": "Remove",
-    "select-option": "Select option",
     "given-name-error": {
       "format-error": "Given name must not contain any digits.",
       "max-length-error": "Given name must contain at most {{maximum}} character(s).",

@@ -202,13 +202,13 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
 
   const countryOptions = [{ id: 'select-option', name: '' }, ...loaderData.localizedCountries].map(({ id, name }) => ({
     value: id === 'select-option' ? '' : id,
-    children: id === 'select-option' ? t('protected:parent-details.select-option') : name,
+    children: id === 'select-option' ? t('protected:person-case.select-option') : name,
   }));
 
   const provinceOptions = [{ id: 'select-option', name: '' }, ...loaderData.localizedProvincesTerritoriesStates].map(
     ({ id, name }) => ({
       value: id === 'select-option' ? '' : id,
-      children: id === 'select-option' ? t('protected:parent-details.select-option') : name,
+      children: id === 'select-option' ? t('protected:person-case.select-option') : name,
     }),
   );
 

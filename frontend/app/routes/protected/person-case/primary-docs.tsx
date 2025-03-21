@@ -225,7 +225,7 @@ function CurrentStatusInCanada({ defaultValue, errorMessage, onChange, statusInC
 
   const currentStatusInCanadaOptions = [{ id: 'select-option', name: '' }, ...statusInCanada].map(({ id, name }) => ({
     value: id === 'select-option' ? '' : id,
-    children: id === 'select-option' ? t('protected:request-details.select-option') : name,
+    children: id === 'select-option' ? t('protected:person-case.select-option') : name,
     disabled: id !== APPLICANT_STATUS_IN_CANADA.canadianCitizenBornOutsideCanada,
   }));
 
@@ -258,7 +258,7 @@ function DocumentType({ error, documentTypeChoices, status, value, onChange }: D
 
   const documentTypeOptions = [{ id: 'select-option', name: '' }, ...documentTypeChoices].map(({ id, name }) => ({
     value: id === 'select-option' ? '' : id,
-    children: id === 'select-option' ? t('protected:request-details.select-option') : name,
+    children: id === 'select-option' ? t('protected:person-case.select-option') : name,
     disabled: id !== APPLICANT_PRIMARY_DOCUMENT_CHOICE.certificateOfCanadianCitizenship,
   }));
   return (
