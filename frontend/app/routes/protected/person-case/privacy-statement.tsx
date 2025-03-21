@@ -102,10 +102,12 @@ export default function PrivacyStatement({ loaderData, params }: Route.Component
           <div className="max-w-prose space-y-6">
             <p>{t('protected:privacy-statement.ask-client')}</p>
             <h2 className="font-lato text-2xl font-bold">{t('protected:privacy-statement.privacy-statement')}</h2>
-            <p>{t('protected:privacy-statement.personal-info')}</p>
-            <p>{t('protected:privacy-statement.participation')}</p>
-            <p>{t('protected:privacy-statement.info-and-docs')}</p>
-            <p>{t('protected:privacy-statement.your-rights')}</p>
+            <div className="space-y-3">
+              <p>{t('protected:privacy-statement.personal-info')}</p>
+              <p>{t('protected:privacy-statement.participation')}</p>
+              <p>{t('protected:privacy-statement.info-and-docs')}</p>
+              <p>{t('protected:privacy-statement.your-rights')}</p>
+            </div>
             <InputCheckbox
               id="agreed-to-terms"
               name="agreedToTerms"
