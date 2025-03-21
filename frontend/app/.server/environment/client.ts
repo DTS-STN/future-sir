@@ -31,6 +31,7 @@ export const defaults = {
     { RC_CODE: 1913, alphaCode: 'PE' },
     { RC_CODE: 4913, alphaCode: 'NT' },
   ]),
+  PP_APPLICANT_PRIMARY_DOCUMENT_TYPE_CERTIFICATE_CANADIAN_CITIZENSHIP_CODE: '564190001',
 } as const;
 
 /**
@@ -56,6 +57,10 @@ export const client = v.object({
     v.optional(v.string(), defaults.RC_CODES),
     v.transform((input) => JSON.parse(input)),
     v.array(v.object({ RC_CODE: v.number(), alphaCode: v.string() })),
+  ),
+  PP_APPLICANT_PRIMARY_DOCUMENT_TYPE_CERTIFICATE_CANADIAN_CITIZENSHIP_CODE: v.optional(
+    v.string(),
+    defaults.PP_APPLICANT_PRIMARY_DOCUMENT_TYPE_CERTIFICATE_CANADIAN_CITIZENSHIP_CODE,
   ),
   isProduction: v.boolean(),
 });

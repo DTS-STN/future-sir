@@ -140,7 +140,7 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
             },
             {
               CertificateCategoryCode: {
-                ReferenceDataID: '564190002',
+                ReferenceDataID: '564190001',
                 ReferenceDataName: applicantPrimaryDocumentChoiceMock.nameEn,
               },
               ResourceReference: 'Primary Documents',
@@ -485,7 +485,7 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
             },
             {
               CertificateCategoryCode: {
-                ReferenceDataID: '564190002',
+                ReferenceDataID: '564190001',
                 ReferenceDataName: applicantPrimaryDocumentChoiceMock.nameEn,
               },
               ResourceReference: 'Primary Documents',
