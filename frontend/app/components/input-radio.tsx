@@ -2,12 +2,6 @@ import type { ReactNode } from 'react';
 
 import { cn } from '~/utils/tailwind-utils';
 
-const inputBaseClassName =
-  'h-4 w-4 border-gray-500 bg-gray-50 text-blue-600 focus:outline-hidden focus:ring-2 focus:ring-blue-500';
-const inputDisabledClassName = 'pointer-events-none cursor-not-allowed opacity-70';
-const inputErrorClassName = 'border-red-500 text-red-700 focus:border-red-500 focus:ring-red-500';
-const inputReadOnlyClassName = 'pointer-events-none cursor-not-allowed opacity-70';
-
 export interface InputRadioProps extends OmitStrict<React.ComponentProps<'input'>, 'aria-labelledby' | 'children' | 'type'> {
   append?: ReactNode;
   appendClassName?: string;
@@ -40,10 +34,9 @@ export function InputRadio({
           id={inputRadioId}
           aria-labelledby={inputLabelId}
           className={cn(
-            inputBaseClassName,
-            restProps.readOnly && inputReadOnlyClassName,
-            restProps.disabled && inputDisabledClassName,
-            hasError && inputErrorClassName,
+            'size-5 border-gray-500 bg-gray-50 text-blue-600 focus:ring-2 focus:ring-blue-500 focus:outline-hidden',
+            (restProps.readOnly === true || restProps.disabled === true) && 'pointer-events-none cursor-not-allowed opacity-70',
+            hasError && 'border-red-500 text-red-700 focus:border-red-500 focus:ring-red-500',
             inputClassName,
           )}
           data-testid="input-radio"
@@ -54,8 +47,7 @@ export function InputRadio({
           htmlFor={inputRadioId}
           className={cn(
             'block pl-3 leading-6',
-            restProps.readOnly && inputReadOnlyClassName,
-            restProps.disabled && inputDisabledClassName,
+            (restProps.readOnly === true || restProps.disabled === true) && 'pointer-events-none cursor-not-allowed opacity-70',
             labelClassName,
           )}
         >

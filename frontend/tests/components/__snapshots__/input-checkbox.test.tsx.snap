@@ -3,7 +3,7 @@
 exports[`InputCheckbox > should disable checkbox when disabled prop is provided > expected html 1`] = `
 <input
   aria-labelledby="input-checkbox-test-id-label"
-  class="size-4 rounded-sm border-gray-500 bg-gray-50 text-blue-600 focus:ring-2 focus:ring-blue-500 focus:outline-hidden pointer-events-none cursor-not-allowed opacity-70"
+  class="size-5 rounded-sm border-gray-500 bg-gray-50 text-blue-600 focus:ring-2 focus:ring-blue-500 focus:outline-hidden pointer-events-none cursor-not-allowed opacity-70"
   data-testid="input-checkbox"
   disabled=""
   id="input-checkbox-test-id-input"
@@ -15,7 +15,7 @@ exports[`InputCheckbox > should disable checkbox when disabled prop is provided 
 exports[`InputCheckbox > should render checkbox with label and appends content > expected html 1`] = `
 <input
   aria-labelledby="input-checkbox-test-id-label"
-  class="size-4 rounded-sm border-gray-500 bg-gray-50 text-blue-600 focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
+  class="size-5 rounded-sm border-gray-500 bg-gray-50 text-blue-600 focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
   data-testid="input-checkbox"
   id="input-checkbox-test-id-input"
   name="test-checkbox"
@@ -26,7 +26,7 @@ exports[`InputCheckbox > should render checkbox with label and appends content >
 exports[`InputCheckbox > should render checkbox with label and appends content > expected html 2`] = `
 <input
   aria-labelledby="input-checkbox-test-id-label"
-  class="size-4 rounded-sm border-gray-500 bg-gray-50 text-blue-600 focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
+  class="size-5 rounded-sm border-gray-500 bg-gray-50 text-blue-600 focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
   data-testid="input-checkbox"
   id="input-checkbox-test-id-input"
   name="test-checkbox"
@@ -61,7 +61,7 @@ exports[`InputCheckbox > should render input checkbox with error message > expec
       <input
         aria-errormessage="input-checkbox-test-id-error"
         aria-labelledby="input-checkbox-test-id-label"
-        class="size-4 rounded-sm bg-gray-50 focus:ring-2 focus:outline-hidden border-red-500 text-red-700 focus:border-red-500 focus:ring-red-500"
+        class="size-5 rounded-sm bg-gray-50 focus:ring-2 focus:outline-hidden border-red-500 text-red-700 focus:border-red-500 focus:ring-red-500"
         data-testid="input-checkbox"
         id="input-checkbox-test-id-input"
         name="test"

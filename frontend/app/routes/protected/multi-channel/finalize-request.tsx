@@ -151,7 +151,6 @@ export default function PidVerification({ loaderData, actionData, params }: Rout
               errorMessage={errors?.declaration?.at(0)}
               defaultValue={loaderData.defaultFormValues.declaration}
               required
-              className="h-8 w-8"
             >
               {t('protected:finalize-request.declaration-checkbox-label')}
             </InputCheckbox>

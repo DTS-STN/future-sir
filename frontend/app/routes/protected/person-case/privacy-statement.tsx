@@ -111,7 +111,6 @@ export default function PrivacyStatement({ loaderData, params }: Route.Component
             <InputCheckbox
               id="agreed-to-terms"
               name="agreedToTerms"
-              className="h-8 w-8"
               errorMessage={t(getSingleKey(errors?.agreedToTerms))}
               required
             >
