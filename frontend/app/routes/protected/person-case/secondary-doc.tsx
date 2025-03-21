@@ -122,54 +122,55 @@ export default function SecondaryDoc({ actionData, loaderData, params }: Route.C
   return (
     <>
       <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:secondary-identity-document.page-title')}</PageTitle>
-
-      <FetcherErrorSummary fetcherKey={fetcherKey}>
-        <fetcher.Form method="post" noValidate encType="multipart/form-data">
-          <div className="space-y-10">
-            <InputRadios
-              id="document-type-id"
-              legend={t('protected:secondary-identity-document.document-type.title')}
-              name="document-type"
-              options={docOptions}
-              required
-              errorMessage={t(getSingleKey(formErrors?.documentType))}
-            />
-            <DatePickerField
-              defaultValue={{
-                year: formValues?.expiryYear,
-                month: formValues?.expiryMonth,
-              }}
-              id="expiry-date-id"
-              legend={t('protected:secondary-identity-document.expiry-date.title')}
-              required
-              names={{
-                month: 'expiry-month',
-                year: 'expiry-year',
-              }}
-              errorMessages={{
-                year: t(getSingleKey(formErrors?.expiryYear)),
-                month: t(getSingleKey(formErrors?.expiryMonth)),
-              }}
-            />
-            <InputFile
-              disabled
-              accept=".jpg,.png,.heic"
-              id="document-id"
-              name="document"
-              label={t('protected:secondary-identity-document.upload-document.title')}
-              required
-            />
-          </div>
-          <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
-            <Button name="action" value="next" variant="primary" id="continue-button" disabled={isSubmitting}>
-              {t('protected:person-case.next')}
-            </Button>
-            <Button name="action" value="back" id="back-button" disabled={isSubmitting}>
-              {t('protected:person-case.previous')}
-            </Button>
-          </div>
-        </fetcher.Form>
-      </FetcherErrorSummary>
+      <div className="max-w-prose">
+        <FetcherErrorSummary fetcherKey={fetcherKey}>
+          <fetcher.Form method="post" noValidate encType="multipart/form-data">
+            <div className="space-y-6">
+              <InputRadios
+                id="document-type-id"
+                legend={t('protected:secondary-identity-document.document-type.title')}
+                name="document-type"
+                options={docOptions}
+                required
+                errorMessage={t(getSingleKey(formErrors?.documentType))}
+              />
+              <DatePickerField
+                defaultValue={{
+                  year: formValues?.expiryYear,
+                  month: formValues?.expiryMonth,
+                }}
+                id="expiry-date-id"
+                legend={t('protected:secondary-identity-document.expiry-date.title')}
+                required
+                names={{
+                  month: 'expiry-month',
+                  year: 'expiry-year',
+                }}
+                errorMessages={{
+                  year: t(getSingleKey(formErrors?.expiryYear)),
+                  month: t(getSingleKey(formErrors?.expiryMonth)),
+                }}
+              />
+              <InputFile
+                disabled
+                accept=".jpg,.png,.heic"
+                id="document-id"
+                name="document"
+                label={t('protected:secondary-identity-document.upload-document.title')}
+                required
+              />
+            </div>
+            <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
+              <Button name="action" value="next" variant="primary" id="continue-button" disabled={isSubmitting}>
+                {t('protected:person-case.next')}
+              </Button>
+              <Button name="action" value="back" id="back-button" disabled={isSubmitting}>
+                {t('protected:person-case.previous')}
+              </Button>
+            </div>
+          </fetcher.Form>
+        </FetcherErrorSummary>
+      </div>
     </>
   );
 }
