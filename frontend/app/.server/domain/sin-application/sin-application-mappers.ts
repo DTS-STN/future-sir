@@ -5,6 +5,7 @@ import type {
   SubmitSinApplicationRequest,
   SubmitSinApplicationResponse,
 } from '~/.server/domain/sin-application/sin-application-models';
+import { serverEnvironment } from '~/.server/environment';
 import type {
   CertificateType,
   ContactInformationType,
@@ -78,7 +79,7 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
           {
             CertificateIssueDate: { date: primaryDocuments.citizenshipDate },
             CertificateCategoryCode: {
-              ReferenceDataID: '564190000', // copied from esdc_applicantstatusincanada for Canadian citizen
+              ReferenceDataID: serverEnvironment.PP_APPLICANT_STATUS_IN_CANADA_CANADIAN_CITIZEN_CODE,
               ReferenceDataName: getApplicantStatusInCanadaChoicesById(primaryDocuments.currentStatusInCanada).nameEn,
             },
           },
