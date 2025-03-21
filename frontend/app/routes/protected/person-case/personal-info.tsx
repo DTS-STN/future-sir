@@ -228,130 +228,136 @@ export default function PersonalInformation({ actionData, loaderData, params, ma
   return (
     <>
       <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:personal-information.page-title')}</PageTitle>
+      <div className="max-w-prose">
+        <FetcherErrorSummary fetcherKey={fetcherKey}>
+          <fetcher.Form method="post" noValidate={true}>
+            <div className="space-y-6">
+              <div className="space-y-3">
+                <div id="other-first-name-input" className="flex gap-4">
+                  <InputField
+                    id="first-name-id"
+                    className="w-full"
+                    errorMessage={t(firstNameError ?? getErrorMessage('firstNamePreviouslyUsed', errors), { maximum: 100 })}
+                    helpMessagePrimary={t('protected:personal-information.first-name-previously-used.help-message-primary')}
+                    label={t('protected:personal-information.first-name-previously-used.label')}
+                    name="firstNamePreviouslyUsed"
+                    onChange={({ target }) => setOtherFirstName(target.value)}
+                    value={otherFirstName}
+                  />
+                  <Button
+                    id="add-first-name-button"
+                    className="self-end text-nowrap"
+                    endIcon={faXmarkCircle}
+                    onClick={addOtherFirstName}
+                    type="button"
+                    variant="link"
+                  >
+                    {t('protected:personal-information.add-name')}
+                  </Button>
+                </div>
+                {otherFirstNames.length > 0 && (
+                  <div id="other-first-names" className="flex gap-3">
+                    {otherFirstNames.map((name) => (
+                      <div
+                        key={name}
+                        className="inline-flex items-center justify-center rounded-sm border-blue-100 bg-blue-100 px-2 py-1 align-middle text-gray-900"
+                      >
+                        <span>{name}</span>
+                        <button
+                          aria-label={t('protected:personal-information.name-added-aria-label', { name })}
+                          onClick={() => removeOtherFirstName(name)}
+                          type="button"
+                        >
+                          <FontAwesomeIcon icon={faXmark} className="ml-1" />
+                        </button>
+                        <input type="hidden" name="firstNamePreviouslyUsed" value={name} />
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
 
-      <FetcherErrorSummary fetcherKey={fetcherKey}>
-        <fetcher.Form method="post" noValidate={true}>
-          <div className="flex flex-col space-y-6">
-            <div id="other-first-name-input" className="flex space-x-4">
               <InputField
-                id="first-name-id"
+                id="last-name-at-birth-id"
+                defaultValue={loaderData.defaultFormValues.lastNameAtBirth ?? loaderData.primaryDocValues.lastName}
+                errorMessage={t(getSingleKey(errors?.lastNameAtBirth), { maximum: 100 })}
+                label={t('protected:personal-information.last-name-at-birth.label')}
+                name="lastNameAtBirth"
+                required
                 className="w-full"
-                errorMessage={t(firstNameError ?? getErrorMessage('firstNamePreviouslyUsed', errors), { maximum: 100 })}
-                helpMessagePrimary={t('protected:personal-information.first-name-previously-used.help-message-primary')}
-                label={t('protected:personal-information.first-name-previously-used.label')}
-                name="firstNamePreviouslyUsed"
-                onChange={({ target }) => setOtherFirstName(target.value)}
-                value={otherFirstName}
               />
-              <Button
-                id="add-first-name-button"
-                className="self-end"
-                endIcon={faXmarkCircle}
-                onClick={addOtherFirstName}
-                type="button"
-                variant="link"
-              >
-                {t('protected:personal-information.add-name')}
+
+              <div className="space-y-3">
+                <div id="other-last-name-input" className="flex gap-4">
+                  <InputField
+                    id="last-name-id"
+                    className="w-full"
+                    errorMessage={t(lastNameError ?? getErrorMessage('lastNamePreviouslyUsed', errors), { maximum: 100 })}
+                    helpMessagePrimary={t('protected:personal-information.last-name-previously-used.help-message-primary')}
+                    label={t('protected:personal-information.last-name-previously-used.label')}
+                    name="lastNamePreviouslyUsed"
+                    onChange={({ target }) => setOtherLastName(target.value)}
+                    value={otherLastName}
+                  />
+                  <Button
+                    id="add-last-name-button"
+                    className="self-end text-nowrap"
+                    endIcon={faXmarkCircle}
+                    onClick={addOtherLastName}
+                    type="button"
+                    variant="link"
+                  >
+                    {t('protected:personal-information.add-name')}
+                  </Button>
+                </div>
+                {otherLastNames.length > 0 && (
+                  <div id="other-last-names" className="flex gap-3">
+                    {otherLastNames.map((name) => (
+                      <div
+                        key={name}
+                        className="inline-flex items-center justify-center rounded-sm border-blue-100 bg-blue-100 px-2 py-1 align-middle text-gray-900"
+                      >
+                        <span>{name}</span>
+                        <button
+                          aria-label={t('protected:personal-information.name-added-aria-label', { name })}
+                          onClick={() => removeOtherLastName(name)}
+                          type="button"
+                        >
+                          <FontAwesomeIcon icon={faXmark} className="ml-1" />
+                        </button>
+                        <input type="hidden" name="lastNamePreviouslyUsed" value={name} />
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <span aria-live="polite" aria-atomic="true" className="sr-only">
+                {srAnnouncement}
+              </span>
+
+              <InputRadios
+                id="gender-id"
+                errorMessage={t(getSingleKey(errors?.gender))}
+                helpMessagePrimary={t('protected:personal-information.gender.help-message-primary')}
+                legend={t('protected:personal-information.gender.label')}
+                name="gender"
+                options={loaderData.genders}
+                required
+              />
+            </div>
+
+            <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
+              <Button name="action" value="next" variant="primary" id="continue-button" disabled={isSubmitting}>
+                {t('protected:person-case.next')}
+              </Button>
+              <Button name="action" value="back" id="back-button" disabled={isSubmitting}>
+                {t('protected:person-case.previous')}
               </Button>
             </div>
-
-            <div id="other-first-names" className="flex space-x-4">
-              {otherFirstNames.map((name) => (
-                <div
-                  key={name}
-                  className="inline-flex items-center justify-center rounded-sm border-blue-100 bg-blue-100 px-2 py-1 align-middle text-gray-900"
-                >
-                  <span>{name}</span>
-                  <button
-                    aria-label={t('protected:personal-information.name-added-aria-label', { name })}
-                    onClick={() => removeOtherFirstName(name)}
-                    type="button"
-                  >
-                    <FontAwesomeIcon icon={faXmark} className="ml-1" />
-                  </button>
-
-                  <input type="hidden" name="firstNamePreviouslyUsed" value={name} />
-                </div>
-              ))}
-            </div>
-
-            <InputField
-              id="last-name-at-birth-id"
-              defaultValue={loaderData.defaultFormValues.lastNameAtBirth ?? loaderData.primaryDocValues.lastName}
-              errorMessage={t(getSingleKey(errors?.lastNameAtBirth), { maximum: 100 })}
-              label={t('protected:personal-information.last-name-at-birth.label')}
-              name="lastNameAtBirth"
-              required={true}
-            />
-
-            <div id="other-last-name-input" className="flex space-x-4">
-              <InputField
-                id="last-name-id"
-                className="w-full"
-                errorMessage={t(lastNameError ?? getErrorMessage('lastNamePreviouslyUsed', errors), { maximum: 100 })}
-                helpMessagePrimary={t('protected:personal-information.last-name-previously-used.help-message-primary')}
-                label={t('protected:personal-information.last-name-previously-used.label')}
-                name="lastNamePreviouslyUsed"
-                onChange={({ target }) => setOtherLastName(target.value)}
-                value={otherLastName}
-              />
-              <Button
-                id="add-last-name-button"
-                className="self-end"
-                endIcon={faXmarkCircle}
-                onClick={addOtherLastName}
-                type="button"
-                variant="link"
-              >
-                {t('protected:personal-information.add-name')}
-              </Button>
-            </div>
-
-            <div id="other-last-names" className="flex space-x-4">
-              {otherLastNames.map((name) => (
-                <div
-                  key={name}
-                  className="inline-flex items-center justify-center rounded-sm border-blue-100 bg-blue-100 px-2 py-1 align-middle text-gray-900"
-                >
-                  <span>{name}</span>
-                  <button
-                    aria-label={t('protected:personal-information.name-added-aria-label', { name })}
-                    onClick={() => removeOtherLastName(name)}
-                    type="button"
-                  >
-                    <FontAwesomeIcon icon={faXmark} className="ml-1" />
-                  </button>
-
-                  <input type="hidden" name="lastNamePreviouslyUsed" value={name} />
-                </div>
-              ))}
-            </div>
-
-            <span aria-live="polite" aria-atomic="true" className="sr-only">
-              {srAnnouncement}
-            </span>
-
-            <InputRadios
-              id="gender-id"
-              errorMessage={t(getSingleKey(errors?.gender))}
-              helpMessagePrimary={t('protected:personal-information.gender.help-message-primary')}
-              legend={t('protected:personal-information.gender.label')}
-              name="gender"
-              options={loaderData.genders}
-              required={true}
-            />
-          </div>
-
-          <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
-            <Button name="action" value="next" variant="primary" id="continue-button" disabled={isSubmitting}>
-              {t('protected:person-case.next')}
-            </Button>
-            <Button name="action" value="back" id="back-button" disabled={isSubmitting}>
-              {t('protected:person-case.previous')}
-            </Button>
-          </div>
-        </fetcher.Form>
-      </FetcherErrorSummary>
+          </fetcher.Form>
+        </FetcherErrorSummary>
+      </div>
     </>
   );
 }
