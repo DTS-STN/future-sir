@@ -16,7 +16,6 @@ import { getLocalizedApplicantSupportingDocumentTypeById } from '~/.server/domai
 import { getLocalizedLanguageOfCorrespondenceById } from '~/.server/domain/person-case/services/language-correspondence-service';
 import { getSinApplicationService } from '~/.server/domain/sin-application/sin-application-service';
 import { serverEnvironment } from '~/.server/environment';
-import { LogFactory } from '~/.server/logging';
 import { getLocalizedCountryById } from '~/.server/shared/services/country-service';
 import { getLocalizedProvinceById } from '~/.server/shared/services/province-service';
 import { requireAllRoles } from '~/.server/utils/auth-utils';
@@ -27,11 +26,10 @@ import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
+import { getTabIdOrRedirect, loadMachineActorOrRedirect } from '~/routes/protected/person-case/route-helpers.server';
 import type { InPersonSinApplication } from '~/routes/protected/person-case/state-machine-models';
-import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine.server';
+import { getStateRoute } from '~/routes/protected/person-case/state-machine.server';
 import { SinApplication } from '~/routes/protected/sin-application';
-
-const log = LogFactory.getLogger(import.meta.url);
 
 export const handle = {
   i18nNamespace: [...parentHandle.i18nNamespace, 'protected'],
@@ -44,17 +42,11 @@ export function meta({ data }: Route.MetaArgs) {
 export async function action({ context, params, request }: Route.ActionArgs) {
   requireAllRoles(context.session, new URL(request.url), ['user']);
 
-  const tabId = new URL(request.url).searchParams.get('tid') ?? undefined;
+  const tabId = getTabIdOrRedirect(request);
+  const machineActor = loadMachineActorOrRedirect(context.session, request, tabId, { stateName: 'review' });
+  const machineContext = machineActor.getSnapshot().context;
 
-  const machineActor = loadMachineActor(context.session, request, 'review');
-
-  if (!machineActor) {
-    log.warn('Could not find a machine snapshot in session; redirecting to start of flow');
-    throw i18nRedirect('routes/protected/person-case/privacy-statement.tsx', request);
-  }
-
-  const sessionData = machineActor.getSnapshot().context;
-  const inPersonSinApplication = validateInPersonSINCaseSession(sessionData, tabId, request);
+  const inPersonSinApplication = validateMachineContextData(machineContext, tabId, request);
 
   const formData = await request.formData();
   const action = formData.get('action');
@@ -91,58 +83,55 @@ export async function action({ context, params, request }: Route.ActionArgs) {
 
 export async function loader({ context, request }: Route.LoaderArgs) {
   requireAllRoles(context.session, new URL(request.url), ['user']);
+
+  const tabId = getTabIdOrRedirect(request);
+  const machineActor = loadMachineActorOrRedirect(context.session, request, tabId, { stateName: 'review' });
+  const machineContext = machineActor.getSnapshot().context;
+
+  const {
+    birthDetails,
+    contactInformation,
+    currentNameInfo,
+    parentDetails,
+    personalInformation,
+    previousSin,
+    primaryDocuments,
+    // TODO - Check why request details is not displayed
+    // requestDetails,
+    secondaryDocument,
+  } = validateMachineContextData(machineContext, tabId, request);
+
   const { lang, t } = await getTranslation(request, handle.i18nNamespace);
-
-  const tabId = new URL(request.url).searchParams.get('tid') ?? undefined;
-
-  const machineActor = loadMachineActor(context.session, request, 'review');
-
-  if (!machineActor) {
-    log.warn('Could not find a machine snapshot in session; redirecting to start of flow');
-    throw i18nRedirect('routes/protected/person-case/privacy-statement.tsx', request);
-  }
-
-  const sessionData = machineActor.getSnapshot().context;
-  const inPersonSinApplication = validateInPersonSINCaseSession(sessionData, tabId, request);
 
   return {
     documentTitle: t('protected:review.page-title'),
     tabId,
     inPersonSINCase: {
-      ...inPersonSinApplication,
       primaryDocuments: {
-        ...inPersonSinApplication.primaryDocuments,
-        currentStatusInCanadaName: getLocalizedApplicantStatusInCanadaChoiceById(
-          inPersonSinApplication.primaryDocuments.currentStatusInCanada,
-          lang,
-        ).name,
-        documentTypeName: getLocalizedApplicantPrimaryDocumentChoiceById(
-          inPersonSinApplication.primaryDocuments.documentType,
-          lang,
-        ).name,
-        genderName: getLocalizedApplicantGenderById(inPersonSinApplication.primaryDocuments.gender, lang).name,
+        ...primaryDocuments,
+        currentStatusInCanadaName: getLocalizedApplicantStatusInCanadaChoiceById(primaryDocuments.currentStatusInCanada, lang)
+          .name,
+        documentTypeName: getLocalizedApplicantPrimaryDocumentChoiceById(primaryDocuments.documentType, lang).name,
+        genderName: getLocalizedApplicantGenderById(primaryDocuments.gender, lang).name,
       },
       secondaryDocument: {
-        ...inPersonSinApplication.secondaryDocument,
-        documentTypeName: getLocalizedApplicantSecondaryDocumentChoiceById(
-          inPersonSinApplication.secondaryDocument.documentType,
-          lang,
-        ).name,
+        ...secondaryDocument,
+        documentTypeName: getLocalizedApplicantSecondaryDocumentChoiceById(secondaryDocument.documentType, lang).name,
       },
       personalInformation: {
-        ...inPersonSinApplication.personalInformation,
-        genderName: getLocalizedApplicantGenderById(inPersonSinApplication.personalInformation.gender, lang).name,
+        ...personalInformation,
+        genderName: getLocalizedApplicantGenderById(personalInformation.gender, lang).name,
       },
       birthDetails: {
-        ...inPersonSinApplication.birthDetails,
-        countryName: getLocalizedCountryById(inPersonSinApplication.birthDetails.country, lang).name,
-        provinceName: inPersonSinApplication.birthDetails.province
-          ? inPersonSinApplication.birthDetails.country === serverEnvironment.PP_CANADA_COUNTRY_CODE
-            ? getLocalizedProvinceById(inPersonSinApplication.birthDetails.province, lang).name
-            : inPersonSinApplication.birthDetails.province
+        ...birthDetails,
+        countryName: getLocalizedCountryById(birthDetails.country, lang).name,
+        provinceName: birthDetails.province
+          ? birthDetails.country === serverEnvironment.PP_CANADA_COUNTRY_CODE
+            ? getLocalizedProvinceById(birthDetails.province, lang).name
+            : birthDetails.province
           : undefined,
       },
-      parentDetails: inPersonSinApplication.parentDetails.map((parentdetail) => ({
+      parentDetails: parentDetails.map((parentdetail) => ({
         ...parentdetail,
         countryName:
           parentdetail.birthLocation?.country && getLocalizedCountryById(parentdetail.birthLocation.country, lang).name,
@@ -153,31 +142,24 @@ export async function loader({ context, request }: Route.LoaderArgs) {
           : undefined,
       })),
       contactInformation: {
-        ...inPersonSinApplication.contactInformation,
-        preferredLanguageName: getLocalizedLanguageOfCorrespondenceById(
-          inPersonSinApplication.contactInformation.preferredLanguage,
-          lang,
-        ).name,
-        countryName: getLocalizedCountryById(inPersonSinApplication.contactInformation.country, lang).name,
+        ...contactInformation,
+        preferredLanguageName: getLocalizedLanguageOfCorrespondenceById(contactInformation.preferredLanguage, lang).name,
+        countryName: getLocalizedCountryById(contactInformation.country, lang).name,
         provinceName:
-          inPersonSinApplication.contactInformation.country === serverEnvironment.PP_CANADA_COUNTRY_CODE
-            ? getLocalizedProvinceById(inPersonSinApplication.contactInformation.province, lang).name
-            : inPersonSinApplication.contactInformation.province,
+          contactInformation.country === serverEnvironment.PP_CANADA_COUNTRY_CODE
+            ? getLocalizedProvinceById(contactInformation.province, lang).name
+            : contactInformation.province,
       },
       previousSin: {
-        ...inPersonSinApplication.previousSin,
-        hasPreviousSinText: getLocalizedApplicantHadSinOptionById(inPersonSinApplication.previousSin.hasPreviousSin, lang).name,
+        ...previousSin,
+        hasPreviousSinText: getLocalizedApplicantHadSinOptionById(previousSin.hasPreviousSin, lang).name,
       },
       currentNameInfo: {
-        ...inPersonSinApplication.currentNameInfo,
-        firstName: inPersonSinApplication.currentNameInfo.preferredSameAsDocumentName
-          ? inPersonSinApplication.primaryDocuments.givenName
-          : inPersonSinApplication.currentNameInfo.firstName,
-        lastName: inPersonSinApplication.currentNameInfo.preferredSameAsDocumentName
-          ? inPersonSinApplication.primaryDocuments.lastName
-          : inPersonSinApplication.currentNameInfo.lastName,
+        ...currentNameInfo,
+        firstName: currentNameInfo.preferredSameAsDocumentName ? primaryDocuments.givenName : currentNameInfo.firstName,
+        lastName: currentNameInfo.preferredSameAsDocumentName ? primaryDocuments.lastName : currentNameInfo.lastName,
         supportingDocumentsNames:
-          inPersonSinApplication.currentNameInfo.supportingDocuments?.documentTypes?.map(
+          currentNameInfo.supportingDocuments?.documentTypes?.map(
             (doc) => getLocalizedApplicantSupportingDocumentTypeById(doc, lang).name,
           ) ?? undefined,
       },
@@ -214,13 +196,11 @@ export default function Review({ loaderData, actionData, params }: Route.Compone
   );
 }
 
-function validateInPersonSINCaseSession(
-  sessionData: Partial<InPersonSinApplication>,
-  tabId: string | undefined,
+function validateMachineContextData(
+  machineContext: Partial<InPersonSinApplication>,
+  tabId: string,
   request: Request,
 ): Required<InPersonSinApplication> {
-  const search = tabId ? new URLSearchParams({ tid: tabId }) : undefined;
-
   const {
     birthDetails,
     contactInformation,
@@ -232,7 +212,9 @@ function validateInPersonSINCaseSession(
     privacyStatement,
     requestDetails,
     secondaryDocument,
-  } = sessionData;
+  } = machineContext;
+
+  const search = new URLSearchParams({ tid: tabId });
 
   if (privacyStatement === undefined) {
     throw i18nRedirect('routes/protected/person-case/privacy-statement.tsx', request, { search });

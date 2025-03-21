@@ -17,9 +17,7 @@ import type {
 import { getLocalizedApplicantGenders } from '~/.server/domain/person-case/services/applicant-gender-service';
 import { getLocalizedApplicantPrimaryDocumentChoices } from '~/.server/domain/person-case/services/applicant-primary-document-service';
 import { getLocalizedApplicantStatusInCanadaChoices } from '~/.server/domain/person-case/services/applicant-status-in-canada-service';
-import { LogFactory } from '~/.server/logging';
 import { requireAllRoles } from '~/.server/utils/auth-utils';
-import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
 import { DatePickerField } from '~/components/date-picker-field';
 import { FetcherErrorSummary } from '~/components/error-summary';
@@ -34,12 +32,11 @@ import { ErrorCodes } from '~/errors/error-codes';
 import { HttpStatusCodes } from '~/errors/http-status-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
-import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine.server';
+import { getTabIdOrRedirect, loadMachineActorOrRedirect } from '~/routes/protected/person-case/route-helpers.server';
+import { getStateRoute } from '~/routes/protected/person-case/state-machine.server';
 import { primaryDocumentSchema } from '~/routes/protected/person-case/validation.server';
 import { toISODateString } from '~/utils/date-utils';
 import { getSingleKey } from '~/utils/i18n-utils';
-
-const log = LogFactory.getLogger(import.meta.url);
 
 export const handle = {
   i18nNamespace: [...parentHandle.i18nNamespace, 'protected'],
@@ -52,12 +49,8 @@ export function meta({ data }: Route.MetaArgs) {
 export async function action({ context, params, request }: Route.ActionArgs) {
   requireAllRoles(context.session, new URL(request.url), ['user']);
 
-  const machineActor = loadMachineActor(context.session, request, 'primary-docs');
-
-  if (!machineActor) {
-    log.warn('Could not find a machine snapshot in session; redirecting to start of flow');
-    throw i18nRedirect('routes/protected/person-case/privacy-statement.tsx', request);
-  }
+  const tabId = getTabIdOrRedirect(request);
+  const machineActor = loadMachineActorOrRedirect(context.session, request, tabId, { stateName: 'primary-docs' });
 
   const formData = await request.formData();
   const action = formData.get('action');
@@ -128,17 +121,19 @@ export async function action({ context, params, request }: Route.ActionArgs) {
 export async function loader({ context, request }: Route.LoaderArgs) {
   requireAllRoles(context.session, new URL(request.url), ['user']);
 
+  const tabId = getTabIdOrRedirect(request);
+  const machineActor = loadMachineActorOrRedirect(context.session, request, tabId, { stateName: 'primary-docs' });
+  const { formData, primaryDocuments } = machineActor.getSnapshot().context;
+
   const { lang, t } = await getTranslation(request, handle.i18nNamespace);
-  const machineActor = loadMachineActor(context.session, request, 'primary-docs');
-  const machineContext = machineActor?.getSnapshot().context;
 
   return {
     documentTitle: t('protected:primary-identity-document.page-title'),
     localizedStatusInCanada: getLocalizedApplicantStatusInCanadaChoices(lang),
     localizedPrimaryDocumentChoices: getLocalizedApplicantPrimaryDocumentChoices(lang),
     localizedGenders: getLocalizedApplicantGenders(lang),
-    formValues: machineContext?.formData?.primaryDocuments?.values ?? machineContext?.primaryDocuments,
-    formErrors: machineContext?.formData?.primaryDocuments?.errors,
+    formValues: formData?.primaryDocuments?.values ?? primaryDocuments,
+    formErrors: formData?.primaryDocuments?.errors,
   };
 }
 

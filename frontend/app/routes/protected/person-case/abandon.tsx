@@ -2,24 +2,17 @@ import { redirect } from 'react-router';
 
 import type { Route } from './+types/abandon';
 
-import { LogFactory } from '~/.server/logging';
 import { requireAllRoles } from '~/.server/utils/auth-utils';
-import { i18nRedirect } from '~/.server/utils/route-utils';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
-import { getStateRoute, loadMachineActor } from '~/routes/protected/person-case/state-machine.server';
-
-const log = LogFactory.getLogger(import.meta.url);
+import { getTabIdOrRedirect, loadMachineActorOrRedirect } from '~/routes/protected/person-case/route-helpers.server';
+import { getStateRoute } from '~/routes/protected/person-case/state-machine.server';
 
 export async function action({ context, params, request }: Route.ActionArgs) {
   requireAllRoles(context.session, new URL(request.url), ['user']);
 
-  const machineActor = loadMachineActor(context.session, request);
-
-  if (!machineActor) {
-    log.warn('Could not find a machine snapshot in session; redirecting to start of flow');
-    throw i18nRedirect('routes/protected/person-case/privacy-statement.tsx', request);
-  }
+  const tabId = getTabIdOrRedirect(request);
+  const machineActor = loadMachineActorOrRedirect(context.session, request, tabId);
 
   const formData = await request.formData();
   const action = formData.get('action');

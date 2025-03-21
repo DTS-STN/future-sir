@@ -7,7 +7,6 @@ import { assign, createActor, setup } from 'xstate';
 import { LogFactory } from '~/.server/logging';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
-import { HttpStatusCodes } from '~/errors/http-status-codes';
 import type { I18nRouteFile } from '~/i18n-routes';
 import { i18nRoutes } from '~/i18n-routes';
 import type {
@@ -56,7 +55,7 @@ type MachineMeta = {
  * Type representing the possible state names for the application process.
  * TODO ::: GjB ::: figure out if there is a way to infer these from the machine.
  */
-type StateName =
+export type StateName =
   | 'privacy-statement'
   | 'request-details'
   | 'primary-docs'
@@ -279,24 +278,17 @@ export const machine = setup({
 /**
  * Creates a new in-person application state machine actor and stores it in the session.
  *
- * This function retrieves the `tabId` from the request URL, creates a new XState actor
- * for the in-person application flow, subscribes to its state changes to persist
- * the snapshot in the session, and starts the actor.
- *
- * @throws {Response} 400 response if the `tabId` is missing in the request.
+ * This function creates a new XState actor for the in-person application flow, subscribes
+ * to its state changes to persist the snapshot in the session, and starts the actor.
+ * @param session - The current application session
+ * @param flowId - The flow ID to create
  */
-export function createMachineActor(session: AppSession, request: Request): Actor<Machine> {
+export function createMachineActor(session: AppSession, flowId: string): Actor<Machine> {
   const flow = (session.inPersonSinApplications ??= {}); // ensure session container exists
-  const tabId = new URL(request.url).searchParams.get('tid');
 
-  if (!tabId) {
-    log.warn('Could not find tabId in request; returning 400 response.');
-    throw Response.json('The tabId could not be found in the request', { status: HttpStatusCodes.BAD_REQUEST });
-  }
-
-  const actor = createActor(machine, { id: tabId });
-  actor.subscribe((snapshot) => void (flow[tabId] = snapshot));
-  log.debug('Created new in-person state machine for session [%s] and tabId [%s]', session.id, tabId);
+  const actor = createActor(machine, { id: flowId });
+  actor.subscribe((snapshot) => void (flow[flowId] = snapshot));
+  log.debug('Created new in-person state machine for session [%s] and flowId [%s]', session.id, flowId);
 
   return actor.start();
 }
@@ -304,31 +296,27 @@ export function createMachineActor(session: AppSession, request: Request): Actor
 /**
  * Loads an existing in-person application state machine actor from the session.
  *
- * This function retrieves the `tabId` from the request URL, attempts to load a
- * persisted XState actor snapshot from the session, and recreates the actor
- * with the loaded snapshot.
+ * This function attempts to load a persisted XState actor snapshot from the session,
+ * and recreates the actor with the loaded snapshot.
+ * @param session - The current application session
+ * @param flowId - The flow ID to load
  */
-export function loadMachineActor(session: AppSession, request: Request, stateName?: StateName): Actor<Machine> | undefined {
+export function loadMachineActor(session: AppSession, flowId: string, stateName?: StateName): Actor<Machine> | undefined {
   const flows = (session.inPersonSinApplications ??= {}); // ensure session container exists
-  const tabId = new URL(request.url).searchParams.get('tid');
+  const flow = flows[flowId];
 
-  if (!tabId) {
-    log.debug('Could not find tab id in request; returning undefined');
-    return undefined;
-  }
-
-  if (!flows[tabId]) {
+  if (!flow) {
     log.debug('Could not find a machine snapshot session; returning undefined');
     return undefined;
   }
 
   // if a desired state name has been provided, we load it,
   // otherwise use the state name that has been stored in session
-  const snapshot = stateName ? machine.resolveState({ value: stateName, context: flows[tabId].context }) : flows[tabId];
+  const snapshot = stateName ? machine.resolveState({ value: stateName, context: flow.context }) : flow;
 
-  const actor = createActor(machine, { id: tabId, snapshot });
-  actor.subscribe((snapshot) => void (flows[tabId] = snapshot));
-  log.debug('Loaded in-person state machine for session [%s] and tabId [%s]', session.id, tabId);
+  const actor = createActor(machine, { id: flowId, snapshot });
+  actor.subscribe((snapshot) => void (flows[flowId] = snapshot));
+  log.debug('Loaded in-person state machine for session [%s] and flowId [%s]', session.id, flowId);
 
   return actor.start();
 }
