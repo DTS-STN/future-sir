@@ -339,7 +339,7 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
         ApplicationDetailID: 'SIN Confirmation receiving method',
         ApplicationDetailValue: {
           ValueCode: {
-            ReferenceDataID: 'Mail', //Mail or Email
+            ReferenceDataID: serverEnvironment.PP_SIN_CONFIRMATION_RECEIVING_METHOD_CODE,
           },
         },
       });
