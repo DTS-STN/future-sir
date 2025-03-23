@@ -41,7 +41,7 @@ export type SinCaseCurrentNameDto =
           };
     };
 
-export type SinCaseParentDetailsDto = (
+export type SinCaseParentDetailsDto =
   | {
       unavailable: true;
       givenName?: undefined;
@@ -57,8 +57,7 @@ export type SinCaseParentDetailsDto = (
         province?: string;
         city?: string;
       };
-    }
-)[];
+    };
 
 export type SinCasePersonalInfoDto = {
   firstNamePreviouslyUsed?: string[];
@@ -104,7 +103,7 @@ export type SinCaseDto = {
   birthDetails: SinCaseBirthDetailsDto;
   contactInformation: SinCaseContactInformationDto;
   currentNameInfo: SinCaseCurrentNameDto;
-  parentDetails: SinCaseParentDetailsDto;
+  parentDetails: SinCaseParentDetailsDto[];
   personalInformation: SinCasePersonalInfoDto;
   previousSin: SinCasePreviousSinDto;
   primaryDocuments: SinCasePrimaryDocumentDto;
