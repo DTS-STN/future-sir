@@ -1,16 +1,16 @@
 import type { SinCaseService } from '~/.server/domain/multi-channel/case-api-service';
-import type { PersonSinCase } from '~/.server/domain/multi-channel/case-api-service-models';
+import type { SinCaseDto } from '~/.server/domain/multi-channel/sin-case-models';
 import { APPLICANT_PRIMARY_DOCUMENT_CHOICE, APPLICANT_STATUS_IN_CANADA } from '~/domain/constants';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 
 export function getMockSinCaseService(): SinCaseService {
   return {
-    getCases: async (): Promise<PersonSinCase[]> => {
+    getSinCases: async (): Promise<SinCaseDto[]> => {
       return new Promise((resolve) => resolve(mockCases));
     },
 
-    getCaseById: async (id: string): Promise<PersonSinCase> =>
+    getSinCaseById: async (id: string): Promise<SinCaseDto> =>
       new Promise((resolve, reject) => {
         const _case = mockCases.find(({ caseId }) => caseId === id);
         if (_case) return resolve(_case);
@@ -41,7 +41,7 @@ const mockCases = [
     currentNameInfo: { preferredSameAsDocumentName: true as const },
     parentDetails: [
       {
-        unavailable: false,
+        unavailable: false as const,
         givenName: 'Robert',
         lastName: 'Doe',
         birthLocation: {
@@ -51,7 +51,7 @@ const mockCases = [
         },
       },
       {
-        unavailable: false,
+        unavailable: false as const,
         givenName: 'Jane',
         lastName: 'Doe',
         birthLocation: {
@@ -108,14 +108,14 @@ const mockCases = [
       city: 'City',
     },
     currentNameInfo: {
-      preferredSameAsDocumentName: false,
+      preferredSameAsDocumentName: false as const,
       firstName: 'Johnny',
       lastName: 'Doe',
       supportingDocuments: { required: false as const },
     },
     parentDetails: [
       {
-        unavailable: false,
+        unavailable: false as const,
         givenName: 'Robert',
         lastName: 'Doe',
         birthLocation: {

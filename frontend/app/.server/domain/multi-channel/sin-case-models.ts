@@ -1,11 +1,11 @@
-export type BirthDetailsData = {
+export type SinCaseBirthDetailsDto = {
   country: string;
   province?: string;
   city?: string;
   fromMultipleBirth: boolean;
 };
 
-export type ContactInformationData = {
+export type SinCaseContactInformationDto = {
   preferredLanguage: string;
   primaryPhoneNumber: string;
   secondaryPhoneNumber?: string;
@@ -17,23 +17,37 @@ export type ContactInformationData = {
   province: string;
 };
 
-export type CurrentNameData =
-  | { preferredSameAsDocumentName: true }
+export type SinCaseCurrentNameDto =
+  | {
+      preferredSameAsDocumentName: true;
+      firstName?: undefined;
+      middleName?: undefined;
+      lastName?: undefined;
+      supportingDocuments?: undefined;
+    }
   | {
       preferredSameAsDocumentName: false;
       firstName: string;
       middleName?: string;
       lastName: string;
       supportingDocuments:
-        | { required: false }
+        | {
+            required: false;
+            documentTypes?: undefined;
+          }
         | {
             required: true;
             documentTypes: string[];
           };
     };
 
-export type ParentDetailsData = (
-  | { unavailable: true }
+export type SinCaseParentDetailsDto = (
+  | {
+      unavailable: true;
+      givenName?: undefined;
+      lastName?: undefined;
+      birthLocation?: undefined;
+    }
   | {
       unavailable: false;
       givenName: string;
@@ -46,19 +60,19 @@ export type ParentDetailsData = (
     }
 )[];
 
-export type PersonalInfoData = {
+export type SinCasePersonalInfoDto = {
   firstNamePreviouslyUsed?: string[];
   lastNameAtBirth: string;
   lastNamePreviouslyUsed?: string[];
   gender: string;
 };
 
-export type PreviousSinData = {
+export type SinCasePreviousSinDto = {
   hasPreviousSin: string;
   socialInsuranceNumber?: string;
 };
 
-export type PrimaryDocumentData = {
+export type SinCasePrimaryDocumentDto = {
   citizenshipDate: string;
   clientNumber: string;
   currentStatusInCanada: string;
@@ -70,31 +84,31 @@ export type PrimaryDocumentData = {
   registrationNumber: string;
 };
 
-export type PrivacyStatementData = {
+export type SinCasePrivacyStatementDto = {
   agreedToTerms: true;
 };
 
-export type RequestDetailsData = {
+export type SinCaseRequestDetailsDto = {
   type: string;
   scenario: string;
 };
 
-export type SecondaryDocumentData = {
+export type SinCaseSecondaryDocumentDto = {
   documentType: string;
   expiryMonth: string;
   expiryYear: string;
 };
 
-export type PersonSinCase = {
+export type SinCaseDto = {
   caseId: string;
-  birthDetails: BirthDetailsData;
-  contactInformation: ContactInformationData;
-  currentNameInfo: CurrentNameData;
-  parentDetails: ParentDetailsData;
-  personalInformation: PersonalInfoData;
-  previousSin: PreviousSinData;
-  primaryDocuments: PrimaryDocumentData;
-  privacyStatement: PrivacyStatementData;
-  requestDetails: RequestDetailsData;
-  secondaryDocument: SecondaryDocumentData;
+  birthDetails: SinCaseBirthDetailsDto;
+  contactInformation: SinCaseContactInformationDto;
+  currentNameInfo: SinCaseCurrentNameDto;
+  parentDetails: SinCaseParentDetailsDto;
+  personalInformation: SinCasePersonalInfoDto;
+  previousSin: SinCasePreviousSinDto;
+  primaryDocuments: SinCasePrimaryDocumentDto;
+  privacyStatement: SinCasePrivacyStatementDto;
+  requestDetails: SinCaseRequestDetailsDto;
+  secondaryDocument: SinCaseSecondaryDocumentDto;
 };
