@@ -203,104 +203,105 @@ export default function Review({ loaderData, actionData, params }: Route.Compone
   return (
     <>
       <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:review.page-title')}</PageTitle>
-
-      <fetcher.Form className="max-w-prose" method="post" noValidate>
-        <p className="mb-8 text-lg">{t('protected:review.read-carefully')}</p>
-        <div className="mt-12 max-w-prose space-y-15">
-          <ReviewPrimaryDocs
-            currentStatusInCanadaName={primaryDocuments.currentStatusInCanadaName}
-            documentTypeName={primaryDocuments.documentTypeName}
-            registrationNumber={primaryDocuments.registrationNumber}
-            clientNumber={primaryDocuments.clientNumber}
-            givenName={primaryDocuments.givenName}
-            lastName={primaryDocuments.lastName}
-            dateOfBirth={primaryDocuments.dateOfBirth}
-            genderName={primaryDocuments.genderName}
-            citizenshipDate={primaryDocuments.citizenshipDate}
-          >
-            <InlineLink file="routes/protected/person-case/primary-docs.tsx" search={`tid=${tabId}`}>
-              {t('protected:review.edit-primary-identity-document')}
-            </InlineLink>
-          </ReviewPrimaryDocs>
-          <ReviewSecondaryDoc
-            documentTypeName={secondaryDocument.documentTypeName}
-            expiryMonth={secondaryDocument.expiryMonth}
-            expiryYear={secondaryDocument.expiryYear}
-          >
-            <InlineLink file="routes/protected/person-case/secondary-doc.tsx" search={`tid=${tabId}`}>
-              {t('protected:review.edit-secondary-identity-document')}
-            </InlineLink>
-          </ReviewSecondaryDoc>
-          <ReviewCurrentName
-            preferredSameAsDocumentName={currentNameInfo.preferredSameAsDocumentName}
-            firstName={currentNameInfo.firstName}
-            middleName={currentNameInfo.middleName}
-            lastName={currentNameInfo.lastName}
-            supportingDocuments={currentNameInfo.supportingDocuments}
-            supportingDocumentsNames={currentNameInfo.supportingDocumentsNames}
-          >
-            <InlineLink file="routes/protected/person-case/current-name.tsx" search={`tid=${tabId}`}>
-              {t('protected:review.edit-current-name')}
-            </InlineLink>
-          </ReviewCurrentName>
-          <ReviewPersonalInfo
-            firstNamePreviouslyUsed={personalInformation.firstNamePreviouslyUsed}
-            lastNameAtBirth={personalInformation.lastNameAtBirth}
-            lastNamePreviouslyUsed={personalInformation.lastNamePreviouslyUsed}
-            genderName={personalInformation.genderName}
-          >
-            <InlineLink file="routes/protected/person-case/personal-info.tsx" search={`tid=${tabId}`}>
-              {t('protected:review.edit-personal-details')}
-            </InlineLink>
-          </ReviewPersonalInfo>
-          <ReviewBirthDetails
-            city={birthDetails.city}
-            provinceName={birthDetails.provinceName}
-            countryName={birthDetails.countryName}
-            fromMultipleBirth={birthDetails.fromMultipleBirth}
-          >
-            <InlineLink file="routes/protected/person-case/birth-details.tsx" search={`tid=${tabId}`}>
-              {t('protected:review.edit-birth-details')}
-            </InlineLink>
-          </ReviewBirthDetails>
-          <ReviewParentDetails parentDetails={parentDetails}>
-            <InlineLink file="routes/protected/person-case/parent-details.tsx" search={`tid=${tabId}`}>
-              {t('protected:review.edit-parent-details')}
-            </InlineLink>
-          </ReviewParentDetails>
-          <ReviewPreviousSin
-            hasPreviousSinText={previousSin.hasPreviousSinText}
-            socialInsuranceNumber={previousSin.socialInsuranceNumber}
-          >
-            <InlineLink file="routes/protected/person-case/previous-sin.tsx" search={`tid=${tabId}`}>
-              {t('protected:review.edit-previous-sin')}
-            </InlineLink>
-          </ReviewPreviousSin>
-          <ReviewContactInformation
-            preferredLanguageName={contactInformation.preferredLanguageName}
-            primaryPhoneNumber={contactInformation.primaryPhoneNumber}
-            secondaryPhoneNumber={contactInformation.secondaryPhoneNumber}
-            emailAddress={contactInformation.emailAddress}
-            countryName={contactInformation.countryName}
-            address={contactInformation.address}
-            postalCode={contactInformation.postalCode}
-            city={contactInformation.city}
-            provinceName={contactInformation.provinceName}
-          >
-            <InlineLink file="routes/protected/person-case/contact-information.tsx" search={`tid=${tabId}`}>
-              {t('protected:review.edit-contact-information')}
-            </InlineLink>
-          </ReviewContactInformation>
-        </div>
-        <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
-          <Button name="action" value="next" variant="primary" id="continue-button" disabled={isSubmitting}>
-            {t('protected:person-case.create-case-button')}
-          </Button>
-          <Button name="action" value="back" id="back-button" disabled={isSubmitting}>
-            {t('protected:person-case.previous')}
-          </Button>
-        </div>
-      </fetcher.Form>
+      <div className="max-w-prose">
+        <fetcher.Form method="post" noValidate>
+          <p className="mb-8 text-lg">{t('protected:review.read-carefully')}</p>
+          <div className="mt-12 space-y-15">
+            <ReviewPrimaryDocs
+              currentStatusInCanadaName={primaryDocuments.currentStatusInCanadaName}
+              documentTypeName={primaryDocuments.documentTypeName}
+              registrationNumber={primaryDocuments.registrationNumber}
+              clientNumber={primaryDocuments.clientNumber}
+              givenName={primaryDocuments.givenName}
+              lastName={primaryDocuments.lastName}
+              dateOfBirth={primaryDocuments.dateOfBirth}
+              genderName={primaryDocuments.genderName}
+              citizenshipDate={primaryDocuments.citizenshipDate}
+            >
+              <InlineLink file="routes/protected/person-case/primary-docs.tsx" search={`tid=${tabId}`}>
+                {t('protected:review.edit-primary-identity-document')}
+              </InlineLink>
+            </ReviewPrimaryDocs>
+            <ReviewSecondaryDoc
+              documentTypeName={secondaryDocument.documentTypeName}
+              expiryMonth={secondaryDocument.expiryMonth}
+              expiryYear={secondaryDocument.expiryYear}
+            >
+              <InlineLink file="routes/protected/person-case/secondary-doc.tsx" search={`tid=${tabId}`}>
+                {t('protected:review.edit-secondary-identity-document')}
+              </InlineLink>
+            </ReviewSecondaryDoc>
+            <ReviewCurrentName
+              preferredSameAsDocumentName={currentNameInfo.preferredSameAsDocumentName}
+              firstName={currentNameInfo.firstName}
+              middleName={currentNameInfo.middleName}
+              lastName={currentNameInfo.lastName}
+              supportingDocuments={currentNameInfo.supportingDocuments}
+              supportingDocumentsNames={currentNameInfo.supportingDocumentsNames}
+            >
+              <InlineLink file="routes/protected/person-case/current-name.tsx" search={`tid=${tabId}`}>
+                {t('protected:review.edit-current-name')}
+              </InlineLink>
+            </ReviewCurrentName>
+            <ReviewPersonalInfo
+              firstNamePreviouslyUsed={personalInformation.firstNamePreviouslyUsed}
+              lastNameAtBirth={personalInformation.lastNameAtBirth}
+              lastNamePreviouslyUsed={personalInformation.lastNamePreviouslyUsed}
+              genderName={personalInformation.genderName}
+            >
+              <InlineLink file="routes/protected/person-case/personal-info.tsx" search={`tid=${tabId}`}>
+                {t('protected:review.edit-personal-details')}
+              </InlineLink>
+            </ReviewPersonalInfo>
+            <ReviewBirthDetails
+              city={birthDetails.city}
+              provinceName={birthDetails.provinceName}
+              countryName={birthDetails.countryName}
+              fromMultipleBirth={birthDetails.fromMultipleBirth}
+            >
+              <InlineLink file="routes/protected/person-case/birth-details.tsx" search={`tid=${tabId}`}>
+                {t('protected:review.edit-birth-details')}
+              </InlineLink>
+            </ReviewBirthDetails>
+            <ReviewParentDetails parentDetails={parentDetails}>
+              <InlineLink file="routes/protected/person-case/parent-details.tsx" search={`tid=${tabId}`}>
+                {t('protected:review.edit-parent-details')}
+              </InlineLink>
+            </ReviewParentDetails>
+            <ReviewPreviousSin
+              hasPreviousSinText={previousSin.hasPreviousSinText}
+              socialInsuranceNumber={previousSin.socialInsuranceNumber}
+            >
+              <InlineLink file="routes/protected/person-case/previous-sin.tsx" search={`tid=${tabId}`}>
+                {t('protected:review.edit-previous-sin')}
+              </InlineLink>
+            </ReviewPreviousSin>
+            <ReviewContactInformation
+              preferredLanguageName={contactInformation.preferredLanguageName}
+              primaryPhoneNumber={contactInformation.primaryPhoneNumber}
+              secondaryPhoneNumber={contactInformation.secondaryPhoneNumber}
+              emailAddress={contactInformation.emailAddress}
+              countryName={contactInformation.countryName}
+              address={contactInformation.address}
+              postalCode={contactInformation.postalCode}
+              city={contactInformation.city}
+              provinceName={contactInformation.provinceName}
+            >
+              <InlineLink file="routes/protected/person-case/contact-information.tsx" search={`tid=${tabId}`}>
+                {t('protected:review.edit-contact-information')}
+              </InlineLink>
+            </ReviewContactInformation>
+          </div>
+          <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
+            <Button name="action" value="next" variant="primary" id="continue-button" disabled={isSubmitting}>
+              {t('protected:person-case.create-case-button')}
+            </Button>
+            <Button name="action" value="back" id="back-button" disabled={isSubmitting}>
+              {t('protected:person-case.previous')}
+            </Button>
+          </div>
+        </fetcher.Form>
+      </div>
     </>
   );
 }

@@ -143,75 +143,76 @@ export default function BirthDetails({ actionData, loaderData, matches, params }
   return (
     <>
       <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:birth-details.page-title')}</PageTitle>
-
-      <FetcherErrorSummary fetcherKey={fetcherKey}>
-        <fetcher.Form method="post" noValidate>
-          <div className="space-y-6">
-            <InputSelect
-              id="country-id"
-              name="country"
-              errorMessage={t(getSingleKey(errors?.country))}
-              defaultValue={loaderData.defaultFormValues?.country ?? ''}
-              required
-              options={countryOptions}
-              label={t('protected:birth-details.country.label')}
-              onChange={({ target }) => setCountry(target.value)}
-              className="w-full rounded-sm sm:w-104"
-            />
-            {country && (
-              <>
-                {country === globalThis.__appEnvironment.PP_CANADA_COUNTRY_CODE ? (
-                  <InputSelect
-                    className="w-max rounded-sm"
-                    id="province"
-                    label={t('protected:birth-details.province.label')}
-                    name="province"
-                    options={provinceTerritoryStateOptions}
-                    errorMessage={t(getSingleKey(errors?.province))}
-                    defaultValue={loaderData.defaultFormValues?.province}
-                    required
-                  />
-                ) : (
+      <div className="max-w-prose">
+        <FetcherErrorSummary fetcherKey={fetcherKey}>
+          <fetcher.Form method="post" noValidate>
+            <div className="space-y-6">
+              <InputSelect
+                id="country-id"
+                name="country"
+                errorMessage={t(getSingleKey(errors?.country))}
+                defaultValue={loaderData.defaultFormValues?.country ?? ''}
+                required
+                options={countryOptions}
+                label={t('protected:birth-details.country.label')}
+                onChange={({ target }) => setCountry(target.value)}
+                className="w-full rounded-sm sm:w-104"
+              />
+              {country && (
+                <>
+                  {country === globalThis.__appEnvironment.PP_CANADA_COUNTRY_CODE ? (
+                    <InputSelect
+                      className="w-max rounded-sm"
+                      id="province"
+                      label={t('protected:birth-details.province.label')}
+                      name="province"
+                      options={provinceTerritoryStateOptions}
+                      errorMessage={t(getSingleKey(errors?.province))}
+                      defaultValue={loaderData.defaultFormValues?.province}
+                      required
+                    />
+                  ) : (
+                    <InputField
+                      errorMessage={t(getSingleKey(errors?.province))}
+                      label={t('protected:birth-details.province.label')}
+                      name="province"
+                      defaultValue={loaderData.defaultFormValues?.province}
+                      required={country === globalThis.__appEnvironment.PP_CANADA_COUNTRY_CODE}
+                      type="text"
+                      className="w-full rounded-sm sm:w-104"
+                    />
+                  )}
                   <InputField
-                    errorMessage={t(getSingleKey(errors?.province))}
-                    label={t('protected:birth-details.province.label')}
-                    name="province"
-                    defaultValue={loaderData.defaultFormValues?.province}
+                    errorMessage={t(getSingleKey(errors?.city))}
+                    label={t('protected:birth-details.city.label')}
+                    name="city"
+                    defaultValue={loaderData.defaultFormValues?.city}
                     required={country === globalThis.__appEnvironment.PP_CANADA_COUNTRY_CODE}
                     type="text"
                     className="w-full rounded-sm sm:w-104"
                   />
-                )}
-                <InputField
-                  errorMessage={t(getSingleKey(errors?.city))}
-                  label={t('protected:birth-details.city.label')}
-                  name="city"
-                  defaultValue={loaderData.defaultFormValues?.city}
-                  required={country === globalThis.__appEnvironment.PP_CANADA_COUNTRY_CODE}
-                  type="text"
-                  className="w-full rounded-sm sm:w-104"
-                />
-                <InputRadios
-                  id="from-multiple-id"
-                  legend={t('protected:birth-details.from-multiple.label')}
-                  name="from-multiple"
-                  options={fromMultipleBirthOptions}
-                  required
-                  errorMessage={t(getSingleKey(errors?.fromMultipleBirth))}
-                />
-              </>
-            )}
-          </div>
-          <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
-            <Button name="action" value="next" variant="primary" id="continue-button" disabled={isSubmitting}>
-              {t('protected:person-case.next')}
-            </Button>
-            <Button name="action" value="back" id="back-button" disabled={isSubmitting}>
-              {t('protected:person-case.previous')}
-            </Button>
-          </div>
-        </fetcher.Form>
-      </FetcherErrorSummary>
+                  <InputRadios
+                    id="from-multiple-id"
+                    legend={t('protected:birth-details.from-multiple.label')}
+                    name="from-multiple"
+                    options={fromMultipleBirthOptions}
+                    required
+                    errorMessage={t(getSingleKey(errors?.fromMultipleBirth))}
+                  />
+                </>
+              )}
+            </div>
+            <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
+              <Button name="action" value="next" variant="primary" id="continue-button" disabled={isSubmitting}>
+                {t('protected:person-case.next')}
+              </Button>
+              <Button name="action" value="back" id="back-button" disabled={isSubmitting}>
+                {t('protected:person-case.previous')}
+              </Button>
+            </div>
+          </fetcher.Form>
+        </FetcherErrorSummary>
+      </div>
     </>
   );
 }

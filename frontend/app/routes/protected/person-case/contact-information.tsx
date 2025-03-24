@@ -137,126 +137,127 @@ export default function ContactInformation({ loaderData, actionData, params }: R
   return (
     <>
       <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:contact-information.page-title')}</PageTitle>
-
-      <FetcherErrorSummary fetcherKey={fetcherKey}>
-        <fetcher.Form method="post" noValidate>
-          <div className="space-y-6">
-            <h2 className="font-lato text-2xl font-bold">{t('protected:contact-information.correspondence')}</h2>
-            <InputRadios
-              id="preferred-language"
-              legend={t('protected:contact-information.preferred-language-label')}
-              name="preferredLanguage"
-              options={languageOptions}
-              errorMessage={t(getSingleKey(errors?.preferredLanguage))}
-              required
-            />
-            <InputPhoneField
-              id="primary-phone-number"
-              label={t('protected:contact-information.primary-phone-label')}
-              name="primaryPhoneNumber"
-              type="tel"
-              inputMode="tel"
-              errorMessage={t(getSingleKey(errors?.primaryPhoneNumber))}
-              defaultValue={loaderData.defaultFormValues?.primaryPhoneNumber}
-              required
-            />
-            <InputPhoneField
-              id="secondary-phone-number"
-              label={t('protected:contact-information.secondary-phone-label')}
-              name="secondaryPhoneNumber"
-              type="tel"
-              inputMode="tel"
-              errorMessage={t(getSingleKey(errors?.secondaryPhoneNumber))}
-              defaultValue={loaderData.defaultFormValues?.secondaryPhoneNumber}
-            />
-            <div className="max-w-prose">
-              <InputField
-                id="email-address"
-                type="email"
-                inputMode="email"
-                label={t('protected:contact-information.email-label')}
-                name="emailAddress"
-                className="w-full"
-                errorMessage={t(getSingleKey(errors?.emailAddress))}
-                defaultValue={loaderData.defaultFormValues?.emailAddress}
+      <div className="max-w-prose">
+        <FetcherErrorSummary fetcherKey={fetcherKey}>
+          <fetcher.Form method="post" noValidate>
+            <div className="space-y-6">
+              <h2 className="font-lato text-2xl font-bold">{t('protected:contact-information.correspondence')}</h2>
+              <InputRadios
+                id="preferred-language"
+                legend={t('protected:contact-information.preferred-language-label')}
+                name="preferredLanguage"
+                options={languageOptions}
+                errorMessage={t(getSingleKey(errors?.preferredLanguage))}
+                required
               />
-            </div>
-            <h2 className="font-lato text-2xl font-bold">{t('protected:contact-information.mailing-address')}</h2>
-            <InputSelect
-              className="w-max rounded-sm"
-              id="country"
-              name="country"
-              label={t('protected:contact-information.country-select-label')}
-              options={countryOptions}
-              errorMessage={t(getSingleKey(errors?.country))}
-              defaultValue={loaderData.defaultFormValues?.country}
-              onChange={({ target }) => setCountry(target.value)}
-              required
-            />
-            {country && (
-              <>
+              <InputPhoneField
+                id="primary-phone-number"
+                label={t('protected:contact-information.primary-phone-label')}
+                name="primaryPhoneNumber"
+                type="tel"
+                inputMode="tel"
+                errorMessage={t(getSingleKey(errors?.primaryPhoneNumber))}
+                defaultValue={loaderData.defaultFormValues?.primaryPhoneNumber}
+                required
+              />
+              <InputPhoneField
+                id="secondary-phone-number"
+                label={t('protected:contact-information.secondary-phone-label')}
+                name="secondaryPhoneNumber"
+                type="tel"
+                inputMode="tel"
+                errorMessage={t(getSingleKey(errors?.secondaryPhoneNumber))}
+                defaultValue={loaderData.defaultFormValues?.secondaryPhoneNumber}
+              />
+              <div className="max-w-prose">
                 <InputField
-                  id="address"
-                  label={t('protected:contact-information.address-label')}
-                  helpMessagePrimary={t('protected:contact-information.address-help-message')}
-                  name="address"
+                  id="email-address"
+                  type="email"
+                  inputMode="email"
+                  label={t('protected:contact-information.email-label')}
+                  name="emailAddress"
                   className="w-full"
-                  errorMessage={t(getSingleKey(errors?.address))}
-                  defaultValue={loaderData.defaultFormValues?.address}
-                  required
+                  errorMessage={t(getSingleKey(errors?.emailAddress))}
+                  defaultValue={loaderData.defaultFormValues?.emailAddress}
                 />
-                <InputField
-                  id="postal-code"
-                  label={t('protected:contact-information.postal-code-label')}
-                  name="postalCode"
-                  errorMessage={t(getSingleKey(errors?.postalCode))}
-                  defaultValue={loaderData.defaultFormValues?.postalCode}
-                  required
-                />
-                <InputField
-                  id="city"
-                  label={t('protected:contact-information.city-label')}
-                  name="city"
-                  className="w-full"
-                  errorMessage={t(getSingleKey(errors?.city))}
-                  defaultValue={loaderData.defaultFormValues?.city}
-                  required
-                />
-                {country === globalThis.__appEnvironment.PP_CANADA_COUNTRY_CODE ? (
-                  <InputSelect
-                    className="w-max rounded-sm"
-                    id="province"
-                    label={t('protected:contact-information.canada-province-label')}
-                    name="province"
-                    options={provinceTerritoryStateOptions}
-                    errorMessage={t(getSingleKey(errors?.province))}
-                    defaultValue={loaderData.defaultFormValues?.province}
-                    required
-                  />
-                ) : (
+              </div>
+              <h2 className="font-lato text-2xl font-bold">{t('protected:contact-information.mailing-address')}</h2>
+              <InputSelect
+                className="w-max rounded-sm"
+                id="country"
+                name="country"
+                label={t('protected:contact-information.country-select-label')}
+                options={countryOptions}
+                errorMessage={t(getSingleKey(errors?.country))}
+                defaultValue={loaderData.defaultFormValues?.country}
+                onChange={({ target }) => setCountry(target.value)}
+                required
+              />
+              {country && (
+                <>
                   <InputField
-                    id="province"
-                    label={t('protected:contact-information.other-country-province-label')}
-                    name="province"
+                    id="address"
+                    label={t('protected:contact-information.address-label')}
+                    helpMessagePrimary={t('protected:contact-information.address-help-message')}
+                    name="address"
                     className="w-full"
-                    errorMessage={t(getSingleKey(errors?.province))}
-                    defaultValue={loaderData.defaultFormValues?.province}
+                    errorMessage={t(getSingleKey(errors?.address))}
+                    defaultValue={loaderData.defaultFormValues?.address}
                     required
                   />
-                )}
-              </>
-            )}
-          </div>
-          <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
-            <Button name="action" value="next" variant="primary" id="continue-button" disabled={isSubmitting}>
-              {t('protected:person-case.next')}
-            </Button>
-            <Button name="action" value="back" id="back-button" disabled={isSubmitting}>
-              {t('protected:person-case.previous')}
-            </Button>
-          </div>
-        </fetcher.Form>
-      </FetcherErrorSummary>
+                  <InputField
+                    id="postal-code"
+                    label={t('protected:contact-information.postal-code-label')}
+                    name="postalCode"
+                    errorMessage={t(getSingleKey(errors?.postalCode))}
+                    defaultValue={loaderData.defaultFormValues?.postalCode}
+                    required
+                  />
+                  <InputField
+                    id="city"
+                    label={t('protected:contact-information.city-label')}
+                    name="city"
+                    className="w-full"
+                    errorMessage={t(getSingleKey(errors?.city))}
+                    defaultValue={loaderData.defaultFormValues?.city}
+                    required
+                  />
+                  {country === globalThis.__appEnvironment.PP_CANADA_COUNTRY_CODE ? (
+                    <InputSelect
+                      className="w-max rounded-sm"
+                      id="province"
+                      label={t('protected:contact-information.canada-province-label')}
+                      name="province"
+                      options={provinceTerritoryStateOptions}
+                      errorMessage={t(getSingleKey(errors?.province))}
+                      defaultValue={loaderData.defaultFormValues?.province}
+                      required
+                    />
+                  ) : (
+                    <InputField
+                      id="province"
+                      label={t('protected:contact-information.other-country-province-label')}
+                      name="province"
+                      className="w-full"
+                      errorMessage={t(getSingleKey(errors?.province))}
+                      defaultValue={loaderData.defaultFormValues?.province}
+                      required
+                    />
+                  )}
+                </>
+              )}
+            </div>
+            <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
+              <Button name="action" value="next" variant="primary" id="continue-button" disabled={isSubmitting}>
+                {t('protected:person-case.next')}
+              </Button>
+              <Button name="action" value="back" id="back-button" disabled={isSubmitting}>
+                {t('protected:person-case.previous')}
+              </Button>
+            </div>
+          </fetcher.Form>
+        </FetcherErrorSummary>
+      </div>
     </>
   );
 }

@@ -97,36 +97,38 @@ export default function PrivacyStatement({ loaderData, params }: Route.Component
   return (
     <>
       <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:privacy-statement.page-title')}</PageTitle>
-      <FetcherErrorSummary fetcherKey={fetcherKey}>
-        <fetcher.Form method="post" noValidate>
-          <div className="max-w-prose space-y-6">
-            <p>{t('protected:privacy-statement.ask-client')}</p>
-            <h2 className="font-lato text-2xl font-bold">{t('protected:privacy-statement.privacy-statement')}</h2>
-            <div className="space-y-3">
-              <p>{t('protected:privacy-statement.personal-info')}</p>
-              <p>{t('protected:privacy-statement.participation')}</p>
-              <p>{t('protected:privacy-statement.info-and-docs')}</p>
-              <p>{t('protected:privacy-statement.your-rights')}</p>
+      <div className="max-w-prose">
+        <FetcherErrorSummary fetcherKey={fetcherKey}>
+          <fetcher.Form method="post" noValidate>
+            <div className="space-y-6">
+              <p>{t('protected:privacy-statement.ask-client')}</p>
+              <h2 className="font-lato text-2xl font-bold">{t('protected:privacy-statement.privacy-statement')}</h2>
+              <div className="space-y-3">
+                <p>{t('protected:privacy-statement.personal-info')}</p>
+                <p>{t('protected:privacy-statement.participation')}</p>
+                <p>{t('protected:privacy-statement.info-and-docs')}</p>
+                <p>{t('protected:privacy-statement.your-rights')}</p>
+              </div>
+              <InputCheckbox
+                id="agreed-to-terms"
+                name="agreedToTerms"
+                errorMessage={t(getSingleKey(errors?.agreedToTerms))}
+                required
+              >
+                {t('protected:privacy-statement.confirm-privacy-notice-checkbox.title')}
+              </InputCheckbox>
             </div>
-            <InputCheckbox
-              id="agreed-to-terms"
-              name="agreedToTerms"
-              errorMessage={t(getSingleKey(errors?.agreedToTerms))}
-              required
-            >
-              {t('protected:privacy-statement.confirm-privacy-notice-checkbox.title')}
-            </InputCheckbox>
-          </div>
-          <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
-            <Button name="action" value="next" variant="primary" id="continue-button" disabled={isSubmitting}>
-              {t('protected:person-case.next')}
-            </Button>
-            <Button name="action" value="back" id="back-button" disabled={isSubmitting}>
-              {t('protected:person-case.previous')}
-            </Button>
-          </div>
-        </fetcher.Form>
-      </FetcherErrorSummary>
+            <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
+              <Button name="action" value="next" variant="primary" id="continue-button" disabled={isSubmitting}>
+                {t('protected:person-case.next')}
+              </Button>
+              <Button name="action" value="back" id="back-button" disabled={isSubmitting}>
+                {t('protected:person-case.previous')}
+              </Button>
+            </div>
+          </fetcher.Form>
+        </FetcherErrorSummary>
+      </div>
     </>
   );
 }

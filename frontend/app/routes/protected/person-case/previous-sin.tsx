@@ -116,40 +116,41 @@ export default function PreviousSin({ loaderData, actionData, params }: Route.Co
   return (
     <>
       <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:previous-sin.page-title')}</PageTitle>
-
-      <FetcherErrorSummary fetcherKey={fetcherKey}>
-        <fetcher.Form method="post" noValidate>
-          <div className="space-y-6">
-            <InputRadios
-              id="has-previous-sin"
-              legend={t('protected:previous-sin.has-previous-sin-label')}
-              name="hasPreviousSin"
-              options={hasPreviousSinOptions}
-              required
-              errorMessage={t(getSingleKey(errors?.hasPreviousSin))}
-            />
-            {hasPreviousSin === globalThis.__appEnvironment.PP_HAS_HAD_PREVIOUS_SIN_CODE && (
-              <InputPatternField
-                defaultValue={loaderData.defaultFormValues?.socialInsuranceNumber ?? ''}
-                inputMode="numeric"
-                format={sinInputPatternFormat}
-                id="social-insurance-number"
-                name="socialInsuranceNumber"
-                label={t('protected:previous-sin.social-insurance-number-label')}
-                errorMessage={t(getSingleKey(errors?.socialInsuranceNumber))}
+      <div className="max-w-prose">
+        <FetcherErrorSummary fetcherKey={fetcherKey}>
+          <fetcher.Form method="post" noValidate>
+            <div className="space-y-6">
+              <InputRadios
+                id="has-previous-sin"
+                legend={t('protected:previous-sin.has-previous-sin-label')}
+                name="hasPreviousSin"
+                options={hasPreviousSinOptions}
+                required
+                errorMessage={t(getSingleKey(errors?.hasPreviousSin))}
               />
-            )}
-          </div>
-          <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
-            <Button name="action" value="next" variant="primary" id="continue-button" disabled={isSubmitting}>
-              {t('protected:person-case.next')}
-            </Button>
-            <Button name="action" value="back" id="back-button" disabled={isSubmitting}>
-              {t('protected:person-case.previous')}
-            </Button>
-          </div>
-        </fetcher.Form>
-      </FetcherErrorSummary>
+              {hasPreviousSin === globalThis.__appEnvironment.PP_HAS_HAD_PREVIOUS_SIN_CODE && (
+                <InputPatternField
+                  defaultValue={loaderData.defaultFormValues?.socialInsuranceNumber ?? ''}
+                  inputMode="numeric"
+                  format={sinInputPatternFormat}
+                  id="social-insurance-number"
+                  name="socialInsuranceNumber"
+                  label={t('protected:previous-sin.social-insurance-number-label')}
+                  errorMessage={t(getSingleKey(errors?.socialInsuranceNumber))}
+                />
+              )}
+            </div>
+            <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
+              <Button name="action" value="next" variant="primary" id="continue-button" disabled={isSubmitting}>
+                {t('protected:person-case.next')}
+              </Button>
+              <Button name="action" value="back" id="back-button" disabled={isSubmitting}>
+                {t('protected:person-case.previous')}
+              </Button>
+            </div>
+          </fetcher.Form>
+        </FetcherErrorSummary>
+      </div>
     </>
   );
 }
