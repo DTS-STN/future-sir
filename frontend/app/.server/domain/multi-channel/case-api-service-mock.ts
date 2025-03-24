@@ -1,5 +1,5 @@
 import type { SinCaseService } from '~/.server/domain/multi-channel/case-api-service';
-import { generateMockSinCases } from '~/.server/domain/multi-channel/case-api-service-mock-utils';
+import { fakeSinCaseDtos } from '~/.server/domain/multi-channel/sin-case-faker';
 import type { SinCaseDto } from '~/.server/domain/multi-channel/sin-case-models';
 import { hasAnySinCases, listAllSinCases, setSinCases, getSinCaseByKey } from '~/.server/domain/multi-channel/sin-cases-store';
 import { AppError } from '~/errors/app-error';
@@ -25,7 +25,7 @@ export function getMockSinCaseService(): SinCaseService {
     }
 
     // Initialize dataset with mock data
-    const generatedDataset = generateMockSinCases();
+    const generatedDataset = fakeSinCaseDtos();
     await setSinCases(generatedDataset);
     return generatedDataset;
   }
