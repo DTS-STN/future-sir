@@ -256,11 +256,11 @@ export default function PersonalInformation({ actionData, loaderData, params, ma
                   </Button>
                 </div>
                 {otherFirstNames.length > 0 && (
-                  <div id="other-first-names" className="flex gap-3">
+                  <div id="other-first-names" className="flex flex-wrap gap-3">
                     {otherFirstNames.map((name) => (
                       <div
                         key={name}
-                        className="inline-flex items-center justify-center rounded-sm border-blue-100 bg-blue-100 px-2 py-1 align-middle text-gray-900"
+                        className="inline-flex items-center justify-center rounded-sm border-blue-100 bg-blue-100 px-2 py-1 align-middle break-all text-gray-900"
                       >
                         <span>{name}</span>
                         <button
@@ -311,11 +311,11 @@ export default function PersonalInformation({ actionData, loaderData, params, ma
                   </Button>
                 </div>
                 {otherLastNames.length > 0 && (
-                  <div id="other-last-names" className="flex gap-3">
+                  <div id="other-last-names" className="flex flex-wrap gap-3">
                     {otherLastNames.map((name) => (
                       <div
                         key={name}
-                        className="inline-flex items-center justify-center rounded-sm border-blue-100 bg-blue-100 px-2 py-1 align-middle text-gray-900"
+                        className="inline-flex items-center justify-center rounded-sm border-blue-100 bg-blue-100 px-2 py-1 align-middle break-all text-gray-900"
                       >
                         <span>{name}</span>
                         <button

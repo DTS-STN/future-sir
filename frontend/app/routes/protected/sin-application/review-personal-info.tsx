@@ -28,7 +28,7 @@ export function ReviewPersonalInfo({
       <DescriptionList className="divide-y border-y">
         <DescriptionListItem className="py-3" term={t('protected:personal-information.first-name-previously-used.label')}>
           {firstNamePreviouslyUsed && firstNamePreviouslyUsed.length > 0 && (
-            <UnorderedList>
+            <UnorderedList className="break-all">
               {firstNamePreviouslyUsed.map((value, index) => (
                 <li key={`${index}-${value}`}>{value}</li>
               ))}
@@ -40,7 +40,7 @@ export function ReviewPersonalInfo({
         </DescriptionListItem>
         <DescriptionListItem className="py-3" term={t('protected:personal-information.last-name-previously-used.label')}>
           {lastNamePreviouslyUsed && lastNamePreviouslyUsed.length > 0 && (
-            <UnorderedList>
+            <UnorderedList className="break-all">
               {lastNamePreviouslyUsed.map((value, index) => (
                 <li key={`${index}-${value}`}>{value}</li>
               ))}
