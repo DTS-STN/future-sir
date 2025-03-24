@@ -9,5 +9,5 @@ export type SinCaseService = {
 };
 
 export function getSinCaseService(): SinCaseService {
-  return serverEnvironment.ENABLE_SIN_API_SERVICE_MOCK ? getMockSinCaseService() : getDefaultSinCaseService();
+  return serverEnvironment.ENABLE_SIN_CASE_SERVICE_MOCK ? getMockSinCaseService() : getDefaultSinCaseService();
 }
