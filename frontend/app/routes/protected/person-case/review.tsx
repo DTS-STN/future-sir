@@ -69,8 +69,15 @@ export async function action({ context, params, request }: Route.ActionArgs) {
       const sinApplicationService = getSinApplicationService();
       const response = await sinApplicationService.submitSinApplication(inPersonSinApplication);
 
-      //TODO: store the response in session
-      console.log('SIN Application submitted successfully:', response);
+      if (response.identificationId === undefined) {
+        throw new AppError(`Failed to submit SIN application: ${action}`, ErrorCodes.SUBMIT_SIN_APPLICATION_FAILED);
+      }
+
+      const createdCase = { caseId: response.identificationId, ...inPersonSinApplication };
+      context.session.createdCases = {
+        ...(context.session.createdCases ?? {}),
+        [createdCase.caseId]: createdCase,
+      };
 
       machineActor.send({ type: 'submitReview' });
       break;
