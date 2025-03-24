@@ -44,6 +44,41 @@ export const server = v.pipe(
     ...telemetry.entries,
     NODE_ENV: v.optional(v.picklist(['production', 'development', 'test']), defaults.NODE_ENV),
     PORT: v.optional(v.pipe(stringToIntegerSchema(), v.minValue(0)), defaults.PORT),
+
+    // TTTTTTTTTTTTTTTTTTTTTTT     OOOOOOOOO     DDDDDDDDDDDDD             OOOOOOOOO
+    // T:::::::::::::::::::::T   OO:::::::::OO   D::::::::::::DDD        OO:::::::::OO
+    // T:::::::::::::::::::::T OO:::::::::::::OO D:::::::::::::::DD    OO:::::::::::::OO
+    // T:::::TT:::::::TT:::::TO:::::::OOO:::::::ODDD:::::DDDDD:::::D  O:::::::OOO:::::::O
+    // TTTTTT  T:::::T  TTTTTTO::::::O   O::::::O  D:::::D    D:::::D O::::::O   O::::::O
+    //         T:::::T        O:::::O     O:::::O  D:::::D     D:::::DO:::::O     O:::::O
+    //         T:::::T        O:::::O     O:::::O  D:::::D     D:::::DO:::::O     O:::::O
+    //         T:::::T        O:::::O     O:::::O  D:::::D     D:::::DO:::::O     O:::::O
+    //         T:::::T        O:::::O     O:::::O  D:::::D     D:::::DO:::::O     O:::::O
+    //         T:::::T        O:::::O     O:::::O  D:::::D     D:::::DO:::::O     O:::::O
+    //         T:::::T        O:::::O     O:::::O  D:::::D     D:::::DO:::::O     O:::::O
+    //         T:::::T        O::::::O   O::::::O  D:::::D    D:::::D O::::::O   O::::::O
+    //       TT:::::::TT      O:::::::OOO:::::::ODDD:::::DDDDD:::::D  O:::::::OOO:::::::O
+    //       T:::::::::T       OO:::::::::::::OO D:::::::::::::::DD    OO:::::::::::::OO
+    //       T:::::::::T         OO:::::::::OO   D::::::::::::DDD        OO:::::::::OO
+    //       TTTTTTTTTTT           OOOOOOOOO     DDDDDDDDDDDDD             OOOOOOOOO
+    //
+    // TODO ::: GjB ::: remove after demo
+    TMP_AWS_ID_TOKEN: v.optional(
+      v.string(),
+      // Note that while this might look dangerous, this is only ever used in
+      // devmode, so there is no security risk in exposing this to the public!
+      //
+      // The default token contains the following claims:
+      // {
+      //  "aud": "localhost",
+      //  "iss": "future-sir",
+      //  "sub": "00000000-0000-0000-0000-000000000000",
+      //  "given_name": "Application",
+      //  "family_name": "User",
+      //  "email": "user@example.com"
+      // }
+      'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJmdXR1cmUtc2lyIiwiaWF0Ijo5NDY2ODQ4MDAsImV4cCI6NDEwMjQ0NDgwMCwiYXVkIjoibG9jYWxob3N0Iiwic3ViIjoiMDAwMDAwMDAtMDAwMC0wMDAwLTAwMDAtMDAwMDAwMDAwMDAwIiwiZ2l2ZW5fbmFtZSI6IkFwcGxpY2F0aW9uIiwiZmFtaWx5X25hbWUiOiJVc2VyIiwiZW1haWwiOiJ1c2VyQGV4YW1wbGUuY29tIn0.bHQFw4LHShBjQgNKJ3hBcHTf6aFN8M9j9ZEvw5rHEKk',
+    ),
   }),
   v.rawCheck(({ dataset }) => {
     if (dataset.typed) {
