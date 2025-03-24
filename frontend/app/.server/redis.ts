@@ -33,7 +33,7 @@ export function getRedisClient(): Redis {
 /**
  * Constructs the configuration object for the Redis client based on the server environment.
  */
-function getRedisConfig(): RedisOptions {
+export function getRedisConfig(): RedisOptions {
   const {
     REDIS_COMMAND_TIMEOUT_SECONDS, //
     REDIS_HOST,

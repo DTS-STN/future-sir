@@ -1,11 +1,11 @@
 import { getDefaultSinCaseService } from '~/.server/domain/multi-channel/case-api-service-default';
 import { getMockSinCaseService } from '~/.server/domain/multi-channel/case-api-service-mock';
-import type { PersonSinCase } from '~/.server/domain/multi-channel/case-api-service-models';
+import type { SinCaseDto } from '~/.server/domain/multi-channel/sin-case-models';
 import { serverEnvironment } from '~/.server/environment';
 
 export type SinCaseService = {
-  getCases(): Promise<PersonSinCase[]>;
-  getCaseById(id: string): Promise<PersonSinCase>;
+  getSinCases(): Promise<SinCaseDto[]>;
+  getSinCaseById(id: string): Promise<SinCaseDto>;
 };
 
 export function getSinCaseService(): SinCaseService {

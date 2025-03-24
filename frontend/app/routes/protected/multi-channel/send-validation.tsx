@@ -66,7 +66,7 @@ export async function loader({ context, request }: Route.LoaderArgs) {
   const { lang, t } = await getTranslation(request, handle.i18nNamespace);
 
   // TODO: the id will likely come from a path param in the URL?
-  const personSinCase = await getSinCaseService().getCaseById('00000000000000');
+  const personSinCase = await getSinCaseService().getSinCaseById('000000000');
 
   const {
     birthDetails,

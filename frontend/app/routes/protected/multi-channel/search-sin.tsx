@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 
 import type { Info, Route } from './+types/search-sin';
 
+import { getSinCaseService } from '~/.server/domain/multi-channel/case-api-service';
 import { requireAllRoles } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
@@ -53,16 +54,18 @@ export async function action({ context, request }: Route.ActionArgs) {
     }
 
     case 'search': {
-      //TODO: fetch and return mock table data
+      const sinCaseService = getSinCaseService();
+      const sinCases = await sinCaseService.getSinCases();
+
       return {
         tableData: {
-          rows: [
-            ['John Doe', 'January 1, 1980', 'Doe', '*** *** 000', '98%'],
-            ['Johnathan Doe', 'February 10, 1985', 'Doe', '*** *** 000', '95%'],
-            ['John D', 'March 15, 1990', 'N/A', '*** *** 000', '88%'],
-            ['Johnny Doe', 'April 20, 1978', 'Doe', '*** *** 000', '92%'],
-            ['J. Doe', 'May 25, 1992', 'Doe', '*** *** 000', '90%'],
-          ],
+          rows: sinCases.map((sc) => [
+            `${sc.primaryDocuments.givenName} ${sc.primaryDocuments.lastName}`,
+            sc.primaryDocuments.dateOfBirth,
+            sc.parentDetails.at(0)?.lastName,
+            sc.previousSin.socialInsuranceNumber ?? '',
+            '98%',
+          ]),
         },
       };
     }
