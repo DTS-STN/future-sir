@@ -1,4 +1,9 @@
 import { createRequestHandler } from '@react-router/express';
+import type {
+  AppLoadContext,
+  unstable_InitialContext as InitialContext,
+  unstable_RouterContext as RouterContext,
+} from 'react-router';
 
 import type { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
 import path from 'node:path';
@@ -6,6 +11,7 @@ import type { ViteDevServer } from 'vite';
 
 import { serverEnvironment } from '~/.server/environment';
 import { LogFactory } from '~/.server/logging';
+import { getRouterContext } from '~/.server/router-context';
 import { HttpStatusCodes } from '~/errors/http-status-codes';
 
 const log = LogFactory.getLogger(import.meta.url);
@@ -45,13 +51,22 @@ export function rrRequestHandler(viteDevServer?: ViteDevServer) {
   const rrServerBuild = './app.js';
 
   return createRequestHandler({
-    mode: serverEnvironment.NODE_ENV,
-    getLoadContext: (request, response) => ({
-      nonce: response.locals.nonce,
-      session: request.session,
-    }),
     build: viteDevServer //
       ? () => viteDevServer.ssrLoadModule('virtual:react-router/server-build')
       : () => import(rrServerBuild),
+
+    getLoadContext: (request, response): InitialContext => {
+      const appLoadContext = {
+        nonce: response.locals.nonce,
+        session: request.session,
+      };
+
+      // see https://reactrouter.com/changelog#middleware-unstable
+      return new Map<RouterContext, AppLoadContext>([
+        [getRouterContext(), appLoadContext], //
+      ]);
+    },
+
+    mode: serverEnvironment.NODE_ENV,
   });
 }

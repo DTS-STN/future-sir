@@ -9,8 +9,12 @@
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 
-export const instanceNames = ['redisClient'] as const;
-export type InstanceName = (typeof instanceNames)[number];
+type InstanceName = (typeof instanceNames)[number];
+
+export const instanceNames = [
+  'redisClient', //
+  'routerContext',
+] as const;
 
 /**
  * Retrieves a singleton instance. If the instance does not exist, it is created using the provided factory function.

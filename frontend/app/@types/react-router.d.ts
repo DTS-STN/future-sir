@@ -8,6 +8,12 @@ declare module 'react-router' {
     session: AppSession;
   }
 
+  interface Future {
+    // TODO ::: GjB ::: remove once middleware becomes stable
+    // see https://reactrouter.com/changelog#middleware-unstable
+    unstable_middleware: true;
+  }
+
   /**
    * Route handles should export an i18n namespace, if necessary.
    */
