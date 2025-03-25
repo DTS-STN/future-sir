@@ -23,9 +23,9 @@ import { HttpStatusCodes } from '~/errors/http-status-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import { getTabIdOrRedirect, loadMachineActorOrRedirect } from '~/routes/protected/person-case/route-helpers.server';
-import type { CurrentNameData } from '~/routes/protected/person-case/state-machine-models';
 import { getStateRoute } from '~/routes/protected/person-case/state-machine.server';
 import { currentNameSchema } from '~/routes/protected/person-case/validation.server';
+import type { CurrentNameData } from '~/routes/protected/sin-application/form-models';
 import { trimToUndefined } from '~/utils/string-utils';
 import { extractValidationKey } from '~/utils/validation-utils';
 

@@ -28,7 +28,8 @@ import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { HttpStatusCodes } from '~/errors/http-status-codes';
 import { getTranslation } from '~/i18n-config.server';
-import { handle as parentHandle } from '~/routes/protected/person-case/layout';
+import { fetchSinCase, cleanupEditingSinCase } from '~/routes/protected/multi-channel/edit-application/edit-application.server';
+import { handle as parentHandle } from '~/routes/protected/multi-channel/layout';
 import { ReviewBirthDetails } from '~/routes/protected/sin-application/review-birth-details';
 import { ReviewContactInformation } from '~/routes/protected/sin-application/review-contact-information';
 import { ReviewCurrentName } from '~/routes/protected/sin-application/review-current-name';
@@ -63,6 +64,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
 
   switch (action) {
     case 'send': {
+      cleanupEditingSinCase(context.session);
       throw i18nRedirect('routes/protected/multi-channel/pid-verification.tsx', request, { params });
     }
     default: {
@@ -71,18 +73,12 @@ export async function action({ context, params, request }: Route.ActionArgs) {
   }
 }
 
-export async function loader({ context, params, request }: Route.LoaderArgs) {
+export async function loader({ context, request, params }: Route.LoaderArgs) {
   requireAllRoles(context.session, new URL(request.url), ['user']);
   const { lang, t } = await getTranslation(request, handle.i18nNamespace);
 
   // TODO ::: GjB ::: the data returned by the following call should be checked to ensure the logged-in user has permissions to view it
-  const personSinCase = await getSinCaseService().findSinCaseById(params.caseId);
-
-  if (personSinCase === undefined) {
-    throw new Response(JSON.stringify({ status: HttpStatusCodes.NOT_FOUND, message: 'Case not found' }), {
-      status: HttpStatusCodes.NOT_FOUND,
-    });
-  }
+  const personSinCase = await fetchSinCase(context.session, params.caseId);
 
   const {
     birthDetails,
@@ -208,7 +204,11 @@ export default function SendValidation({ loaderData, actionData, params }: Route
           genderName={primaryDocuments.genderName}
           citizenshipDate={primaryDocuments.citizenshipDate}
         >
-          <InlineLink className="mt-6 block" file="routes/protected/request.tsx">
+          <InlineLink
+            className="mt-6 block"
+            file="routes/protected/multi-channel/edit-application/edit-primary-doc.tsx"
+            params={{ caseId: caseId }}
+          >
             {t('protected:review.edit-primary-identity-document')}
           </InlineLink>
         </ReviewPrimaryDocs>
