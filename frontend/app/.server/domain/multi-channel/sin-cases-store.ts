@@ -18,9 +18,9 @@ export type SinCasesStore = {
   /**
    * Retrieves a single SIN case by its key
    * @param key - Unique identifier for the SIN case
-   * @returns Promise resolving to the SIN case or null if not found
+   * @returns Promise resolving to the SIN case or undefined if not found
    */
-  find(key: string): Promise<SinCaseDto | null>;
+  find(key: string): Promise<SinCaseDto | undefined>;
 
   /**
    * Checks if a specific SIN case exists
@@ -80,9 +80,9 @@ export async function listAllSinCases(): Promise<SinCaseDto[]> {
 /**
  * Retrieves a specific SIN case by its key
  * @param key - Unique identifier for the SIN case
- * @returns Promise resolving to the SIN case or null if not found
+ * @returns Promise resolving to the SIN case or undefined if not found
  */
-export async function findSinCase(key: string): Promise<SinCaseDto | null> {
+export async function findSinCase(key: string): Promise<SinCaseDto | undefined> {
   const store = getSinCasesStore();
   return await store.find(key);
 }

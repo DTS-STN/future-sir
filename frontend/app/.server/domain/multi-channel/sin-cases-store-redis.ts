@@ -57,11 +57,11 @@ export function getRedisSinCasesStore(): SinCasesStore {
   /**
    * Finds a single Sin Case by its key
    * @param key - The case identifier
-   * @returns The found Sin Case or null
+   * @returns The found Sin Case or undefined
    */
-  async function find(key: string): Promise<SinCaseDto | null> {
+  async function find(key: string): Promise<SinCaseDto | undefined> {
     const sinCase = await _store.get(buildRedisKey(key));
-    return sinCase ? JSON.parse(sinCase) : null;
+    return sinCase ? JSON.parse(sinCase) : undefined;
   }
 
   /**
