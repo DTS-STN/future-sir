@@ -2,8 +2,6 @@ import type { SinCaseService } from '~/.server/domain/multi-channel/case-api-ser
 import { fakeSinCaseDtos } from '~/.server/domain/multi-channel/sin-case-faker';
 import type { SinCaseDto } from '~/.server/domain/multi-channel/sin-case-models';
 import { hasAnySinCases, listAllSinCases, setSinCases, findSinCase } from '~/.server/domain/multi-channel/sin-cases-store';
-import { AppError } from '~/errors/app-error';
-import { ErrorCodes } from '~/errors/error-codes';
 
 /**
  * Provides a mock implementation of the `SinCaseService`.
@@ -49,11 +47,11 @@ export function getMockSinCaseService(): SinCaseService {
      * @returns A promise resolving to a `SinCaseDto` object.
      * @throws {AppError} If the case is not found, an error with code `SIN_CASE_NOT_FOUND` is thrown.
      */
-    async getSinCaseById(id: string): Promise<SinCaseDto> {
+    async getSinCaseById(id: string): Promise<SinCaseDto | undefined> {
       const sinCase = await findSinCase(id);
 
       if (!sinCase) {
-        throw new AppError(`Case with ID '${id}' not found.`, ErrorCodes.SIN_CASE_NOT_FOUND);
+        return undefined;
       }
 
       return Promise.resolve(sinCase);
