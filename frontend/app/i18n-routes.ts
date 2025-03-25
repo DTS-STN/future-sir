@@ -107,32 +107,32 @@ export const i18nRoutes = [
         id: 'MCF-0001',
         file: 'routes/protected/multi-channel/pid-verification.tsx',
         paths: {
-          en: '/en/protected/multi-channel/pid-verification/:caseId',
-          fr: '/fr/protege/multi-chaine/pid-verification/:caseId',
+          en: '/en/protected/cases/:caseId/multi-channel/pid-verification',
+          fr: '/fr/protege/cas/:caseId/multi-canal/pid-verification',
         },
       },
       {
         id: 'MCF-0002',
         file: 'routes/protected/multi-channel/search-sin.tsx',
         paths: {
-          en: '/en/protected/multi-channel/search-sin',
-          fr: '/fr/protege/multi-chaine/search-sin',
+          en: '/en/protected/cases/:caseId/multi-channel/search-sin',
+          fr: '/fr/protege/cas/:caseId/multi-canal/search-sin',
         },
       },
       {
         id: 'MCF-0003',
         file: 'routes/protected/multi-channel/finalize-request.tsx',
         paths: {
-          en: '/en/protected/multi-channel/finalize-request',
-          fr: '/fr/protege/multi-chaine/finalize-request',
+          en: '/en/protected/cases/:caseId/multi-channel/finalize-request',
+          fr: '/fr/protege/cas/:caseId/multi-canal/finalize-request',
         },
       },
       {
         id: 'MCF-0004',
         file: 'routes/protected/multi-channel/send-validation.tsx',
         paths: {
-          en: '/en/protected/multi-channel/send-validation/:caseId',
-          fr: '/fr/protege/multi-chaine/send-validation/:caseId',
+          en: '/en/protected/cases/:caseId/multi-channel/send-validation',
+          fr: '/fr/protege/cas/:caseId/multi-canal/send-validation',
         },
       },
       {
@@ -240,8 +240,8 @@ export const i18nRoutes = [
         id: 'PROT-0016',
         file: 'routes/protected/multi-channel/sin-confirmation.tsx',
         paths: {
-          en: '/en/protected/multi-channel/sin-confirmation',
-          fr: '/fr/protege/multi-canal/confirmation-de-nas',
+          en: '/en/protected/cases/:caseId/multi-channel/sin-confirmation',
+          fr: '/fr/protege/cas/:caseId/multi-canal/confirmation-de-nas',
         },
       },
     ],

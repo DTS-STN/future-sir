@@ -54,9 +54,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
 
   switch (action) {
     case 'send': {
-      throw i18nRedirect('routes/protected/multi-channel/pid-verification.tsx', request, {
-        params: { caseId: params.caseId },
-      });
+      throw i18nRedirect('routes/protected/multi-channel/pid-verification.tsx', request, { params });
     }
     default: {
       throw new AppError(`Unrecognized action: ${action}`, ErrorCodes.UNRECOGNIZED_ACTION);
