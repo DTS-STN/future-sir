@@ -107,8 +107,8 @@ export const i18nRoutes = [
         id: 'MCF-0001',
         file: 'routes/protected/multi-channel/pid-verification.tsx',
         paths: {
-          en: '/en/protected/multi-channel/pid-verification',
-          fr: '/fr/protege/multi-chaine/pid-verification',
+          en: '/en/protected/multi-channel/pid-verification/:caseId',
+          fr: '/fr/protege/multi-chaine/pid-verification/:caseId',
         },
       },
       {
@@ -131,8 +131,8 @@ export const i18nRoutes = [
         id: 'MCF-0004',
         file: 'routes/protected/multi-channel/send-validation.tsx',
         paths: {
-          en: '/en/protected/multi-channel/send-validation',
-          fr: '/fr/protege/multi-chaine/send-validation',
+          en: '/en/protected/multi-channel/send-validation/:caseId',
+          fr: '/fr/protege/multi-chaine/send-validation/:caseId',
         },
       },
       {

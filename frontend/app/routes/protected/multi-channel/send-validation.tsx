@@ -54,7 +54,9 @@ export async function action({ context, params, request }: Route.ActionArgs) {
 
   switch (action) {
     case 'send': {
-      throw i18nRedirect('routes/protected/multi-channel/pid-verification.tsx', request);
+      throw i18nRedirect('routes/protected/multi-channel/pid-verification.tsx', request, {
+        params: { caseId: params.caseId },
+      });
     }
     default: {
       throw new AppError(`Unrecognized action: ${action}`, ErrorCodes.UNRECOGNIZED_ACTION);
@@ -62,12 +64,12 @@ export async function action({ context, params, request }: Route.ActionArgs) {
   }
 }
 
-export async function loader({ context, request }: Route.LoaderArgs) {
+export async function loader({ context, params, request }: Route.LoaderArgs) {
   requireAllRoles(context.session, new URL(request.url), ['user']);
   const { lang, t } = await getTranslation(request, handle.i18nNamespace);
 
-  // TODO: the id will likely come from a path param in the URL?
-  const personSinCase = await getSinCaseService().getSinCaseById('000000000');
+  // TODO ::: GjB ::: the data returned by the following call should be checked to ensure the logged-in user has permissions to view it
+  const personSinCase = await getSinCaseService().getSinCaseById(params.caseId);
 
   if (personSinCase === undefined) {
     throw new Response(JSON.stringify({ status: HttpStatusCodes.NOT_FOUND, message: 'Case not found' }), {
