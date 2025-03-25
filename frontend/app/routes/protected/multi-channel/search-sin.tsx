@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 
 import type { Info, Route } from './+types/search-sin';
 
-import { getSinCaseService } from '~/.server/domain/multi-channel/case-api-service';
+import { getSinSearchService } from '~/.server/domain/multi-channel/search-api-service';
 import { requireAllRoles } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
@@ -54,17 +54,19 @@ export async function action({ context, request }: Route.ActionArgs) {
     }
 
     case 'search': {
-      const sinCaseService = getSinCaseService();
-      const sinCases = await sinCaseService.listAllSinCases();
+      // TODO: pull caseId from path param when ready
+      const caseId = '';
+      const sinSearchService = getSinSearchService();
+      const searchResults = await sinSearchService.getSearchResults(caseId);
 
       return {
         tableData: {
-          rows: sinCases.map((sc) => [
-            `${sc.primaryDocuments.givenName} ${sc.primaryDocuments.lastName}`,
-            sc.primaryDocuments.dateOfBirth,
-            sc.parentDetails.at(0)?.lastName,
-            sc.previousSin.socialInsuranceNumber ?? '',
-            '98%',
+          rows: searchResults.map((res) => [
+            `${res.firstName} ${res.lastName}`,
+            `${res.yearOfBirth}-${res.monthOfBirth}-${res.dayOfBirth}`.replace(/\d?\d/g, (s) => s.padStart(2, '0')),
+            res.parentSurname,
+            `*** *** ${res.partialSIN}`,
+            `${res.score}%`,
           ]),
         },
       };
