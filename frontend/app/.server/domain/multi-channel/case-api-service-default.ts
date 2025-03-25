@@ -8,12 +8,14 @@ export function getDefaultSinCaseService(): SinCaseService {
   return {
     getSinCases: async (): Promise<SinCaseDto[]> => {
       const response = await fetch(`${serverEnvironment.INTEROP_SIN_REG_API_BASE_URL}/cases`);
+      if (response.status === 404) return [];
       if (!response.ok) throw new AppError(`Cases not found.`, ErrorCodes.SIN_CASE_NOT_FOUND);
       return response.json();
     },
 
-    getSinCaseById: async (id: string): Promise<SinCaseDto> => {
+    getSinCaseById: async (id: string): Promise<SinCaseDto | undefined> => {
       const response = await fetch(`${serverEnvironment.INTEROP_SIN_REG_API_BASE_URL}/cases/${id}`);
+      if (response.status === 404) return undefined;
       if (!response.ok) throw new AppError(`Case with ID '${id}' not found.`, ErrorCodes.SIN_CASE_NOT_FOUND);
       return response.json();
     },

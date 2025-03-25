@@ -26,6 +26,7 @@ import { InlineLink } from '~/components/links';
 import { PageTitle } from '~/components/page-title';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
+import { HttpStatusCodes } from '~/errors/http-status-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import { ReviewBirthDetails } from '~/routes/protected/sin-application/review-birth-details';
@@ -67,6 +68,12 @@ export async function loader({ context, request }: Route.LoaderArgs) {
 
   // TODO: the id will likely come from a path param in the URL?
   const personSinCase = await getSinCaseService().getSinCaseById('000000000');
+
+  if (personSinCase === undefined) {
+    throw new Response(JSON.stringify({ status: HttpStatusCodes.NOT_FOUND, message: 'Case not found' }), {
+      status: HttpStatusCodes.NOT_FOUND,
+    });
+  }
 
   const {
     birthDetails,

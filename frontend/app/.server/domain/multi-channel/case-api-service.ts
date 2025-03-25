@@ -5,7 +5,7 @@ import { serverEnvironment } from '~/.server/environment';
 
 export type SinCaseService = {
   getSinCases(): Promise<SinCaseDto[]>;
-  getSinCaseById(id: string): Promise<SinCaseDto>;
+  getSinCaseById(id: string): Promise<SinCaseDto | undefined>;
 };
 
 export function getSinCaseService(): SinCaseService {
