@@ -19,14 +19,13 @@ export function getMockSinCaseService(): SinCaseService {
    *
    * @returns A promise resolving to an array of `SinCaseDto` objects.
    */
-  async function getSinCases(): Promise<SinCaseDto[]> {
+  async function listAllStoredSinCases(): Promise<SinCaseDto[]> {
     if (await hasAnySinCases()) {
       return await listAllSinCases();
     }
 
     // Initialize sin cases with fake data
-    const fakeSinCases = fakeSinCaseDtos();
-    await setSinCases(...fakeSinCases);
+    await setSinCases(...fakeSinCaseDtos());
     return await listAllSinCases();
   }
 
@@ -36,9 +35,19 @@ export function getMockSinCaseService(): SinCaseService {
      *
      * @returns A promise resolving to an array of `SinCaseDto` objects.
      */
-    async getSinCases(): Promise<SinCaseDto[]> {
-      const sinCases = await getSinCases();
-      return Promise.resolve(sinCases);
+    async listAllSinCases(): Promise<SinCaseDto[]> {
+      return await listAllStoredSinCases();
+    },
+
+    /**
+     * Retrieves a SIN case by its unique ID.
+     * Returns `undefined` if the case does not exist.
+     *
+     * @param id - The unique identifier of the SIN case.
+     * @returns A promise resolving to a `SinCaseDto` object or `undefined`.
+     */
+    async findSinCaseById(id: string): Promise<SinCaseDto | undefined> {
+      return await findSinCase(id);
     },
 
     /**
@@ -53,10 +62,10 @@ export function getMockSinCaseService(): SinCaseService {
       const sinCase = await findSinCase(id);
 
       if (!sinCase) {
-        throw new AppError(`Case with ID '${id}' not found.`, ErrorCodes.SIN_CASE_NOT_FOUND);
+        throw new AppError(`SIN case with ID '${id}' not found.`, ErrorCodes.SIN_CASE_NOT_FOUND);
       }
 
-      return Promise.resolve(sinCase);
+      return sinCase;
     },
   };
 }

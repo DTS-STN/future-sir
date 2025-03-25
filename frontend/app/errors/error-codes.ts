@@ -51,4 +51,7 @@ export const ErrorCodes = {
   NO_APPLICANT_SUPPORTING_DOCUMENT_TYPE_FOUND: 'SVC-00012',
   SUBMIT_SIN_APPLICATION_FAILED: 'SVC-0013',
   SIN_CASE_NOT_FOUND: 'SVC-0014',
+
+  // external api error codes
+  XAPI_API_ERROR: 'XAPI-0001',
 } as const;
