@@ -23,6 +23,7 @@ import { HttpStatusCodes } from '~/errors/http-status-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import { getTabIdOrRedirect, loadMachineActorOrRedirect } from '~/routes/protected/person-case/route-helpers.server';
+import type { CurrentNameData } from '~/routes/protected/person-case/state-machine-models';
 import { getStateRoute } from '~/routes/protected/person-case/state-machine.server';
 import { currentNameSchema } from '~/routes/protected/person-case/validation.server';
 import { getSingleKey } from '~/utils/i18n-utils';
@@ -57,7 +58,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     }
 
     case 'next': {
-      const parseResult = v.safeParse(currentNameSchema, {
+      const formValues = {
         preferredSameAsDocumentName: formData.get('same-name')
           ? formData.get('same-name') === REQUIRE_OPTIONS.yes //
           : undefined,
@@ -70,13 +71,23 @@ export async function action({ context, params, request }: Route.ActionArgs) {
             : undefined,
           documentTypes: formData.getAll('doc-type').map(String),
         },
-      });
+      };
+      const parseResult = v.safeParse(currentNameSchema, formValues);
 
       if (!parseResult.success) {
-        return data(
-          { errors: v.flatten<typeof currentNameSchema>(parseResult.issues).nested },
-          { status: HttpStatusCodes.BAD_REQUEST },
-        );
+        const formErrors = v.flatten(parseResult.issues).nested;
+
+        machineActor.send({
+          type: 'setFormData',
+          data: {
+            currentNameInfo: {
+              values: formValues as CurrentNameData,
+              errors: formErrors,
+            },
+          },
+        });
+
+        return data({ formValues: formValues, formErrors: formErrors }, { status: HttpStatusCodes.BAD_REQUEST });
       }
 
       machineActor.send({ type: 'submitCurrentName', data: parseResult.output });
@@ -96,33 +107,31 @@ export async function loader({ context, request }: Route.LoaderArgs) {
 
   const tabId = getTabIdOrRedirect(request);
   const machineActor = loadMachineActorOrRedirect(context.session, request, tabId, { stateName: 'name-info' });
-  const { currentNameInfo, primaryDocuments } = machineActor.getSnapshot().context;
+  const { formData, currentNameInfo } = machineActor.getSnapshot().context;
 
   const { lang, t } = await getTranslation(request, handle.i18nNamespace);
 
   return {
     documentTitle: t('protected:primary-identity-document.page-title'),
-    defaultFormValues: currentNameInfo,
     localizedSupportingDocTypes: getLocalizedApplicantSupportingDocumentType(lang),
-    primaryDocName: {
-      firstName: primaryDocuments?.givenName,
-      lastName: primaryDocuments?.lastName,
-      middleName: '', // primaryDocuments?.middleName
-    },
+    formValues: formData?.currentNameInfo?.values ?? currentNameInfo,
+    formErrors: formData?.currentNameInfo?.errors,
   };
 }
 
 export default function CurrentName({ loaderData, actionData, params }: Route.ComponentProps) {
   const { t } = useTranslation(handle.i18nNamespace);
 
-  const [sameName, setSameName] = useState(loaderData.defaultFormValues?.preferredSameAsDocumentName);
-  const [requireDoc, setRequireDoc] = useState(loaderData.defaultFormValues?.supportingDocuments?.required);
-
   const fetcherKey = useId();
   const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
 
   const isSubmitting = fetcher.state !== 'idle';
-  const errors = fetcher.data?.errors;
+
+  const formValues = fetcher.data?.formValues ?? loaderData.formValues;
+  const formErrors = fetcher.data?.formErrors ?? loaderData.formErrors;
+
+  const [sameName, setSameName] = useState(formValues?.preferredSameAsDocumentName);
+  const [requireDoc, setRequireDoc] = useState(formValues?.supportingDocuments?.required);
 
   const nameOptions: InputRadiosProps['options'] = [
     {
@@ -157,7 +166,7 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
   const docTypes = loaderData.localizedSupportingDocTypes.map((doc) => ({
     value: doc.id,
     children: doc.name,
-    defaultChecked: loaderData.defaultFormValues?.supportingDocuments?.documentTypes?.includes(doc.id) ?? false,
+    defaultChecked: formValues?.supportingDocuments?.documentTypes?.includes(doc.id) ?? false,
   }));
 
   return (
@@ -169,15 +178,15 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
           <dl>
             <div className="flex flex-col gap-1 sm:flex-row sm:gap-2">
               <dt className="font-bold">{t('protected:current-name.recorded-name.first-name')}</dt>
-              <dd>{loaderData.primaryDocName.firstName}</dd>
+              <dd>{formValues?.firstName}</dd>
             </div>
             <div className="flex flex-col gap-1 sm:flex-row sm:gap-2">
               <dt className="font-bold">{t('protected:current-name.recorded-name.middle-name')}</dt>
-              <dd>{loaderData.primaryDocName.middleName}</dd>
+              <dd>{formValues?.middleName}</dd>
             </div>
             <div className="flex flex-col gap-1 sm:flex-row sm:gap-2">
               <dt className="font-bold">{t('protected:current-name.recorded-name.last-name')}</dt>
-              <dd>{loaderData.primaryDocName.lastName}</dd>
+              <dd>{formValues?.lastName}</dd>
             </div>
           </dl>
         </div>
@@ -185,7 +194,7 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
           <fetcher.Form method="post" noValidate>
             <div className="space-y-6">
               <InputRadios
-                errorMessage={t(getSingleKey(errors?.preferredSameAsDocumentName))}
+                errorMessage={t(getSingleKey(formErrors?.preferredSameAsDocumentName))}
                 id="same-name-id"
                 legend={t('protected:current-name.preferred-name.description')}
                 name="same-name"
@@ -195,25 +204,25 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
               {sameName === false && (
                 <>
                   <InputField
-                    errorMessage={t(getSingleKey(errors?.firstName), { maximum: 100 })}
+                    errorMessage={t(getSingleKey(formErrors?.firstName), { maximum: 100 })}
                     label={t('protected:current-name.preferred-name.first-name')}
                     name="first-name"
-                    defaultValue={loaderData.defaultFormValues?.firstName}
+                    defaultValue={formValues?.firstName}
                     required
                     className="w-full"
                   />
                   <InputField
-                    errorMessage={t(getSingleKey(errors?.middleName), { maximum: 100 })}
+                    errorMessage={t(getSingleKey(formErrors?.middleName), { maximum: 100 })}
                     label={t('protected:current-name.preferred-name.middle-name')}
                     name="middle-name"
-                    defaultValue={loaderData.defaultFormValues?.middleName}
+                    defaultValue={formValues?.middleName}
                     className="w-full"
                   />
                   <InputField
-                    errorMessage={t(getSingleKey(errors?.lastName), { maximum: 100 })}
+                    errorMessage={t(getSingleKey(formErrors?.lastName), { maximum: 100 })}
                     label={t('protected:current-name.preferred-name.last-name')}
                     name="last-name"
-                    defaultValue={loaderData.defaultFormValues?.lastName}
+                    defaultValue={formValues?.lastName}
                     required
                     className="w-full"
                   />
@@ -224,7 +233,7 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
                     <p>{t('protected:current-name.supporting-docs.description')}</p>
                     <InputRadios
                       id="docs-required-id"
-                      errorMessage={t(getSingleKey(errors?.['supportingDocuments.required']))}
+                      errorMessage={t(getSingleKey(formErrors?.['supportingDocuments.required']))}
                       legend={t('protected:current-name.supporting-docs.docs-required')}
                       name="docs-required"
                       options={requireOptions}
@@ -233,7 +242,7 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
                     {requireDoc === true && (
                       <InputCheckboxes
                         id="doc-type-id"
-                        errorMessage={t(getSingleKey(errors?.['supportingDocuments.documentTypes']))}
+                        errorMessage={t(getSingleKey(formErrors?.['supportingDocuments.documentTypes']))}
                         legend={t('protected:current-name.supporting-docs.doc-type')}
                         name="doc-type"
                         options={docTypes}
