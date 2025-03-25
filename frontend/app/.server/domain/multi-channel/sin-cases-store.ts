@@ -2,6 +2,7 @@ import type { SinCaseDto } from '~/.server/domain/multi-channel/sin-case-models'
 import { getDefaultSinCasesStore } from '~/.server/domain/multi-channel/sin-cases-store-default';
 import { getRedisSinCasesStore } from '~/.server/domain/multi-channel/sin-cases-store-redis';
 import { serverEnvironment } from '~/.server/environment';
+import { singleton } from '~/.server/utils/instance-registry';
 
 /**
  * Defines the contract for SIN cases storage operations
@@ -53,9 +54,6 @@ export type SinCasesStore = {
   set(...sinCases: SinCaseDto[]): Promise<void>;
 };
 
-// Singleton instance of the store
-let sinCasesStore: SinCasesStore | undefined = undefined;
-
 /**
  * Initializes and retrieves the appropriate SIN cases store
  * Supports different storage backends based on environment configuration
@@ -63,15 +61,11 @@ let sinCasesStore: SinCasesStore | undefined = undefined;
  * @returns Configured SinCasesStore instance
  */
 function getSinCasesStore(): SinCasesStore {
-  // Return existing store if already initialized
-  if (sinCasesStore !== undefined) {
-    return sinCasesStore;
-  }
-
-  // Select store based on session type
-  sinCasesStore = serverEnvironment.SESSION_TYPE === 'redis' ? getRedisSinCasesStore() : getDefaultSinCasesStore();
-
-  return sinCasesStore;
+  return singleton('sinCasesStore', () =>
+    serverEnvironment.SESSION_TYPE === 'redis'
+      ? getRedisSinCasesStore() //
+      : getDefaultSinCasesStore(),
+  );
 }
 
 /**

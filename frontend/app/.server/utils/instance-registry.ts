@@ -9,7 +9,7 @@
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 
-export const instanceNames = ['redisClient'] as const;
+export const instanceNames = ['redisClient', 'sinCasesStore'] as const;
 export type InstanceName = (typeof instanceNames)[number];
 
 /**
