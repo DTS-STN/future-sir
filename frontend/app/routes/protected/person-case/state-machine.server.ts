@@ -178,6 +178,7 @@ export const machine = setup({
         submitCurrentName: {
           target: 'personal-info',
           actions: assign(({ context, event }) => ({
+            formData: { ...context.formData, currentNameInfo: undefined },
             currentNameInfo: event.data,
           })),
         },
