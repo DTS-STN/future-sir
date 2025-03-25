@@ -5,10 +5,12 @@ import type { Machine } from '~/routes/protected/person-case/state-machine.serve
 
 export type FormData = {
   [K in keyof InPersonSinApplication]?: {
-    values?: Record<string, string | undefined>;
-    errors?: Record<string, [string, ...string[]] | undefined>;
+    values?: Partial<InPersonSinApplication[K]>;
+    errors?: Errors;
   };
 };
+
+export type Errors = Readonly<Record<string, [string, ...string[]] | undefined>>;
 
 export type BirthDetailsData = {
   country: string;

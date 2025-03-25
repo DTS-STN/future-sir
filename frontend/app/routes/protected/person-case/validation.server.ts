@@ -12,8 +12,8 @@ import { serverEnvironment } from '~/.server/environment';
 import { getCountries } from '~/.server/shared/services/country-service';
 import { getProvinces } from '~/.server/shared/services/province-service';
 import { stringToIntegerSchema } from '~/.server/validation/string-to-integer-schema';
-import { APPLICANT_PRIMARY_DOCUMENT_CHOICE, APPLICANT_STATUS_IN_CANADA } from '~/domain/constants';
-import { getStartOfDayInTimezone, isDateInPastOrTodayInTimeZone, isValidDateString } from '~/utils/date-utils';
+import { primaryDocument } from '~/routes/protected/sin-application/validation.server';
+import { getStartOfDayInTimezone, toISODateString } from '~/utils/date-utils';
 import { REGEX_PATTERNS } from '~/utils/regex-utils';
 import { formatSin, isValidSin } from '~/utils/sin-utils';
 import { padWithZero } from '~/utils/string-utils';
@@ -353,121 +353,76 @@ export const previousSinSchema = v.pipe(
   ),
 );
 
-const validBornOutsideOfCanadaDocuments = [
-  APPLICANT_PRIMARY_DOCUMENT_CHOICE.certificateOfCanadianCitizenship, //
-] as const;
-
-const validCanadianStatuses = [
-  APPLICANT_STATUS_IN_CANADA.canadianCitizenBornOutsideCanada, //
-] as const;
-
 export const primaryDocumentSchema = v.intersect([
   v.object({
-    currentStatusInCanada: v.pipe(
-      v.string('protected:primary-identity-document.current-status-in-canada.required'),
-      v.trim(),
-      v.nonEmpty('protected:primary-identity-document.current-status-in-canada.required'),
-      v.picklist(validCanadianStatuses, 'protected:primary-identity-document.current-status-in-canada.invalid'),
-    ),
+    currentStatusInCanada: primaryDocument.currentStatusSchema,
   }),
   v.variant(
     'documentType',
     [
       v.object({
-        documentType: v.picklist(
-          validBornOutsideOfCanadaDocuments,
-          'protected:primary-identity-document.document-type.invalid',
-        ),
-        registrationNumber: v.pipe(
-          v.string('protected:primary-identity-document.registration-number.required'),
-          v.trim(),
-          v.nonEmpty('protected:primary-identity-document.registration-number.required'),
-          v.length(8, 'protected:primary-identity-document.registration-number.invalid'),
-          v.regex(REGEX_PATTERNS.DIGIT_ONLY, 'protected:primary-identity-document.registration-number.invalid'),
-        ),
-        clientNumber: v.pipe(
-          v.string('protected:primary-identity-document.client-number.required'),
-          v.trim(),
-          v.nonEmpty('protected:primary-identity-document.client-number.required'),
-          v.length(10, 'protected:primary-identity-document.client-number.invalid'),
-          v.regex(REGEX_PATTERNS.DIGIT_ONLY, 'protected:primary-identity-document.client-number.invalid'),
-        ),
-        givenName: v.pipe(
-          v.string('protected:primary-identity-document.given-name.required'),
-          v.trim(),
-          v.nonEmpty('protected:primary-identity-document.given-name.required'),
-          v.maxLength(100, 'protected:primary-identity-document.given-name.max-length'),
-          v.regex(REGEX_PATTERNS.NON_DIGIT, 'protected:primary-identity-document.given-name.format'),
-        ),
-        lastName: v.pipe(
-          v.string('protected:primary-identity-document.last-name.required'),
-          v.trim(),
-          v.nonEmpty('protected:primary-identity-document.last-name.required'),
-          v.maxLength(100, 'protected:primary-identity-document.last-name.max-length'),
-          v.regex(REGEX_PATTERNS.NON_DIGIT, 'protected:primary-identity-document.last-name.format'),
-        ),
-        dateOfBirthYear: v.pipe(
-          stringToIntegerSchema('protected:primary-identity-document.date-of-birth.required-year'),
-          v.minValue(1, 'protected:primary-identity-document.date-of-birth.invalid-year'),
-          v.maxValue(
-            getStartOfDayInTimezone(serverEnvironment.BASE_TIMEZONE).getFullYear(),
-            'protected:primary-identity-document.date-of-birth.invalid-year',
-          ),
-        ),
-        dateOfBirthMonth: v.pipe(
-          stringToIntegerSchema('protected:primary-identity-document.date-of-birth.required-month'),
-          v.minValue(1, 'protected:primary-identity-document.date-of-birth.invalid-month'),
-          v.maxValue(12, 'protected:primary-identity-document.date-of-birth.invalid-month'),
-        ),
-        dateOfBirthDay: v.pipe(
-          stringToIntegerSchema('protected:primary-identity-document.date-of-birth.required-day'),
-          v.minValue(1, 'protected:primary-identity-document.date-of-birth.invalid-day'),
-          v.maxValue(31, 'protected:primary-identity-document.date-of-birth.invalid-day'),
-        ),
-        dateOfBirth: v.pipe(
-          v.string(),
-          v.custom((input) => isValidDateString(input as string), 'protected:primary-identity-document.date-of-birth.invalid'),
-          v.custom(
-            (input) => isDateInPastOrTodayInTimeZone(serverEnvironment.BASE_TIMEZONE, input as string),
-            'protected:primary-identity-document.date-of-birth.invalid-future-date',
-          ),
-        ),
-        gender: v.lazy(() =>
-          v.picklist(
-            getApplicantGenders().map(({ id }) => id),
-            'protected:primary-identity-document.gender.required',
-          ),
-        ),
-        citizenshipDateYear: v.pipe(
-          stringToIntegerSchema('protected:primary-identity-document.citizenship-date.required-year'),
-          v.minValue(1, 'protected:primary-identity-document.citizenship-date.invalid-year'),
-          v.maxValue(
-            getStartOfDayInTimezone(serverEnvironment.BASE_TIMEZONE).getFullYear(),
-            'protected:primary-identity-document.citizenship-date.invalid-year',
-          ),
-        ),
-        citizenshipDateMonth: v.pipe(
-          stringToIntegerSchema('protected:primary-identity-document.citizenship-date.required-month'),
-          v.minValue(1, 'protected:primary-identity-document.citizenship-date.invalid-month'),
-          v.maxValue(12, 'protected:primary-identity-document.citizenship-date.invalid-month'),
-        ),
-        citizenshipDateDay: v.pipe(
-          stringToIntegerSchema('protected:primary-identity-document.citizenship-date.required-day'),
-          v.minValue(1, 'protected:primary-identity-document.citizenship-date.invalid-day'),
-          v.maxValue(31, 'protected:primary-identity-document.citizenship-date.invalid-day'),
-        ),
-        citizenshipDate: v.pipe(
-          v.string(),
-          v.custom(
-            (input) => isValidDateString(input as string),
-            'protected:primary-identity-document.citizenship-date.invalid',
-          ),
-        ),
+        documentType: primaryDocument.documentTypeSchema,
+        registrationNumber: primaryDocument.registrationNumberSchema,
+        clientNumber: primaryDocument.clientNumberSchema,
+        givenName: primaryDocument.givenNameSchema,
+        lastName: primaryDocument.lastNameSchema,
+        dateOfBirthYear: primaryDocument.dateOfBirthYearSchema,
+        dateOfBirthMonth: primaryDocument.dateOfBirthMonthSchema,
+        dateOfBirthDay: primaryDocument.dateOfBirthDaySchema,
+        dateOfBirth: primaryDocument.dateOfBirthSchema,
+        gender: primaryDocument.genderSchema,
+        citizenshipDateYear: primaryDocument.citizenshipYearSchema,
+        citizenshipDateMonth: primaryDocument.citizenshipMonthSchema,
+        citizenshipDateDay: primaryDocument.citizenshipDaySchema,
+        citizenshipDate: primaryDocument.citizenshipDateSchema,
       }),
     ],
     'protected:primary-identity-document.document-type.required',
   ),
 ]);
+
+export function parsePrimaryDocument(formData: FormData) {
+  const dateOfBirthYear = formData.get('dateOfBirthYear')?.toString();
+  const dateOfBirthMonth = formData.get('dateOfBirthMonth')?.toString();
+  const dateOfBirthDay = formData.get('dateOfBirthDay')?.toString();
+
+  const citizenshipDateYear = formData.get('citizenshipDateYear')?.toString();
+  const citizenshipDateMonth = formData.get('citizenshipDateMonth')?.toString();
+  const citizenshipDateDay = formData.get('citizenshipDateDay')?.toString();
+
+  const formValues = {
+    currentStatusInCanada: formData.get('currentStatusInCanada')?.toString(),
+    documentType: formData.get('documentType')?.toString(),
+    registrationNumber: formData.get('registrationNumber')?.toString(),
+    clientNumber: formData.get('clientNumber')?.toString(),
+    givenName: formData.get('givenName')?.toString(),
+    lastName: formData.get('lastName')?.toString(),
+    gender: formData.get('gender')?.toString(),
+    dateOfBirthYear: dateOfBirthYear,
+    dateOfBirthMonth: dateOfBirthMonth,
+    dateOfBirthDay: dateOfBirthDay,
+    dateOfBirth: toDateString(dateOfBirthYear, dateOfBirthMonth, dateOfBirthDay),
+    citizenshipDateYear: citizenshipDateYear,
+    citizenshipDateMonth: citizenshipDateMonth,
+    citizenshipDateDay: citizenshipDateDay,
+    citizenshipDate: toDateString(citizenshipDateYear, citizenshipDateMonth, citizenshipDateDay),
+  };
+
+  return {
+    parseResult: v.safeParse(primaryDocumentSchema, formValues),
+    formValues: {
+      citizenshipDate: formValues.citizenshipDate,
+      clientNumber: formValues.clientNumber,
+      currentStatusInCanada: formValues.currentStatusInCanada,
+      dateOfBirth: formValues.currentStatusInCanada,
+      documentType: formValues.documentType,
+      gender: formValues.gender,
+      givenName: formValues.givenName,
+      lastName: formValues.lastName,
+      registrationNumber: formValues.registrationNumber,
+    },
+  };
+}
 
 export const privacyStatementSchema = v.object({
   agreedToTerms: v.literal(true, 'protected:privacy-statement.confirm-privacy-notice-checkbox.required'),
@@ -532,3 +487,11 @@ export const secondaryDocumentSchema = v.pipe(
     ['expiryMonth'],
   ),
 );
+
+function toDateString(year?: string, month?: string, day?: string): string {
+  try {
+    return toISODateString(Number(year), Number(month), Number(day));
+  } catch {
+    return '';
+  }
+}
