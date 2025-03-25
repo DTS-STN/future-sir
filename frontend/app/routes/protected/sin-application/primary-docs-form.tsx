@@ -48,7 +48,7 @@ export default function PrimaryDocsForm({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="max-w-prose space-y-6">
       <CurrentStatusInCanada
         value={currentStatus}
         onChange={handleOnCurrentStatusInCanadaChanged}
