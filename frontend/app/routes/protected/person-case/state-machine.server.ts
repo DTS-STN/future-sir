@@ -45,7 +45,7 @@ type MachineEvents =
   | { type: 'submitPrivacyStatement'; data: PrivacyStatementData }
   | { type: 'submitRequestDetails'; data: RequestDetailsData }
   | { type: 'submitSecondaryDocuments'; data: SecondaryDocumentData }
-  | { type: 'submitReview' };
+  | { type: 'submitReview'; data: string };
 
 type MachineMeta = {
   route: I18nRouteFile;
@@ -265,12 +265,16 @@ export const machine = setup({
           target: 'contact-info',
         },
         submitReview: {
-          target: 'privacy-statement',
+          target: 'submitted',
           actions: assign(({ context, event }) => ({
-            // TODO ::: GjB ::: handle final submission
+            caseId: event.data,
           })),
         },
       },
+    },
+    'submitted': {
+      type: 'final',
+      meta: { route: 'routes/protected/multi-channel/search-sin.tsx' },
     },
   },
 });

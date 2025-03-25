@@ -176,7 +176,6 @@ export function fakeSinCaseDto(): SinCaseDto {
       gender: gender,
       citizenshipDate: citizenshipDate.fullDate,
     },
-    privacyStatement: { agreedToTerms: true },
     requestDetails: {
       scenario: faker.helpers.arrayElement(getApplicationSubmissionScenarios().map(({ id }) => id)),
       type: faker.helpers.arrayElement(getTypesOfApplicationToSubmit().map(({ id }) => id)),

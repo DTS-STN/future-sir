@@ -83,10 +83,6 @@ export type SinCasePrimaryDocumentDto = {
   registrationNumber: string;
 };
 
-export type SinCasePrivacyStatementDto = {
-  agreedToTerms: true;
-};
-
 export type SinCaseRequestDetailsDto = {
   type: string;
   scenario: string;
@@ -107,7 +103,6 @@ export type SinCaseDto = {
   personalInformation: SinCasePersonalInfoDto;
   previousSin: SinCasePreviousSinDto;
   primaryDocuments: SinCasePrimaryDocumentDto;
-  privacyStatement: SinCasePrivacyStatementDto;
   requestDetails: SinCaseRequestDetailsDto;
   secondaryDocument: SinCaseSecondaryDocumentDto;
 };

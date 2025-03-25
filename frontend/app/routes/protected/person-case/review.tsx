@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 
 import type { Info, Route } from './+types/review';
 
+import { setSinCases } from '~/.server/domain/multi-channel/sin-cases-store';
 import { getLocalizedApplicantGenderById } from '~/.server/domain/person-case/services/applicant-gender-service';
 import { getLocalizedApplicantPrimaryDocumentChoiceById } from '~/.server/domain/person-case/services/applicant-primary-document-service';
 import { getLocalizedApplicantSecondaryDocumentChoiceById } from '~/.server/domain/person-case/services/applicant-secondary-document-service';
@@ -68,18 +69,26 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     case 'next': {
       const sinApplicationService = getSinApplicationService();
       const response = await sinApplicationService.submitSinApplication(inPersonSinApplication);
+      const caseId = response.identificationId;
 
-      if (response.identificationId === undefined) {
+      if (caseId === undefined) {
         throw new AppError(`Failed to submit SIN application: ${action}`, ErrorCodes.SUBMIT_SIN_APPLICATION_FAILED);
       }
 
-      const createdCase = { caseId: response.identificationId, ...inPersonSinApplication };
-      context.session.createdCases = {
-        ...(context.session.createdCases ?? {}),
-        [createdCase.caseId]: createdCase,
-      };
+      await setSinCases({
+        caseId,
+        birthDetails: inPersonSinApplication.birthDetails,
+        contactInformation: inPersonSinApplication.contactInformation,
+        currentNameInfo: inPersonSinApplication.currentNameInfo,
+        parentDetails: inPersonSinApplication.parentDetails,
+        personalInformation: inPersonSinApplication.personalInformation,
+        previousSin: inPersonSinApplication.previousSin,
+        primaryDocuments: inPersonSinApplication.primaryDocuments,
+        requestDetails: inPersonSinApplication.requestDetails,
+        secondaryDocument: inPersonSinApplication.secondaryDocument,
+      });
 
-      machineActor.send({ type: 'submitReview' });
+      machineActor.send({ type: 'submitReview', data: caseId });
       break;
     }
 
@@ -317,7 +326,7 @@ function validateMachineContextData(
   machineContext: Partial<InPersonSinApplication>,
   tabId: string,
   request: Request,
-): Required<InPersonSinApplication> {
+): Required<OmitStrict<InPersonSinApplication, 'caseId'>> {
   const {
     birthDetails,
     contactInformation,

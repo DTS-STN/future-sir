@@ -112,6 +112,7 @@ export type SecondaryDocumentData = {
 };
 
 export type InPersonSinApplication = {
+  caseId: string;
   birthDetails: BirthDetailsData;
   contactInformation: ContactInformationData;
   currentNameInfo: CurrentNameData;
