@@ -76,7 +76,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
 
   switch (action) {
     case 'finish': {
-      throw i18nRedirect('routes/protected/request.tsx', request); //TODO: update redirect to proper page
+      throw i18nRedirect('routes/protected/index.tsx', request);
     }
     case 'print': {
       // TODO: fetch the proper sin
