@@ -8,6 +8,7 @@ import * as v from 'valibot';
 
 import type { Info, Route } from './+types/finalize-request';
 
+import { getSinCaseService } from '~/.server/domain/multi-channel/case-api-service';
 import { serverEnvironment } from '~/.server/environment';
 import { getLocalizedProvinceByAlphaCode } from '~/.server/shared/services/province-service';
 import { requireAllRoles } from '~/.server/utils/auth-utils';
@@ -30,8 +31,17 @@ export const handle = {
   i18nNamespace: [...parentHandle.i18nNamespace, 'protected'],
 } as const satisfies RouteHandle;
 
-export async function loader({ context, request }: Route.LoaderArgs) {
+export async function loader({ context, params, request }: Route.LoaderArgs) {
   requireAllRoles(context.session, new URL(request.url), ['user']);
+
+  // TODO ::: GjB ::: the data returned by the following call should be checked to ensure the logged-in user has permissions to view it
+  const personSinCase = await getSinCaseService().findSinCaseById(params.caseId);
+
+  if (personSinCase === undefined) {
+    throw new Response(JSON.stringify({ status: HttpStatusCodes.NOT_FOUND, message: 'Case not found' }), {
+      status: HttpStatusCodes.NOT_FOUND,
+    });
+  }
 
   const { t, lang } = await getTranslation(request, handle.i18nNamespace);
 
@@ -57,6 +67,15 @@ export function meta({ data }: Route.MetaArgs) {
 
 export async function action({ context, params, request }: Route.ActionArgs) {
   requireAllRoles(context.session, new URL(request.url), ['user']);
+
+  // TODO ::: GjB ::: the data returned by the following call should be checked to ensure the logged-in user has permissions to view it
+  const personSinCase = await getSinCaseService().findSinCaseById(params.caseId);
+
+  if (personSinCase === undefined) {
+    throw new Response(JSON.stringify({ status: HttpStatusCodes.NOT_FOUND, message: 'Case not found' }), {
+      status: HttpStatusCodes.NOT_FOUND,
+    });
+  }
 
   const { t } = await getTranslation(request, handle.i18nNamespace);
 
