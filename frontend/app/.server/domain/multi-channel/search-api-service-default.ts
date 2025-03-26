@@ -20,7 +20,7 @@ export function getDefaultSearchService(): SinSearchService {
         },
         body: JSON.stringify({
           caseGuid: caseId,
-          idToken: serverEnvironment.TMP_AWS_ID_TOKEN,
+          idToken: serverEnvironment.TMP_AWS_ID_TOKEN.value(),
         }),
       });
       if (response.status === HttpStatusCodes.NOT_FOUND) return [];

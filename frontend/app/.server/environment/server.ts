@@ -9,6 +9,7 @@ import { redis, defaults as redisDefaults } from '~/.server/environment/redis';
 import { session, defaults as sessionDefaults } from '~/.server/environment/session';
 import { telemetry, defaults as telemetryDefaults } from '~/.server/environment/telemetry';
 import { LogFactory } from '~/.server/logging';
+import { Redacted } from '~/.server/utils/security-utils';
 import { stringToIntegerSchema } from '~/.server/validation/string-to-integer-schema';
 
 const log = LogFactory.getLogger(import.meta.url);
@@ -18,6 +19,20 @@ export type Server = Readonly<v.InferOutput<typeof server>>;
 export const defaults = {
   NODE_ENV: 'development',
   PORT: '3000',
+  // Note that while this might look dangerous, this is only ever used in
+  // devmode, so there is no security risk in exposing this to the public!
+  //
+  // The default token contains the following claims:
+  // {
+  //  "aud": "localhost",
+  //  "iss": "future-sir",
+  //  "sub": "00000000-0000-0000-0000-000000000000",
+  //  "given_name": "Application",
+  //  "family_name": "User",
+  //  "email": "user@example.com"
+  // }
+  // prettier-ignore
+  TMP_AWS_ID_TOKEN: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJmdXR1cmUtc2lyIiwiaWF0Ijo5NDY2ODQ4MDAsImV4cCI6NDEwMjQ0NDgwMCwiYXVkIjoibG9jYWxob3N0Iiwic3ViIjoiMDAwMDAwMDAtMDAwMC0wMDAwLTAwMDAtMDAwMDAwMDAwMDAwIiwiZ2l2ZW5fbmFtZSI6IkFwcGxpY2F0aW9uIiwiZmFtaWx5X25hbWUiOiJVc2VyIiwiZW1haWwiOiJ1c2VyQGV4YW1wbGUuY29tIn0.bHQFw4LHShBjQgNKJ3hBcHTf6aFN8M9j9ZEvw5rHEKk',
   ...authenticationDefaults,
   ...clientDefaults,
   ...featuresDefaults,
@@ -63,22 +78,7 @@ export const server = v.pipe(
     //       TTTTTTTTTTT           OOOOOOOOO     DDDDDDDDDDDDD             OOOOOOOOO
     //
     // TODO ::: GjB ::: remove after demo
-    TMP_AWS_ID_TOKEN: v.optional(
-      v.string(),
-      // Note that while this might look dangerous, this is only ever used in
-      // devmode, so there is no security risk in exposing this to the public!
-      //
-      // The default token contains the following claims:
-      // {
-      //  "aud": "localhost",
-      //  "iss": "future-sir",
-      //  "sub": "00000000-0000-0000-0000-000000000000",
-      //  "given_name": "Application",
-      //  "family_name": "User",
-      //  "email": "user@example.com"
-      // }
-      'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJmdXR1cmUtc2lyIiwiaWF0Ijo5NDY2ODQ4MDAsImV4cCI6NDEwMjQ0NDgwMCwiYXVkIjoibG9jYWxob3N0Iiwic3ViIjoiMDAwMDAwMDAtMDAwMC0wMDAwLTAwMDAtMDAwMDAwMDAwMDAwIiwiZ2l2ZW5fbmFtZSI6IkFwcGxpY2F0aW9uIiwiZmFtaWx5X25hbWUiOiJVc2VyIiwiZW1haWwiOiJ1c2VyQGV4YW1wbGUuY29tIn0.bHQFw4LHShBjQgNKJ3hBcHTf6aFN8M9j9ZEvw5rHEKk',
-    ),
+    TMP_AWS_ID_TOKEN: v.pipe(v.optional(v.string(), defaults.TMP_AWS_ID_TOKEN), v.transform(Redacted.make)),
   }),
   v.rawCheck(({ dataset }) => {
     if (dataset.typed) {
