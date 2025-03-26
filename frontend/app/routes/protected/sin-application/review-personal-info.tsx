@@ -23,10 +23,10 @@ export function ReviewPersonalInfo({
   const { t } = useTranslation(['protected']);
 
   return (
-    <section className="space-y-3">
+    <section>
       <h2 className="font-lato text-2xl font-bold">{t('protected:personal-information.page-title')}</h2>
-      <DescriptionList className="divide-y border-y">
-        <DescriptionListItem className="py-3" term={t('protected:personal-information.first-name-previously-used.label')}>
+      <DescriptionList className="mt-6 divide-y border-y">
+        <DescriptionListItem term={t('protected:personal-information.first-name-previously-used.label')}>
           {firstNamePreviouslyUsed && firstNamePreviouslyUsed.length > 0 && (
             <UnorderedList className="break-all">
               {firstNamePreviouslyUsed.map((value, index) => (
@@ -35,10 +35,10 @@ export function ReviewPersonalInfo({
             </UnorderedList>
           )}
         </DescriptionListItem>
-        <DescriptionListItem className="py-3" term={t('protected:personal-information.last-name-at-birth.label')}>
+        <DescriptionListItem term={t('protected:personal-information.last-name-at-birth.label')}>
           <p>{lastNameAtBirth}</p>
         </DescriptionListItem>
-        <DescriptionListItem className="py-3" term={t('protected:personal-information.last-name-previously-used.label')}>
+        <DescriptionListItem term={t('protected:personal-information.last-name-previously-used.label')}>
           {lastNamePreviouslyUsed && lastNamePreviouslyUsed.length > 0 && (
             <UnorderedList className="break-all">
               {lastNamePreviouslyUsed.map((value, index) => (
@@ -47,7 +47,7 @@ export function ReviewPersonalInfo({
             </UnorderedList>
           )}
         </DescriptionListItem>
-        <DescriptionListItem className="py-3" term={t('protected:personal-information.gender.label')}>
+        <DescriptionListItem term={t('protected:personal-information.gender.label')}>
           <p>{genderName}</p>
         </DescriptionListItem>
       </DescriptionList>

@@ -77,8 +77,6 @@ export async function action({ context, params, request }: Route.ActionArgs) {
       throw i18nRedirect('routes/protected/multi-channel/send-validation.tsx', request, {
         params: { caseId: response.identificationId },
       });
-
-      break;
     }
 
     case 'abandon': {
@@ -210,8 +208,8 @@ export default function Review({ loaderData, actionData, params }: Route.Compone
       <PageTitle subTitle={t('protected:in-person.title')}>{t('protected:review.page-title')}</PageTitle>
       <div className="max-w-prose">
         <fetcher.Form method="post" noValidate>
-          <p className="mb-8 text-lg">{t('protected:review.read-carefully')}</p>
-          <div className="mt-12 space-y-15">
+          <p>{t('protected:review.read-carefully')}</p>
+          <div className="mt-8 space-y-10">
             <ReviewPrimaryDocs
               currentStatusInCanadaName={primaryDocuments.currentStatusInCanadaName}
               documentTypeName={primaryDocuments.documentTypeName}
@@ -223,7 +221,7 @@ export default function Review({ loaderData, actionData, params }: Route.Compone
               genderName={primaryDocuments.genderName}
               citizenshipDate={primaryDocuments.citizenshipDate}
             >
-              <InlineLink file="routes/protected/person-case/primary-docs.tsx" search={`tid=${tabId}`}>
+              <InlineLink className="mt-6 block" file="routes/protected/person-case/primary-docs.tsx" search={`tid=${tabId}`}>
                 {t('protected:review.edit-primary-identity-document')}
               </InlineLink>
             </ReviewPrimaryDocs>
@@ -232,7 +230,7 @@ export default function Review({ loaderData, actionData, params }: Route.Compone
               expiryMonth={secondaryDocument.expiryMonth}
               expiryYear={secondaryDocument.expiryYear}
             >
-              <InlineLink file="routes/protected/person-case/secondary-doc.tsx" search={`tid=${tabId}`}>
+              <InlineLink className="mt-6 block" file="routes/protected/person-case/secondary-doc.tsx" search={`tid=${tabId}`}>
                 {t('protected:review.edit-secondary-identity-document')}
               </InlineLink>
             </ReviewSecondaryDoc>
@@ -244,7 +242,7 @@ export default function Review({ loaderData, actionData, params }: Route.Compone
               supportingDocuments={currentNameInfo.supportingDocuments}
               supportingDocumentsNames={currentNameInfo.supportingDocumentsNames}
             >
-              <InlineLink file="routes/protected/person-case/current-name.tsx" search={`tid=${tabId}`}>
+              <InlineLink className="mt-6 block" file="routes/protected/person-case/current-name.tsx" search={`tid=${tabId}`}>
                 {t('protected:review.edit-current-name')}
               </InlineLink>
             </ReviewCurrentName>
@@ -254,7 +252,7 @@ export default function Review({ loaderData, actionData, params }: Route.Compone
               lastNamePreviouslyUsed={personalInformation.lastNamePreviouslyUsed}
               genderName={personalInformation.genderName}
             >
-              <InlineLink file="routes/protected/person-case/personal-info.tsx" search={`tid=${tabId}`}>
+              <InlineLink className="mt-6 block" file="routes/protected/person-case/personal-info.tsx" search={`tid=${tabId}`}>
                 {t('protected:review.edit-personal-details')}
               </InlineLink>
             </ReviewPersonalInfo>
@@ -264,12 +262,12 @@ export default function Review({ loaderData, actionData, params }: Route.Compone
               countryName={birthDetails.countryName}
               fromMultipleBirth={birthDetails.fromMultipleBirth}
             >
-              <InlineLink file="routes/protected/person-case/birth-details.tsx" search={`tid=${tabId}`}>
+              <InlineLink className="mt-6 block" file="routes/protected/person-case/birth-details.tsx" search={`tid=${tabId}`}>
                 {t('protected:review.edit-birth-details')}
               </InlineLink>
             </ReviewBirthDetails>
             <ReviewParentDetails parentDetails={parentDetails}>
-              <InlineLink file="routes/protected/person-case/parent-details.tsx" search={`tid=${tabId}`}>
+              <InlineLink className="mt-6 block" file="routes/protected/person-case/parent-details.tsx" search={`tid=${tabId}`}>
                 {t('protected:review.edit-parent-details')}
               </InlineLink>
             </ReviewParentDetails>
@@ -277,7 +275,7 @@ export default function Review({ loaderData, actionData, params }: Route.Compone
               hasPreviousSinText={previousSin.hasPreviousSinText}
               socialInsuranceNumber={previousSin.socialInsuranceNumber}
             >
-              <InlineLink file="routes/protected/person-case/previous-sin.tsx" search={`tid=${tabId}`}>
+              <InlineLink className="mt-6 block" file="routes/protected/person-case/previous-sin.tsx" search={`tid=${tabId}`}>
                 {t('protected:review.edit-previous-sin')}
               </InlineLink>
             </ReviewPreviousSin>
@@ -292,7 +290,11 @@ export default function Review({ loaderData, actionData, params }: Route.Compone
               city={contactInformation.city}
               provinceName={contactInformation.provinceName}
             >
-              <InlineLink file="routes/protected/person-case/contact-information.tsx" search={`tid=${tabId}`}>
+              <InlineLink
+                className="mt-6 block"
+                file="routes/protected/person-case/contact-information.tsx"
+                search={`tid=${tabId}`}
+              >
                 {t('protected:review.edit-contact-information')}
               </InlineLink>
             </ReviewContactInformation>

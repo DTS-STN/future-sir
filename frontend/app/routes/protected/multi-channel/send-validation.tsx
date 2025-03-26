@@ -196,7 +196,7 @@ export default function SendValidation({ loaderData, actionData, params }: Route
         <p>{t('protected:send-validation.id-number')}</p>
         <p>{caseId}</p>
       </ContextualAlert>
-      <div className="mt-12 max-w-prose space-y-15">
+      <div className="mt-8 max-w-prose space-y-10">
         <ReviewPrimaryDocs
           currentStatusInCanadaName={primaryDocuments.currentStatusInCanadaName}
           documentTypeName={primaryDocuments.documentTypeName}
@@ -208,14 +208,18 @@ export default function SendValidation({ loaderData, actionData, params }: Route
           genderName={primaryDocuments.genderName}
           citizenshipDate={primaryDocuments.citizenshipDate}
         >
-          <InlineLink file="routes/protected/request.tsx">{t('protected:review.edit-primary-identity-document')}</InlineLink>
+          <InlineLink className="mt-6 block" file="routes/protected/request.tsx">
+            {t('protected:review.edit-primary-identity-document')}
+          </InlineLink>
         </ReviewPrimaryDocs>
         <ReviewSecondaryDoc
           documentTypeName={secondaryDocument.documentTypeName}
           expiryMonth={secondaryDocument.expiryMonth}
           expiryYear={secondaryDocument.expiryYear}
         >
-          <InlineLink file="routes/protected/request.tsx">{t('protected:review.edit-secondary-identity-document')}</InlineLink>
+          <InlineLink className="mt-6 block" file="routes/protected/request.tsx">
+            {t('protected:review.edit-secondary-identity-document')}
+          </InlineLink>
         </ReviewSecondaryDoc>
         <ReviewCurrentName
           preferredSameAsDocumentName={currentNameInfo.preferredSameAsDocumentName}
@@ -225,7 +229,9 @@ export default function SendValidation({ loaderData, actionData, params }: Route
           supportingDocuments={currentNameInfo.supportingDocuments}
           supportingDocumentsNames={currentNameInfo.supportingDocumentsNames}
         >
-          <InlineLink file="routes/protected/request.tsx">{t('protected:review.edit-current-name')}</InlineLink>
+          <InlineLink className="mt-6 block" file="routes/protected/request.tsx">
+            {t('protected:review.edit-current-name')}
+          </InlineLink>
         </ReviewCurrentName>
         <ReviewPersonalInfo
           firstNamePreviouslyUsed={personalInformation.firstNamePreviouslyUsed}
@@ -233,7 +239,9 @@ export default function SendValidation({ loaderData, actionData, params }: Route
           lastNamePreviouslyUsed={personalInformation.lastNamePreviouslyUsed}
           genderName={personalInformation.genderName}
         >
-          <InlineLink file="routes/protected/request.tsx">{t('protected:review.edit-personal-details')}</InlineLink>
+          <InlineLink className="mt-6 block" file="routes/protected/request.tsx">
+            {t('protected:review.edit-personal-details')}
+          </InlineLink>
         </ReviewPersonalInfo>
         <ReviewBirthDetails
           city={birthDetails.city}
@@ -241,16 +249,22 @@ export default function SendValidation({ loaderData, actionData, params }: Route
           countryName={birthDetails.countryName}
           fromMultipleBirth={birthDetails.fromMultipleBirth}
         >
-          <InlineLink file="routes/protected/request.tsx">{t('protected:review.edit-birth-details')}</InlineLink>
+          <InlineLink className="mt-6 block" file="routes/protected/request.tsx">
+            {t('protected:review.edit-birth-details')}
+          </InlineLink>
         </ReviewBirthDetails>
         <ReviewParentDetails parentDetails={parentDetails}>
-          <InlineLink file="routes/protected/request.tsx">{t('protected:review.edit-parent-details')}</InlineLink>
+          <InlineLink className="mt-6 block" file="routes/protected/request.tsx">
+            {t('protected:review.edit-parent-details')}
+          </InlineLink>
         </ReviewParentDetails>
         <ReviewPreviousSin
           hasPreviousSinText={previousSin.hasPreviousSinText}
           socialInsuranceNumber={previousSin.socialInsuranceNumber}
         >
-          <InlineLink file="routes/protected/request.tsx">{t('protected:review.edit-previous-sin')}</InlineLink>
+          <InlineLink className="mt-6 block" file="routes/protected/request.tsx">
+            {t('protected:review.edit-previous-sin')}
+          </InlineLink>
         </ReviewPreviousSin>
         <ReviewContactInformation
           preferredLanguageName={contactInformation.preferredLanguageName}
@@ -263,7 +277,9 @@ export default function SendValidation({ loaderData, actionData, params }: Route
           city={contactInformation.city}
           provinceName={contactInformation.provinceName}
         >
-          <InlineLink file="routes/protected/request.tsx">{t('protected:review.edit-contact-information')}</InlineLink>
+          <InlineLink className="mt-6 block" file="routes/protected/request.tsx">
+            {t('protected:review.edit-contact-information')}
+          </InlineLink>
         </ReviewContactInformation>
       </div>
       <fetcher.Form className="max-w-prose" method="post" noValidate>

@@ -15,18 +15,18 @@ export function ReviewSecondaryDoc({ documentTypeName, expiryMonth, expiryYear, 
   const { t } = useTranslation(['protected']);
 
   return (
-    <section className="space-y-3">
+    <section>
       <h2 className="font-lato text-2xl font-bold">{t('protected:secondary-identity-document.page-title')}</h2>
-      <DescriptionList className="divide-y border-y">
-        <DescriptionListItem className="py-3" term={t('protected:secondary-identity-document.document-type.title')}>
+      <DescriptionList className="mt-6 divide-y border-y">
+        <DescriptionListItem term={t('protected:secondary-identity-document.document-type.title')}>
           <p>{documentTypeName}</p>
         </DescriptionListItem>
-        <DescriptionListItem className="py-3" term={t('protected:secondary-identity-document.expiry-date.title')}>
+        <DescriptionListItem term={t('protected:secondary-identity-document.expiry-date.title')}>
           <p>
             {expiryMonth} {expiryYear}
           </p>
         </DescriptionListItem>
-        <DescriptionListItem className="py-3" term={t('protected:review.document-uploaded')}>
+        <DescriptionListItem term={t('protected:review.document-uploaded')}>
           <p>{t('protected:review.choosen-file')}</p>
         </DescriptionListItem>
       </DescriptionList>

@@ -16,10 +16,10 @@ interface ReviewBirthDetailsProps {
 export function ReviewBirthDetails({ city, provinceName, countryName, fromMultipleBirth, children }: ReviewBirthDetailsProps) {
   const { t } = useTranslation(['protected']);
   return (
-    <section className="space-y-3">
+    <section>
       <h2 className="font-lato text-2xl font-bold">{t('protected:birth-details.page-title')}</h2>
-      <DescriptionList className="divide-y border-y">
-        <DescriptionListItem className="py-3" term={t('protected:review.birth-place')}>
+      <DescriptionList className="mt-6 divide-y border-y">
+        <DescriptionListItem term={t('protected:review.birth-place')}>
           <Address
             address={{
               city: city,
@@ -28,7 +28,7 @@ export function ReviewBirthDetails({ city, provinceName, countryName, fromMultip
             }}
           />
         </DescriptionListItem>
-        <DescriptionListItem className="py-3" term={t('protected:review.multiple-birth')}>
+        <DescriptionListItem term={t('protected:review.multiple-birth')}>
           <p>{fromMultipleBirth ? t('protected:review.yes') : t('protected:review.no')}</p>
         </DescriptionListItem>
       </DescriptionList>
