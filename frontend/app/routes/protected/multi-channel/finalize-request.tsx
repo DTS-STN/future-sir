@@ -55,7 +55,7 @@ export function meta({ data }: Route.MetaArgs) {
   return [{ title: data.documentTitle }];
 }
 
-export async function action({ context, request }: Route.ActionArgs) {
+export async function action({ context, params, request }: Route.ActionArgs) {
   requireAllRoles(context.session, new URL(request.url), ['user']);
 
   const { t } = await getTranslation(request, handle.i18nNamespace);
@@ -65,7 +65,7 @@ export async function action({ context, request }: Route.ActionArgs) {
 
   switch (action) {
     case 'back': {
-      throw i18nRedirect('routes/protected/multi-channel/search-sin.tsx', request);
+      throw i18nRedirect('routes/protected/multi-channel/search-sin.tsx', request, { params });
     }
 
     case 'next': {
@@ -91,7 +91,7 @@ export async function action({ context, request }: Route.ActionArgs) {
         return data({ errors: v.flatten<typeof schema>(parseResult.issues).nested }, { status: HttpStatusCodes.BAD_REQUEST });
       }
 
-      throw i18nRedirect('routes/protected/multi-channel/sin-confirmation.tsx', request);
+      throw i18nRedirect('routes/protected/multi-channel/sin-confirmation.tsx', request, { params });
     }
 
     default: {
