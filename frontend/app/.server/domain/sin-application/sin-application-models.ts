@@ -113,5 +113,5 @@ export type SubmitSinApplicationRequestSecondaryDocument = {
 };
 
 export type SubmitSinApplicationResponse = {
-  identificationId: string | undefined;
+  identificationId: string;
 };
