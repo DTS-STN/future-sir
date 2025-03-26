@@ -206,14 +206,6 @@ export default function ContactInformation({ loaderData, actionData, params }: R
                     required
                   />
                   <InputField
-                    id="postal-code"
-                    label={t('protected:contact-information.postal-code-label')}
-                    name="postalCode"
-                    errorMessage={t(getSingleKey(errors?.postalCode))}
-                    defaultValue={loaderData.defaultFormValues?.postalCode}
-                    required
-                  />
-                  <InputField
                     id="city"
                     label={t('protected:contact-information.city-label')}
                     name="city"
@@ -244,6 +236,14 @@ export default function ContactInformation({ loaderData, actionData, params }: R
                       required
                     />
                   )}
+                  <InputField
+                    id="postal-code"
+                    label={t('protected:contact-information.postal-code-label')}
+                    name="postalCode"
+                    errorMessage={t(getSingleKey(errors?.postalCode))}
+                    defaultValue={loaderData.defaultFormValues?.postalCode}
+                    required
+                  />
                 </>
               )}
             </div>
