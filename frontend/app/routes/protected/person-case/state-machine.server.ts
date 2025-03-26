@@ -28,6 +28,7 @@ import { getRouteByFile } from '~/utils/route-utils';
 
 export type Machine = typeof machine;
 
+// TODO ::: GjB ::: this type should eventually be refactored to hold: { formData, validatedData, submittedData }
 type MachineContext = Partial<InPersonSinApplication> & Partial<{ formData: FormData }>;
 
 type MachineEvents =
@@ -66,7 +67,8 @@ export type StateName =
   | 'parent-info'
   | 'previous-sin-info'
   | 'contact-info'
-  | 'review';
+  | 'review'
+  | 'success';
 
 const log = LogFactory.getLogger(import.meta.url);
 
@@ -266,12 +268,12 @@ export const machine = setup({
           target: 'contact-info',
         },
         submitReview: {
-          target: 'privacy-statement',
-          actions: assign(({ context, event }) => ({
-            // TODO ::: GjB ::: handle final submission
-          })),
+          target: 'success',
         },
       },
+    },
+    'success': {
+      type: 'final',
     },
   },
 });

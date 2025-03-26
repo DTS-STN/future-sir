@@ -73,13 +73,11 @@ export async function action({ context, params, request }: Route.ActionArgs) {
         throw new AppError(`Failed to submit SIN application: ${action}`, ErrorCodes.SUBMIT_SIN_APPLICATION_FAILED);
       }
 
-      const createdCase = { caseId: response.identificationId, ...inPersonSinApplication };
-      context.session.createdCases = {
-        ...(context.session.createdCases ?? {}),
-        [createdCase.caseId]: createdCase,
-      };
+      // TODO ::: GjB ::: remove after demo and handle this in xstate
+      throw i18nRedirect('routes/protected/multi-channel/send-validation.tsx', request, {
+        params: { caseId: response.identificationId },
+      });
 
-      machineActor.send({ type: 'submitReview' });
       break;
     }
 
@@ -317,7 +315,7 @@ function validateMachineContextData(
   machineContext: Partial<InPersonSinApplication>,
   tabId: string,
   request: Request,
-): Required<InPersonSinApplication> {
+): InPersonSinApplication {
   const {
     birthDetails,
     contactInformation,

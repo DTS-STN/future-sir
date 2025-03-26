@@ -6,6 +6,7 @@ export type SubmitSinApplicationRequest = {
   personalInformation: SubmitSinApplicationRequestPersonalInfo;
   previousSin: SubmitSinApplicationRequestPreviousSin;
   primaryDocuments: SubmitSinApplicationRequestPrimaryDocument;
+  privacyStatement: SubmitSinApplicationRequestPrivacyStatement;
   requestDetails: SubmitSinApplicationRequestRequestDetails;
   secondaryDocument: SubmitSinApplicationRequestSecondaryDocument;
 };
@@ -94,6 +95,10 @@ export type SubmitSinApplicationRequestPrimaryDocument = {
   givenName: string;
   lastName: string;
   registrationNumber: string;
+};
+
+export type SubmitSinApplicationRequestPrivacyStatement = {
+  agreedToTerms: true;
 };
 
 export type SubmitSinApplicationRequestRequestDetails = {
