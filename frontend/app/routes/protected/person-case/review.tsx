@@ -69,10 +69,6 @@ export async function action({ context, params, request }: Route.ActionArgs) {
       const sinApplicationService = getSinApplicationService();
       const response = await sinApplicationService.submitSinApplication(inPersonSinApplication);
 
-      if (response.identificationId === undefined) {
-        throw new AppError(`Failed to submit SIN application: ${action}`, ErrorCodes.SUBMIT_SIN_APPLICATION_FAILED);
-      }
-
       // TODO ::: GjB ::: remove after demo and handle this in xstate
       throw i18nRedirect('routes/protected/multi-channel/send-validation.tsx', request, {
         params: { caseId: response.identificationId },

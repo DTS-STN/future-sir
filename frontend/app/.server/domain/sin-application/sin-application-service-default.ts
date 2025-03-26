@@ -1,3 +1,4 @@
+import { setSinCases } from '~/.server/domain/multi-channel/sin-cases-store';
 import {
   mapSinApplicationResponseToSubmitSinApplicationResponse,
   mapSubmitSinApplicationRequestToSinApplicationRequest,
@@ -16,9 +17,9 @@ const log = LogFactory.getLogger(import.meta.url);
 
 export function getDefaultSinApplicationService(): SinApplicationService {
   return {
-    async submitSinApplication(
+    submitSinApplication: async (
       submitSinApplicationRequest: SubmitSinApplicationRequest,
-    ): Promise<SubmitSinApplicationResponse> {
+    ): Promise<SubmitSinApplicationResponse> => {
       log.debug('Submitting SIN application request.');
       log.trace('Submitting SIN application with request:', submitSinApplicationRequest);
 
@@ -36,6 +37,10 @@ export function getDefaultSinApplicationService(): SinApplicationService {
       }
 
       const submitSinApplicationResponse = mapSinApplicationResponseToSubmitSinApplicationResponse(data);
+
+      // TODO ::: GjB ::: maybe remove after demo?
+      void setSinCases({ ...submitSinApplicationRequest, caseId: submitSinApplicationResponse.identificationId });
+
       log.debug('SIN application submitted successfully with response: %s', submitSinApplicationResponse);
       return submitSinApplicationResponse;
     },
