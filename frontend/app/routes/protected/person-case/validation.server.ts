@@ -480,7 +480,7 @@ export const secondaryDocumentSchema = v.pipe(
           return false; // Handle invalid number formats, if necessary
         }
 
-        return year > currentYear || (year === currentYear && month >= currentMonth);
+        return year > currentYear || (year === currentYear && month > currentMonth);
       },
       'protected:secondary-identity-document.expiry-date.invalid',
     ),
