@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import type {
   ApplicantPrimaryDocumentChoice,
@@ -94,6 +94,9 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
         lastName: 'LastName',
         dateOfBirth: '2000-01-01',
         gender: 'M',
+      },
+      privacyStatement: {
+        agreedToTerms: true,
       },
       requestDetails: { type: 'RequestType', scenario: 'Scenario' },
       secondaryDocument: { documentType: 'SecDocType', expiryYear: '2025', expiryMonth: '12' },
@@ -439,6 +442,9 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
         lastName: 'LastName',
         dateOfBirth: '2000-01-01',
         gender: 'M',
+      },
+      privacyStatement: {
+        agreedToTerms: true,
       },
       requestDetails: { type: 'RequestType', scenario: 'Scenario' },
       secondaryDocument: { documentType: 'SecDocType', expiryYear: '2025', expiryMonth: '12' },
