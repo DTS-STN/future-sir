@@ -60,6 +60,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
       status: HttpStatusCodes.NOT_FOUND,
     });
   }
+  const { lang } = await getTranslation(request, handle.i18nNamespace);
 
   const formData = await request.formData();
   const action = formData.get('action');
@@ -80,13 +81,15 @@ export async function action({ context, params, request }: Route.ActionArgs) {
 
       return {
         tableData: {
-          rows: searchResults.map((res) => [
-            `${res.firstName} ${res.lastName}`,
-            `${res.yearOfBirth}-${res.monthOfBirth}-${res.dayOfBirth}`.replace(/\d?\d/g, (s) => s.padStart(2, '0')),
-            res.parentSurname,
-            `*** *** ${res.partialSIN}`,
-            `${res.score}%`,
-          ]),
+          rows: searchResults.map(
+            ({ firstName, lastName, yearOfBirth, monthOfBirth, dayOfBirth, parentSurname, partialSIN, score }) => [
+              `${firstName} ${lastName}`,
+              `${yearOfBirth}-${monthOfBirth}-${dayOfBirth}`.replace(/\d?\d/g, (s) => s.padStart(2, '0')),
+              parentSurname,
+              `*** *** ${partialSIN}`,
+              `${new Intl.NumberFormat(`${lang}-CA`, { style: 'percent', maximumFractionDigits: 2 }).format(score)}`, //score is out of 10 (i.e. 2.5 corresponds to 2.5/10 or 25%)
+            ],
+          ),
         },
       };
     }
