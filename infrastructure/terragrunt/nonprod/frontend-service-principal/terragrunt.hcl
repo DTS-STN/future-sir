@@ -69,6 +69,9 @@ inputs = {
 
   role_assignments = {
     admin = [
+      "dario.au@hrsdc-rhdcc.gc.ca",
+      "faiza.jahanzeb@hrsdc-rhdcc.gc.ca",
+      "frank.basham@hrsdc-rhdcc.gc.ca",
       "gregory.j.baker@hrsdc-rhdcc.gc.ca",
       "guillaume.liddle@hrsdc-rhdcc.gc.ca",
       "sebastien.comeau@hrsdc-rhdcc.gc.ca",
@@ -79,6 +82,7 @@ inputs = {
     user = [
       "dario.au@hrsdc-rhdcc.gc.ca",
       "faiza.jahanzeb@hrsdc-rhdcc.gc.ca",
+      "frank.basham@hrsdc-rhdcc.gc.ca",
       "gregory.j.baker@hrsdc-rhdcc.gc.ca",
       "guillaume.liddle@hrsdc-rhdcc.gc.ca",
       "sebastien.comeau@hrsdc-rhdcc.gc.ca",
