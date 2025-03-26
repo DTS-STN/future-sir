@@ -20,11 +20,11 @@
     "description": "Search for a SIN record"
   },
   "index": {
-    "admin-dashboard": "Admin dashboard",
     "dashboard": "Dashboard",
     "home": "Home",
     "page-title": "Welcome to Future SIR (protected)",
-    "public": "Navigate to 'public' page"
+    "protected": "Go to the employee portal",
+    "public": "Go to the public portal"
   },
   "person-case": {
     "abandon-button": "Abandon",

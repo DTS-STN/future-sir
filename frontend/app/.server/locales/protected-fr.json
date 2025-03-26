@@ -20,11 +20,11 @@
     "description": "Rechercher un enregistrement SIN"
   },
   "index": {
-    "admin-dashboard": "Interface d'administration",
     "dashboard": "Interface",
     "home": "Accueil",
     "page-title": "Bienvenue sur Future SIR (protégée)",
-    "public": "Accédez à la page «\u00a0publique\u00a0»"
+    "protected": "Accédez au portail des employés",
+    "public": "Accédez au portail publique"
   },
   "person-case": {
     "abandon-button": "Abandonner",
