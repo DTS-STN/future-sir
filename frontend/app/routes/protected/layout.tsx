@@ -52,9 +52,8 @@ export default function Layout({ loaderData }: Route.ComponentProps) {
           name={loaderData.name?.toString()}
           profileItems={<MenuItem file="routes/protected/index.tsx">{t('protected:index.dashboard')}</MenuItem>}
         >
-          <MenuItem to="/">{t('protected:index.home')}</MenuItem>
-          <MenuItem file="routes/protected/admin.tsx">{t('protected:index.admin-dashboard')}</MenuItem>
           <MenuItem file="routes/public/index.tsx">{t('protected:index.public')}</MenuItem>
+          <MenuItem file="routes/protected/index.tsx">{t('protected:index.protected')}</MenuItem>
         </AppBar>
       </header>
       <main className="container print:w-full print:max-w-none">
