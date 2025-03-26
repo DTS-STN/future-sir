@@ -54,8 +54,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     }
 
     case 'search': {
-      // TODO: pull caseId from path param when ready
-      const caseId = '';
+      const { caseId } = params;
       const sinSearchService = getSinSearchService();
       const searchResults = await sinSearchService.getSearchResults(caseId);
 
