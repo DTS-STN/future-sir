@@ -49,6 +49,15 @@ export function meta({ data }: Route.MetaArgs) {
 export async function action({ context, params, request }: Route.ActionArgs) {
   requireAllRoles(context.session, new URL(request.url), ['user']);
 
+  // TODO ::: GjB ::: the data returned by the following call should be checked to ensure the logged-in user has permissions to view it
+  const personSinCase = await getSinCaseService().findSinCaseById(params.caseId);
+
+  if (personSinCase === undefined) {
+    throw new Response(JSON.stringify({ status: HttpStatusCodes.NOT_FOUND, message: 'Case not found' }), {
+      status: HttpStatusCodes.NOT_FOUND,
+    });
+  }
+
   const formData = await request.formData();
   const action = formData.get('action');
 
