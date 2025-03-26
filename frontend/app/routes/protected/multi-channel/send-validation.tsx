@@ -69,7 +69,7 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
   const { lang, t } = await getTranslation(request, handle.i18nNamespace);
 
   // TODO ::: GjB ::: the data returned by the following call should be checked to ensure the logged-in user has permissions to view it
-  const personSinCase = await getSinCaseService().getSinCaseById(params.caseId);
+  const personSinCase = await getSinCaseService().findSinCaseById(params.caseId);
 
   if (personSinCase === undefined) {
     throw new Response(JSON.stringify({ status: HttpStatusCodes.NOT_FOUND, message: 'Case not found' }), {

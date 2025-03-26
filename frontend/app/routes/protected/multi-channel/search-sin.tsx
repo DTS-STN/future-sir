@@ -55,7 +55,7 @@ export async function action({ context, request }: Route.ActionArgs) {
 
     case 'search': {
       const sinCaseService = getSinCaseService();
-      const sinCases = await sinCaseService.getSinCases();
+      const sinCases = await sinCaseService.listAllSinCases();
 
       return {
         tableData: {

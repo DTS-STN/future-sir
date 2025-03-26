@@ -21,10 +21,10 @@ export function getDefaultSinCasesStore(): SinCasesStore {
   /**
    * Retrieves a Sin Case by its key
    * @param key - The unique case identifier
-   * @returns Promise resolving to the Sin Case or null
+   * @returns Promise resolving to the Sin Case or undefined
    */
-  function find(key: string): Promise<SinCaseDto | null> {
-    return Promise.resolve(_store.get(key) ?? null);
+  function find(key: string): Promise<SinCaseDto | undefined> {
+    return Promise.resolve(_store.get(key) ?? undefined);
   }
 
   /**

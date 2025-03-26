@@ -4,8 +4,9 @@ import type { SinCaseDto } from '~/.server/domain/multi-channel/sin-case-models'
 import { serverEnvironment } from '~/.server/environment';
 
 export type SinCaseService = {
-  getSinCases(): Promise<SinCaseDto[]>;
-  getSinCaseById(id: string): Promise<SinCaseDto | undefined>;
+  listAllSinCases(): Promise<SinCaseDto[]>;
+  findSinCaseById(id: string): Promise<SinCaseDto | undefined>;
+  getSinCaseById(id: string): Promise<SinCaseDto>;
 };
 
 export function getSinCaseService(): SinCaseService {
