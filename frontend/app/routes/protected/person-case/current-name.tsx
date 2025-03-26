@@ -107,7 +107,7 @@ export async function loader({ context, request }: Route.LoaderArgs) {
 
   const tabId = getTabIdOrRedirect(request);
   const machineActor = loadMachineActorOrRedirect(context.session, request, tabId, { stateName: 'name-info' });
-  const { formData, currentNameInfo } = machineActor.getSnapshot().context;
+  const { formData, currentNameInfo, primaryDocuments } = machineActor.getSnapshot().context;
 
   const { lang, t } = await getTranslation(request, handle.i18nNamespace);
 
@@ -116,6 +116,11 @@ export async function loader({ context, request }: Route.LoaderArgs) {
     localizedSupportingDocTypes: getLocalizedApplicantSupportingDocumentType(lang),
     formValues: formData?.currentNameInfo?.values ?? currentNameInfo,
     formErrors: formData?.currentNameInfo?.errors,
+    primaryDocName: {
+      firstName: primaryDocuments?.givenName,
+      lastName: primaryDocuments?.lastName,
+      middleName: '', // primaryDocuments?.middleName
+    },
   };
 }
 
@@ -178,15 +183,15 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
           <dl>
             <div className="flex flex-col gap-1 sm:flex-row sm:gap-2">
               <dt className="font-bold">{t('protected:current-name.recorded-name.first-name')}</dt>
-              <dd>{formValues?.firstName}</dd>
+              <dd>{loaderData.primaryDocName.firstName}</dd>
             </div>
             <div className="flex flex-col gap-1 sm:flex-row sm:gap-2">
               <dt className="font-bold">{t('protected:current-name.recorded-name.middle-name')}</dt>
-              <dd>{formValues?.middleName}</dd>
+              <dd>{loaderData.primaryDocName.middleName}</dd>
             </div>
             <div className="flex flex-col gap-1 sm:flex-row sm:gap-2">
               <dt className="font-bold">{t('protected:current-name.recorded-name.last-name')}</dt>
-              <dd>{formValues?.lastName}</dd>
+              <dd>{loaderData.primaryDocName.lastName}</dd>
             </div>
           </dl>
         </div>
