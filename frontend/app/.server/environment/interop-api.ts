@@ -9,6 +9,8 @@ export const defaults = {
   INTEROP_SIN_REG_API_BASE_URL: 'http://localhost:3000/api',
   INTEROP_SIN_SEARCH_API_AUTH_HEADER: 'Ocp-Apim-Subscription-Key 00000000000000000000000000000000',
   INTEROP_SIN_SEARCH_API_BASE_URL: 'http://localhost:3000/api',
+  INTEROP_ASSOCIATE_SIN_API_AUTH_HEADER: 'Ocp-Apim-Subscription-Key 00000000000000000000000000000000',
+  INTEROP_ASSOCIATE_SIN_API_BASE_URL: 'http://localhost:3000/api',
 } as const;
 
 export const interopApi = v.object({
@@ -22,4 +24,9 @@ export const interopApi = v.object({
     v.transform(Redacted.make),
   ),
   INTEROP_SIN_SEARCH_API_BASE_URL: v.optional(v.string(), defaults.INTEROP_SIN_SEARCH_API_BASE_URL),
+  INTEROP_ASSOCIATE_SIN_API_AUTH_HEADER: v.pipe(
+    v.optional(v.string(), defaults.INTEROP_ASSOCIATE_SIN_API_AUTH_HEADER),
+    v.transform(Redacted.make),
+  ),
+  INTEROP_ASSOCIATE_SIN_API_BASE_URL: v.optional(v.string(), defaults.INTEROP_ASSOCIATE_SIN_API_BASE_URL),
 });

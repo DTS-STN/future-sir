@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 
 import type { Info, Route } from './+types/sin-confirmation';
 
+import { getAssociateSinService } from '~/.server/domain/multi-channel/associate-sin-service';
 import { getSinCaseService } from '~/.server/domain/multi-channel/case-api-service';
 import { serverEnvironment } from '~/.server/environment';
 import { requireAllRoles } from '~/.server/utils/auth-utils';
@@ -79,8 +80,10 @@ export async function action({ context, params, request }: Route.ActionArgs) {
       throw i18nRedirect('routes/protected/index.tsx', request);
     }
     case 'print': {
-      // TODO: fetch the proper sin
-      return { sin: '123456789' };
+      // TODO: would it make sense to store in session to avoid making possible multiple calls by an agent?
+      const associateSinService = getAssociateSinService();
+      const { SIN } = await associateSinService.getAssociatedSin(params.caseId);
+      return { sin: SIN };
     }
     default: {
       throw new AppError(`Unrecognized action: ${action}`, ErrorCodes.UNRECOGNIZED_ACTION);
