@@ -11,7 +11,7 @@ const log = LogFactory.getLogger(import.meta.url);
 export function getDefaultSearchService(): SinSearchService {
   return {
     getSearchResults: async (caseId: string): Promise<HitListResult[]> => {
-      const authHeader = serverEnvironment.INTEROP_SIN_REG_API_AUTH_HEADER.value();
+      const authHeader = serverEnvironment.INTEROP_SIN_SEARCH_API_AUTH_HEADER.value();
       const response = await fetch(`${serverEnvironment.INTEROP_SIN_SEARCH_API_BASE_URL}/search`, {
         method: 'POST',
         headers: {
