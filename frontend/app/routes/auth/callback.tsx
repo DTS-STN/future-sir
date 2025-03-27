@@ -1,5 +1,7 @@
 import { redirect } from 'react-router';
 
+import { decodeJwt } from 'jose';
+
 import type { Route } from './+types/callback';
 
 import type { AuthenticationStrategy } from '~/.server/auth/auth-strategies';
@@ -101,7 +103,7 @@ async function handleCallback(
     session.authState = {
       accessToken: tokenSet.accessToken,
       idToken: tokenSet.idToken,
-      idTokenClaims: tokenSet.idTokenClaims,
+      idTokenClaims: decodeJwt(tokenSet.idToken),
     };
 
     return redirect(returnUrl.toString());

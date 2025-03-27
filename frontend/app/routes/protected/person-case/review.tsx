@@ -4,7 +4,6 @@ import type { RouteHandle } from 'react-router';
 import { redirect, useFetcher } from 'react-router';
 
 import { useTranslation } from 'react-i18next';
-import invariant from 'tiny-invariant';
 
 import type { Info, Route } from './+types/review';
 
@@ -68,8 +67,6 @@ export async function action({ context, params, request }: Route.ActionArgs) {
 
     case 'next': {
       const idToken = context.session.authState.idToken;
-      invariant(idToken, 'Expected idToken to be defined');
-
       const sinApplicationService = getSinApplicationService();
       const response = await sinApplicationService.submitSinApplication(inPersonSinApplication, idToken);
 

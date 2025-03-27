@@ -189,6 +189,7 @@ describe('auth-strategies', () => {
     it('should construct a new AzureADAuthenticationStrategy with the correct constructor parameters', async () => {
       vi.mocked(oauth.processAuthorizationCodeResponse, { partial: true }).mockResolvedValue({
         access_token: 'access-token',
+        id_token: 'id-token',
       });
 
       vi.mocked(oauth.validateAuthResponse).mockReturnThis();
@@ -230,6 +231,7 @@ describe('auth-strategies', () => {
     it('should construct a new LocalAuthenticationStrategy with the correct constructor parameters', async () => {
       vi.mocked(oauth.processAuthorizationCodeResponse, { partial: true }).mockResolvedValue({
         access_token: 'access-token',
+        id_token: 'id-token',
       });
 
       vi.mocked(oauth.validateAuthResponse).mockReturnThis();

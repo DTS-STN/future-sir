@@ -25,7 +25,7 @@ export type AuthenticatedSession = AppSession & {
  * Checks if the user session contains the specified role.
  */
 export function hasRole(session: AppSession, role: Role) {
-  return session.authState?.idTokenClaims?.roles?.includes(role);
+  return session.authState?.idTokenClaims.roles?.includes(role);
 }
 
 /**
