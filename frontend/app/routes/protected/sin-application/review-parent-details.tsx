@@ -12,7 +12,7 @@ interface ReviewParentDetailsProps {
     givenName?: string;
     lastName?: string;
     birthLocation?: {
-      country: string;
+      country?: string;
       city?: string;
       province?: string;
     };

@@ -199,7 +199,6 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
   const countryOptions = [{ id: 'select-option', name: '' }, ...loaderData.localizedCountries].map(({ id, name }) => ({
     value: id === 'select-option' ? '' : id,
     children: id === 'select-option' ? t('protected:person-case.select-option') : name,
-    disabled: id === 'select-option',
   }));
 
   const provinceOptions = [{ id: 'select-option', name: '' }, ...loaderData.localizedProvincesTerritoriesStates].map(
@@ -261,7 +260,6 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
             defaultValue={defaultValues?.birthLocation?.country ?? ''}
             options={countryOptions}
             onChange={({ target }) => setCountry(target.value)}
-            required
           />
           {country === globalThis.__appEnvironment.PP_CANADA_COUNTRY_CODE ? (
             <InputSelect
@@ -270,7 +268,6 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
               id={`${index}-province-id`}
               name={`${index}-province`}
               label={t('protected:parent-details.province')}
-              required
               defaultValue={defaultValues?.birthLocation?.province ?? ''}
               options={provinceOptions}
             />
@@ -290,7 +287,6 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
             label={t('protected:parent-details.city')}
             name={`${index}-city`}
             defaultValue={defaultValues?.birthLocation?.city ?? ''}
-            required={country === globalThis.__appEnvironment.PP_CANADA_COUNTRY_CODE}
             type="text"
           />
         </>

@@ -235,7 +235,6 @@ export const parentDetailsSchema = v.pipe(
                 city: v.pipe(
                   v.string('protected:parent-details.city-error.required-city'),
                   v.trim(),
-                  v.nonEmpty('protected:parent-details.city-error.required-city'),
                   v.maxLength(100, 'protected:parent-details.city-error.invalid-city'),
                   v.regex(REGEX_PATTERNS.NON_DIGIT, 'protected:parent-details.city-error.invalid-city'),
                 ),
@@ -243,7 +242,6 @@ export const parentDetailsSchema = v.pipe(
               v.object({
                 country: v.pipe(
                   v.string('protected:parent-details.country-error.required-country'),
-                  v.nonEmpty('protected:parent-details.country-error.required-country'),
                   v.excludes(
                     serverEnvironment.PP_CANADA_COUNTRY_CODE,
                     'protected:parent-details.country-error.invalid-country',
@@ -259,7 +257,6 @@ export const parentDetailsSchema = v.pipe(
                   v.pipe(
                     v.string('protected:parent-details.province-error.required-province'),
                     v.trim(),
-                    v.nonEmpty('protected:parent-details.province-error.required-province'),
                     v.maxLength(100, 'protected:parent-details.province-error.invalid-province'),
                     v.regex(REGEX_PATTERNS.NON_DIGIT, 'protected:parent-details.province-error.invalid-province'),
                   ),
@@ -268,11 +265,13 @@ export const parentDetailsSchema = v.pipe(
                   v.pipe(
                     v.string('protected:parent-details.city-error.required-city'),
                     v.trim(),
-                    v.nonEmpty('protected:parent-details.city-error.required-city'),
                     v.maxLength(100, 'protected:parent-details.city-error.invalid-city'),
                     v.regex(REGEX_PATTERNS.NON_DIGIT, 'protected:parent-details.city-error.invalid-city'),
                   ),
                 ),
+              }),
+              v.object({
+                country: v.optional(v.pipe(v.string(), v.trim())),
               }),
             ],
             'protected:parent-details.country-error.required-country',

@@ -66,7 +66,7 @@ export type SubmitSinApplicationRequestParentDetails = (
       givenName: string;
       lastName: string;
       birthLocation: {
-        country: string;
+        country?: string;
         province?: string | undefined;
         city?: string | undefined;
       };
