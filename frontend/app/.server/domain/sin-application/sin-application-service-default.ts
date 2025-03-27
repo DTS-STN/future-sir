@@ -19,6 +19,7 @@ export function getDefaultSinApplicationService(): SinApplicationService {
   return {
     submitSinApplication: async (
       submitSinApplicationRequest: SubmitSinApplicationRequest,
+      authToken: string,
     ): Promise<SubmitSinApplicationResponse> => {
       log.debug('Submitting SIN application request.');
       log.trace('Submitting SIN application with request:', submitSinApplicationRequest);

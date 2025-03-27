@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { mock } from 'vitest-mock-extended';
 import type { MockProxy } from 'vitest-mock-extended';
@@ -28,6 +29,7 @@ vi.mock('~/.server/domain/sin-application/sin-application-mappers');
 
 describe('getDefaultSinApplicationService', () => {
   const service = getDefaultSinApplicationService();
+  const authTokenMock = faker.internet.jwt();
 
   describe('submitSinApplication', () => {
     let httpRequestMock: MockProxy<Request>;
@@ -56,7 +58,7 @@ describe('getDefaultSinApplicationService', () => {
       vi.mocked(mapSubmitSinApplicationRequestToSinApplicationRequest).mockReturnValue(sinApplicationRequestMappedMock);
       vi.mocked(mapSinApplicationResponseToSubmitSinApplicationResponse).mockReturnValue(submitSinApplicationResponseMock);
 
-      const result = await service.submitSinApplication(submitSinApplicationRequestMock);
+      const result = await service.submitSinApplication(submitSinApplicationRequestMock, authTokenMock);
 
       expect(result).toEqual(submitSinApplicationResponseMock);
       expect(sinapplication).toHaveBeenCalledWith({ body: sinApplicationRequestMappedMock });
@@ -77,8 +79,8 @@ describe('getDefaultSinApplicationService', () => {
         error: 'Sin Aplication Error',
       });
 
-      await expect(service.submitSinApplication(submitSinApplicationRequestMock)).rejects.toThrowError(AppError);
-      await expect(service.submitSinApplication(submitSinApplicationRequestMock)).rejects.toThrowError(
+      await expect(service.submitSinApplication(submitSinApplicationRequestMock, authTokenMock)).rejects.toThrowError(AppError);
+      await expect(service.submitSinApplication(submitSinApplicationRequestMock, authTokenMock)).rejects.toThrowError(
         expect.objectContaining({
           errorCode: ErrorCodes.SUBMIT_SIN_APPLICATION_FAILED,
           msg: `Failed to submit SIN application; status: ${httpResponseMock.status}; content: "Sin Aplication Error"`,

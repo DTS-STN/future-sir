@@ -4,6 +4,7 @@ import type { RouteHandle } from 'react-router';
 import { redirect, useFetcher } from 'react-router';
 
 import { useTranslation } from 'react-i18next';
+import invariant from 'tiny-invariant';
 
 import type { Info, Route } from './+types/review';
 
@@ -66,8 +67,11 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     }
 
     case 'next': {
+      const authToken = context.session.authState.idToken;
+      invariant(authToken, 'Expected authToken to be defined');
+
       const sinApplicationService = getSinApplicationService();
-      const response = await sinApplicationService.submitSinApplication(inPersonSinApplication);
+      const response = await sinApplicationService.submitSinApplication(inPersonSinApplication, authToken);
 
       // TODO ::: GjB ::: remove after demo and handle this in xstate
       throw i18nRedirect('routes/protected/multi-channel/send-validation.tsx', request, {
