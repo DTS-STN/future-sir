@@ -62,7 +62,10 @@ describe('getDefaultSinApplicationService', () => {
 
       expect(result).toEqual(submitSinApplicationResponseMock);
       expect(sinapplication).toHaveBeenCalledWith({ body: sinApplicationRequestMappedMock });
-      expect(mapSubmitSinApplicationRequestToSinApplicationRequest).toHaveBeenCalledWith(submitSinApplicationRequestMock);
+      expect(mapSubmitSinApplicationRequestToSinApplicationRequest).toHaveBeenCalledWith(
+        submitSinApplicationRequestMock,
+        authTokenMock,
+      );
       expect(mapSinApplicationResponseToSubmitSinApplicationResponse).toHaveBeenCalledWith(sinApplicationResponseMock);
     });
 

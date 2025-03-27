@@ -26,15 +26,17 @@ import { AppError } from '~/errors/app-error';
  * Maps the SubmitSinApplicationRequest to SinApplicationRequest (NIEM).
  *
  * @param submitSinApplicationRequest - The request object for submitting a SIN application.
+ * @param authToken - The authentication token for the request.
  * @returns The mapped SIN application request.
  */
 export function mapSubmitSinApplicationRequestToSinApplicationRequest(
   submitSinApplicationRequest: SubmitSinApplicationRequest,
+  authToken: string,
 ): SinApplicationRequest {
   const helpers = createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(submitSinApplicationRequest);
 
   return {
-    SystemCredential: 'KwisatzHaderach',
+    SystemCredential: authToken,
     SINApplication: {
       Applicant: {
         ClientLegalStatus: helpers.getApplicantClientLegalStatus(),

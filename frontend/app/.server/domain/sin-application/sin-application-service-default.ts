@@ -25,7 +25,7 @@ export function getDefaultSinApplicationService(): SinApplicationService {
       log.trace('Submitting SIN application with request:', submitSinApplicationRequest);
 
       const { response, data, error } = await sinapplication({
-        body: mapSubmitSinApplicationRequestToSinApplicationRequest(submitSinApplicationRequest),
+        body: mapSubmitSinApplicationRequestToSinApplicationRequest(submitSinApplicationRequest, authToken),
       });
 
       if (data === undefined) {

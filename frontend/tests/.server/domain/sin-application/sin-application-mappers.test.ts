@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker';
 import { describe, expect, it, vi } from 'vitest';
 
 import type {
@@ -41,6 +42,7 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
     vi.mocked(getApplicantPrimaryDocumentChoiceById).mockReturnValueOnce(applicantPrimaryDocumentChoiceMock);
     vi.mocked(getApplicantSupportingDocumentTypesById);
 
+    const authToken = faker.internet.jwt();
     const submitSinApplicationRequest: SubmitSinApplicationRequest = {
       birthDetails: {
         city: 'City',
@@ -103,7 +105,7 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
     };
 
     const expected: SinApplicationRequest = {
-      SystemCredential: 'KwisatzHaderach',
+      SystemCredential: authToken,
       SINApplication: {
         Applicant: {
           ClientLegalStatus: {
@@ -350,7 +352,7 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
       },
     };
 
-    const result = mapSubmitSinApplicationRequestToSinApplicationRequest(submitSinApplicationRequest);
+    const result = mapSubmitSinApplicationRequestToSinApplicationRequest(submitSinApplicationRequest, authToken);
 
     expect(result).toStrictEqual(expected);
     expect(getApplicantStatusInCanadaChoicesById).toHaveBeenCalledExactlyOnceWith(applicantStatusInCanadaChoiceMock.id);
@@ -382,6 +384,7 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
     vi.mocked(getApplicantPrimaryDocumentChoiceById).mockReturnValueOnce(applicantPrimaryDocumentChoiceMock);
     vi.mocked(getApplicantSupportingDocumentTypesById).mockReturnValueOnce(applicantSupportingDocumentTypeMock);
 
+    const authToken = faker.internet.jwt();
     const submitSinApplicationRequest: SubmitSinApplicationRequest = {
       birthDetails: {
         city: 'City',
@@ -451,7 +454,7 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
     };
 
     const expected: SinApplicationRequest = {
-      SystemCredential: 'KwisatzHaderach',
+      SystemCredential: authToken,
       SINApplication: {
         Applicant: {
           ClientLegalStatus: {
@@ -705,7 +708,7 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
       },
     };
 
-    const result = mapSubmitSinApplicationRequestToSinApplicationRequest(submitSinApplicationRequest);
+    const result = mapSubmitSinApplicationRequestToSinApplicationRequest(submitSinApplicationRequest, authToken);
 
     expect(result).toStrictEqual(expected);
     expect(getApplicantStatusInCanadaChoicesById).toHaveBeenCalledExactlyOnceWith(applicantStatusInCanadaChoiceMock.id);
