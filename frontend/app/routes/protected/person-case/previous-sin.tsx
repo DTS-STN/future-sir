@@ -137,6 +137,7 @@ export default function PreviousSin({ loaderData, actionData, params }: Route.Co
                   name="socialInsuranceNumber"
                   label={t('protected:previous-sin.social-insurance-number-label')}
                   errorMessage={t(getSingleKey(errors?.socialInsuranceNumber))}
+                  required
                 />
               )}
             </div>
