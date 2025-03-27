@@ -13,8 +13,8 @@ export type SubmitSinApplicationRequest = {
 
 export type SubmitSinApplicationRequestBirthDetails = {
   country: string;
-  province?: string | undefined;
-  city?: string | undefined;
+  province: string;
+  city: string;
   fromMultipleBirth: boolean;
 };
 
