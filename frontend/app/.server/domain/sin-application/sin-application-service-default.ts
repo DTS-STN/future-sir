@@ -23,15 +23,14 @@ export function getDefaultSinApplicationService(): SinApplicationService {
       log.debug('Submitting SIN application request.');
       log.trace('Submitting SIN application with request:', submitSinApplicationRequest);
 
-      const { response, data } = await sinapplication({
+      const { response, data, error } = await sinapplication({
         body: mapSubmitSinApplicationRequestToSinApplicationRequest(submitSinApplicationRequest),
       });
 
       if (data === undefined) {
-        const content = await response.text();
-        log.error('Failed to submit SIN application; status: %s; content: %s', response.status, content);
+        log.error('Failed to submit SIN application; status: %s; content: %s', response.status, error);
         throw new AppError(
-          `Failed to submit SIN application; status: ${response.status}; content: ${content}`,
+          `Failed to submit SIN application; status: ${response.status}; content: ${error}`,
           ErrorCodes.SUBMIT_SIN_APPLICATION_FAILED,
         );
       }
