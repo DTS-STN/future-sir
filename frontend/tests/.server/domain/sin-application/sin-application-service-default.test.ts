@@ -81,7 +81,7 @@ describe('getDefaultSinApplicationService', () => {
       await expect(service.submitSinApplication(submitSinApplicationRequestMock)).rejects.toThrowError(
         expect.objectContaining({
           errorCode: ErrorCodes.SUBMIT_SIN_APPLICATION_FAILED,
-          msg: `Failed to submit SIN application; status: ${httpResponseMock.status}; content: Sin Aplication Error`,
+          msg: `Failed to submit SIN application; status: ${httpResponseMock.status}; content: "Sin Aplication Error"`,
           name: 'AppError',
         }),
       );
