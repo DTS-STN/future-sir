@@ -39,8 +39,7 @@ export interface SignInRequest {
  */
 export interface TokenSet {
   readonly accessToken: string;
-  readonly idToken?: string;
-  readonly idTokenClaims?: IDTokenClaims;
+  readonly idToken: string;
 }
 
 /**
@@ -224,6 +223,11 @@ export abstract class BaseAuthenticationStrategy implements AuthenticationStrate
       this.log.trace('Received token response', { tokenEndpointResponse });
 
       const idTokenClaims = oauth.getValidatedIdTokenClaims(tokenEndpointResponse);
+
+      if (!tokenEndpointResponse.id_token || !idTokenClaims) {
+        // this should never happen, but oauth4webapi allows for it so 🤷
+        throw new AppError('ID token not found in token response', ErrorCodes.MISSING_ID_TOKEN);
+      }
 
       return {
         accessToken: tokenEndpointResponse.access_token,

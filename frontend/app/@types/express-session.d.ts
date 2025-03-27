@@ -6,8 +6,8 @@ declare module 'express-session' {
   interface SessionData {
     authState: {
       accessToken: string;
-      idToken?: string;
-      idTokenClaims?: IDTokenClaims;
+      idToken: string;
+      idTokenClaims: IDTokenClaims;
     };
     loginState: {
       codeVerifier: string;
