@@ -20,6 +20,8 @@ import type {
   SinApplicationRequest,
   SinApplicationResponse,
 } from '~/.server/shared/api/interop';
+import { getCountryById } from '~/.server/shared/services/country-service';
+import { getProvinceById } from '~/.server/shared/services/province-service';
 import { AppError } from '~/errors/app-error';
 
 /**
@@ -52,6 +54,12 @@ export function mapSubmitSinApplicationRequestToSinApplicationRequest(
       SINApplicationDetail: helpers.getSINApplicationDetail(),
     },
   };
+}
+
+function getCountry(country?: string): string | undefined {
+  return country && (getCountryById(country).alphaCode === 'CA' || getCountryById(country).alphaCode === 'US') // must use "CA" or "US" REGARDLESS for country
+    ? getCountryById(country).alphaCode
+    : undefined;
 }
 
 /**
@@ -215,12 +223,17 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
                       AddressCityName: parent.birthLocation.city,
                       AddressProvince: {
                         ProvinceCode: {
-                          ReferenceDataID: parent.birthLocation.province,
+                          ReferenceDataID:
+                            parent.birthLocation.province && getCountry(parent.birthLocation.country) === 'CA'
+                              ? getProvinceById(parent.birthLocation.province).alphaCode
+                              : undefined,
+                          ReferenceDataName:
+                            getCountry(parent.birthLocation.country) === 'US' ? parent.birthLocation.province : undefined,
                         },
                       },
                       AddressCountry: {
                         CountryCode: {
-                          ReferenceDataID: parent.birthLocation.country,
+                          ReferenceDataID: getCountry(parent.birthLocation.country),
                         },
                       },
                     },
@@ -244,12 +257,16 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
               AddressCityName: contactInformation.city,
               AddressProvince: {
                 ProvinceCode: {
-                  ReferenceDataID: contactInformation.province,
+                  ReferenceDataID:
+                    contactInformation.province && getCountry(contactInformation.country) === 'CA'
+                      ? getProvinceById(contactInformation.province).alphaCode
+                      : undefined,
+                  ReferenceDataName: getCountry(contactInformation.country) === 'US' ? contactInformation.province : undefined,
                 },
               },
               AddressCountry: {
                 CountryCode: {
-                  ReferenceDataID: contactInformation.country,
+                  ReferenceDataID: getCountry(contactInformation.country),
                 },
               },
               AddressPostalCode: contactInformation.postalCode,
@@ -293,12 +310,16 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
                 AddressCityName: birthDetails.city,
                 AddressProvince: {
                   ProvinceCode: {
-                    ReferenceDataID: birthDetails.province,
+                    ReferenceDataID:
+                      birthDetails.province && getCountry(birthDetails.country) === 'CA'
+                        ? getProvinceById(birthDetails.province).alphaCode
+                        : undefined,
+                    ReferenceDataName: getCountry(birthDetails.country) === 'US' ? birthDetails.province : undefined,
                   },
                 },
                 AddressCountry: {
                   CountryCode: {
-                    ReferenceDataID: birthDetails.country,
+                    ReferenceDataID: getCountry(birthDetails.country),
                   },
                 },
               },

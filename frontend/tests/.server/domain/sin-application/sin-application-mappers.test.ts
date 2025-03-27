@@ -18,13 +18,18 @@ import type {
   SubmitSinApplicationResponse,
 } from '~/.server/domain/sin-application/sin-application-models';
 import type { SinApplicationRequest, SinApplicationResponse } from '~/.server/shared/api/interop';
+import type { Country, Province } from '~/.server/shared/models';
+import { getCountryById } from '~/.server/shared/services/country-service';
+import { getProvinceById } from '~/.server/shared/services/province-service';
 
 vi.mock('~/.server/domain/person-case/services/applicant-status-in-canada-service');
 vi.mock('~/.server/domain/person-case/services/applicant-supporting-document-service');
 vi.mock('~/.server/domain/person-case/services/applicant-primary-document-service');
+vi.mock('~/.server/shared/services/country-service');
+vi.mock('~/.server/shared/services/province-service');
 
 describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
-  it('should map SubmitSinApplicationRequest to SinApplicationRequest correctly when preferredSameAsDocumentName is true', () => {
+  it('should map SubmitSinApplicationRequest to SinApplicationRequest correctly when country is CA and preferredSameAsDocumentName is true', () => {
     const applicantStatusInCanadaChoiceMock: ApplicantStatusInCanadaChoice = {
       id: 'StatusInCanadaId',
       nameEn: 'StatusInCanada NameEn',
@@ -38,23 +43,39 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
       nameFr: 'PrimaryDocument NameFr',
     };
 
+    const countryMock: Country = {
+      id: 'CountryID',
+      alphaCode: 'CA',
+      nameEn: 'Country Name En',
+      nameFr: 'Country Name Fr',
+    };
+
+    const provinceMock: Province = {
+      id: 'ProvinceID',
+      alphaCode: 'QA',
+      nameEn: 'Province Name En',
+      nameFr: 'Province Name Fr',
+    };
+
     vi.mocked(getApplicantStatusInCanadaChoicesById).mockReturnValueOnce(applicantStatusInCanadaChoiceMock);
     vi.mocked(getApplicantPrimaryDocumentChoiceById).mockReturnValueOnce(applicantPrimaryDocumentChoiceMock);
     vi.mocked(getApplicantSupportingDocumentTypesById);
+    vi.mocked(getCountryById).mockReturnValue(countryMock);
+    vi.mocked(getProvinceById).mockReturnValue(provinceMock);
 
     const idToken = faker.internet.jwt();
     const submitSinApplicationRequest: SubmitSinApplicationRequest = {
       birthDetails: {
         city: 'City',
-        province: 'Province',
-        country: 'Country',
+        province: provinceMock.id,
+        country: countryMock.id,
         fromMultipleBirth: false,
       },
       contactInformation: {
         address: 'Address',
         city: 'City',
-        province: 'Province',
-        country: 'Country',
+        province: provinceMock.id,
+        country: countryMock.id,
         postalCode: 'PostalCode',
         emailAddress: 'email@example.com',
         primaryPhoneNumber: '1234567890',
@@ -70,9 +91,9 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
           givenName: 'ParentFirstName',
           lastName: 'ParentLastName',
           birthLocation: {
-            country: 'ParentCountry',
+            country: countryMock.id,
             city: 'ParentCity',
-            province: 'ParentProvince',
+            province: provinceMock.id,
           },
         },
       ],
@@ -198,12 +219,13 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
                             AddressCityName: 'ParentCity',
                             AddressCountry: {
                               CountryCode: {
-                                ReferenceDataID: 'ParentCountry',
+                                ReferenceDataID: countryMock.alphaCode,
                               },
                             },
                             AddressProvince: {
                               ProvinceCode: {
-                                ReferenceDataID: 'ParentProvince',
+                                ReferenceDataID: provinceMock.alphaCode,
+                                ReferenceDataName: undefined,
                               },
                             },
                           },
@@ -223,12 +245,13 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
                   AddressCityName: 'City',
                   AddressProvince: {
                     ProvinceCode: {
-                      ReferenceDataID: 'Province',
+                      ReferenceDataID: provinceMock.alphaCode,
+                      ReferenceDataName: undefined,
                     },
                   },
                   AddressCountry: {
                     CountryCode: {
-                      ReferenceDataID: 'Country',
+                      ReferenceDataID: countryMock.alphaCode,
                     },
                   },
                   AddressPostalCode: 'PostalCode',
@@ -266,12 +289,13 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
                     AddressCityName: 'City',
                     AddressProvince: {
                       ProvinceCode: {
-                        ReferenceDataID: 'Province',
+                        ReferenceDataID: provinceMock.alphaCode,
+                        ReferenceDataName: undefined,
                       },
                     },
                     AddressCountry: {
                       CountryCode: {
-                        ReferenceDataID: 'Country',
+                        ReferenceDataID: countryMock.alphaCode,
                       },
                     },
                   },
@@ -358,9 +382,11 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
     expect(getApplicantStatusInCanadaChoicesById).toHaveBeenCalledExactlyOnceWith(applicantStatusInCanadaChoiceMock.id);
     expect(getApplicantPrimaryDocumentChoiceById).toHaveBeenCalledExactlyOnceWith(applicantPrimaryDocumentChoiceMock.id);
     expect(getApplicantSupportingDocumentTypesById).not.toHaveBeenCalled();
+    expect(getCountryById).toHaveBeenCalledWith(countryMock.id);
+    expect(getProvinceById).toHaveBeenCalledWith(provinceMock.id);
   });
 
-  it('should map SubmitSinApplicationRequest to SinApplicationRequest correctly when preferredSameAsDocumentName is false', () => {
+  it('should map SubmitSinApplicationRequest to SinApplicationRequest correctly when country is US and preferredSameAsDocumentName is false', () => {
     const applicantStatusInCanadaChoiceMock: ApplicantStatusInCanadaChoice = {
       id: 'StatusInCanadaId',
       nameEn: 'StatusInCanada NameEn',
@@ -380,23 +406,32 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
       nameFr: 'DocType1 NameFr',
     };
 
+    const countryMock: Country = {
+      id: 'CountryID',
+      alphaCode: 'US',
+      nameEn: 'Country Name En',
+      nameFr: 'Country Name Fr',
+    };
+
     vi.mocked(getApplicantStatusInCanadaChoicesById).mockReturnValueOnce(applicantStatusInCanadaChoiceMock);
     vi.mocked(getApplicantPrimaryDocumentChoiceById).mockReturnValueOnce(applicantPrimaryDocumentChoiceMock);
     vi.mocked(getApplicantSupportingDocumentTypesById).mockReturnValueOnce(applicantSupportingDocumentTypeMock);
+    vi.mocked(getCountryById).mockReturnValue(countryMock);
+    vi.mocked(getProvinceById);
 
     const idToken = faker.internet.jwt();
     const submitSinApplicationRequest: SubmitSinApplicationRequest = {
       birthDetails: {
         city: 'City',
         province: 'Province',
-        country: 'Country',
+        country: countryMock.id,
         fromMultipleBirth: false,
       },
       contactInformation: {
         address: 'Address',
         city: 'City',
         province: 'Province',
-        country: 'Country',
+        country: countryMock.id,
         postalCode: 'PostalCode',
         emailAddress: 'email@example.com',
         primaryPhoneNumber: '1234567890',
@@ -419,7 +454,7 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
           givenName: 'ParentFirstName',
           lastName: 'ParentLastName',
           birthLocation: {
-            country: 'ParentCountry',
+            country: countryMock.id,
             city: 'ParentCity',
             province: 'ParentProvince',
           },
@@ -554,12 +589,13 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
                             AddressCityName: 'ParentCity',
                             AddressCountry: {
                               CountryCode: {
-                                ReferenceDataID: 'ParentCountry',
+                                ReferenceDataID: countryMock.alphaCode,
                               },
                             },
                             AddressProvince: {
                               ProvinceCode: {
-                                ReferenceDataID: 'ParentProvince',
+                                ReferenceDataID: undefined,
+                                ReferenceDataName: 'ParentProvince',
                               },
                             },
                           },
@@ -579,12 +615,13 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
                   AddressCityName: 'City',
                   AddressProvince: {
                     ProvinceCode: {
-                      ReferenceDataID: 'Province',
+                      ReferenceDataID: undefined,
+                      ReferenceDataName: 'Province',
                     },
                   },
                   AddressCountry: {
                     CountryCode: {
-                      ReferenceDataID: 'Country',
+                      ReferenceDataID: countryMock.alphaCode,
                     },
                   },
                   AddressPostalCode: 'PostalCode',
@@ -622,12 +659,13 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
                     AddressCityName: 'City',
                     AddressProvince: {
                       ProvinceCode: {
-                        ReferenceDataID: 'Province',
+                        ReferenceDataID: undefined,
+                        ReferenceDataName: 'Province',
                       },
                     },
                     AddressCountry: {
                       CountryCode: {
-                        ReferenceDataID: 'Country',
+                        ReferenceDataID: countryMock.alphaCode,
                       },
                     },
                   },
@@ -714,6 +752,8 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
     expect(getApplicantStatusInCanadaChoicesById).toHaveBeenCalledExactlyOnceWith(applicantStatusInCanadaChoiceMock.id);
     expect(getApplicantPrimaryDocumentChoiceById).toHaveBeenCalledExactlyOnceWith(applicantPrimaryDocumentChoiceMock.id);
     expect(getApplicantSupportingDocumentTypesById).toHaveBeenCalledExactlyOnceWith(applicantSupportingDocumentTypeMock.id);
+    expect(getCountryById).toHaveBeenCalledWith(countryMock.id);
+    expect(getProvinceById).not.toHaveBeenCalled();
   });
 });
 
