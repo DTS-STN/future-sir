@@ -1,7 +1,6 @@
 import type { SinCaseService } from '~/.server/domain/multi-channel/case-api-service';
-import { fakeSinCaseDtos } from '~/.server/domain/multi-channel/sin-case-faker';
 import type { SinCaseDto } from '~/.server/domain/multi-channel/sin-case-models';
-import { hasAnySinCases, listAllSinCases, setSinCases, findSinCase } from '~/.server/domain/multi-channel/sin-cases-store';
+import { listAllSinCases, findSinCase } from '~/.server/domain/multi-channel/sin-cases-store';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 
@@ -13,22 +12,6 @@ import { ErrorCodes } from '~/errors/error-codes';
  * @returns An implementation of `SinCaseService` with mocked data.
  */
 export function getMockSinCaseService(): SinCaseService {
-  /**
-   * Retrieves all SIN cases from the store.
-   * If no cases exist, it generates a mock dataset and stores it before returning.
-   *
-   * @returns A promise resolving to an array of `SinCaseDto` objects.
-   */
-  async function listAllStoredSinCases(): Promise<SinCaseDto[]> {
-    if (await hasAnySinCases()) {
-      return await listAllSinCases();
-    }
-
-    // Initialize sin cases with fake data
-    await setSinCases(...fakeSinCaseDtos());
-    return await listAllSinCases();
-  }
-
   return {
     /**
      * Retrieves all SIN cases, generating mock data if necessary.
@@ -36,7 +19,7 @@ export function getMockSinCaseService(): SinCaseService {
      * @returns A promise resolving to an array of `SinCaseDto` objects.
      */
     async listAllSinCases(): Promise<SinCaseDto[]> {
-      return await listAllStoredSinCases();
+      return await listAllSinCases();
     },
 
     /**
