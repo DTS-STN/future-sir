@@ -19,12 +19,13 @@ export function getDefaultSinApplicationService(): SinApplicationService {
   return {
     submitSinApplication: async (
       submitSinApplicationRequest: SubmitSinApplicationRequest,
+      idToken: string,
     ): Promise<SubmitSinApplicationResponse> => {
       log.debug('Submitting SIN application request.');
       log.trace('Submitting SIN application with request:', submitSinApplicationRequest);
 
       const { response, data, error } = await sinapplication({
-        body: mapSubmitSinApplicationRequestToSinApplicationRequest(submitSinApplicationRequest),
+        body: mapSubmitSinApplicationRequestToSinApplicationRequest(submitSinApplicationRequest, idToken),
       });
 
       if (data === undefined) {

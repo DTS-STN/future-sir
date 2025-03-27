@@ -12,7 +12,10 @@ const log = LogFactory.getLogger(import.meta.url);
 
 export function getMockSinApplicationService(): SinApplicationService {
   return {
-    submitSinApplication(submitSinApplicationRequest: SubmitSinApplicationRequest): Promise<SubmitSinApplicationResponse> {
+    submitSinApplication: (
+      submitSinApplicationRequest: SubmitSinApplicationRequest,
+      idToken: string,
+    ): Promise<SubmitSinApplicationResponse> => {
       log.debug('Submitting SIN application request.');
       log.trace('Submitting SIN application with request:', submitSinApplicationRequest);
 
