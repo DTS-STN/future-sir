@@ -19,7 +19,7 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
 };
 
 export const sinapplication = <ThrowOnError extends boolean = false>(options: Options<SinapplicationData, ThrowOnError>) => {
-    return (options.client ?? _heyApiClient).post<SinapplicationResponse, string, ThrowOnError>({
+    return (options.client ?? _heyApiClient).post<SinapplicationResponse, string | object, ThrowOnError>({
         url: '/SINApplication',
         ...options,
         headers: {

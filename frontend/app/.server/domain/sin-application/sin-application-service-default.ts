@@ -28,9 +28,10 @@ export function getDefaultSinApplicationService(): SinApplicationService {
       });
 
       if (data === undefined) {
-        log.error('Failed to submit SIN application; status: %s; content: %s', response.status, error);
+        const content = JSON.stringify(error);
+        log.error('Failed to submit SIN application; status: %s; content: %s', response.status, content);
         throw new AppError(
-          `Failed to submit SIN application; status: ${response.status}; content: ${error}`,
+          `Failed to submit SIN application; status: ${response.status}; content: ${content}`,
           ErrorCodes.SUBMIT_SIN_APPLICATION_FAILED,
         );
       }
