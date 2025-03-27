@@ -133,7 +133,7 @@ export default function PidVerification({ loaderData, actionData, params }: Rout
         <fetcher.Form method="post" noValidate>
           <div className="max-w-prose space-y-6">
             <InputSelect
-              className="w-max rounded-sm"
+              className="w-full sm:w-3/5"
               id="origin-of-sin"
               name="originOfSin"
               label={t('protected:finalize-request.origin-of-sin-label')}

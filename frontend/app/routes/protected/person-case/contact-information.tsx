@@ -113,7 +113,7 @@ export default function ContactInformation({ loaderData, actionData, params }: R
   const isSubmitting = fetcher.state !== 'idle';
   const errors = fetcher.data?.errors;
 
-  const [country, setCountry] = useState<string | undefined>(loaderData.defaultFormValues?.country);
+  const [country, setCountry] = useState<string>(loaderData.defaultFormValues?.country ?? '');
 
   const languageOptions = loaderData.localizedpreferredLanguages.map(({ id, name }) => ({
     value: id,
@@ -124,6 +124,7 @@ export default function ContactInformation({ loaderData, actionData, params }: R
   const countryOptions = [{ id: 'select-option', name: '' }, ...loaderData.localizedCountries].map(({ id, name }) => ({
     value: id === 'select-option' ? '' : id,
     children: id === 'select-option' ? t('protected:person-case.select-option') : name,
+    disabled: id === 'select-option',
   }));
 
   const provinceTerritoryStateOptions = [
@@ -183,13 +184,13 @@ export default function ContactInformation({ loaderData, actionData, params }: R
               </div>
               <h2 className="font-lato text-2xl font-bold">{t('protected:contact-information.mailing-address')}</h2>
               <InputSelect
-                className="w-max rounded-sm"
+                className="w-full sm:w-1/2"
                 id="country"
                 name="country"
                 label={t('protected:contact-information.country-select-label')}
                 options={countryOptions}
                 errorMessage={t(getSingleKey(errors?.country))}
-                defaultValue={loaderData.defaultFormValues?.country}
+                value={country}
                 onChange={({ target }) => setCountry(target.value)}
                 required
               />
@@ -216,7 +217,7 @@ export default function ContactInformation({ loaderData, actionData, params }: R
                   />
                   {country === globalThis.__appEnvironment.PP_CANADA_COUNTRY_CODE ? (
                     <InputSelect
-                      className="w-max rounded-sm"
+                      className="w-full sm:w-1/2"
                       id="province"
                       label={t('protected:contact-information.canada-province-label')}
                       name="province"
@@ -243,6 +244,7 @@ export default function ContactInformation({ loaderData, actionData, params }: R
                     errorMessage={t(getSingleKey(errors?.postalCode))}
                     defaultValue={loaderData.defaultFormValues?.postalCode}
                     required
+                    className="w-full sm:w-1/2"
                   />
                 </>
               )}

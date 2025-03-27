@@ -115,6 +115,7 @@ export default function BirthDetails({ actionData, loaderData, matches, params }
   const countryOptions = [{ id: 'select-option', name: '' }, ...loaderData.localizedCountries].map(({ id, name }) => ({
     value: id === 'select-option' ? '' : id,
     children: id === 'select-option' ? t('protected:person-case.select-option') : name,
+    disabled: id === 'select-option',
   }));
 
   const provinceTerritoryStateOptions = [
@@ -156,13 +157,13 @@ export default function BirthDetails({ actionData, loaderData, matches, params }
                 options={countryOptions}
                 label={t('protected:birth-details.country.label')}
                 onChange={({ target }) => setCountry(target.value)}
-                className="w-full rounded-sm sm:w-104"
+                className="w-full sm:w-1/2"
               />
               {country && (
                 <>
                   {country === globalThis.__appEnvironment.PP_CANADA_COUNTRY_CODE ? (
                     <InputSelect
-                      className="w-max rounded-sm"
+                      className="w-full sm:w-1/2"
                       id="province"
                       label={t('protected:birth-details.province.label')}
                       name="province"
@@ -179,7 +180,7 @@ export default function BirthDetails({ actionData, loaderData, matches, params }
                       defaultValue={loaderData.defaultFormValues?.province}
                       required={country === globalThis.__appEnvironment.PP_CANADA_COUNTRY_CODE}
                       type="text"
-                      className="w-full rounded-sm sm:w-104"
+                      className="w-full"
                     />
                   )}
                   <InputField
@@ -189,7 +190,7 @@ export default function BirthDetails({ actionData, loaderData, matches, params }
                     defaultValue={loaderData.defaultFormValues?.city}
                     required={country === globalThis.__appEnvironment.PP_CANADA_COUNTRY_CODE}
                     type="text"
-                    className="w-full rounded-sm sm:w-104"
+                    className="w-full"
                   />
                   <InputRadios
                     id="from-multiple-id"

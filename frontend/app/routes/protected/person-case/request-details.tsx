@@ -148,7 +148,7 @@ export default function RequestDetails({ actionData, loaderData, params }: Route
                 errorMessage={t(getSingleKey(formErrors?.scenario))}
               />
               <InputSelect
-                className="w-max"
+                className="w-full"
                 id="request-type"
                 name="request-type"
                 label={t('protected:request-details.type-request')}
