@@ -199,6 +199,7 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
   const countryOptions = [{ id: 'select-option', name: '' }, ...loaderData.localizedCountries].map(({ id, name }) => ({
     value: id === 'select-option' ? '' : id,
     children: id === 'select-option' ? t('protected:person-case.select-option') : name,
+    disabled: id === 'select-option',
   }));
 
   const provinceOptions = [{ id: 'select-option', name: '' }, ...loaderData.localizedProvincesTerritoriesStates].map(
@@ -240,7 +241,7 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
             defaultValue={defaultValues?.givenName ?? ''}
             required
             type="text"
-            className="w-full rounded-sm sm:w-104"
+            className="w-full"
           />
           <InputField
             errorMessage={t(getSingleKey(errors?.[`${index}.lastName`]))}
@@ -249,22 +250,23 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
             defaultValue={defaultValues?.lastName ?? ''}
             required
             type="text"
-            className="w-full rounded-sm sm:w-104"
+            className="w-full"
           />
           <InputSelect
             errorMessage={t(getSingleKey(errors?.[`${index}.birthLocation.country`]))}
-            className="w-full rounded-sm sm:w-104"
+            className="w-full sm:w-1/2"
             id={`${index}-country-id`}
             name={`${index}-country`}
             label={t('protected:parent-details.country')}
             defaultValue={defaultValues?.birthLocation?.country ?? ''}
             options={countryOptions}
             onChange={({ target }) => setCountry(target.value)}
+            required
           />
           {country === globalThis.__appEnvironment.PP_CANADA_COUNTRY_CODE ? (
             <InputSelect
               errorMessage={t(getSingleKey(errors?.[`${index}.birthLocation.province`]))}
-              className="w-full rounded-sm sm:w-104"
+              className="w-full sm:w-1/2"
               id={`${index}-province-id`}
               name={`${index}-province`}
               label={t('protected:parent-details.province')}
@@ -275,7 +277,7 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
           ) : (
             <InputField
               errorMessage={t(getSingleKey(errors?.[`${index}.birthLocation.province`]))}
-              className="w-full rounded-sm sm:w-104"
+              className="w-full"
               label={t('protected:parent-details.province')}
               name={`${index}-province`}
               defaultValue={defaultValues?.birthLocation?.province ?? ''}
@@ -284,7 +286,7 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
           )}
           <InputField
             errorMessage={t(getSingleKey(errors?.[`${index}.birthLocation.city`]))}
-            className="w-full rounded-sm sm:w-104"
+            className="w-full"
             label={t('protected:parent-details.city')}
             name={`${index}-city`}
             defaultValue={defaultValues?.birthLocation?.city ?? ''}
