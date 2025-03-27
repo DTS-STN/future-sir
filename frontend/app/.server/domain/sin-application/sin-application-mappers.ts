@@ -319,7 +319,7 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
                 },
                 AddressCountry: {
                   CountryCode: {
-                    ReferenceDataID: getCountry(birthDetails.country),
+                    ReferenceDataID: getCountryById(birthDetails.country).alphaCode === 'CA' ? 'CA' : 'US', // must use "CA" or "US" REGARDLESS for country
                   },
                 },
               },
