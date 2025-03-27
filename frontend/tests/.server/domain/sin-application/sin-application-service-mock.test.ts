@@ -10,7 +10,7 @@ vi.mock('~/utils/string-utils');
 
 describe('getMockSinApplicationService', () => {
   const service = getMockSinApplicationService();
-  const authTokenMock = faker.internet.jwt();
+  const idTokenMock = faker.internet.jwt();
 
   describe('submitSinApplication', () => {
     let mockRequest: MockProxy<SubmitSinApplicationRequest>;
@@ -20,7 +20,7 @@ describe('getMockSinApplicationService', () => {
     });
 
     it('should mock submitting the SIN application and return the mock response data', async () => {
-      const result = await service.submitSinApplication(mockRequest, authTokenMock);
+      const result = await service.submitSinApplication(mockRequest, idTokenMock);
       expect(result.identificationId).not.toBeUndefined();
     });
   });

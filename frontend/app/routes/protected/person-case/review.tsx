@@ -67,11 +67,11 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     }
 
     case 'next': {
-      const authToken = context.session.authState.idToken;
-      invariant(authToken, 'Expected authToken to be defined');
+      const idToken = context.session.authState.idToken;
+      invariant(idToken, 'Expected idToken to be defined');
 
       const sinApplicationService = getSinApplicationService();
-      const response = await sinApplicationService.submitSinApplication(inPersonSinApplication, authToken);
+      const response = await sinApplicationService.submitSinApplication(inPersonSinApplication, idToken);
 
       // TODO ::: GjB ::: remove after demo and handle this in xstate
       throw i18nRedirect('routes/protected/multi-channel/send-validation.tsx', request, {

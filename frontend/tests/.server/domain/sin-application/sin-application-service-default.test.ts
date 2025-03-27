@@ -29,7 +29,7 @@ vi.mock('~/.server/domain/sin-application/sin-application-mappers');
 
 describe('getDefaultSinApplicationService', () => {
   const service = getDefaultSinApplicationService();
-  const authTokenMock = faker.internet.jwt();
+  const idTokenMock = faker.internet.jwt();
 
   describe('submitSinApplication', () => {
     let httpRequestMock: MockProxy<Request>;
@@ -58,13 +58,13 @@ describe('getDefaultSinApplicationService', () => {
       vi.mocked(mapSubmitSinApplicationRequestToSinApplicationRequest).mockReturnValue(sinApplicationRequestMappedMock);
       vi.mocked(mapSinApplicationResponseToSubmitSinApplicationResponse).mockReturnValue(submitSinApplicationResponseMock);
 
-      const result = await service.submitSinApplication(submitSinApplicationRequestMock, authTokenMock);
+      const result = await service.submitSinApplication(submitSinApplicationRequestMock, idTokenMock);
 
       expect(result).toEqual(submitSinApplicationResponseMock);
       expect(sinapplication).toHaveBeenCalledWith({ body: sinApplicationRequestMappedMock });
       expect(mapSubmitSinApplicationRequestToSinApplicationRequest).toHaveBeenCalledWith(
         submitSinApplicationRequestMock,
-        authTokenMock,
+        idTokenMock,
       );
       expect(mapSinApplicationResponseToSubmitSinApplicationResponse).toHaveBeenCalledWith(sinApplicationResponseMock);
     });
@@ -82,8 +82,8 @@ describe('getDefaultSinApplicationService', () => {
         error: 'Sin Aplication Error',
       });
 
-      await expect(service.submitSinApplication(submitSinApplicationRequestMock, authTokenMock)).rejects.toThrowError(AppError);
-      await expect(service.submitSinApplication(submitSinApplicationRequestMock, authTokenMock)).rejects.toThrowError(
+      await expect(service.submitSinApplication(submitSinApplicationRequestMock, idTokenMock)).rejects.toThrowError(AppError);
+      await expect(service.submitSinApplication(submitSinApplicationRequestMock, idTokenMock)).rejects.toThrowError(
         expect.objectContaining({
           errorCode: ErrorCodes.SUBMIT_SIN_APPLICATION_FAILED,
           msg: `Failed to submit SIN application; status: ${httpResponseMock.status}; content: "Sin Aplication Error"`,

@@ -18,13 +18,13 @@ export type SinApplicationService = {
  * with details about the failure.
 
  * @param submitSinApplicationRequest - The request data for the SIN application.
- * @param authToken - The JWT token for authentication.
+ * @param idToken - The ID token for authentication.
  * @returns A promise that resolves with the SIN application response data.
  * @throws {AppError} If the API call fails or the response data is missing.
  */
   submitSinApplication(
     submitSinApplicationRequest: SubmitSinApplicationRequest,
-    authToken: string,
+    idToken: string,
   ): Promise<SubmitSinApplicationResponse>;
 };
 

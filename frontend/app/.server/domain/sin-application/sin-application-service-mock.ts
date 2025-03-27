@@ -14,7 +14,7 @@ export function getMockSinApplicationService(): SinApplicationService {
   return {
     submitSinApplication: (
       submitSinApplicationRequest: SubmitSinApplicationRequest,
-      authToken: string,
+      idToken: string,
     ): Promise<SubmitSinApplicationResponse> => {
       log.debug('Submitting SIN application request.');
       log.trace('Submitting SIN application with request:', submitSinApplicationRequest);
