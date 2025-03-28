@@ -1,0 +1,23 @@
+{
+  "name": "esdc_sinconfirmationreceivingmethod",
+  "parentOptionSetName": null,
+  "displayNameEn": "SIN Confirmation Receiving Method",
+  "displayNameFr": null,
+  "options": [
+    {
+      "value": 564190000,
+      "labelEn": "Digitally by registering or signing into MSCA",
+      "labelFr": "Électroniquement en ouvrant une session ou en vous inscrivant à MDSC"
+    },
+    {
+      "value": 564190001,
+      "labelEn": "By mail",
+      "labelFr": "Par courrier"
+    },
+    {
+      "value": 564190002,
+      "labelEn": "By mail (not eligible for MSCA)",
+      "labelFr": "Par courrier (n’est pas eligible pour MDSC)"
+    }
+  ]
+}
