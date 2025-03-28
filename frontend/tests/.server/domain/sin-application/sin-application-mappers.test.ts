@@ -307,7 +307,7 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
             ApplicationDetailID: 'SIN Confirmation receiving method',
             ApplicationDetailValue: {
               ValueCode: {
-                ReferenceDataID: 'Mail',
+                ReferenceDataID: '564190001',
               },
             },
           },
@@ -650,7 +650,7 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
             ApplicationDetailID: 'SIN Confirmation receiving method',
             ApplicationDetailValue: {
               ValueCode: {
-                ReferenceDataID: 'Mail',
+                ReferenceDataID: '564190001',
               },
             },
           },
