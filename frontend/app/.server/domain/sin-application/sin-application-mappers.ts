@@ -54,7 +54,7 @@ export function mapSubmitSinApplicationRequestToSinApplicationRequest(
         PersonBirthLocation: helpers.mapApplicantPersonPersonBirthLocation(),
         PersonGenderCode: helpers.mapApplicantPersonGenderCode(),
         PersonBirthDate: helpers.mapApplicantPersonBirthDate(),
-        RelatedPerson: helpers.mapRelatedPersonFromBirthDetails(),
+        RelatedPerson: helpers.mapApplicantRelatedPerson(),
       },
       SINApplicationCategoryCode: helpers.mapSINApplicationCategoryCode(),
       SINApplicationDetail: helpers.mapSINApplicationDetail(),
@@ -263,49 +263,66 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
     };
   }
 
-  function mapRelatedPersonFromBirthDetails(): RelatedPerson[] {
-    return parentDetails
-      .filter((parent) => parent.unavailable === false)
-      .map<RelatedPerson>((parent, index) => {
-        const relatedPerson: RelatedPerson = {
-          PersonRelationshipCode: {
-            ReferenceDataName: `Parent ${(index + 1).toString()}`,
-          },
+  function mapApplicantRelatedPerson(): RelatedPerson[] {
+    const availableParents = parentDetails.filter((parent) => parent.unavailable === false);
+
+    if (availableParents.length === 0) {
+      // TODO: One epmty related person always needed :shrug
+      return [
+        {
           PersonName: [
             {
-              PersonGivenName: parent.givenName,
-              PersonSurName: parent.lastName,
+              PersonGivenName: '',
+              PersonSurName: '',
             },
           ],
-        };
+          PersonRelationshipCode: {
+            ReferenceDataName: 'Parent 1',
+          },
+        },
+      ];
+    }
 
-        return relatedPerson;
+    return availableParents.map<RelatedPerson>((parent, index) => {
+      const relatedPerson: RelatedPerson = {
+        PersonRelationshipCode: {
+          ReferenceDataName: `Parent ${(index + 1).toString()}`,
+        },
+        PersonName: [
+          {
+            PersonGivenName: parent.givenName,
+            PersonSurName: parent.lastName,
+          },
+        ],
+      };
 
-        // TODO: Parent details birth location is not supported, maybe later!?
-        // const birthLocation = parent.birthLocation;
+      return relatedPerson;
 
-        // if (!birthLocation.city && !birthLocation.country && !birthLocation.province) {
-        //   // birth location not set
-        //   return relatedPerson;
-        // }
+      // TODO: Parent details birth location is not supported, maybe later!?
+      // const birthLocation = parent.birthLocation;
 
-        // return {
-        //   ...relatedPerson,
-        //   PersonBirthLocation: {
-        //     LocationContactInformation: [
-        //       {
-        //         Address: [
-        //           {
-        //             AddressCityName: birthLocation.city,
-        //             AddressProvince: getProvinceType(birthLocation.country, birthLocation.province),
-        //             AddressCountry: getCountryType(birthLocation.country),
-        //           },
-        //         ],
-        //       },
-        //     ],
-        //   },
-        // };
-      });
+      // if (!birthLocation.city && !birthLocation.country && !birthLocation.province) {
+      //   // birth location not set
+      //   return relatedPerson;
+      // }
+
+      // return {
+      //   ...relatedPerson,
+      //   PersonBirthLocation: {
+      //     LocationContactInformation: [
+      //       {
+      //         Address: [
+      //           {
+      //             AddressCityName: birthLocation.city,
+      //             AddressProvince: getProvinceType(birthLocation.country, birthLocation.province),
+      //             AddressCountry: getCountryType(birthLocation.country),
+      //           },
+      //         ],
+      //       },
+      //     ],
+      //   },
+      // };
+    });
   }
 
   function mapApplicantPersonContactInformation(): PersonContactInformation[] {
@@ -510,7 +527,7 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
     mapApplicantPersonName,
     mapApplicantPersonPersonBirthLocation,
     mapApplicantPersonPersonLanguage,
-    mapRelatedPersonFromBirthDetails,
+    mapApplicantRelatedPerson,
     mapSINApplicationCategoryCode,
     mapSINApplicationDetail,
   };
