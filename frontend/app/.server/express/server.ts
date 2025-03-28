@@ -11,15 +11,6 @@ import { LogFactory } from '~/.server/logging';
 
 const log = LogFactory.getLogger(import.meta.url);
 
-// accommodate the extra uncaughtException and unhandledRejection listeners
-// added by winston by increasing the max number of listeners by 25%
-// see: https://github.com/winstonjs/winston/blob/v3.17.0/lib/winston/exception-handler.js#L51
-// see: https://github.com/winstonjs/winston/blob/v3.17.0/lib/winston/rejection-handler.js#L51
-const existingMaxListeners = process.getMaxListeners();
-const increasedMaxListeners = Math.round(existingMaxListeners * 1.25);
-log.debug('Setting process.maxListeners to to %s (was: %s)', increasedMaxListeners, existingMaxListeners);
-process.setMaxListeners(increasedMaxListeners);
-
 log.info('Installing source map support');
 sourceMapSupport.install();
 

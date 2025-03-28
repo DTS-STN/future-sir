@@ -45,7 +45,14 @@ export const LogFactory = {
       return winston.loggers.get(category);
     }
 
-    return winston.loggers.add(category, {
+    // accommodate the extra uncaughtException and unhandledRejection listeners used by the console transport
+    // This fixes the following warnigns that are logged by nodejs: MaxListenersExceededWarning: Possible EventEmitter memory leak detected
+    // see: https://github.com/winstonjs/winston/blob/v3.17.0/lib/winston/exception-handler.js#L51
+    // see: https://github.com/winstonjs/winston/blob/v3.17.0/lib/winston/rejection-handler.js#L51
+    const maxListeners = process.getMaxListeners();
+    process.setMaxListeners(maxListeners + 2);
+
+    const logger = winston.loggers.add(category, {
       level: getLogLevel(),
       levels: logLevels,
       format: format.combine(
@@ -57,6 +64,10 @@ export const LogFactory = {
       ),
       transports: [consoleTransport],
     });
+
+    logger.trace('process.maxListeners increased to %s', process.getMaxListeners());
+
+    return logger;
   },
 };
 
