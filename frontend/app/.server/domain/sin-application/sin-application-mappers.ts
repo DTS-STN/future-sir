@@ -204,7 +204,7 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
         ReferenceDataID: serverEnvironment.PP_APPLICANT_PRIMARY_DOCUMENT_TYPE_CERTIFICATE_CANADIAN_CITIZENSHIP_CODE,
         ReferenceDataName: 'PID',
       },
-      // ResourceReference: 'Primary Document Citizenship PID.pdf', // doc upload disabled
+      ResourceReference: 'Primary Document Citizenship PID.pdf', // doc upload disabled
       Client: {
         PersonName: [
           {
@@ -242,7 +242,7 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
         ReferenceDataID: secondaryDocument.documentType,
         ReferenceDataName: 'SD',
       },
-      // ResourceReference: 'Secondary Document Passport SD.pdf', // doc upload disabled
+      ResourceReference: 'Secondary Document Passport SD.pdf', // doc upload disabled
       CertificateExpiryDate: {
         date: `${secondaryDocument.expiryYear}-${secondaryDocument.expiryMonth}`,
       },
