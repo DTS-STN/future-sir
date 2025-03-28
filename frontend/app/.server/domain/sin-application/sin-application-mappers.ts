@@ -462,14 +462,12 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
       },
     });
 
-    if (previousSin.socialInsuranceNumber) {
-      sinApplicationDetail.push({
-        ApplicationDetailID: 'Previous SIN Number',
-        ApplicationDetailValue: {
-          ValueString: previousSin.socialInsuranceNumber,
-        },
-      });
-    }
+    sinApplicationDetail.push({
+      ApplicationDetailID: 'Previous SIN Number',
+      ApplicationDetailValue: {
+        ValueString: previousSin.socialInsuranceNumber ?? '',
+      },
+    });
 
     sinApplicationDetail.push({
       ApplicationDetailID: 'is registered indian status',
