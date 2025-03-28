@@ -100,12 +100,14 @@
     "citizenship-date": {
       "label": "Date de citoyenneté",
       "invalid": "La date de citoyenneté est invalide.",
+      "invalid-future-date": "La date de citoyenneté doit être passée ou actuelle.",
       "required-year": "L'année de citoyenneté est requise.",
       "invalid-year": "L'année de citoyenneté est invalide.",
       "required-month": "La date du mois de citoyenneté est requise.",
       "invalid-month": "La date du mois de citoyenneté est invalide.",
       "required-day": "La date du jour de citoyenneté est requise.",
-      "invalid-day": "La date du jour de citoyenneté est invalide."
+      "invalid-day": "La date du jour de citoyenneté est invalide.",
+      "invalid-before-dob": "La date de citoyenneté doit être postérieure à la date de naissance"
     },
     "upload-document": {
       "label": "Téléchargez le document d'identité principal"
