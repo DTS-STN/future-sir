@@ -39,19 +39,21 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
       status: HttpStatusCodes.NOT_FOUND,
     });
   }
-
-  //TODO: replace with record data (names, city, etc)
   return {
     documentTitle: t('protected:sin-confirmation.page-title'),
     recordDetails: {
       date: dateToLocalizedText(serverEnvironment.BASE_TIMEZONE),
-      firstName: 'Johnathan',
-      middleNames: ['Joe', 'James'],
-      familyNames: ['Doe', 'Smith'],
-      address: '123 Main St. Suite 4B',
-      postalCode: 'A1A 1A1',
-      city: 'City',
-      province: 'Province',
+      firstName: personSinCase.currentNameInfo.firstName ?? personSinCase.primaryDocuments.givenName,
+      middleNames: [personSinCase.currentNameInfo.middleName],
+      familyNames: [
+        personSinCase.currentNameInfo.lastName,
+        personSinCase.personalInformation.lastNamePreviouslyUsed,
+        personSinCase.primaryDocuments.lastName,
+      ].filter((name) => name !== undefined),
+      address: personSinCase.contactInformation.address,
+      city: personSinCase.contactInformation.city,
+      province: personSinCase.contactInformation.province,
+      postalCode: personSinCase.contactInformation.postalCode,
     },
   };
 }
@@ -157,15 +159,15 @@ export default function SinConfirmation({ loaderData, actionData, params }: Rout
               {recordDetails.firstName}
             </ConfirmationDetail>
             <ConfirmationDetail resourceKey="protected:sin-confirmation.middle-name">
-              {recordDetails.middleNames.map((name) => (
-                <span key={name} className="block">
+              {recordDetails.middleNames.map((name, i) => (
+                <span key={`${name}-${i}`} className="block">
                   {name}
                 </span>
               ))}
             </ConfirmationDetail>
             <ConfirmationDetail resourceKey="protected:sin-confirmation.family-name">
-              {recordDetails.familyNames.map((name) => (
-                <span key={name} className="block">
+              {recordDetails.familyNames.map((name, i) => (
+                <span key={`${name}-${i}`} className="block">
                   {name}
                 </span>
               ))}
