@@ -361,7 +361,7 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
             },
           },
           {
-            ApplicationDetailID: 'Registered indian status on record',
+            ApplicationDetailID: 'Register indian status on record',
             ApplicationDetailValue: {
               ValueBoolean: false,
             },
@@ -717,7 +717,7 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
             },
           },
           {
-            ApplicationDetailID: 'Registered indian status on record',
+            ApplicationDetailID: 'Register indian status on record',
             ApplicationDetailValue: {
               ValueBoolean: false,
             },

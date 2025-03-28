@@ -480,7 +480,7 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
     });
 
     sinApplicationDetail.push({
-      ApplicationDetailID: 'Registered indian status on record',
+      ApplicationDetailID: 'Register indian status on record',
       ApplicationDetailValue: {
         ValueBoolean: false,
       },
