@@ -39,9 +39,13 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
 
   const { t } = await getTranslation(request, handle.i18nNamespace);
 
-  //TODO: fetch and return Interop data (names, dob, etc)
   return {
     documentTitle: t('protected:search-sin.page-title'),
+    fullName: `${personSinCase.currentNameInfo.firstName} ${personSinCase.currentNameInfo.lastName}`,
+    firstNamesPreviouslyUsed: personSinCase.personalInformation.firstNamePreviouslyUsed?.join(', '),
+    dob: personSinCase.primaryDocuments.dateOfBirth,
+    parents: personSinCase.parentDetails.filter((p) => !p.unavailable).map((p) => `${p.givenName} ${p.lastName}`),
+    otherLastNames: personSinCase.personalInformation.lastNamePreviouslyUsed?.join(','),
   };
 }
 
@@ -114,24 +118,27 @@ export default function SearchSin({ loaderData, actionData, params }: Route.Comp
           <div className="space-y-6">
             <h2 className="font-lato text-2xl font-semibold">{t('protected:search-sin.search-information')}</h2>
             <div className="bg-slate-100 p-5">
-              <h3 className="font-lato mb-4 text-xl font-semibold">John Doe</h3>
+              <h3 className="font-lato mb-4 text-xl font-semibold">{loaderData.fullName}</h3>
               <div className="grid gap-3 sm:grid-cols-3">
                 <div>
                   <dt className="font-semibold">{t('protected:search-sin.other-names')}</dt>
-                  <dd className="mt-1">Jon, Johnny</dd>
+                  <dd className="mt-1">{loaderData.firstNamesPreviouslyUsed}</dd>
                 </div>
                 <div>
                   <dt className="font-semibold">{t('protected:search-sin.date-of-birth')}</dt>
-                  <dd className="mt-1">January 1, 1963</dd>
+                  <dd className="mt-1">{loaderData.dob}</dd>
                 </div>
                 <div>
                   <dt className="font-semibold">{t('protected:search-sin.parents-legal-guardians')}</dt>
-                  <dd className="mt-1">Jonathan Doe</dd>
-                  <dd className="mt-1">Jane Doe</dd>
+                  {loaderData.parents.map((parent, i) => (
+                    <dd className="mt-1" key={`${parent}-${i}`}>
+                      {parent}
+                    </dd>
+                  ))}
                 </div>
                 <div>
                   <dt className="font-semibold">{t('protected:search-sin.other-last-names')}</dt>
-                  <dd className="mt-1">Untel</dd>
+                  <dd className="mt-1">{loaderData.otherLastNames}</dd>
                 </div>
               </div>
             </div>
