@@ -12,6 +12,7 @@ import type { Info, Route } from './+types/sin-confirmation';
 import { getAssociateSinService } from '~/.server/domain/multi-channel/associate-sin-service';
 import { getSinCaseService } from '~/.server/domain/multi-channel/case-api-service';
 import { serverEnvironment } from '~/.server/environment';
+import { getLocalizedProvinceById } from '~/.server/shared/services/province-service';
 import { requireAllRoles } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
@@ -29,7 +30,7 @@ export const handle = {
 
 export async function loader({ context, params, request }: Route.LoaderArgs) {
   requireAllRoles(context.session, new URL(request.url), ['user']);
-  const { t } = await getTranslation(request, handle.i18nNamespace);
+  const { lang, t } = await getTranslation(request, handle.i18nNamespace);
 
   // TODO ::: GjB ::: the data returned by the following call should be checked to ensure the logged-in user has permissions to view it
   const personSinCase = await getSinCaseService().findSinCaseById(params.caseId);
@@ -53,6 +54,11 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
       address: personSinCase.contactInformation.address,
       city: personSinCase.contactInformation.city,
       province: personSinCase.contactInformation.province,
+      provinceName: personSinCase.contactInformation.province
+        ? personSinCase.contactInformation.country === serverEnvironment.PP_CANADA_COUNTRY_CODE
+          ? getLocalizedProvinceById(personSinCase.contactInformation.province, lang).name
+          : personSinCase.contactInformation.province
+        : undefined,
       postalCode: personSinCase.contactInformation.postalCode,
     },
   };
@@ -176,7 +182,7 @@ export default function SinConfirmation({ loaderData, actionData, params }: Rout
               <span className="block">{recordDetails.address}</span>
               <span className="block">
                 {recordDetails.city && <span className="mr-[0.5ch]">{recordDetails.city}</span>}
-                {recordDetails.province && <span className="mr-[0.5ch]">{recordDetails.province}</span>}
+                {recordDetails.provinceName && <span className="mr-[0.5ch]">{recordDetails.provinceName}</span>}
                 {recordDetails.postalCode}
               </span>
             </ConfirmationDetail>
