@@ -147,19 +147,6 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
                   },
                 ],
               },
-              RelatedPerson: [
-                {
-                  PersonName: [
-                    {
-                      PersonGivenName: 'ParentFirstName',
-                      PersonSurName: 'ParentLastName',
-                    },
-                  ],
-                  PersonRelationshipCode: {
-                    ReferenceDataName: 'Parent 1',
-                  },
-                },
-              ],
             },
             {
               CertificateCategoryCode: {
@@ -505,19 +492,6 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
                   },
                 ],
               },
-              RelatedPerson: [
-                {
-                  PersonName: [
-                    {
-                      PersonGivenName: 'ParentFirstName',
-                      PersonSurName: 'ParentLastName',
-                    },
-                  ],
-                  PersonRelationshipCode: {
-                    ReferenceDataName: 'Parent 1',
-                  },
-                },
-              ],
             },
             {
               CertificateCategoryCode: {

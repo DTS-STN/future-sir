@@ -233,7 +233,6 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
       CertificateIssueDate: {
         date: primaryDocuments.citizenshipDate,
       },
-      RelatedPerson: mapRelatedPersonFromBirthDetails(),
     };
   }
 
