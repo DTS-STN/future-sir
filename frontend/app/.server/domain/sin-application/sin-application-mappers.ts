@@ -299,16 +299,16 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
       {
         Address: [
           {
-            AddressStreet: {
-              // StreetNumberText: '22', // field doesn't exists
-              StreetName: contactInformation.address,
-            },
-            // AddressSecondaryUnitText: '3', // field doesn't exists
             AddressCityName: contactInformation.city,
-            AddressProvince: getProvinceType(contactInformation.country, contactInformation.province),
             AddressCountry: getCountryType(contactInformation.country),
             AddressPostalCode: contactInformation.postalCode,
+            AddressProvince: getProvinceType(contactInformation.country, contactInformation.province),
             AddressRecipientName: `${getApplicantFirstName()} ${getApplicantLastName()}`,
+            AddressSecondaryUnitText: '', // field doesn't exists
+            AddressStreet: {
+              StreetName: contactInformation.address,
+              StreetNumberText: '', // field doesn't exists
+            },
           },
         ],
         EmailAddress: mapApplicantPersonContactInformationEmailAddress(),
@@ -318,11 +318,11 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
   }
 
   function mapApplicantPersonContactInformationEmailAddress(): EmailAddressType[] {
-    if (contactInformation.emailAddress) {
-      return [];
-    }
-
-    return [{ EmailAddressID: contactInformation.emailAddress }];
+    return [
+      {
+        EmailAddressID: contactInformation.emailAddress ?? '',
+      },
+    ];
   }
 
   function mapApplicantPersonContactInformationTelephoneNumber(): TelephoneNumberType[] {
