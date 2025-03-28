@@ -67,7 +67,7 @@ export type ParentDetailsData = (
       givenName: string;
       lastName: string;
       birthLocation: {
-        country: string;
+        country?: string;
         province?: string;
         city?: string;
       };

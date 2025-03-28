@@ -53,7 +53,7 @@ export type SinCaseParentDetailsDto =
       givenName: string;
       lastName: string;
       birthLocation: {
-        country: string;
+        country?: string;
         province?: string;
         city?: string;
       };
