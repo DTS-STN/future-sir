@@ -75,7 +75,7 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
         lastNameAtBirth: 'LastNameAtBirth',
         firstNamePreviouslyUsed: ['FirstNamePrev'],
         lastNamePreviouslyUsed: ['LastNamePrev'],
-        gender: 'M',
+        gender: '564190000',
       },
       previousSin: {
         hasPreviousSin: '564190000',
@@ -90,13 +90,13 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
         givenName: 'GivenName',
         lastName: 'LastName',
         dateOfBirth: '2000-01-01',
-        gender: 'M',
+        gender: '564190000',
       },
       privacyStatement: {
         agreedToTerms: true,
       },
-      requestDetails: { type: 'RequestType', scenario: 'Scenario' },
-      secondaryDocument: { documentType: 'SecDocType', expiryYear: '2025', expiryMonth: '12' },
+      requestDetails: { type: '564190000', scenario: '564190000' },
+      secondaryDocument: { documentType: '564190000', expiryYear: '2025', expiryMonth: '12' },
     };
 
     const expected: SinApplicationRequest = {
@@ -107,6 +107,9 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
               CertificateCategoryCode: {
                 ReferenceDataID: '564190001',
                 ReferenceDataName: 'PID',
+              },
+              CertificateEffectiveDate: {
+                date: '2020-01-01',
               },
               CertificateIssueDate: {
                 date: '2020-01-01',
@@ -138,7 +141,7 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
                   ],
                 },
                 PersonGenderCode: {
-                  ReferenceDataID: 'M',
+                  ReferenceDataID: '564190000',
                 },
                 PersonName: [
                   {
@@ -147,21 +150,36 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
                   },
                 ],
               },
+              RelatedPerson: [
+                {
+                  PersonName: [
+                    {
+                      PersonGivenName: '',
+                      PersonSurName: '',
+                    },
+                  ],
+                  PersonRelationshipCode: {
+                    ReferenceDataName: 'Parent 1',
+                  },
+                },
+              ],
+              ResourceReference: 'Primary Document Citizenship PID.pdf',
             },
             {
               CertificateCategoryCode: {
-                ReferenceDataID: 'SecDocType',
+                ReferenceDataID: '564190000',
                 ReferenceDataName: 'SD',
               },
               CertificateExpiryDate: {
                 date: '2025-12',
               },
+              ResourceReference: 'Secondary Document Passport SD.pdf',
             },
           ],
           ClientLegalStatus: {
             Certificate: [
               {
-                CertificateIssueDate: {
+                CertificateEffectiveDate: {
                   date: '2020-01-01',
                 },
               },
@@ -210,12 +228,18 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
                     },
                   },
                   AddressRecipientName: 'GivenName LastName',
+                  AddressSecondaryUnitText: '',
                   AddressStreet: {
                     StreetName: 'Address',
+                    StreetNumberText: '',
                   },
                 },
               ],
-              EmailAddress: [],
+              EmailAddress: [
+                {
+                  EmailAddressID: 'email@example.com',
+                },
+              ],
               TelephoneNumber: [
                 {
                   FullTelephoneNumber: {
@@ -237,7 +261,7 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
             },
           ],
           PersonGenderCode: {
-            ReferenceDataID: 'M',
+            ReferenceDataID: '564190000',
           },
           PersonLanguage: [
             {
@@ -292,14 +316,14 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
           ],
         },
         SINApplicationCategoryCode: {
-          ReferenceDataID: 'RequestType',
+          ReferenceDataID: '564190000',
         },
         SINApplicationDetail: [
           {
             ApplicationDetailID: 'SIN Application Submission Scenario',
             ApplicationDetailValue: {
               ValueCode: {
-                ReferenceDataID: 'Scenario',
+                ReferenceDataID: '564190000',
               },
             },
           },
@@ -421,7 +445,7 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
         lastNameAtBirth: 'LastNameAtBirth',
         firstNamePreviouslyUsed: ['FirstNamePrev'],
         lastNamePreviouslyUsed: ['LastNamePrev'],
-        gender: 'M',
+        gender: '564190000',
       },
       previousSin: {
         hasPreviousSin: '564190000',
@@ -436,13 +460,13 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
         givenName: 'GivenName',
         lastName: 'LastName',
         dateOfBirth: '2000-01-01',
-        gender: 'M',
+        gender: '564190000',
       },
       privacyStatement: {
         agreedToTerms: true,
       },
-      requestDetails: { type: 'RequestType', scenario: 'Scenario' },
-      secondaryDocument: { documentType: 'SecDocType', expiryYear: '2025', expiryMonth: '12' },
+      requestDetails: { type: '564190000', scenario: '564190000' },
+      secondaryDocument: { documentType: '564190000', expiryYear: '2025', expiryMonth: '12' },
     };
 
     const expected: SinApplicationRequest = {
@@ -453,6 +477,9 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
               CertificateCategoryCode: {
                 ReferenceDataID: '564190001',
                 ReferenceDataName: 'PID',
+              },
+              CertificateEffectiveDate: {
+                date: '2020-01-01',
               },
               CertificateIssueDate: {
                 date: '2020-01-01',
@@ -483,7 +510,7 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
                   ],
                 },
                 PersonGenderCode: {
-                  ReferenceDataID: 'M',
+                  ReferenceDataID: '564190000',
                 },
                 PersonName: [
                   {
@@ -492,21 +519,36 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
                   },
                 ],
               },
+              RelatedPerson: [
+                {
+                  PersonName: [
+                    {
+                      PersonGivenName: '',
+                      PersonSurName: '',
+                    },
+                  ],
+                  PersonRelationshipCode: {
+                    ReferenceDataName: 'Parent 1',
+                  },
+                },
+              ],
+              ResourceReference: 'Primary Document Citizenship PID.pdf',
             },
             {
               CertificateCategoryCode: {
-                ReferenceDataID: 'SecDocType',
+                ReferenceDataID: '564190000',
                 ReferenceDataName: 'SD',
               },
               CertificateExpiryDate: {
                 date: '2025-12',
               },
+              ResourceReference: 'Secondary Document Passport SD.pdf',
             },
           ],
           ClientLegalStatus: {
             Certificate: [
               {
-                CertificateIssueDate: {
+                CertificateEffectiveDate: {
                   date: '2020-01-01',
                 },
               },
@@ -553,12 +595,18 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
                     },
                   },
                   AddressRecipientName: 'FirstName MiddleName LastName',
+                  AddressSecondaryUnitText: '',
                   AddressStreet: {
                     StreetName: 'Address',
+                    StreetNumberText: '',
                   },
                 },
               ],
-              EmailAddress: [],
+              EmailAddress: [
+                {
+                  EmailAddressID: 'email@example.com',
+                },
+              ],
               TelephoneNumber: [
                 {
                   FullTelephoneNumber: {
@@ -580,7 +628,7 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
             },
           ],
           PersonGenderCode: {
-            ReferenceDataID: 'M',
+            ReferenceDataID: '564190000',
           },
           PersonLanguage: [
             {
@@ -635,14 +683,14 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
           ],
         },
         SINApplicationCategoryCode: {
-          ReferenceDataID: 'RequestType',
+          ReferenceDataID: '564190000',
         },
         SINApplicationDetail: [
           {
             ApplicationDetailID: 'SIN Application Submission Scenario',
             ApplicationDetailValue: {
               ValueCode: {
-                ReferenceDataID: 'Scenario',
+                ReferenceDataID: '564190000',
               },
             },
           },

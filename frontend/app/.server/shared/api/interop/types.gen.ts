@@ -96,6 +96,7 @@ export type CertificateType = ResourceType & {
     CertificateCategoryCode?: ReferenceDataCodeType;
     CertificateExpiryDate?: CertificateExpiryDate;
     CertificateIdentification?: CertificateIdentification[];
+    CertificateEffectiveDate?: DateType;
     CertificateIssueDate?: CertificateIssueDate;
     Client?: CertificateClient;
     RelatedPerson?: RelatedPerson[];

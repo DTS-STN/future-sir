@@ -54,7 +54,7 @@ export function mapSubmitSinApplicationRequestToSinApplicationRequest(
         PersonBirthLocation: helpers.mapApplicantPersonPersonBirthLocation(),
         PersonGenderCode: helpers.mapApplicantPersonGenderCode(),
         PersonBirthDate: helpers.mapApplicantPersonBirthDate(),
-        RelatedPerson: helpers.mapRelatedPersonFromBirthDetails(),
+        RelatedPerson: helpers.mapApplicantRelatedPerson(),
       },
       SINApplicationCategoryCode: helpers.mapSINApplicationCategoryCode(),
       SINApplicationDetail: helpers.mapSINApplicationDetail(),
@@ -146,7 +146,7 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
     return {
       Certificate: [
         {
-          CertificateIssueDate: {
+          CertificateEffectiveDate: {
             date: primaryDocuments.citizenshipDate,
           },
         },
@@ -204,7 +204,7 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
         ReferenceDataID: serverEnvironment.PP_APPLICANT_PRIMARY_DOCUMENT_TYPE_CERTIFICATE_CANADIAN_CITIZENSHIP_CODE,
         ReferenceDataName: 'PID',
       },
-      // ResourceReference: 'Primary Document Citizenship PID.pdf', // doc upload disabled
+      ResourceReference: 'Primary Document Citizenship PID.pdf', // doc upload disabled
       Client: {
         PersonName: [
           {
@@ -230,9 +230,26 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
           ReferenceDataID: primaryDocuments.gender,
         },
       },
+      CertificateEffectiveDate: {
+        date: primaryDocuments.citizenshipDate,
+      },
       CertificateIssueDate: {
         date: primaryDocuments.citizenshipDate,
       },
+      // TODO: One epmty related person always needed :shrug
+      RelatedPerson: [
+        {
+          PersonName: [
+            {
+              PersonGivenName: '',
+              PersonSurName: '',
+            },
+          ],
+          PersonRelationshipCode: {
+            ReferenceDataName: 'Parent 1',
+          },
+        },
+      ],
     };
   }
 
@@ -242,56 +259,73 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
         ReferenceDataID: secondaryDocument.documentType,
         ReferenceDataName: 'SD',
       },
-      // ResourceReference: 'Secondary Document Passport SD.pdf', // doc upload disabled
+      ResourceReference: 'Secondary Document Passport SD.pdf', // doc upload disabled
       CertificateExpiryDate: {
         date: `${secondaryDocument.expiryYear}-${secondaryDocument.expiryMonth}`,
       },
     };
   }
 
-  function mapRelatedPersonFromBirthDetails(): RelatedPerson[] {
-    return parentDetails
-      .filter((parent) => parent.unavailable === false)
-      .map<RelatedPerson>((parent, index) => {
-        const relatedPerson: RelatedPerson = {
-          PersonRelationshipCode: {
-            ReferenceDataName: `Parent ${(index + 1).toString()}`,
-          },
+  function mapApplicantRelatedPerson(): RelatedPerson[] {
+    const availableParents = parentDetails.filter((parent) => parent.unavailable === false);
+
+    if (availableParents.length === 0) {
+      // TODO: One epmty related person always needed :shrug
+      return [
+        {
           PersonName: [
             {
-              PersonGivenName: parent.givenName,
-              PersonSurName: parent.lastName,
+              PersonGivenName: '',
+              PersonSurName: '',
             },
           ],
-        };
+          PersonRelationshipCode: {
+            ReferenceDataName: 'Parent 1',
+          },
+        },
+      ];
+    }
 
-        return relatedPerson;
+    return availableParents.map<RelatedPerson>((parent, index) => {
+      const relatedPerson: RelatedPerson = {
+        PersonRelationshipCode: {
+          ReferenceDataName: `Parent ${(index + 1).toString()}`,
+        },
+        PersonName: [
+          {
+            PersonGivenName: parent.givenName,
+            PersonSurName: parent.lastName,
+          },
+        ],
+      };
 
-        // TODO: Parent details birth location is not supported, maybe later!?
-        // const birthLocation = parent.birthLocation;
+      return relatedPerson;
 
-        // if (!birthLocation.city && !birthLocation.country && !birthLocation.province) {
-        //   // birth location not set
-        //   return relatedPerson;
-        // }
+      // TODO: Parent details birth location is not supported, maybe later!?
+      // const birthLocation = parent.birthLocation;
 
-        // return {
-        //   ...relatedPerson,
-        //   PersonBirthLocation: {
-        //     LocationContactInformation: [
-        //       {
-        //         Address: [
-        //           {
-        //             AddressCityName: birthLocation.city,
-        //             AddressProvince: getProvinceType(birthLocation.country, birthLocation.province),
-        //             AddressCountry: getCountryType(birthLocation.country),
-        //           },
-        //         ],
-        //       },
-        //     ],
-        //   },
-        // };
-      });
+      // if (!birthLocation.city && !birthLocation.country && !birthLocation.province) {
+      //   // birth location not set
+      //   return relatedPerson;
+      // }
+
+      // return {
+      //   ...relatedPerson,
+      //   PersonBirthLocation: {
+      //     LocationContactInformation: [
+      //       {
+      //         Address: [
+      //           {
+      //             AddressCityName: birthLocation.city,
+      //             AddressProvince: getProvinceType(birthLocation.country, birthLocation.province),
+      //             AddressCountry: getCountryType(birthLocation.country),
+      //           },
+      //         ],
+      //       },
+      //     ],
+      //   },
+      // };
+    });
   }
 
   function mapApplicantPersonContactInformation(): PersonContactInformation[] {
@@ -299,16 +333,16 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
       {
         Address: [
           {
-            AddressStreet: {
-              // StreetNumberText: '22', // field doesn't exists
-              StreetName: contactInformation.address,
-            },
-            // AddressSecondaryUnitText: '3', // field doesn't exists
             AddressCityName: contactInformation.city,
-            AddressProvince: getProvinceType(contactInformation.country, contactInformation.province),
             AddressCountry: getCountryType(contactInformation.country),
             AddressPostalCode: contactInformation.postalCode,
+            AddressProvince: getProvinceType(contactInformation.country, contactInformation.province),
             AddressRecipientName: `${getApplicantFirstName()} ${getApplicantLastName()}`,
+            AddressSecondaryUnitText: '', // field doesn't exists
+            AddressStreet: {
+              StreetName: contactInformation.address,
+              StreetNumberText: '', // field doesn't exists
+            },
           },
         ],
         EmailAddress: mapApplicantPersonContactInformationEmailAddress(),
@@ -318,11 +352,11 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
   }
 
   function mapApplicantPersonContactInformationEmailAddress(): EmailAddressType[] {
-    if (contactInformation.emailAddress) {
-      return [];
-    }
-
-    return [{ EmailAddressID: contactInformation.emailAddress }];
+    return [
+      {
+        EmailAddressID: contactInformation.emailAddress ?? '',
+      },
+    ];
   }
 
   function mapApplicantPersonContactInformationTelephoneNumber(): TelephoneNumberType[] {
@@ -462,14 +496,12 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
       },
     });
 
-    if (previousSin.socialInsuranceNumber) {
-      sinApplicationDetail.push({
-        ApplicationDetailID: 'Previous SIN Number',
-        ApplicationDetailValue: {
-          ValueString: previousSin.socialInsuranceNumber,
-        },
-      });
-    }
+    sinApplicationDetail.push({
+      ApplicationDetailID: 'Previous SIN Number',
+      ApplicationDetailValue: {
+        ValueString: previousSin.socialInsuranceNumber ?? '',
+      },
+    });
 
     sinApplicationDetail.push({
       ApplicationDetailID: 'is registered indian status',
@@ -498,7 +530,7 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
     mapApplicantPersonName,
     mapApplicantPersonPersonBirthLocation,
     mapApplicantPersonPersonLanguage,
-    mapRelatedPersonFromBirthDetails,
+    mapApplicantRelatedPerson,
     mapSINApplicationCategoryCode,
     mapSINApplicationDetail,
   };
