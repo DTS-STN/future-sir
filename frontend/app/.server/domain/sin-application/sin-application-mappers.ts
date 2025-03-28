@@ -233,6 +233,20 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
       CertificateIssueDate: {
         date: primaryDocuments.citizenshipDate,
       },
+      // TODO: One epmty related person always needed :shrug
+      RelatedPerson: [
+        {
+          PersonName: [
+            {
+              PersonGivenName: '',
+              PersonSurName: '',
+            },
+          ],
+          PersonRelationshipCode: {
+            ReferenceDataName: 'Parent 1',
+          },
+        },
+      ],
     };
   }
 
