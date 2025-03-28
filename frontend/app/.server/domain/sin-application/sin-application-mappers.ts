@@ -146,7 +146,7 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
     return {
       Certificate: [
         {
-          CertificateIssueDate: {
+          CertificateEffectiveDate: {
             date: primaryDocuments.citizenshipDate,
           },
         },
@@ -229,6 +229,9 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
         PersonGenderCode: {
           ReferenceDataID: primaryDocuments.gender,
         },
+      },
+      CertificateEffectiveDate: {
+        date: primaryDocuments.citizenshipDate,
       },
       CertificateIssueDate: {
         date: primaryDocuments.citizenshipDate,
