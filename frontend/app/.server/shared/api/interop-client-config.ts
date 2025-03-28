@@ -1,4 +1,5 @@
 import type { ClientOptions, Config } from '@hey-api/client-fetch';
+import { ProxyAgent } from 'undici';
 
 import { serverEnvironment } from '~/.server/environment';
 import { LogFactory } from '~/.server/logging';
@@ -20,8 +21,22 @@ export function createClientConfig<T extends ClientOptions>(
   return {
     ...config,
     baseUrl: serverEnvironment.INTEROP_SIN_REG_API_BASE_URL,
+    fetch: getFetchFn(),
     headers: { ...parseAuthorizationHeader(authHeader) },
   };
+}
+
+/**
+ * Returns a fetch() function configured with a proxy if the INTEROP_PROXY_URL
+ * environment variable is set. Otherwise, it returns undefined, indicating
+ * that the default fetch function should be used.
+ */
+function getFetchFn(): Config['fetch'] {
+  if (serverEnvironment.INTEROP_PROXY_URL) {
+    const dispatcher = new ProxyAgent({ uri: serverEnvironment.INTEROP_PROXY_URL, proxyTls: { timeout: 10_000 } });
+    // @ts-expect-error node's globalThis.fetch() and undici.fetch() are functionally equivalent
+    return (request) => globalThis.fetch(request, { dispatcher });
+  }
 }
 
 /**
