@@ -58,6 +58,7 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
       originOfSin: serverEnvironment.RC_CODES.find(({ alphaCode }) => alphaCode === officeProvinceCode)?.RC_CODE,
       declaration: undefined,
     },
+    fromMultipleBirth: personSinCase.birthDetails.fromMultipleBirth,
   };
 }
 
@@ -157,11 +158,15 @@ export default function PidVerification({ loaderData, actionData, params }: Rout
                 }}
               />
             </p>
-            <h3 className="font-lato text-lg font-semibold">{t('protected:finalize-request.warnings.heading')}</h3>
-            <p>{t('protected:finalize-request.warnings.following-warnings')}</p>
-            <ContextualAlert type={'warning'}>
-              <p>{t('protected:finalize-request.warnings.multiple-births')}</p>
-            </ContextualAlert>
+            {loaderData.fromMultipleBirth && (
+              <>
+                <h3 className="font-lato text-lg font-semibold">{t('protected:finalize-request.warnings.heading')}</h3>
+                <p>{t('protected:finalize-request.warnings.following-warnings')}</p>
+                <ContextualAlert type={'warning'}>
+                  <p>{t('protected:finalize-request.warnings.multiple-births')}</p>
+                </ContextualAlert>
+              </>
+            )}
             <h3 className="font-lato text-lg font-semibold">{t('protected:finalize-request.declaration')}</h3>
             <p>{t('protected:finalize-request.all-transactions')}</p>
             <InputCheckbox
