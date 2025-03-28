@@ -200,7 +200,8 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
   function mapApplicantCertificatePID(): CertificateType {
     return {
       CertificateCategoryCode: {
-        ReferenceDataID: primaryDocuments.documentType,
+        // TODO: Fix later, should use primaryDocuments.documentType
+        ReferenceDataID: serverEnvironment.PP_APPLICANT_PRIMARY_DOCUMENT_TYPE_CERTIFICATE_CANADIAN_CITIZENSHIP_CODE,
         ReferenceDataName: 'PID',
       },
       // ResourceReference: 'Primary Document Citizenship PID.pdf', // doc upload disabled
@@ -255,7 +256,7 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
       .map<RelatedPerson>((parent, index) => {
         const relatedPerson: RelatedPerson = {
           PersonRelationshipCode: {
-            ReferenceDataName: 'Parent' + (index + 1),
+            ReferenceDataName: `Parent ${(index + 1).toString()}`,
           },
           PersonName: [
             {
@@ -265,29 +266,32 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
           ],
         };
 
-        const birthLocation = parent.birthLocation;
+        return relatedPerson;
 
-        if (!birthLocation.city && !birthLocation.country && !birthLocation.province) {
-          // birth location not set
-          return relatedPerson;
-        }
+        // TODO: Parent details birth location is not supported, maybe later!?
+        // const birthLocation = parent.birthLocation;
 
-        return {
-          ...relatedPerson,
-          PersonBirthLocation: {
-            LocationContactInformation: [
-              {
-                Address: [
-                  {
-                    AddressCityName: birthLocation.city,
-                    AddressProvince: getProvinceType(birthLocation.country, birthLocation.province),
-                    AddressCountry: getCountryType(birthLocation.country),
-                  },
-                ],
-              },
-            ],
-          },
-        };
+        // if (!birthLocation.city && !birthLocation.country && !birthLocation.province) {
+        //   // birth location not set
+        //   return relatedPerson;
+        // }
+
+        // return {
+        //   ...relatedPerson,
+        //   PersonBirthLocation: {
+        //     LocationContactInformation: [
+        //       {
+        //         Address: [
+        //           {
+        //             AddressCityName: birthLocation.city,
+        //             AddressProvince: getProvinceType(birthLocation.country, birthLocation.province),
+        //             AddressCountry: getCountryType(birthLocation.country),
+        //           },
+        //         ],
+        //       },
+        //     ],
+        //   },
+        // };
       });
   }
 
@@ -354,7 +358,12 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
         CommunicationCategoryCode: {
           ReferenceDataName: 'Correspondence',
         },
-        LanguageCode: { ReferenceDataID: contactInformation.preferredLanguage },
+        LanguageCode: {
+          ReferenceDataID:
+            contactInformation.preferredLanguage === serverEnvironment.PP_LANGUAGE_OF_CORRESPONDENCE_FRENCH_CODE //
+              ? 'FR'
+              : 'EN',
+        },
         PreferredIndicator: true,
       },
     ];

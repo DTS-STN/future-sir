@@ -54,7 +54,7 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
         emailAddress: 'email@example.com',
         primaryPhoneNumber: '1234567890',
         secondaryPhoneNumber: '0987654321',
-        preferredLanguage: 'EN',
+        preferredLanguage: '564190000',
       },
       currentNameInfo: {
         preferredSameAsDocumentName: true,
@@ -105,7 +105,7 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
           Certificate: [
             {
               CertificateCategoryCode: {
-                ReferenceDataID: 'PrimaryDocument01',
+                ReferenceDataID: '564190001',
                 ReferenceDataName: 'PID',
               },
               CertificateIssueDate: {
@@ -149,28 +149,6 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
               },
               RelatedPerson: [
                 {
-                  PersonBirthLocation: {
-                    LocationContactInformation: [
-                      {
-                        Address: [
-                          {
-                            AddressCityName: 'ParentCity',
-                            AddressCountry: {
-                              CountryCode: {
-                                ReferenceDataID: 'CA',
-                              },
-                            },
-                            AddressProvince: {
-                              ProvinceCode: {
-                                ReferenceDataID: 'ON',
-                                ReferenceDataName: 'Ontario En',
-                              },
-                            },
-                          },
-                        ],
-                      },
-                    ],
-                  },
                   PersonName: [
                     {
                       PersonGivenName: 'ParentFirstName',
@@ -178,7 +156,7 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
                     },
                   ],
                   PersonRelationshipCode: {
-                    ReferenceDataName: 'Parent1',
+                    ReferenceDataName: 'Parent 1',
                   },
                 },
               ],
@@ -314,28 +292,6 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
           ],
           RelatedPerson: [
             {
-              PersonBirthLocation: {
-                LocationContactInformation: [
-                  {
-                    Address: [
-                      {
-                        AddressCityName: 'ParentCity',
-                        AddressCountry: {
-                          CountryCode: {
-                            ReferenceDataID: 'CA',
-                          },
-                        },
-                        AddressProvince: {
-                          ProvinceCode: {
-                            ReferenceDataID: 'ON',
-                            ReferenceDataName: 'Ontario En',
-                          },
-                        },
-                      },
-                    ],
-                  },
-                ],
-              },
               PersonName: [
                 {
                   PersonGivenName: 'ParentFirstName',
@@ -343,7 +299,7 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
                 },
               ],
               PersonRelationshipCode: {
-                ReferenceDataName: 'Parent1',
+                ReferenceDataName: 'Parent 1',
               },
             },
           ],
@@ -450,7 +406,7 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
         emailAddress: 'email@example.com',
         primaryPhoneNumber: '1234567890',
         secondaryPhoneNumber: '0987654321',
-        preferredLanguage: 'EN',
+        preferredLanguage: '564190000',
       },
       currentNameInfo: {
         preferredSameAsDocumentName: false,
@@ -508,7 +464,7 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
           Certificate: [
             {
               CertificateCategoryCode: {
-                ReferenceDataID: 'PrimaryDocument01',
+                ReferenceDataID: '564190001',
                 ReferenceDataName: 'PID',
               },
               CertificateIssueDate: {
@@ -551,27 +507,6 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
               },
               RelatedPerson: [
                 {
-                  PersonBirthLocation: {
-                    LocationContactInformation: [
-                      {
-                        Address: [
-                          {
-                            AddressCityName: 'ParentCity',
-                            AddressCountry: {
-                              CountryCode: {
-                                ReferenceDataID: 'US',
-                              },
-                            },
-                            AddressProvince: {
-                              ProvinceCode: {
-                                ReferenceDataName: 'Parent US State',
-                              },
-                            },
-                          },
-                        ],
-                      },
-                    ],
-                  },
                   PersonName: [
                     {
                       PersonGivenName: 'ParentFirstName',
@@ -579,7 +514,7 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
                     },
                   ],
                   PersonRelationshipCode: {
-                    ReferenceDataName: 'Parent1',
+                    ReferenceDataName: 'Parent 1',
                   },
                 },
               ],
@@ -713,27 +648,6 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
           ],
           RelatedPerson: [
             {
-              PersonBirthLocation: {
-                LocationContactInformation: [
-                  {
-                    Address: [
-                      {
-                        AddressCityName: 'ParentCity',
-                        AddressCountry: {
-                          CountryCode: {
-                            ReferenceDataID: 'US',
-                          },
-                        },
-                        AddressProvince: {
-                          ProvinceCode: {
-                            ReferenceDataName: 'Parent US State',
-                          },
-                        },
-                      },
-                    ],
-                  },
-                ],
-              },
               PersonName: [
                 {
                   PersonGivenName: 'ParentFirstName',
@@ -741,7 +655,7 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
                 },
               ],
               PersonRelationshipCode: {
-                ReferenceDataName: 'Parent1',
+                ReferenceDataName: 'Parent 1',
               },
             },
           ],
