@@ -172,27 +172,54 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
       PersonSurName: personalInformation.lastNameAtBirth,
     });
 
-    if (personalInformation.firstNamePreviouslyUsed && personalInformation.firstNamePreviouslyUsed.length > 0) {
-      applicantPersonName.push(
-        ...personalInformation.firstNamePreviouslyUsed.map((name) => ({
-          PersonGivenName: name,
-          PersonNameCategoryCode: {
-            ReferenceDataName: 'Alternate',
-          },
-        })),
-      );
-    }
+    // TODO: PersonFullName should always be send with ReferenceDataName: 'Native'
+    applicantPersonName.push({
+      PersonFullName: getApplicantFirstName() + ' ' + getApplicantLastName(),
+      PersonNameCategoryCode: {
+        ReferenceDataName: 'Native',
+      },
+    });
 
-    if (personalInformation.lastNamePreviouslyUsed && personalInformation.lastNamePreviouslyUsed.length > 0) {
-      applicantPersonName.push(
-        ...personalInformation.lastNamePreviouslyUsed.map((name) => ({
-          PersonSurName: name,
-          PersonNameCategoryCode: {
-            ReferenceDataName: 'Alternate',
-          },
-        })),
-      );
-    }
+    // TODO: Remove it later
+    // FirstNamePReviouslyUsed and LastNamePreviouslyUsed must be send together with  ReferenceDataName: 'Alternate'
+    applicantPersonName.push({
+      PersonGivenName:
+        personalInformation.firstNamePreviouslyUsed && personalInformation.firstNamePreviouslyUsed.length > 0
+          ? personalInformation.firstNamePreviouslyUsed.join(' ')
+          : '',
+      PersonNameCategoryCode: {
+        ReferenceDataName: 'Alternate',
+      },
+      PersonSurName:
+        personalInformation.lastNamePreviouslyUsed && personalInformation.lastNamePreviouslyUsed.length > 0
+          ? personalInformation.lastNamePreviouslyUsed.join(' ')
+          : '',
+    });
+
+    // TODO: Enable it later
+    // FirstNamePReviouslyUsed and LastNamePreviouslyUsed must be send together with  ReferenceDataName: 'Alternate'
+
+    // if (personalInformation.firstNamePreviouslyUsed && personalInformation.firstNamePreviouslyUsed.length > 0) {
+    //  applicantPersonName.push(
+    //    ...personalInformation.firstNamePreviouslyUsed.map((name) => ({
+    //      PersonGivenName: name,
+    //      PersonNameCategoryCode: {
+    //        ReferenceDataName: 'Alternate',
+    //      },
+    //    })),
+    //  );
+    // }
+
+    // if (personalInformation.lastNamePreviouslyUsed && personalInformation.lastNamePreviouslyUsed.length > 0) {
+    //  applicantPersonName.push(
+    //    ...personalInformation.lastNamePreviouslyUsed.map((name) => ({
+    //      PersonSurName: name,
+    //      PersonNameCategoryCode: {
+    //        ReferenceDataName: 'Alternate',
+    //      },
+    //    })),
+    //  );
+    //}
 
     return applicantPersonName;
   }

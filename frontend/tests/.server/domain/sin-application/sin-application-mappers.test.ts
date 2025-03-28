@@ -289,12 +289,13 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
               PersonSurName: 'LastNameAtBirth',
             },
             {
-              PersonGivenName: 'FirstNamePrev',
+              PersonFullName: 'GivenName LastName',
               PersonNameCategoryCode: {
-                ReferenceDataName: 'Alternate',
+                ReferenceDataName: 'Native',
               },
             },
             {
+              PersonGivenName: 'FirstNamePrev',
               PersonNameCategoryCode: {
                 ReferenceDataName: 'Alternate',
               },
@@ -656,12 +657,13 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
               PersonSurName: 'LastNameAtBirth',
             },
             {
-              PersonGivenName: 'FirstNamePrev',
+              PersonFullName: 'FirstName MiddleName LastName',
               PersonNameCategoryCode: {
-                ReferenceDataName: 'Alternate',
+                ReferenceDataName: 'Native',
               },
             },
             {
+              PersonGivenName: 'FirstNamePrev',
               PersonNameCategoryCode: {
                 ReferenceDataName: 'Alternate',
               },
