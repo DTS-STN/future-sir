@@ -1,14 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { describe, expect, it, vi } from 'vitest';
 
-import type {
-  ApplicantPrimaryDocumentChoice,
-  ApplicantStatusInCanadaChoice,
-  ApplicantSupportingDocumentType,
-} from '~/.server/domain/person-case/models';
-import { getApplicantPrimaryDocumentChoiceById } from '~/.server/domain/person-case/services/applicant-primary-document-service';
-import { getApplicantStatusInCanadaChoicesById } from '~/.server/domain/person-case/services/applicant-status-in-canada-service';
-import { getApplicantSupportingDocumentTypesById } from '~/.server/domain/person-case/services/applicant-supporting-document-service';
 import {
   mapSinApplicationResponseToSubmitSinApplicationResponse,
   mapSubmitSinApplicationRequestToSinApplicationRequest,
@@ -22,44 +14,26 @@ import type { Country, Province } from '~/.server/shared/models';
 import { getCountryById } from '~/.server/shared/services/country-service';
 import { getProvinceById } from '~/.server/shared/services/province-service';
 
-vi.mock('~/.server/domain/person-case/services/applicant-status-in-canada-service');
 vi.mock('~/.server/domain/person-case/services/applicant-supporting-document-service');
-vi.mock('~/.server/domain/person-case/services/applicant-primary-document-service');
 vi.mock('~/.server/shared/services/country-service');
 vi.mock('~/.server/shared/services/province-service');
 
 describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
   it('should map SubmitSinApplicationRequest to SinApplicationRequest correctly when country is CA and preferredSameAsDocumentName is true', () => {
-    const applicantStatusInCanadaChoiceMock: ApplicantStatusInCanadaChoice = {
-      id: 'StatusInCanadaId',
-      nameEn: 'StatusInCanada NameEn',
-      nameFr: 'StatusInCanada NameFr',
-    };
-
-    const applicantPrimaryDocumentChoiceMock: ApplicantPrimaryDocumentChoice = {
-      id: 'PrimaryDocumentId',
-      applicantStatusInCanadaId: 'StatusInCanadaId',
-      nameEn: 'PrimaryDocument NameEn',
-      nameFr: 'PrimaryDocument NameFr',
-    };
-
     const countryMock: Country = {
-      id: 'CountryID',
+      id: 'Country01',
       alphaCode: 'CA',
-      nameEn: 'Country Name En',
-      nameFr: 'Country Name Fr',
+      nameEn: 'Canada En',
+      nameFr: 'Canada Fr',
     };
 
     const provinceMock: Province = {
-      id: 'ProvinceID',
-      alphaCode: 'QA',
-      nameEn: 'Province Name En',
-      nameFr: 'Province Name Fr',
+      id: 'Province01',
+      alphaCode: 'ON',
+      nameEn: 'Ontario En',
+      nameFr: 'Ontario Fr',
     };
 
-    vi.mocked(getApplicantStatusInCanadaChoicesById).mockReturnValueOnce(applicantStatusInCanadaChoiceMock);
-    vi.mocked(getApplicantPrimaryDocumentChoiceById).mockReturnValueOnce(applicantPrimaryDocumentChoiceMock);
-    vi.mocked(getApplicantSupportingDocumentTypesById);
     vi.mocked(getCountryById).mockReturnValue(countryMock);
     vi.mocked(getProvinceById).mockReturnValue(provinceMock);
 
@@ -69,7 +43,7 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
         city: 'City',
         province: provinceMock.id,
         country: countryMock.id,
-        fromMultipleBirth: false,
+        fromMultipleBirth: true,
       },
       contactInformation: {
         address: 'Address',
@@ -109,9 +83,9 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
       },
       primaryDocuments: {
         citizenshipDate: '2020-01-01',
-        currentStatusInCanada: applicantStatusInCanadaChoiceMock.id,
+        currentStatusInCanada: 'StatusInCanada01',
         registrationNumber: 'RegNumber',
-        documentType: applicantPrimaryDocumentChoiceMock.id,
+        documentType: 'PrimaryDocument01',
         clientNumber: 'ClientNumber',
         givenName: 'GivenName',
         lastName: 'LastName',
@@ -126,91 +100,55 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
     };
 
     const expected: SinApplicationRequest = {
-      SystemCredential: idToken,
       SINApplication: {
         Applicant: {
-          ClientLegalStatus: {
-            Certificate: [
-              {
-                CertificateIssueDate: { date: '2020-01-01' },
-                CertificateCategoryCode: {
-                  ReferenceDataID: '564190000',
-                  ReferenceDataName: applicantStatusInCanadaChoiceMock.nameEn,
-                },
-              },
-            ],
-          },
-          PersonName: [
-            {
-              PersonNameCategoryCode: { ReferenceDataName: 'Legal' },
-              PersonGivenName: 'GivenName',
-              PersonSurName: 'LastName',
-            },
-            {
-              PersonNameCategoryCode: { ReferenceDataName: 'at birth' },
-              PersonSurName: 'LastNameAtBirth',
-            },
-            {
-              PersonGivenName: 'FirstNamePrev',
-              PersonNameCategoryCode: { ReferenceDataName: 'Alternate' },
-            },
-            {
-              PersonSurName: 'LastNamePrev',
-              PersonNameCategoryCode: { ReferenceDataName: 'Alternate' },
-            },
-          ],
           Certificate: [
             {
-              ResourceReference: 'Documents',
-              CertificateIdentification: [{ IdentificationID: 'RegNumber' }],
-            },
-            {
               CertificateCategoryCode: {
-                ReferenceDataID: '564190001',
-                ReferenceDataName: applicantPrimaryDocumentChoiceMock.nameEn,
+                ReferenceDataID: 'PrimaryDocument01',
+                ReferenceDataName: 'PID',
               },
-              ResourceReference: 'Primary Documents',
-            },
-            {
-              CertificateCategoryCode: {
-                ReferenceDataID: 'SecDocType',
+              CertificateIssueDate: {
+                date: '2020-01-01',
               },
-              CertificateExpiryDate: {
-                date: '2025-12',
-              },
-              ResourceReference: 'Secondary Documents',
-            },
-            {
               Client: {
-                ClientIdentification: [
-                  {
-                    IdentificationID: 'ClientNumber',
-                  },
-                ],
+                PersonBirthDate: {
+                  date: '2000-01-01',
+                },
+                PersonBirthLocation: {
+                  LocationContactInformation: [
+                    {
+                      Address: [
+                        {
+                          AddressCityName: 'City',
+                          AddressCountry: {
+                            CountryCode: {
+                              ReferenceDataID: 'CA',
+                            },
+                          },
+                          AddressProvince: {
+                            ProvinceCode: {
+                              ReferenceDataID: 'ON',
+                              ReferenceDataName: 'Ontario En',
+                            },
+                          },
+                        },
+                      ],
+                    },
+                  ],
+                },
+                PersonGenderCode: {
+                  ReferenceDataID: 'M',
+                },
                 PersonName: [
                   {
                     PersonGivenName: 'GivenName',
                     PersonSurName: 'LastName',
                   },
                 ],
-                PersonBirthDate: {
-                  date: '2000-01-01',
-                },
-                PersonSexAtBirthCode: { ReferenceDataID: 'M' },
               },
-            },
-            {
               RelatedPerson: [
                 {
-                  PersonRelationshipCode: {
-                    ReferenceDataName: 'Parent1',
-                  },
-                  PersonName: [
-                    {
-                      PersonGivenName: 'ParentFirstName',
-                      PersonSurName: 'ParentLastName',
-                    },
-                  ],
                   PersonBirthLocation: {
                     LocationContactInformation: [
                       {
@@ -219,13 +157,13 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
                             AddressCityName: 'ParentCity',
                             AddressCountry: {
                               CountryCode: {
-                                ReferenceDataID: countryMock.alphaCode,
+                                ReferenceDataID: 'CA',
                               },
                             },
                             AddressProvince: {
                               ProvinceCode: {
-                                ReferenceDataID: provinceMock.alphaCode,
-                                ReferenceDataName: undefined,
+                                ReferenceDataID: 'ON',
+                                ReferenceDataName: 'Ontario En',
                               },
                             },
                           },
@@ -233,69 +171,55 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
                       },
                     ],
                   },
-                },
-              ],
-            },
-          ],
-          PersonContactInformation: [
-            {
-              Address: [
-                {
-                  AddressStreet: { StreetName: 'Address' },
-                  AddressCityName: 'City',
-                  AddressProvince: {
-                    ProvinceCode: {
-                      ReferenceDataID: provinceMock.alphaCode,
-                      ReferenceDataName: undefined,
+                  PersonName: [
+                    {
+                      PersonGivenName: 'ParentFirstName',
+                      PersonSurName: 'ParentLastName',
                     },
-                  },
-                  AddressCountry: {
-                    CountryCode: {
-                      ReferenceDataID: countryMock.alphaCode,
-                    },
-                  },
-                  AddressPostalCode: 'PostalCode',
-                },
-              ],
-              EmailAddress: [{ EmailAddressID: 'email@example.com' }],
-              TelephoneNumber: [
-                {
-                  FullTelephoneNumber: {
-                    TelephoneNumberFullID: '1234567890',
-                  },
-                },
-                {
-                  FullTelephoneNumber: {
-                    TelephoneNumberFullID: '0987654321',
+                  ],
+                  PersonRelationshipCode: {
+                    ReferenceDataName: 'Parent1',
                   },
                 },
               ],
             },
-          ],
-          PersonLanguage: [
             {
-              CommunicationCategoryCode: {
-                ReferenceDataName: 'Correspondence',
+              CertificateCategoryCode: {
+                ReferenceDataID: 'SecDocType',
+                ReferenceDataName: 'SD',
               },
-              LanguageCode: { ReferenceDataID: 'EN' },
-              PreferredIndicator: true,
+              CertificateExpiryDate: {
+                date: '2025-12',
+              },
             },
           ],
+          ClientLegalStatus: {
+            Certificate: [
+              {
+                CertificateIssueDate: {
+                  date: '2020-01-01',
+                },
+              },
+            ],
+          },
+          PersonBirthDate: {
+            date: '2000-01-01',
+          },
           PersonBirthLocation: {
             LocationContactInformation: [
               {
                 Address: [
                   {
                     AddressCityName: 'City',
-                    AddressProvince: {
-                      ProvinceCode: {
-                        ReferenceDataID: provinceMock.alphaCode,
-                        ReferenceDataName: undefined,
-                      },
-                    },
                     AddressCountry: {
                       CountryCode: {
-                        ReferenceDataID: countryMock.alphaCode,
+                        ReferenceDataID: 'CA',
+                      },
+                    },
+                    AddressProvince: {
+                      ProvinceCode: {
+                        ReferenceDataID: 'ON',
+                        ReferenceDataName: 'Ontario En',
                       },
                     },
                   },
@@ -303,12 +227,126 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
               },
             ],
           },
+          PersonContactInformation: [
+            {
+              Address: [
+                {
+                  AddressCityName: 'City',
+                  AddressCountry: {
+                    CountryCode: {
+                      ReferenceDataID: 'CA',
+                    },
+                  },
+                  AddressPostalCode: 'PostalCode',
+                  AddressProvince: {
+                    ProvinceCode: {
+                      ReferenceDataID: 'ON',
+                      ReferenceDataName: 'Ontario En',
+                    },
+                  },
+                  AddressRecipientName: 'GivenName LastName',
+                  AddressStreet: {
+                    StreetName: 'Address',
+                  },
+                },
+              ],
+              EmailAddress: [],
+              TelephoneNumber: [
+                {
+                  FullTelephoneNumber: {
+                    TelephoneNumberFullID: '1234567890',
+                  },
+                  TelephoneNumberCategoryCode: {
+                    ReferenceDataName: 'Primary',
+                  },
+                },
+                {
+                  FullTelephoneNumber: {
+                    TelephoneNumberFullID: '0987654321',
+                  },
+                  TelephoneNumberCategoryCode: {
+                    ReferenceDataName: 'Secondary',
+                  },
+                },
+              ],
+            },
+          ],
           PersonGenderCode: {
             ReferenceDataID: 'M',
           },
-          PersonBirthDate: {
-            date: '2000-01-01',
-          },
+          PersonLanguage: [
+            {
+              CommunicationCategoryCode: {
+                ReferenceDataName: 'Correspondence',
+              },
+              LanguageCode: {
+                ReferenceDataID: 'EN',
+              },
+              PreferredIndicator: true,
+            },
+          ],
+          PersonName: [
+            {
+              PersonGivenName: 'GivenName',
+              PersonNameCategoryCode: {
+                ReferenceDataName: 'Legal',
+              },
+              PersonSurName: 'LastName',
+            },
+            {
+              PersonNameCategoryCode: {
+                ReferenceDataName: 'at birth',
+              },
+              PersonSurName: 'LastNameAtBirth',
+            },
+            {
+              PersonGivenName: 'FirstNamePrev',
+              PersonNameCategoryCode: {
+                ReferenceDataName: 'Alternate',
+              },
+            },
+            {
+              PersonNameCategoryCode: {
+                ReferenceDataName: 'Alternate',
+              },
+              PersonSurName: 'LastNamePrev',
+            },
+          ],
+          RelatedPerson: [
+            {
+              PersonBirthLocation: {
+                LocationContactInformation: [
+                  {
+                    Address: [
+                      {
+                        AddressCityName: 'ParentCity',
+                        AddressCountry: {
+                          CountryCode: {
+                            ReferenceDataID: 'CA',
+                          },
+                        },
+                        AddressProvince: {
+                          ProvinceCode: {
+                            ReferenceDataID: 'ON',
+                            ReferenceDataName: 'Ontario En',
+                          },
+                        },
+                      },
+                    ],
+                  },
+                ],
+              },
+              PersonName: [
+                {
+                  PersonGivenName: 'ParentFirstName',
+                  PersonSurName: 'ParentLastName',
+                },
+              ],
+              PersonRelationshipCode: {
+                ReferenceDataName: 'Parent1',
+              },
+            },
+          ],
         },
         SINApplicationCategoryCode: {
           ReferenceDataID: 'RequestType',
@@ -345,7 +383,7 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
           {
             ApplicationDetailID: 'is a part of multibirth',
             ApplicationDetailValue: {
-              ValueBoolean: false,
+              ValueBoolean: true,
             },
           },
           {
@@ -374,48 +412,24 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
           },
         ],
       },
+      SystemCredential: idToken,
     };
 
     const result = mapSubmitSinApplicationRequestToSinApplicationRequest(submitSinApplicationRequest, idToken);
 
     expect(result).toStrictEqual(expected);
-    expect(getApplicantStatusInCanadaChoicesById).toHaveBeenCalledExactlyOnceWith(applicantStatusInCanadaChoiceMock.id);
-    expect(getApplicantPrimaryDocumentChoiceById).toHaveBeenCalledExactlyOnceWith(applicantPrimaryDocumentChoiceMock.id);
-    expect(getApplicantSupportingDocumentTypesById).not.toHaveBeenCalled();
     expect(getCountryById).toHaveBeenCalledWith(countryMock.id);
     expect(getProvinceById).toHaveBeenCalledWith(provinceMock.id);
   });
 
   it('should map SubmitSinApplicationRequest to SinApplicationRequest correctly when country is US and preferredSameAsDocumentName is false', () => {
-    const applicantStatusInCanadaChoiceMock: ApplicantStatusInCanadaChoice = {
-      id: 'StatusInCanadaId',
-      nameEn: 'StatusInCanada NameEn',
-      nameFr: 'StatusInCanada NameFr',
-    };
-
-    const applicantPrimaryDocumentChoiceMock: ApplicantPrimaryDocumentChoice = {
-      id: 'PrimaryDocumentId',
-      applicantStatusInCanadaId: 'StatusInCanadaId',
-      nameEn: 'PrimaryDocument NameEn',
-      nameFr: 'PrimaryDocument NameFr',
-    };
-
-    const applicantSupportingDocumentTypeMock: ApplicantSupportingDocumentType = {
-      id: 'DocType1Id',
-      nameEn: 'DocType1 NameEn',
-      nameFr: 'DocType1 NameFr',
-    };
-
     const countryMock: Country = {
-      id: 'CountryID',
+      id: 'Country02',
       alphaCode: 'US',
-      nameEn: 'Country Name En',
-      nameFr: 'Country Name Fr',
+      nameEn: 'United States En',
+      nameFr: 'United States Fr',
     };
 
-    vi.mocked(getApplicantStatusInCanadaChoicesById).mockReturnValueOnce(applicantStatusInCanadaChoiceMock);
-    vi.mocked(getApplicantPrimaryDocumentChoiceById).mockReturnValueOnce(applicantPrimaryDocumentChoiceMock);
-    vi.mocked(getApplicantSupportingDocumentTypesById).mockReturnValueOnce(applicantSupportingDocumentTypeMock);
     vi.mocked(getCountryById).mockReturnValue(countryMock);
     vi.mocked(getProvinceById);
 
@@ -423,14 +437,14 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
     const submitSinApplicationRequest: SubmitSinApplicationRequest = {
       birthDetails: {
         city: 'City',
-        province: 'Province',
+        province: 'US State',
         country: countryMock.id,
         fromMultipleBirth: false,
       },
       contactInformation: {
         address: 'Address',
         city: 'City',
-        province: 'Province',
+        province: 'US State',
         country: countryMock.id,
         postalCode: 'PostalCode',
         emailAddress: 'email@example.com',
@@ -445,7 +459,7 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
         lastName: 'LastName',
         supportingDocuments: {
           required: true,
-          documentTypes: [applicantSupportingDocumentTypeMock.id],
+          documentTypes: ['SupportingDocument01'],
         },
       },
       parentDetails: [
@@ -456,7 +470,7 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
           birthLocation: {
             country: countryMock.id,
             city: 'ParentCity',
-            province: 'ParentProvince',
+            province: 'Parent US State',
           },
         },
       ],
@@ -472,9 +486,9 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
       },
       primaryDocuments: {
         citizenshipDate: '2020-01-01',
-        currentStatusInCanada: applicantStatusInCanadaChoiceMock.id,
+        currentStatusInCanada: 'StatusInCanada01',
         registrationNumber: 'RegNumber',
-        documentType: applicantPrimaryDocumentChoiceMock.id,
+        documentType: 'PrimaryDocument01',
         clientNumber: 'ClientNumber',
         givenName: 'GivenName',
         lastName: 'LastName',
@@ -489,98 +503,54 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
     };
 
     const expected: SinApplicationRequest = {
-      SystemCredential: idToken,
       SINApplication: {
         Applicant: {
-          ClientLegalStatus: {
-            Certificate: [
-              {
-                CertificateIssueDate: { date: '2020-01-01' },
-                CertificateCategoryCode: {
-                  ReferenceDataID: '564190000',
-                  ReferenceDataName: applicantStatusInCanadaChoiceMock.nameEn,
-                },
-              },
-            ],
-          },
-          PersonName: [
-            {
-              PersonNameCategoryCode: { ReferenceDataName: 'Legal' },
-              PersonGivenName: 'FirstName MiddleName',
-              PersonSurName: 'LastName',
-            },
-            {
-              PersonNameCategoryCode: { ReferenceDataName: 'at birth' },
-              PersonSurName: 'LastNameAtBirth',
-            },
-            {
-              PersonGivenName: 'FirstNamePrev',
-              PersonNameCategoryCode: { ReferenceDataName: 'Alternate' },
-            },
-            {
-              PersonSurName: 'LastNamePrev',
-              PersonNameCategoryCode: { ReferenceDataName: 'Alternate' },
-            },
-          ],
           Certificate: [
             {
-              ResourceReference: 'Documents',
-              CertificateIdentification: [{ IdentificationID: 'RegNumber' }],
-            },
-            {
               CertificateCategoryCode: {
-                ReferenceDataID: '564190001',
-                ReferenceDataName: applicantPrimaryDocumentChoiceMock.nameEn,
+                ReferenceDataID: 'PrimaryDocument01',
+                ReferenceDataName: 'PID',
               },
-              ResourceReference: 'Primary Documents',
-            },
-            {
-              CertificateCategoryCode: {
-                ReferenceDataID: 'SecDocType',
+              CertificateIssueDate: {
+                date: '2020-01-01',
               },
-              CertificateExpiryDate: {
-                date: '2025-12',
-              },
-              ResourceReference: 'Secondary Documents',
-            },
-            {
-              CertificateCategoryCode: {
-                ReferenceDataID: applicantSupportingDocumentTypeMock.id,
-                ReferenceDataName: applicantSupportingDocumentTypeMock.nameEn,
-              },
-              ResourceReference: 'Supporting documents for name change',
-            },
-            {
               Client: {
-                ClientIdentification: [
-                  {
-                    IdentificationID: 'ClientNumber',
-                  },
-                ],
+                PersonBirthDate: {
+                  date: '2000-01-01',
+                },
+                PersonBirthLocation: {
+                  LocationContactInformation: [
+                    {
+                      Address: [
+                        {
+                          AddressCityName: 'City',
+                          AddressCountry: {
+                            CountryCode: {
+                              ReferenceDataID: 'US',
+                            },
+                          },
+                          AddressProvince: {
+                            ProvinceCode: {
+                              ReferenceDataName: 'US State',
+                            },
+                          },
+                        },
+                      ],
+                    },
+                  ],
+                },
+                PersonGenderCode: {
+                  ReferenceDataID: 'M',
+                },
                 PersonName: [
                   {
                     PersonGivenName: 'GivenName',
                     PersonSurName: 'LastName',
                   },
                 ],
-                PersonBirthDate: {
-                  date: '2000-01-01',
-                },
-                PersonSexAtBirthCode: { ReferenceDataID: 'M' },
               },
-            },
-            {
               RelatedPerson: [
                 {
-                  PersonRelationshipCode: {
-                    ReferenceDataName: 'Parent1',
-                  },
-                  PersonName: [
-                    {
-                      PersonGivenName: 'ParentFirstName',
-                      PersonSurName: 'ParentLastName',
-                    },
-                  ],
                   PersonBirthLocation: {
                     LocationContactInformation: [
                       {
@@ -589,13 +559,12 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
                             AddressCityName: 'ParentCity',
                             AddressCountry: {
                               CountryCode: {
-                                ReferenceDataID: countryMock.alphaCode,
+                                ReferenceDataID: 'US',
                               },
                             },
                             AddressProvince: {
                               ProvinceCode: {
-                                ReferenceDataID: undefined,
-                                ReferenceDataName: 'ParentProvince',
+                                ReferenceDataName: 'Parent US State',
                               },
                             },
                           },
@@ -603,69 +572,54 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
                       },
                     ],
                   },
-                },
-              ],
-            },
-          ],
-          PersonContactInformation: [
-            {
-              Address: [
-                {
-                  AddressStreet: { StreetName: 'Address' },
-                  AddressCityName: 'City',
-                  AddressProvince: {
-                    ProvinceCode: {
-                      ReferenceDataID: undefined,
-                      ReferenceDataName: 'Province',
+                  PersonName: [
+                    {
+                      PersonGivenName: 'ParentFirstName',
+                      PersonSurName: 'ParentLastName',
                     },
-                  },
-                  AddressCountry: {
-                    CountryCode: {
-                      ReferenceDataID: countryMock.alphaCode,
-                    },
-                  },
-                  AddressPostalCode: 'PostalCode',
-                },
-              ],
-              EmailAddress: [{ EmailAddressID: 'email@example.com' }],
-              TelephoneNumber: [
-                {
-                  FullTelephoneNumber: {
-                    TelephoneNumberFullID: '1234567890',
-                  },
-                },
-                {
-                  FullTelephoneNumber: {
-                    TelephoneNumberFullID: '0987654321',
+                  ],
+                  PersonRelationshipCode: {
+                    ReferenceDataName: 'Parent1',
                   },
                 },
               ],
             },
-          ],
-          PersonLanguage: [
             {
-              CommunicationCategoryCode: {
-                ReferenceDataName: 'Correspondence',
+              CertificateCategoryCode: {
+                ReferenceDataID: 'SecDocType',
+                ReferenceDataName: 'SD',
               },
-              LanguageCode: { ReferenceDataID: 'EN' },
-              PreferredIndicator: true,
+              CertificateExpiryDate: {
+                date: '2025-12',
+              },
             },
           ],
+          ClientLegalStatus: {
+            Certificate: [
+              {
+                CertificateIssueDate: {
+                  date: '2020-01-01',
+                },
+              },
+            ],
+          },
+          PersonBirthDate: {
+            date: '2000-01-01',
+          },
           PersonBirthLocation: {
             LocationContactInformation: [
               {
                 Address: [
                   {
                     AddressCityName: 'City',
-                    AddressProvince: {
-                      ProvinceCode: {
-                        ReferenceDataID: undefined,
-                        ReferenceDataName: 'Province',
-                      },
-                    },
                     AddressCountry: {
                       CountryCode: {
-                        ReferenceDataID: countryMock.alphaCode,
+                        ReferenceDataID: 'US',
+                      },
+                    },
+                    AddressProvince: {
+                      ProvinceCode: {
+                        ReferenceDataName: 'US State',
                       },
                     },
                   },
@@ -673,12 +627,124 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
               },
             ],
           },
+          PersonContactInformation: [
+            {
+              Address: [
+                {
+                  AddressCityName: 'City',
+                  AddressCountry: {
+                    CountryCode: {
+                      ReferenceDataID: 'US',
+                    },
+                  },
+                  AddressPostalCode: 'PostalCode',
+                  AddressProvince: {
+                    ProvinceCode: {
+                      ReferenceDataName: 'US State',
+                    },
+                  },
+                  AddressRecipientName: 'FirstName MiddleName LastName',
+                  AddressStreet: {
+                    StreetName: 'Address',
+                  },
+                },
+              ],
+              EmailAddress: [],
+              TelephoneNumber: [
+                {
+                  FullTelephoneNumber: {
+                    TelephoneNumberFullID: '1234567890',
+                  },
+                  TelephoneNumberCategoryCode: {
+                    ReferenceDataName: 'Primary',
+                  },
+                },
+                {
+                  FullTelephoneNumber: {
+                    TelephoneNumberFullID: '0987654321',
+                  },
+                  TelephoneNumberCategoryCode: {
+                    ReferenceDataName: 'Secondary',
+                  },
+                },
+              ],
+            },
+          ],
           PersonGenderCode: {
             ReferenceDataID: 'M',
           },
-          PersonBirthDate: {
-            date: '2000-01-01',
-          },
+          PersonLanguage: [
+            {
+              CommunicationCategoryCode: {
+                ReferenceDataName: 'Correspondence',
+              },
+              LanguageCode: {
+                ReferenceDataID: 'EN',
+              },
+              PreferredIndicator: true,
+            },
+          ],
+          PersonName: [
+            {
+              PersonGivenName: 'FirstName MiddleName',
+              PersonNameCategoryCode: {
+                ReferenceDataName: 'Legal',
+              },
+              PersonSurName: 'LastName',
+            },
+            {
+              PersonNameCategoryCode: {
+                ReferenceDataName: 'at birth',
+              },
+              PersonSurName: 'LastNameAtBirth',
+            },
+            {
+              PersonGivenName: 'FirstNamePrev',
+              PersonNameCategoryCode: {
+                ReferenceDataName: 'Alternate',
+              },
+            },
+            {
+              PersonNameCategoryCode: {
+                ReferenceDataName: 'Alternate',
+              },
+              PersonSurName: 'LastNamePrev',
+            },
+          ],
+          RelatedPerson: [
+            {
+              PersonBirthLocation: {
+                LocationContactInformation: [
+                  {
+                    Address: [
+                      {
+                        AddressCityName: 'ParentCity',
+                        AddressCountry: {
+                          CountryCode: {
+                            ReferenceDataID: 'US',
+                          },
+                        },
+                        AddressProvince: {
+                          ProvinceCode: {
+                            ReferenceDataName: 'Parent US State',
+                          },
+                        },
+                      },
+                    ],
+                  },
+                ],
+              },
+              PersonName: [
+                {
+                  PersonGivenName: 'ParentFirstName',
+                  PersonSurName: 'ParentLastName',
+                },
+              ],
+              PersonRelationshipCode: {
+                ReferenceDataName: 'Parent1',
+              },
+            },
+          ],
         },
         SINApplicationCategoryCode: {
           ReferenceDataID: 'RequestType',
@@ -744,14 +810,12 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
           },
         ],
       },
+      SystemCredential: idToken,
     };
 
     const result = mapSubmitSinApplicationRequestToSinApplicationRequest(submitSinApplicationRequest, idToken);
 
     expect(result).toStrictEqual(expected);
-    expect(getApplicantStatusInCanadaChoicesById).toHaveBeenCalledExactlyOnceWith(applicantStatusInCanadaChoiceMock.id);
-    expect(getApplicantPrimaryDocumentChoiceById).toHaveBeenCalledExactlyOnceWith(applicantPrimaryDocumentChoiceMock.id);
-    expect(getApplicantSupportingDocumentTypesById).toHaveBeenCalledExactlyOnceWith(applicantSupportingDocumentTypeMock.id);
     expect(getCountryById).toHaveBeenCalledWith(countryMock.id);
     expect(getProvinceById).not.toHaveBeenCalled();
   });

@@ -1,6 +1,3 @@
-import { getApplicantPrimaryDocumentChoiceById } from '~/.server/domain/person-case/services/applicant-primary-document-service';
-import { getApplicantStatusInCanadaChoicesById } from '~/.server/domain/person-case/services/applicant-status-in-canada-service';
-import { getApplicantSupportingDocumentTypesById } from '~/.server/domain/person-case/services/applicant-supporting-document-service';
 import type {
   SubmitSinApplicationRequest,
   SubmitSinApplicationResponse,
@@ -8,17 +5,22 @@ import type {
 import { serverEnvironment } from '~/.server/environment';
 import type {
   CertificateType,
-  ContactInformationType,
+  CountryType,
+  EmailAddressType,
   LegalStatusType,
   PersonBirthDate,
   PersonBirthLocation,
+  PersonContactInformation,
   PersonGenderCode,
   PersonLanguage,
   PersonNameType,
+  ProvinceType,
+  RelatedPerson,
   SinApplicationCategoryCode,
   SinApplicationDetail,
   SinApplicationRequest,
   SinApplicationResponse,
+  TelephoneNumberType,
 } from '~/.server/shared/api/interop';
 import { getCountryById } from '~/.server/shared/services/country-service';
 import { getProvinceById } from '~/.server/shared/services/province-service';
@@ -41,25 +43,23 @@ export function mapSubmitSinApplicationRequestToSinApplicationRequest(
     SystemCredential: idToken,
     SINApplication: {
       Applicant: {
-        ClientLegalStatus: helpers.getApplicantClientLegalStatus(),
-        PersonName: helpers.getApplicantPersonName(),
-        Certificate: helpers.getApplicantCertificate(),
-        PersonContactInformation: helpers.getApplicantPersonContactInformation(),
-        PersonLanguage: helpers.getApplicantPersonPersonLanguage(),
-        PersonBirthLocation: helpers.getApplicantPersonPersonBirthLocation(),
-        PersonGenderCode: helpers.getApplicantPersonGenderCode(),
-        PersonBirthDate: helpers.getApplicantPersonBirthDate(),
+        ClientLegalStatus: helpers.mapApplicantClientLegalStatus(),
+        PersonName: helpers.mapApplicantPersonName(),
+        Certificate: [
+          helpers.mapApplicantCertificatePID(), //
+          helpers.mapApplicantCertificateSID(),
+        ],
+        PersonContactInformation: helpers.mapApplicantPersonContactInformation(),
+        PersonLanguage: helpers.mapApplicantPersonPersonLanguage(),
+        PersonBirthLocation: helpers.mapApplicantPersonPersonBirthLocation(),
+        PersonGenderCode: helpers.mapApplicantPersonGenderCode(),
+        PersonBirthDate: helpers.mapApplicantPersonBirthDate(),
+        RelatedPerson: helpers.mapRelatedPersonFromBirthDetails(),
       },
-      SINApplicationCategoryCode: helpers.getSINApplicationCategoryCode(),
-      SINApplicationDetail: helpers.getSINApplicationDetail(),
+      SINApplicationCategoryCode: helpers.mapSINApplicationCategoryCode(),
+      SINApplicationDetail: helpers.mapSINApplicationDetail(),
     },
   };
-}
-
-function getCountry(country?: string): string | undefined {
-  return country && (getCountryById(country).alphaCode === 'CA' || getCountryById(country).alphaCode === 'US') // must use "CA" or "US" REGARDLESS for country
-    ? getCountryById(country).alphaCode
-    : undefined;
 }
 
 /**
@@ -83,348 +83,416 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
     secondaryDocument,
   } = submitSinApplicationRequest;
 
-  return {
-    getApplicantClientLegalStatus(): LegalStatusType {
+  function getApplicantFirstName(): string {
+    if (currentNameInfo.preferredSameAsDocumentName) return primaryDocuments.givenName;
+    return currentNameInfo.firstName + ' ' + currentNameInfo.middleName;
+  }
+
+  function getApplicantLastName(): string {
+    if (currentNameInfo.preferredSameAsDocumentName) return primaryDocuments.lastName;
+    return currentNameInfo.lastName;
+  }
+
+  function getCountryAlphaCode(countryId: string): string | undefined {
+    const { alphaCode } = getCountryById(countryId);
+
+    // must use "CA" or "US" REGARDLESS for country
+    if (alphaCode === 'CA' || alphaCode === 'US') {
+      return alphaCode;
+    }
+
+    return undefined;
+  }
+
+  function getCountryType(country: string): CountryType | undefined {
+    const alphaCode = getCountryAlphaCode(country);
+
+    if (!alphaCode) {
+      return undefined;
+    }
+
+    return {
+      CountryCode: {
+        ReferenceDataID: alphaCode,
+      },
+    };
+  }
+
+  function getProvinceType(country: string, province: string | undefined): ProvinceType | undefined {
+    if (!province) {
+      return undefined;
+    }
+
+    const alphaCode = getCountryAlphaCode(country);
+
+    if (alphaCode === 'CA') {
+      const prov = getProvinceById(province);
       return {
-        Certificate: [
+        ProvinceCode: {
+          ReferenceDataID: prov.alphaCode,
+          ReferenceDataName: prov.nameEn,
+        },
+      };
+    }
+
+    return {
+      ProvinceCode: {
+        ReferenceDataName: province,
+      },
+    };
+  }
+
+  function mapApplicantClientLegalStatus(): LegalStatusType {
+    return {
+      Certificate: [
+        {
+          CertificateIssueDate: {
+            date: primaryDocuments.citizenshipDate,
+          },
+        },
+      ],
+    };
+  }
+
+  function mapApplicantPersonName(): PersonNameType[] {
+    const applicantPersonName: PersonNameType[] = [];
+
+    applicantPersonName.push({
+      PersonNameCategoryCode: {
+        ReferenceDataName: 'Legal',
+      },
+      PersonGivenName: getApplicantFirstName(),
+      PersonSurName: getApplicantLastName(),
+    });
+
+    applicantPersonName.push({
+      PersonNameCategoryCode: {
+        ReferenceDataName: 'at birth',
+      },
+      PersonSurName: personalInformation.lastNameAtBirth,
+    });
+
+    if (personalInformation.firstNamePreviouslyUsed && personalInformation.firstNamePreviouslyUsed.length > 0) {
+      applicantPersonName.push(
+        ...personalInformation.firstNamePreviouslyUsed.map((name) => ({
+          PersonGivenName: name,
+          PersonNameCategoryCode: {
+            ReferenceDataName: 'Alternate',
+          },
+        })),
+      );
+    }
+
+    if (personalInformation.lastNamePreviouslyUsed && personalInformation.lastNamePreviouslyUsed.length > 0) {
+      applicantPersonName.push(
+        ...personalInformation.lastNamePreviouslyUsed.map((name) => ({
+          PersonSurName: name,
+          PersonNameCategoryCode: {
+            ReferenceDataName: 'Alternate',
+          },
+        })),
+      );
+    }
+
+    return applicantPersonName;
+  }
+
+  function mapApplicantCertificatePID(): CertificateType {
+    return {
+      CertificateCategoryCode: {
+        ReferenceDataID: primaryDocuments.documentType,
+        ReferenceDataName: 'PID',
+      },
+      // ResourceReference: 'Primary Document Citizenship PID.pdf', // doc upload disabled
+      Client: {
+        PersonName: [
           {
-            CertificateIssueDate: { date: primaryDocuments.citizenshipDate },
-            CertificateCategoryCode: {
-              ReferenceDataID: serverEnvironment.PP_APPLICANT_STATUS_IN_CANADA_CANADIAN_CITIZEN_CODE,
-              ReferenceDataName: getApplicantStatusInCanadaChoicesById(primaryDocuments.currentStatusInCanada).nameEn,
-            },
+            PersonGivenName: primaryDocuments.givenName,
+            PersonSurName: primaryDocuments.lastName,
           },
         ],
-      };
-    },
-
-    getApplicantPersonName(): PersonNameType[] {
-      const applicantPersonName: PersonNameType[] = [];
-
-      applicantPersonName.push({
-        PersonNameCategoryCode: {
-          ReferenceDataName: 'Legal',
-        },
-        PersonGivenName: currentNameInfo.preferredSameAsDocumentName
-          ? primaryDocuments.givenName
-          : currentNameInfo.firstName + ' ' + currentNameInfo.middleName,
-        PersonSurName: currentNameInfo.preferredSameAsDocumentName ? primaryDocuments.lastName : currentNameInfo.lastName,
-      });
-
-      applicantPersonName.push({
-        PersonNameCategoryCode: {
-          ReferenceDataName: 'at birth',
-        },
-        PersonSurName: personalInformation.lastNameAtBirth,
-      });
-
-      if (personalInformation.firstNamePreviouslyUsed && personalInformation.firstNamePreviouslyUsed.length > 0) {
-        applicantPersonName.push(
-          ...personalInformation.firstNamePreviouslyUsed.map((name) => ({
-            PersonGivenName: name,
-            PersonNameCategoryCode: {
-              ReferenceDataName: 'Alternate',
-            },
-          })),
-        );
-      }
-
-      if (personalInformation.lastNamePreviouslyUsed && personalInformation.lastNamePreviouslyUsed.length > 0) {
-        applicantPersonName.push(
-          ...personalInformation.lastNamePreviouslyUsed.map((name) => ({
-            PersonSurName: name,
-            PersonNameCategoryCode: {
-              ReferenceDataName: 'Alternate',
-            },
-          })),
-        );
-      }
-
-      return applicantPersonName;
-    },
-
-    getApplicantCertificate(): CertificateType[] {
-      const applicantCertificate: CertificateType[] = [];
-
-      applicantCertificate.push({
-        ResourceReference: 'Documents',
-        CertificateIdentification: [{ IdentificationID: primaryDocuments.registrationNumber }],
-      });
-
-      applicantCertificate.push({
-        CertificateCategoryCode: {
-          ReferenceDataID: serverEnvironment.PP_APPLICANT_PRIMARY_DOCUMENT_TYPE_CERTIFICATE_CANADIAN_CITIZENSHIP_CODE,
-          ReferenceDataName: getApplicantPrimaryDocumentChoiceById(primaryDocuments.documentType).nameEn,
-        },
-        ResourceReference: 'Primary Documents',
-      });
-
-      applicantCertificate.push({
-        CertificateCategoryCode: {
-          ReferenceDataID: secondaryDocument.documentType,
-        },
-        CertificateExpiryDate: {
-          date: secondaryDocument.expiryYear + '-' + secondaryDocument.expiryMonth,
-        },
-        ResourceReference: 'Secondary Documents',
-      });
-
-      if (currentNameInfo.supportingDocuments?.documentTypes && currentNameInfo.supportingDocuments.documentTypes.length > 0) {
-        applicantCertificate.push(
-          ...currentNameInfo.supportingDocuments.documentTypes.map((docType) => ({
-            CertificateCategoryCode: {
-              ReferenceDataID: docType,
-              ReferenceDataName: getApplicantSupportingDocumentTypesById(docType).nameEn,
-            },
-            ResourceReference: 'Supporting documents for name change',
-          })),
-        );
-      }
-
-      applicantCertificate.push({
-        Client: {
-          ClientIdentification: [
+        PersonBirthDate: mapApplicantPersonBirthDate(),
+        PersonBirthLocation: {
+          LocationContactInformation: [
             {
-              IdentificationID: primaryDocuments.clientNumber,
-            },
-          ],
-          PersonName: [
-            {
-              PersonGivenName: primaryDocuments.givenName,
-              PersonSurName: primaryDocuments.lastName,
-            },
-          ],
-          PersonBirthDate: {
-            date: primaryDocuments.dateOfBirth,
-          },
-          PersonSexAtBirthCode: { ReferenceDataID: personalInformation.gender },
-        },
-      });
-
-      const availableParentDetails = parentDetails.filter((parent) => parent.unavailable === false);
-
-      if (availableParentDetails.length > 0) {
-        applicantCertificate.push({
-          RelatedPerson: availableParentDetails.map((parent, index) => ({
-            PersonRelationshipCode: {
-              ReferenceDataName: 'Parent' + (index + 1),
-            },
-            PersonName: [
-              {
-                PersonGivenName: parent.givenName,
-                PersonSurName: parent.lastName,
-              },
-            ],
-            PersonBirthLocation: {
-              LocationContactInformation: [
+              Address: [
                 {
-                  Address: [
-                    {
-                      AddressCityName: parent.birthLocation.city,
-                      AddressProvince: {
-                        ProvinceCode: {
-                          ReferenceDataID:
-                            parent.birthLocation.province && getCountry(parent.birthLocation.country) === 'CA'
-                              ? getProvinceById(parent.birthLocation.province).alphaCode
-                              : undefined,
-                          ReferenceDataName:
-                            getCountry(parent.birthLocation.country) === 'US' ? parent.birthLocation.province : undefined,
-                        },
-                      },
-                      AddressCountry: {
-                        CountryCode: {
-                          ReferenceDataID: getCountry(parent.birthLocation.country),
-                        },
-                      },
-                    },
-                  ],
+                  AddressCityName: birthDetails.city,
+                  AddressProvince: getProvinceType(birthDetails.country, birthDetails.province),
+                  AddressCountry: getCountryType(birthDetails.country),
                 },
               ],
             },
-          })),
-        });
-      }
-
-      return applicantCertificate;
-    },
-
-    getApplicantPersonContactInformation(): ContactInformationType[] {
-      return [
-        {
-          Address: [
-            {
-              AddressStreet: { StreetName: contactInformation.address },
-              AddressCityName: contactInformation.city,
-              AddressProvince: {
-                ProvinceCode: {
-                  ReferenceDataID:
-                    contactInformation.province && getCountry(contactInformation.country) === 'CA'
-                      ? getProvinceById(contactInformation.province).alphaCode
-                      : undefined,
-                  ReferenceDataName: getCountry(contactInformation.country) === 'US' ? contactInformation.province : undefined,
-                },
-              },
-              AddressCountry: {
-                CountryCode: {
-                  ReferenceDataID: getCountry(contactInformation.country),
-                },
-              },
-              AddressPostalCode: contactInformation.postalCode,
-            },
-          ],
-          EmailAddress: [{ EmailAddressID: contactInformation.emailAddress }],
-          TelephoneNumber: [
-            {
-              FullTelephoneNumber: {
-                TelephoneNumberFullID: contactInformation.primaryPhoneNumber,
-              },
-            },
-            {
-              FullTelephoneNumber: {
-                TelephoneNumberFullID: contactInformation.secondaryPhoneNumber,
-              },
-            },
           ],
         },
-      ];
-    },
+        PersonGenderCode: {
+          ReferenceDataID: primaryDocuments.gender,
+        },
+      },
+      CertificateIssueDate: {
+        date: primaryDocuments.citizenshipDate,
+      },
+      RelatedPerson: mapRelatedPersonFromBirthDetails(),
+    };
+  }
 
-    getApplicantPersonPersonLanguage(): PersonLanguage[] {
-      return [
-        {
-          CommunicationCategoryCode: {
-            ReferenceDataName: 'Correspondence',
+  function mapApplicantCertificateSID(): CertificateType {
+    return {
+      CertificateCategoryCode: {
+        ReferenceDataID: secondaryDocument.documentType,
+        ReferenceDataName: 'SD',
+      },
+      // ResourceReference: 'Secondary Document Passport SD.pdf', // doc upload disabled
+      CertificateExpiryDate: {
+        date: `${secondaryDocument.expiryYear}-${secondaryDocument.expiryMonth}`,
+      },
+    };
+  }
+
+  function mapRelatedPersonFromBirthDetails(): RelatedPerson[] {
+    return parentDetails
+      .filter((parent) => parent.unavailable === false)
+      .map<RelatedPerson>((parent, index) => {
+        const relatedPerson: RelatedPerson = {
+          PersonRelationshipCode: {
+            ReferenceDataName: 'Parent' + (index + 1),
           },
-          LanguageCode: { ReferenceDataID: contactInformation.preferredLanguage },
-          PreferredIndicator: true,
-        },
-      ];
-    },
+          PersonName: [
+            {
+              PersonGivenName: parent.givenName,
+              PersonSurName: parent.lastName,
+            },
+          ],
+        };
 
-    getApplicantPersonPersonBirthLocation(): PersonBirthLocation {
-      return {
-        LocationContactInformation: [
-          {
-            Address: [
+        const birthLocation = parent.birthLocation;
+
+        if (!birthLocation.city && !birthLocation.country && !birthLocation.province) {
+          // birth location not set
+          return relatedPerson;
+        }
+
+        return {
+          ...relatedPerson,
+          PersonBirthLocation: {
+            LocationContactInformation: [
               {
-                AddressCityName: birthDetails.city,
-                AddressProvince: {
-                  ProvinceCode: {
-                    ReferenceDataID:
-                      birthDetails.province && getCountry(birthDetails.country) === 'CA'
-                        ? getProvinceById(birthDetails.province).alphaCode
-                        : undefined,
-                    ReferenceDataName: getCountry(birthDetails.country) === 'US' ? birthDetails.province : undefined,
+                Address: [
+                  {
+                    AddressCityName: birthLocation.city,
+                    AddressProvince: getProvinceType(birthLocation.country, birthLocation.province),
+                    AddressCountry: getCountryType(birthLocation.country),
                   },
-                },
-                AddressCountry: {
-                  CountryCode: {
-                    ReferenceDataID: getCountry(birthDetails.country),
-                  },
-                },
+                ],
               },
             ],
           },
+        };
+      });
+  }
+
+  function mapApplicantPersonContactInformation(): PersonContactInformation[] {
+    return [
+      {
+        Address: [
+          {
+            AddressStreet: {
+              // StreetNumberText: '22', // field doesn't exists
+              StreetName: contactInformation.address,
+            },
+            // AddressSecondaryUnitText: '3', // field doesn't exists
+            AddressCityName: contactInformation.city,
+            AddressProvince: getProvinceType(contactInformation.country, contactInformation.province),
+            AddressCountry: getCountryType(contactInformation.country),
+            AddressPostalCode: contactInformation.postalCode,
+            AddressRecipientName: `${getApplicantFirstName()} ${getApplicantLastName()}`,
+          },
         ],
-      };
-    },
+        EmailAddress: mapApplicantPersonContactInformationEmailAddress(),
+        TelephoneNumber: mapApplicantPersonContactInformationTelephoneNumber(),
+      },
+    ];
+  }
 
-    getApplicantPersonGenderCode(): PersonGenderCode {
+  function mapApplicantPersonContactInformationEmailAddress(): EmailAddressType[] {
+    if (contactInformation.emailAddress) {
+      return [];
+    }
+
+    return [{ EmailAddressID: contactInformation.emailAddress }];
+  }
+
+  function mapApplicantPersonContactInformationTelephoneNumber(): TelephoneNumberType[] {
+    const telephoneNumber: TelephoneNumberType[] = [];
+
+    telephoneNumber.push({
+      TelephoneNumberCategoryCode: {
+        ReferenceDataName: 'Primary',
+      },
+      FullTelephoneNumber: {
+        TelephoneNumberFullID: contactInformation.primaryPhoneNumber,
+      },
+    });
+
+    if (contactInformation.secondaryPhoneNumber) {
+      telephoneNumber.push({
+        TelephoneNumberCategoryCode: {
+          ReferenceDataName: 'Secondary',
+        },
+        FullTelephoneNumber: {
+          TelephoneNumberFullID: contactInformation.secondaryPhoneNumber,
+        },
+      });
+    }
+
+    return telephoneNumber;
+  }
+
+  function mapApplicantPersonPersonLanguage(): PersonLanguage[] {
+    return [
+      {
+        CommunicationCategoryCode: {
+          ReferenceDataName: 'Correspondence',
+        },
+        LanguageCode: { ReferenceDataID: contactInformation.preferredLanguage },
+        PreferredIndicator: true,
+      },
+    ];
+  }
+
+  function mapApplicantPersonPersonBirthLocation(): PersonBirthLocation {
+    const addressCityName = birthDetails.city;
+    const addressProvince = getProvinceType(birthDetails.country, birthDetails.province);
+    const addressCountry = getCountryType(birthDetails.country);
+
+    if (!addressCityName && !addressProvince && !addressCountry) {
+      // no address
       return {
-        ReferenceDataID: primaryDocuments.gender,
+        LocationContactInformation: [],
       };
-    },
+    }
 
-    getApplicantPersonBirthDate(): PersonBirthDate {
-      return {
-        date: primaryDocuments.dateOfBirth,
-      };
-    },
-
-    getSINApplicationCategoryCode(): SinApplicationCategoryCode {
-      return {
-        ReferenceDataID: requestDetails.type,
-      };
-    },
-
-    getSINApplicationDetail(): SinApplicationDetail[] {
-      const sinApplicationDetail: SinApplicationDetail[] = [];
-
-      sinApplicationDetail.push({
-        ApplicationDetailID: 'SIN Application Submission Scenario',
-        ApplicationDetailValue: {
-          ValueCode: {
-            ReferenceDataID: requestDetails.scenario,
-          },
+    return {
+      LocationContactInformation: [
+        {
+          Address: [
+            {
+              AddressCityName: addressCityName,
+              AddressProvince: addressProvince,
+              AddressCountry: addressCountry,
+            },
+          ],
         },
-      });
+      ],
+    };
+  }
 
-      sinApplicationDetail.push({
-        ApplicationDetailID: 'SIN Confirmation receiving method',
-        ApplicationDetailValue: {
-          ValueCode: {
-            ReferenceDataID: serverEnvironment.PP_SIN_CONFIRMATION_RECEIVING_METHOD_CODE,
-          },
+  function mapApplicantPersonGenderCode(): PersonGenderCode {
+    return {
+      ReferenceDataID: primaryDocuments.gender,
+    };
+  }
+
+  function mapApplicantPersonBirthDate(): PersonBirthDate {
+    return {
+      date: primaryDocuments.dateOfBirth,
+    };
+  }
+
+  function mapSINApplicationCategoryCode(): SinApplicationCategoryCode {
+    return {
+      ReferenceDataID: requestDetails.type,
+    };
+  }
+
+  function mapSINApplicationDetail(): SinApplicationDetail[] {
+    const sinApplicationDetail: SinApplicationDetail[] = [];
+
+    sinApplicationDetail.push({
+      ApplicationDetailID: 'SIN Application Submission Scenario',
+      ApplicationDetailValue: {
+        ValueCode: {
+          ReferenceDataID: requestDetails.scenario,
         },
-      });
+      },
+    });
 
-      sinApplicationDetail.push({
-        ApplicationDetailID: 'Supporting document contains first name',
-        ApplicationDetailValue: {
-          ValueBoolean:
-            currentNameInfo.preferredSameAsDocumentName === false &&
-            typeof currentNameInfo.firstName === 'string' &&
-            currentNameInfo.firstName.length > 0,
+    sinApplicationDetail.push({
+      ApplicationDetailID: 'SIN Confirmation receiving method',
+      ApplicationDetailValue: {
+        ValueCode: {
+          ReferenceDataID: serverEnvironment.PP_SIN_CONFIRMATION_RECEIVING_METHOD_CODE,
         },
-      });
+      },
+    });
 
-      sinApplicationDetail.push({
-        ApplicationDetailID: 'Supporting document contains last name',
-        ApplicationDetailValue: {
-          ValueBoolean:
-            currentNameInfo.preferredSameAsDocumentName === false &&
-            typeof currentNameInfo.lastName === 'string' &&
-            currentNameInfo.lastName.length > 0,
-        },
-      });
+    sinApplicationDetail.push({
+      ApplicationDetailID: 'Supporting document contains first name',
+      ApplicationDetailValue: {
+        ValueBoolean: currentNameInfo.firstName !== undefined && currentNameInfo.firstName.length > 0,
+      },
+    });
 
-      sinApplicationDetail.push({
-        ApplicationDetailID: 'is a part of multibirth',
-        ApplicationDetailValue: {
-          ValueBoolean: birthDetails.fromMultipleBirth,
-        },
-      });
+    sinApplicationDetail.push({
+      ApplicationDetailID: 'Supporting document contains last name',
+      ApplicationDetailValue: {
+        ValueBoolean: currentNameInfo.lastName !== undefined && currentNameInfo.lastName.length > 0,
+      },
+    });
 
-      sinApplicationDetail.push({
-        ApplicationDetailID: 'Already had a sin',
-        ApplicationDetailValue: {
-          ValueBoolean: previousSin.hasPreviousSin === serverEnvironment.PP_HAS_HAD_PREVIOUS_SIN_CODE, //code for Yes value
-        },
-      });
+    sinApplicationDetail.push({
+      ApplicationDetailID: 'is a part of multibirth',
+      ApplicationDetailValue: {
+        ValueBoolean: birthDetails.fromMultipleBirth,
+      },
+    });
 
+    sinApplicationDetail.push({
+      ApplicationDetailID: 'Already had a sin',
+      ApplicationDetailValue: {
+        ValueBoolean: previousSin.hasPreviousSin === serverEnvironment.PP_HAS_HAD_PREVIOUS_SIN_CODE, //code for Yes value
+      },
+    });
+
+    if (previousSin.socialInsuranceNumber) {
       sinApplicationDetail.push({
         ApplicationDetailID: 'Previous SIN Number',
         ApplicationDetailValue: {
           ValueString: previousSin.socialInsuranceNumber,
         },
       });
+    }
 
-      sinApplicationDetail.push({
-        ApplicationDetailID: 'is registered indian status',
-        ApplicationDetailValue: {
-          ValueBoolean: false,
-        },
-      });
+    sinApplicationDetail.push({
+      ApplicationDetailID: 'is registered indian status',
+      ApplicationDetailValue: {
+        ValueBoolean: false,
+      },
+    });
 
-      sinApplicationDetail.push({
-        ApplicationDetailID: 'Registered indian status on record',
-        ApplicationDetailValue: {
-          ValueBoolean: false,
-        },
-      });
+    sinApplicationDetail.push({
+      ApplicationDetailID: 'Registered indian status on record',
+      ApplicationDetailValue: {
+        ValueBoolean: false,
+      },
+    });
 
-      return sinApplicationDetail;
-    },
+    return sinApplicationDetail;
+  }
+
+  return {
+    mapApplicantCertificatePID,
+    mapApplicantCertificateSID,
+    mapApplicantClientLegalStatus,
+    mapApplicantPersonBirthDate,
+    mapApplicantPersonContactInformation,
+    mapApplicantPersonGenderCode,
+    mapApplicantPersonName,
+    mapApplicantPersonPersonBirthLocation,
+    mapApplicantPersonPersonLanguage,
+    mapRelatedPersonFromBirthDetails,
+    mapSINApplicationCategoryCode,
+    mapSINApplicationDetail,
   };
 }
 

@@ -24,9 +24,14 @@ export function getDefaultSinApplicationService(): SinApplicationService {
       log.debug('Submitting SIN application request.');
       log.trace('Submitting SIN application with request:', submitSinApplicationRequest);
 
-      const { response, data, error } = await sinapplication({
-        body: mapSubmitSinApplicationRequestToSinApplicationRequest(submitSinApplicationRequest, idToken),
-      });
+      const body = mapSubmitSinApplicationRequestToSinApplicationRequest(submitSinApplicationRequest, idToken);
+
+      log.trace(
+        'Submitting SIN application payload:',
+        mapSubmitSinApplicationRequestToSinApplicationRequest(submitSinApplicationRequest, idToken),
+      );
+
+      const { response, data, error } = await sinapplication({ body });
 
       if (data === undefined) {
         const content = JSON.stringify(error);
