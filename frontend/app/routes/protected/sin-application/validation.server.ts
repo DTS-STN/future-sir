@@ -107,5 +107,9 @@ export const primaryDocument = {
   citizenshipDateSchema: v.pipe(
     v.string(),
     v.custom((input) => isValidDateString(input as string), 'protected:primary-identity-document.citizenship-date.invalid'),
+    v.custom(
+      (input) => isDateInPastOrTodayInTimeZone(serverEnvironment.BASE_TIMEZONE, input as string),
+      'protected:primary-identity-document.citizenship-date.invalid-future-date',
+    ),
   ),
 };

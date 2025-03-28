@@ -100,12 +100,14 @@
     "citizenship-date": {
       "label": "Citizenship date",
       "invalid": "Citizenship date is invalid",
+      "invalid-future-date": "Citizenship date must be in past or today.",
       "required-year": "Year of citizenship date is required.",
       "invalid-year": "Year of citizenship date is invalid.",
       "required-month": "Month of citizenship date is required.",
       "invalid-month": "Month of citizenship date is invalid.",
       "required-day": "Day of citizenship date is required.",
-      "invalid-day": "Day of citizenship date is invalid."
+      "invalid-day": "Day of citizenship date is invalid.",
+      "invalid-before-dob": "Citizenship date must be after Date of birth"
     },
     "upload-document": {
       "label": "Upload primary identity document"

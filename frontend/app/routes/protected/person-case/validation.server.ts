@@ -352,33 +352,43 @@ export const previousSinSchema = v.pipe(
   ),
 );
 
-export const primaryDocumentSchema = v.intersect([
-  v.object({
-    currentStatusInCanada: primaryDocument.currentStatusSchema,
-  }),
-  v.variant(
-    'documentType',
-    [
-      v.object({
-        documentType: primaryDocument.documentTypeSchema,
-        registrationNumber: primaryDocument.registrationNumberSchema,
-        clientNumber: primaryDocument.clientNumberSchema,
-        givenName: primaryDocument.givenNameSchema,
-        lastName: primaryDocument.lastNameSchema,
-        dateOfBirthYear: primaryDocument.dateOfBirthYearSchema,
-        dateOfBirthMonth: primaryDocument.dateOfBirthMonthSchema,
-        dateOfBirthDay: primaryDocument.dateOfBirthDaySchema,
-        dateOfBirth: primaryDocument.dateOfBirthSchema,
-        gender: primaryDocument.genderSchema,
-        citizenshipDateYear: primaryDocument.citizenshipYearSchema,
-        citizenshipDateMonth: primaryDocument.citizenshipMonthSchema,
-        citizenshipDateDay: primaryDocument.citizenshipDaySchema,
-        citizenshipDate: primaryDocument.citizenshipDateSchema,
-      }),
-    ],
-    'protected:primary-identity-document.document-type.required',
+export const primaryDocumentSchema = v.pipe(
+  v.intersect([
+    v.object({
+      currentStatusInCanada: primaryDocument.currentStatusSchema,
+    }),
+    v.variant(
+      'documentType',
+      [
+        v.object({
+          documentType: primaryDocument.documentTypeSchema,
+          registrationNumber: primaryDocument.registrationNumberSchema,
+          clientNumber: primaryDocument.clientNumberSchema,
+          givenName: primaryDocument.givenNameSchema,
+          lastName: primaryDocument.lastNameSchema,
+          dateOfBirthYear: primaryDocument.dateOfBirthYearSchema,
+          dateOfBirthMonth: primaryDocument.dateOfBirthMonthSchema,
+          dateOfBirthDay: primaryDocument.dateOfBirthDaySchema,
+          dateOfBirth: primaryDocument.dateOfBirthSchema,
+          gender: primaryDocument.genderSchema,
+          citizenshipDateYear: primaryDocument.citizenshipYearSchema,
+          citizenshipDateMonth: primaryDocument.citizenshipMonthSchema,
+          citizenshipDateDay: primaryDocument.citizenshipDaySchema,
+          citizenshipDate: primaryDocument.citizenshipDateSchema,
+        }),
+      ],
+      'protected:primary-identity-document.document-type.required',
+    ),
+  ]),
+  v.forward(
+    v.partialCheck(
+      [['dateOfBirth'], ['citizenshipDate']],
+      (input) => input.citizenshipDate >= input.dateOfBirth,
+      'protected:primary-identity-document.citizenship-date.invalid-before-dob',
+    ),
+    ['citizenshipDate'],
   ),
-]);
+);
 
 export function parsePrimaryDocument(formData: FormData) {
   const dateOfBirthYear = formData.get('dateOfBirthYear')?.toString();
