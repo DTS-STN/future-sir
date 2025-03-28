@@ -147,19 +147,6 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
                   },
                 ],
               },
-              RelatedPerson: [
-                {
-                  PersonName: [
-                    {
-                      PersonGivenName: 'ParentFirstName',
-                      PersonSurName: 'ParentLastName',
-                    },
-                  ],
-                  PersonRelationshipCode: {
-                    ReferenceDataName: 'Parent 1',
-                  },
-                },
-              ],
             },
             {
               CertificateCategoryCode: {
@@ -320,7 +307,7 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
             ApplicationDetailID: 'SIN Confirmation receiving method',
             ApplicationDetailValue: {
               ValueCode: {
-                ReferenceDataID: 'Mail',
+                ReferenceDataID: '564190001',
               },
             },
           },
@@ -361,7 +348,7 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
             },
           },
           {
-            ApplicationDetailID: 'Registered indian status on record',
+            ApplicationDetailID: 'Register indian status on record',
             ApplicationDetailValue: {
               ValueBoolean: false,
             },
@@ -505,19 +492,6 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
                   },
                 ],
               },
-              RelatedPerson: [
-                {
-                  PersonName: [
-                    {
-                      PersonGivenName: 'ParentFirstName',
-                      PersonSurName: 'ParentLastName',
-                    },
-                  ],
-                  PersonRelationshipCode: {
-                    ReferenceDataName: 'Parent 1',
-                  },
-                },
-              ],
             },
             {
               CertificateCategoryCode: {
@@ -676,7 +650,7 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
             ApplicationDetailID: 'SIN Confirmation receiving method',
             ApplicationDetailValue: {
               ValueCode: {
-                ReferenceDataID: 'Mail',
+                ReferenceDataID: '564190001',
               },
             },
           },
@@ -717,7 +691,7 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
             },
           },
           {
-            ApplicationDetailID: 'Registered indian status on record',
+            ApplicationDetailID: 'Register indian status on record',
             ApplicationDetailValue: {
               ValueBoolean: false,
             },

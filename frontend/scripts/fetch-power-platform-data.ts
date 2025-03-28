@@ -42,6 +42,7 @@ const endpoints: readonly Endpoint[] = [
     outputFile: 'esdc_globaloptionsetdefinitions.json',
     jsonFilter: `value[?starts_with(Name, 'esdc')].${optionSetJsonFilter}`,
   },
+
   {
     name: 'esdc_applicantgender',
     description: 'ESDC Applicant genders',
@@ -96,6 +97,13 @@ const endpoints: readonly Endpoint[] = [
     description: 'ESDC Languages of correspondence',
     pathname: "/api/data/v9.2/GlobalOptionSetDefinitions(Name='esdc_languageofcorrespondence')",
     outputFile: 'esdc_languageofcorrespondence.json',
+    jsonFilter: optionSetJsonFilter,
+  },
+  {
+    name: 'esdc_sinconfirmationreceivingmethod',
+    description: 'ESDC Applicant genders',
+    pathname: "/api/data/v9.2/GlobalOptionSetDefinitions(Name='esdc_sinconfirmationreceivingmethod')",
+    outputFile: 'esdc_sinconfirmationreceivingmethod.json',
     jsonFilter: optionSetJsonFilter,
   },
   {
