@@ -14,7 +14,7 @@ function generateFakeHitListResult(seed: number): HitListResult {
     dateOfBirth: faker.number.int({ min: 1, max: 28 }),
     parentSurname: faker.person.lastName(),
     partialSIN: faker.string.numeric(3),
-    score: faker.number.float({ min: 0.8, max: 1 }),
+    score: faker.number.int({ min: 1, max: 10 }), //always a integer out of 10,
   };
 }
 
