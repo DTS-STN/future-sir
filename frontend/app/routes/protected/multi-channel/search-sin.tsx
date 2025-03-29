@@ -81,7 +81,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     case 'search': {
       const { caseId } = params;
       const sinSearchService = getSinSearchService();
-      const searchResults = (await sinSearchService.getSearchResults(caseId)).results ?? [];
+      const searchResults = (await sinSearchService.getSearchResults(caseId)).results?.filter((result) => result.id) ?? [];
 
       return {
         tableData: {
@@ -91,7 +91,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
               `${yearOfBirth}-${monthOfBirth}-${dateOfBirth}`.replace(/\d?\d/g, (s) => s.padStart(2, '0')),
               parentSurname,
               `*** *** ${partialSIN}`,
-              `${new Intl.NumberFormat(`${lang}-CA`, { style: 'percent', maximumFractionDigits: 2 }).format(score)}`, //score is out of 10 (i.e. 2.5 corresponds to 2.5/10 or 25%)
+              `${new Intl.NumberFormat(`${lang}-CA`, { style: 'percent', maximumFractionDigits: 2 }).format(score / 10)}`, //score is out of 10 (i.e. 2 corresponds to 2/10 or 20%)
             ],
           ),
         },
