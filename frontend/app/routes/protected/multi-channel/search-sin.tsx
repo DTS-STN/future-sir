@@ -41,7 +41,7 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
 
   return {
     documentTitle: t('protected:search-sin.page-title'),
-    fullName: `${personSinCase.currentNameInfo.firstName} ${personSinCase.currentNameInfo.lastName}`,
+    fullName: `${personSinCase.currentNameInfo.firstName ?? personSinCase.primaryDocuments.givenName} ${personSinCase.currentNameInfo.lastName ?? personSinCase.primaryDocuments.lastName}`,
     firstNamesPreviouslyUsed: personSinCase.personalInformation.firstNamePreviouslyUsed?.join(', '),
     dob: personSinCase.primaryDocuments.dateOfBirth,
     parents: personSinCase.parentDetails.filter((p) => !p.unavailable).map((p) => `${p.givenName} ${p.lastName}`),
@@ -81,7 +81,10 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     case 'search': {
       const { caseId } = params;
       const sinSearchService = getSinSearchService();
-      const searchResults = (await sinSearchService.getSearchResults(caseId)).results?.filter((result) => result.id) ?? [];
+      const searchResults =
+        (await sinSearchService.getSearchResults(caseId)).results
+          ?.filter((result) => result.id)
+          .sort((a, b) => b.score - a.score) ?? [];
 
       return {
         tableData: {
