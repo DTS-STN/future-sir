@@ -81,14 +81,14 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     case 'search': {
       const { caseId } = params;
       const sinSearchService = getSinSearchService();
-      const searchResults = await sinSearchService.getSearchResults(caseId);
+      const searchResults = (await sinSearchService.getSearchResults(caseId)).results ?? [];
 
       return {
         tableData: {
           rows: searchResults.map(
-            ({ firstName, lastName, yearOfBirth, monthOfBirth, dayOfBirth, parentSurname, partialSIN, score }) => [
+            ({ firstName, lastName, yearOfBirth, monthOfBirth, dateOfBirth, parentSurname, partialSIN, score }) => [
               `${firstName} ${lastName}`,
-              `${yearOfBirth}-${monthOfBirth}-${dayOfBirth}`.replace(/\d?\d/g, (s) => s.padStart(2, '0')),
+              `${yearOfBirth}-${monthOfBirth}-${dateOfBirth}`.replace(/\d?\d/g, (s) => s.padStart(2, '0')),
               parentSurname,
               `*** *** ${partialSIN}`,
               `${new Intl.NumberFormat(`${lang}-CA`, { style: 'percent', maximumFractionDigits: 2 }).format(score)}`, //score is out of 10 (i.e. 2.5 corresponds to 2.5/10 or 25%)

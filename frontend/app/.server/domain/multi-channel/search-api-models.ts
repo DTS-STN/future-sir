@@ -3,6 +3,10 @@ export type SearchRequest = {
   idToken: string;
 };
 
+export type SearchResponse = {
+  results?: HitListResult[];
+};
+
 export type HitListResult = {
   id: string;
   firstName: string;
@@ -10,7 +14,7 @@ export type HitListResult = {
   lastName: string;
   yearOfBirth: number;
   monthOfBirth: number;
-  dayOfBirth: number;
+  dateOfBirth: number;
   parentSurname: string;
   partialSIN: string;
   score: number;
