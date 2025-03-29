@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 
-import type { HitListResult } from '~/.server/domain/multi-channel/search-api-models';
+import type { HitListResult, SearchResponse } from '~/.server/domain/multi-channel/search-api-models';
 
 function generateFakeHitListResult(seed: number): HitListResult {
   faker.seed(seed);
@@ -11,13 +11,17 @@ function generateFakeHitListResult(seed: number): HitListResult {
     lastName: faker.person.lastName(),
     yearOfBirth: faker.date.past({ years: 100 }).getFullYear(),
     monthOfBirth: faker.number.int({ min: 1, max: 12 }),
-    dayOfBirth: faker.number.int({ min: 1, max: 28 }),
+    dateOfBirth: faker.number.int({ min: 1, max: 28 }),
     parentSurname: faker.person.lastName(),
     partialSIN: faker.string.numeric(3),
     score: faker.number.float({ min: 0.8, max: 1 }),
   };
 }
 
-export function generateFakeHitListResults(count: number, seed: number): HitListResult[] {
-  return Array.from({ length: count }, (_, index) => generateFakeHitListResult(seed + index)).sort((a, b) => b.score - a.score);
+export function generateFakeHitListResults(count: number, seed: number): SearchResponse {
+  return {
+    results: Array.from({ length: count }, (_, index) => generateFakeHitListResult(seed + index)).sort(
+      (a, b) => b.score - a.score,
+    ),
+  };
 }

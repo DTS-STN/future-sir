@@ -1,10 +1,10 @@
-import type { HitListResult } from '~/.server/domain/multi-channel/search-api-models';
+import type { SearchResponse } from '~/.server/domain/multi-channel/search-api-models';
 import { getDefaultSearchService } from '~/.server/domain/multi-channel/search-api-service-default';
 import { getMockSinSearchService } from '~/.server/domain/multi-channel/search-api-service-mock';
 import { serverEnvironment } from '~/.server/environment';
 
 export type SinSearchService = {
-  getSearchResults(caseId: string): Promise<HitListResult[]>;
+  getSearchResults(caseId: string): Promise<SearchResponse>;
 };
 
 export function getSinSearchService(): SinSearchService {

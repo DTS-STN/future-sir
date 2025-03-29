@@ -1,4 +1,4 @@
-import type { HitListResult } from '~/.server/domain/multi-channel/search-api-models';
+import type { SearchResponse } from '~/.server/domain/multi-channel/search-api-models';
 import type { SinSearchService } from '~/.server/domain/multi-channel/search-api-service';
 import { serverEnvironment } from '~/.server/environment';
 import { LogFactory } from '~/.server/logging';
@@ -10,7 +10,7 @@ const log = LogFactory.getLogger(import.meta.url);
 
 export function getDefaultSearchService(): SinSearchService {
   return {
-    getSearchResults: async (caseId: string): Promise<HitListResult[]> => {
+    getSearchResults: async (caseId: string): Promise<SearchResponse> => {
       const authHeader = serverEnvironment.INTEROP_SIN_SEARCH_API_AUTH_HEADER.value();
       const response = await fetch(`${serverEnvironment.INTEROP_SIN_SEARCH_API_BASE_URL}/search`, {
         method: 'POST',
@@ -23,9 +23,10 @@ export function getDefaultSearchService(): SinSearchService {
           idToken: serverEnvironment.TMP_AWS_ID_TOKEN.value(),
         }),
       });
-      if (response.status === HttpStatusCodes.NOT_FOUND) return [];
-      if (!response.ok)
+      if (response.status === HttpStatusCodes.NOT_FOUND) return {};
+      if (!response.ok) {
         throw new AppError(`Search results for case ID '${caseId}' not found.`, ErrorCodes.SEARCH_RESULTS_NOT_FOUND);
+      }
       return response.json();
     },
   };
