@@ -20,8 +20,6 @@ function generateFakeHitListResult(seed: number): HitListResult {
 
 export function generateFakeHitListResults(count: number, seed: number): SearchResponse {
   return {
-    results: Array.from({ length: count }, (_, index) => generateFakeHitListResult(seed + index)).sort(
-      (a, b) => b.score - a.score,
-    ),
+    results: Array.from({ length: count }, (_, index) => generateFakeHitListResult(seed + index)),
   };
 }
