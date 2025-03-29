@@ -33,7 +33,7 @@ export function createClientConfig<T extends ClientOptions>(
  */
 function getFetchFn(): Config['fetch'] {
   if (serverEnvironment.INTEROP_PROXY_URL) {
-    const dispatcher = new ProxyAgent({ uri: serverEnvironment.INTEROP_PROXY_URL, proxyTls: { timeout: 10_000 } });
+    const dispatcher = new ProxyAgent({ uri: serverEnvironment.INTEROP_PROXY_URL, proxyTls: { timeout: 60_000 } });
     // @ts-expect-error node's globalThis.fetch() and undici.fetch() are functionally equivalent
     return (request) => globalThis.fetch(request, { dispatcher });
   }

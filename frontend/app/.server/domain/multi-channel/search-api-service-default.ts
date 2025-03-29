@@ -1,3 +1,5 @@
+import { ProxyAgent } from 'undici';
+
 import type { SearchResponse } from '~/.server/domain/multi-channel/search-api-models';
 import type { SinSearchService } from '~/.server/domain/multi-channel/search-api-service';
 import { serverEnvironment } from '~/.server/environment';
@@ -11,8 +13,10 @@ const log = LogFactory.getLogger(import.meta.url);
 export function getDefaultSearchService(): SinSearchService {
   return {
     getSearchResults: async (caseId: string): Promise<SearchResponse> => {
+      const fetchFn = getFetchFn();
+
       const authHeader = serverEnvironment.INTEROP_SIN_SEARCH_API_AUTH_HEADER.value();
-      const response = await fetch(`${serverEnvironment.INTEROP_SIN_SEARCH_API_BASE_URL}/search`, {
+      const response = await fetchFn(`${serverEnvironment.INTEROP_SIN_SEARCH_API_BASE_URL}/search`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -30,6 +34,22 @@ export function getDefaultSearchService(): SinSearchService {
       return response.json();
     },
   };
+}
+
+/**
+ * Returns a fetch() function configured with a proxy if the INTEROP_PROXY_URL
+ * environment variable is set. Otherwise, it returns undefined, indicating
+ * that the default fetch function should be used.
+ *
+ * TODO ::: GjB ::: this function should be removed and this entire module should use `interop-client-config`
+ */
+function getFetchFn(): typeof globalThis.fetch {
+  if (!serverEnvironment.INTEROP_PROXY_URL) return globalThis.fetch;
+
+  const dispatcher = new ProxyAgent({ uri: serverEnvironment.INTEROP_PROXY_URL, proxyTls: { timeout: 60_000 } });
+
+  // @ts-expect-error node's globalThis.fetch() and undici.fetch() are functionally equivalent
+  return (input, init) => globalThis.fetch(input, { ...init, dispatcher });
 }
 
 /**
