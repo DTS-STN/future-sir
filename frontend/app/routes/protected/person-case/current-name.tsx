@@ -26,8 +26,8 @@ import { getTabIdOrRedirect, loadMachineActorOrRedirect } from '~/routes/protect
 import type { CurrentNameData } from '~/routes/protected/person-case/state-machine-models';
 import { getStateRoute } from '~/routes/protected/person-case/state-machine.server';
 import { currentNameSchema } from '~/routes/protected/person-case/validation.server';
-import { getSingleKey } from '~/utils/i18n-utils';
 import { trimToUndefined } from '~/utils/string-utils';
+import { extractValidationKey } from '~/utils/validation-utils';
 
 const REQUIRE_OPTIONS = {
   yes: 'Yes', //
@@ -199,7 +199,7 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
           <fetcher.Form method="post" noValidate>
             <div className="space-y-6">
               <InputRadios
-                errorMessage={t(getSingleKey(formErrors?.preferredSameAsDocumentName))}
+                errorMessage={t(extractValidationKey(formErrors?.preferredSameAsDocumentName))}
                 id="same-name-id"
                 legend={t('protected:current-name.preferred-name.description')}
                 name="same-name"
@@ -209,7 +209,7 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
               {sameName === false && (
                 <>
                   <InputField
-                    errorMessage={t(getSingleKey(formErrors?.firstName), { maximum: 100 })}
+                    errorMessage={t(extractValidationKey(formErrors?.firstName), { maximum: 100 })}
                     label={t('protected:current-name.preferred-name.first-name')}
                     name="first-name"
                     defaultValue={formValues?.firstName}
@@ -217,14 +217,14 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
                     className="w-full"
                   />
                   <InputField
-                    errorMessage={t(getSingleKey(formErrors?.middleName), { maximum: 100 })}
+                    errorMessage={t(extractValidationKey(formErrors?.middleName), { maximum: 100 })}
                     label={t('protected:current-name.preferred-name.middle-name')}
                     name="middle-name"
                     defaultValue={formValues?.middleName}
                     className="w-full"
                   />
                   <InputField
-                    errorMessage={t(getSingleKey(formErrors?.lastName), { maximum: 100 })}
+                    errorMessage={t(extractValidationKey(formErrors?.lastName), { maximum: 100 })}
                     label={t('protected:current-name.preferred-name.last-name')}
                     name="last-name"
                     defaultValue={formValues?.lastName}
@@ -238,7 +238,7 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
                     <p>{t('protected:current-name.supporting-docs.description')}</p>
                     <InputRadios
                       id="docs-required-id"
-                      errorMessage={t(getSingleKey(formErrors?.['supportingDocuments.required']))}
+                      errorMessage={t(extractValidationKey(formErrors?.['supportingDocuments.required']))}
                       legend={t('protected:current-name.supporting-docs.docs-required')}
                       name="docs-required"
                       options={requireOptions}
@@ -247,7 +247,7 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
                     {requireDoc === true && (
                       <InputCheckboxes
                         id="doc-type-id"
-                        errorMessage={t(getSingleKey(formErrors?.['supportingDocuments.documentTypes']))}
+                        errorMessage={t(extractValidationKey(formErrors?.['supportingDocuments.documentTypes']))}
                         legend={t('protected:current-name.supporting-docs.doc-type')}
                         name="doc-type"
                         options={docTypes}

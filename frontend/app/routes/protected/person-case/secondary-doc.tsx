@@ -24,7 +24,7 @@ import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import { getTabIdOrRedirect, loadMachineActorOrRedirect } from '~/routes/protected/person-case/route-helpers.server';
 import { getStateRoute } from '~/routes/protected/person-case/state-machine.server';
 import { secondaryDocumentSchema } from '~/routes/protected/person-case/validation.server';
-import { getSingleKey } from '~/utils/i18n-utils';
+import { extractValidationKey } from '~/utils/validation-utils';
 
 export const handle = {
   i18nNamespace: [...parentHandle.i18nNamespace, 'protected'],
@@ -132,7 +132,7 @@ export default function SecondaryDoc({ actionData, loaderData, params }: Route.C
                 name="document-type"
                 options={docOptions}
                 required
-                errorMessage={t(getSingleKey(formErrors?.documentType))}
+                errorMessage={t(extractValidationKey(formErrors?.documentType))}
               />
               <DatePickerField
                 defaultValue={{
@@ -147,8 +147,8 @@ export default function SecondaryDoc({ actionData, loaderData, params }: Route.C
                   year: 'expiry-year',
                 }}
                 errorMessages={{
-                  year: t(getSingleKey(formErrors?.expiryYear)),
-                  month: t(getSingleKey(formErrors?.expiryMonth)),
+                  year: t(extractValidationKey(formErrors?.expiryYear)),
+                  month: t(extractValidationKey(formErrors?.expiryMonth)),
                 }}
               />
               <InputFile

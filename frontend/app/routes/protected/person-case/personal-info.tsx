@@ -26,8 +26,8 @@ import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import { getTabIdOrRedirect, loadMachineActorOrRedirect } from '~/routes/protected/person-case/route-helpers.server';
 import { getStateRoute } from '~/routes/protected/person-case/state-machine.server';
 import { personalInfoSchema } from '~/routes/protected/person-case/validation.server';
-import { getSingleKey } from '~/utils/i18n-utils';
 import { REGEX_PATTERNS } from '~/utils/regex-utils';
+import { extractValidationKey } from '~/utils/validation-utils';
 
 export const handle = {
   i18nNamespace: [...parentHandle.i18nNamespace, 'protected'],
@@ -280,7 +280,7 @@ export default function PersonalInformation({ actionData, loaderData, params, ma
               <InputField
                 id="last-name-at-birth-id"
                 defaultValue={loaderData.defaultFormValues.lastNameAtBirth ?? loaderData.primaryDocValues.lastName}
-                errorMessage={t(getSingleKey(errors?.lastNameAtBirth), { maximum: 100 })}
+                errorMessage={t(extractValidationKey(errors?.lastNameAtBirth), { maximum: 100 })}
                 label={t('protected:personal-information.last-name-at-birth.label')}
                 name="lastNameAtBirth"
                 required
@@ -338,7 +338,7 @@ export default function PersonalInformation({ actionData, loaderData, params, ma
 
               <InputRadios
                 id="gender-id"
-                errorMessage={t(getSingleKey(errors?.gender))}
+                errorMessage={t(extractValidationKey(errors?.gender))}
                 helpMessagePrimary={t('protected:personal-information.gender.help-message-primary')}
                 legend={t('protected:personal-information.gender.label')}
                 name="gender"

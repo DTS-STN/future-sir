@@ -15,7 +15,7 @@ import { InputRadios } from '~/components/input-radios';
 import { InputSelect } from '~/components/input-select';
 import { APPLICANT_PRIMARY_DOCUMENT_CHOICE, APPLICANT_STATUS_IN_CANADA } from '~/domain/constants';
 import type { Errors, PrimaryDocumentData } from '~/routes/protected/person-case/state-machine-models';
-import { getSingleKey } from '~/utils/i18n-utils';
+import { extractValidationKey } from '~/utils/validation-utils';
 
 interface PrimaryDocsFormProps {
   formValues: Partial<PrimaryDocumentData> | undefined;
@@ -53,14 +53,14 @@ export default function PrimaryDocsForm({
         value={currentStatus}
         onChange={handleOnCurrentStatusInCanadaChanged}
         statusInCanadaChoices={statusInCanadaChoices}
-        errorMessage={t(getSingleKey(formErrors?.currentStatusInCanada))}
+        errorMessage={t(extractValidationKey(formErrors?.currentStatusInCanada))}
       />
       {currentStatus.length > 0 && (
         <DocumentType
           value={documentType}
           onChange={({ target }) => setDocumentType(target.value)}
           documentTypeChoices={documentTypeChoices}
-          error={t(getSingleKey(formErrors?.documentType))}
+          error={t(extractValidationKey(formErrors?.documentType))}
         />
       )}
       {documentType.length > 0 && (
@@ -166,7 +166,7 @@ function PrimaryDocsFields({ documentType, formErrors, formValues, genders }: Pr
           <InputField
             id="registration-number-id"
             defaultValue={formValues?.registrationNumber}
-            errorMessage={t(getSingleKey(formErrors?.registrationNumber), { length: 8 })}
+            errorMessage={t(extractValidationKey(formErrors?.registrationNumber), { length: 8 })}
             label={t('protected:primary-identity-document.registration-number.label')}
             name="registrationNumber"
             required
@@ -175,7 +175,7 @@ function PrimaryDocsFields({ documentType, formErrors, formValues, genders }: Pr
           <InputField
             id="client-number-id"
             defaultValue={formValues?.clientNumber}
-            errorMessage={t(getSingleKey(formErrors?.clientNumber), { length: 10 })}
+            errorMessage={t(extractValidationKey(formErrors?.clientNumber), { length: 10 })}
             label={t('protected:primary-identity-document.client-number.label')}
             name="clientNumber"
             required
@@ -184,7 +184,7 @@ function PrimaryDocsFields({ documentType, formErrors, formValues, genders }: Pr
           <InputField
             id="given-name-id"
             defaultValue={formValues?.givenName}
-            errorMessage={t(getSingleKey(formErrors?.givenName), { maximum: 100 })}
+            errorMessage={t(extractValidationKey(formErrors?.givenName), { maximum: 100 })}
             helpMessagePrimary={t('protected:primary-identity-document.given-name.help-message-primary')}
             label={t('protected:primary-identity-document.given-name.label')}
             name="givenName"
@@ -195,7 +195,7 @@ function PrimaryDocsFields({ documentType, formErrors, formValues, genders }: Pr
           <InputField
             id="last-name-id"
             defaultValue={formValues?.lastName}
-            errorMessage={t(getSingleKey(formErrors?.lastName), { maximum: 100 })}
+            errorMessage={t(extractValidationKey(formErrors?.lastName), { maximum: 100 })}
             helpMessagePrimary={t('protected:primary-identity-document.last-name.help-message-primary')}
             label={t('protected:primary-identity-document.last-name.label')}
             name="lastName"
@@ -210,15 +210,15 @@ function PrimaryDocsFields({ documentType, formErrors, formValues, genders }: Pr
             required
             names={{ day: 'dateOfBirthDay', month: 'dateOfBirthMonth', year: 'dateOfBirthYear' }}
             errorMessages={{
-              all: t(getSingleKey(formErrors?.dateOfBirth)),
-              year: t(getSingleKey(formErrors?.dateOfBirthYear)),
-              month: t(getSingleKey(formErrors?.dateOfBirthMonth)),
-              day: t(getSingleKey(formErrors?.dateOfBirthDay)),
+              all: t(extractValidationKey(formErrors?.dateOfBirth)),
+              year: t(extractValidationKey(formErrors?.dateOfBirthYear)),
+              month: t(extractValidationKey(formErrors?.dateOfBirthMonth)),
+              day: t(extractValidationKey(formErrors?.dateOfBirthDay)),
             }}
           />
           <InputRadios
             id="gender-id"
-            errorMessage={t(getSingleKey(formErrors?.gender))}
+            errorMessage={t(extractValidationKey(formErrors?.gender))}
             legend={t('protected:primary-identity-document.gender.label')}
             name="gender"
             options={genderOptions}
@@ -231,10 +231,10 @@ function PrimaryDocsFields({ documentType, formErrors, formValues, genders }: Pr
             required
             names={{ day: 'citizenshipDateDay', month: 'citizenshipDateMonth', year: 'citizenshipDateYear' }}
             errorMessages={{
-              all: t(getSingleKey(formErrors?.citizenshipDate)),
-              year: t(getSingleKey(formErrors?.citizenshipDateYear)),
-              month: t(getSingleKey(formErrors?.citizenshipDateMonth)),
-              day: t(getSingleKey(formErrors?.citizenshipDateDay)),
+              all: t(extractValidationKey(formErrors?.citizenshipDate)),
+              year: t(extractValidationKey(formErrors?.citizenshipDateYear)),
+              month: t(extractValidationKey(formErrors?.citizenshipDateMonth)),
+              day: t(extractValidationKey(formErrors?.citizenshipDateDay)),
             }}
           />
           <InputFile

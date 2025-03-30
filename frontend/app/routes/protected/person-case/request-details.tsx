@@ -24,7 +24,7 @@ import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import { getTabIdOrRedirect, loadMachineActorOrRedirect } from '~/routes/protected/person-case/route-helpers.server';
 import { getStateRoute } from '~/routes/protected/person-case/state-machine.server';
 import { requestDetailsSchema } from '~/routes/protected/person-case/validation.server';
-import { getSingleKey } from '~/utils/i18n-utils';
+import { extractValidationKey } from '~/utils/validation-utils';
 
 export const handle = {
   i18nNamespace: [...parentHandle.i18nNamespace, 'protected'],
@@ -145,7 +145,7 @@ export default function RequestDetails({ actionData, loaderData, params }: Route
                 name="scenario"
                 options={scenarioOptions}
                 required
-                errorMessage={t(getSingleKey(formErrors?.scenario))}
+                errorMessage={t(extractValidationKey(formErrors?.scenario))}
               />
               <InputSelect
                 className="w-full"
@@ -154,7 +154,7 @@ export default function RequestDetails({ actionData, loaderData, params }: Route
                 label={t('protected:request-details.type-request')}
                 defaultValue={formValues?.type ?? ''}
                 options={requestOptions}
-                errorMessage={t(getSingleKey(formErrors?.type))}
+                errorMessage={t(extractValidationKey(formErrors?.type))}
                 required
               />
             </div>
