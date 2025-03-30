@@ -3,7 +3,7 @@
 exports[`Dialog > renders Dialog component > expected html 1`] = `
 <div>
   <button
-    aria-controls="radix-:r0:"
+    aria-controls="radix-«r0»"
     aria-expanded="false"
     aria-haspopup="dialog"
     data-state="closed"
@@ -17,7 +17,7 @@ exports[`Dialog > renders Dialog component > expected html 1`] = `
 exports[`Dialog > renders DialogOverlay with correct class name > expected html 1`] = `
 <div>
   <button
-    aria-controls="radix-:r3:"
+    aria-controls="radix-«r3»"
     aria-expanded="false"
     aria-haspopup="dialog"
     data-state="closed"
@@ -31,7 +31,7 @@ exports[`Dialog > renders DialogOverlay with correct class name > expected html 
 exports[`Dialog > renders DialogTitle and DialogDescription > expected html 1`] = `
 <div>
   <button
-    aria-controls="radix-:r6:"
+    aria-controls="radix-«r6»"
     aria-expanded="false"
     aria-haspopup="dialog"
     data-state="closed"

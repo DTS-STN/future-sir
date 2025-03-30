@@ -42,8 +42,8 @@ exports[`InputCheckboxes > should render component with legend and options > exp
 exports[`InputCheckboxes > should render component with legend and options > expected html 2`] = `
 <label
   class="block pl-3 leading-6"
-  for="input-checkbox-:r0:-option-option1-input"
-  id="input-checkbox-:r0:-option-option1-label"
+  for="input-checkbox-«r0»-option-option1-input"
+  id="input-checkbox-«r0»-option-option1-label"
 >
   Option 1
 </label>
@@ -52,8 +52,8 @@ exports[`InputCheckboxes > should render component with legend and options > exp
 exports[`InputCheckboxes > should render component with legend and options > expected html 3`] = `
 <label
   class="block pl-3 leading-6"
-  for="input-checkbox-:r0:-option-option2-input"
-  id="input-checkbox-:r0:-option-option2-label"
+  for="input-checkbox-«r0»-option-option2-input"
+  id="input-checkbox-«r0»-option-option2-label"
 >
   Option 2
 </label>
