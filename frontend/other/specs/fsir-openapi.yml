@@ -9,13 +9,13 @@ paths:
       operationId: "sinapplication"
       requestBody:
         content:
-          application/json: 
-              schema: 
+          application/json:
+              schema:
                 $ref: '#/components/schemas/SINApplicationRequest'
               examples:
                 OpenApi Generated:
                     $ref: '#/components/schemas/SINApplicationRequest'
-                Maximum Valid Request: 
+                Maximum Valid Request:
                   value:
                     SystemCredential: "KwisatzHaderach"
                     SINApplication:
@@ -48,8 +48,8 @@ paths:
                             ValueBoolean: true
                         - ApplicationDetailID : "Previous SIN Number"
                           ApplicationDetailValue:
-                            ValueString: "990124567"                                                                                
-                      SINApplicationCategoryCode: 
+                            ValueString: "990124567"
+                      SINApplicationCategoryCode:
                         ReferenceDataID: "3"
                       Applicant:
                         Certificate:
@@ -85,13 +85,13 @@ paths:
                               - PersonGivenName: "Ryan"
                                 PersonSurName: "Gosling"
                               PersonRelationshipCode:
-                                ReferenceDataName: "Parent 3"  
+                                ReferenceDataName: "Parent 3"
 
                             - PersonName:
                               - PersonGivenName: "Nicole"
                                 PersonSurName: "Kidman"
                               PersonRelationshipCode:
-                                ReferenceDataName: "Parent 4"                  
+                                ReferenceDataName: "Parent 4"
                           Client:
                             PersonName:
                               - PersonGivenName: "Paul"
@@ -103,11 +103,11 @@ paths:
                             PersonBirthLocation:
                               LocationContactInformation:
                                 - Address:
-                                  - AddressCityName: "Gatineau"  
+                                  - AddressCityName: "Gatineau"
                                     AddressProvince:
                                       ProvinceCode:
                                         ReferenceDataID: "QC"
-                                    AddressCountry: 
+                                    AddressCountry:
                                       CountryCode:
                                         ReferenceDataID: "CAN"
                             PersonGenderCode:
@@ -140,17 +140,17 @@ paths:
                         PersonBirthLocation:
                             LocationContactInformation:
                               - Address:
-                                - AddressCityName: "Gatineau"  
+                                - AddressCityName: "Gatineau"
                                   AddressProvince:
                                     ProvinceCode:
                                       ReferenceDataID: "QC"
                                       ReferenceDataName: "Québec"
-                                  AddressCountry: 
+                                  AddressCountry:
                                     CountryCode:
                                       ReferenceDataID: "CAN"
-                        PersonGenderCode: 
+                        PersonGenderCode:
                           ReferenceDataID: "1"
-                        PersonBirthDate: 
+                        PersonBirthDate:
                           date: "1999-05-11"
                         RelatedPerson:
                             - PersonName:
@@ -169,7 +169,7 @@ paths:
                               - PersonGivenName: "Ryan"
                                 PersonSurName: "Gosling"
                               PersonRelationshipCode:
-                                ReferenceDataName: "Parent 3"  
+                                ReferenceDataName: "Parent 3"
 
                             - PersonName:
                               - PersonGivenName: "Nicole"
@@ -177,26 +177,26 @@ paths:
                               PersonRelationshipCode:
                                 ReferenceDataName: "Parent 4"
                         PersonLanguage:
-                          - CommunicationCategoryCode: 
+                          - CommunicationCategoryCode:
                               ReferenceDataName: "Correspondence"
                             LanguageCode:
                               ReferenceDataID: "FR"
-                            PreferredIndicator: True       
+                            PreferredIndicator: True
                         PersonContactInformation:
                           - EmailAddress:
                             - EmailAddressID: paulSpiceLoverForever@gmail.com
                             TelephoneNumber:
-                            - TelephoneNumberCategoryCode: 
+                            - TelephoneNumberCategoryCode:
                                 ReferenceDataName: "Primary"
-                              FullTelephoneNumber: 
+                              FullTelephoneNumber:
                                 TelephoneNumberFullID: "819-334-2233" #Confirm format?
-                            - TelephoneNumberCategoryCode: 
+                            - TelephoneNumberCategoryCode:
                                 ReferenceDataName: "Secondary"
-                              FullTelephoneNumber: 
+                              FullTelephoneNumber:
                                 TelephoneNumberFullID: "819-123-9933" #Confirm format?
                             Address:
-                                - AddressCityName: "Gatineau"  
-                                  AddressStreet: 
+                                - AddressCityName: "Gatineau"
+                                  AddressStreet:
                                     StreetNumberText: "22"
                                     StreetName: "Eddy"
                                   AddressSecondaryUnitText: "3"
@@ -204,7 +204,7 @@ paths:
                                     ProvinceCode:
                                       ReferenceDataID: "QC"
                                       ReferenceDataName: "Québec"
-                                  AddressCountry: 
+                                  AddressCountry:
                                     CountryCode:
                                       ReferenceDataID: "CAN"
                                   AddressPostalCode: "J8N 5K9"
@@ -256,42 +256,42 @@ paths:
                             ReferenceDataID: "1"
                           ResourceReference: "Documents"
                           CertificateIdentification:
-                          - IdentificationID : "2"               
+                          - IdentificationID : "2"
                           Client:
                             PersonName:
                               - PersonGivenName: "Paul"
                                 PersonSurName: "Atreides"
                             PersonBirthDate:
-                              date: "1999-05-12" # See what format is expected                       
+                              date: "1999-05-12" # See what format is expected
                         PersonName:
                           - PersonNameCategoryCode:
                               ReferenceDataName: "Legal"
                             PersonGivenName: "Paul"
-                            PersonSurName: "Atreides"                      
+                            PersonSurName: "Atreides"
                           - PersonNameCategoryCode:
                               ReferenceDataName: "at birth"
                             PersonSurName: "Atreides"
                         PersonBirthLocation:
                             LocationContactInformation:
                               - Address:
-                                - AddressCityName: "Gatineau"  
-                                  AddressCountry: 
+                                - AddressCityName: "Gatineau"
+                                  AddressCountry:
                                     CountryCode:
                                       ReferenceDataID: "CAN"
-                        PersonGenderCode: 
+                        PersonGenderCode:
                           ReferenceDataID:
                             "1"
-                        PersonBirthDate: 
-                          date: "1999-05-11"                
+                        PersonBirthDate:
+                          date: "1999-05-11"
                         PersonLanguage:
-                          - CommunicationCategoryCode: 
+                          - CommunicationCategoryCode:
                               ReferenceDataName: "Correspondence"
                             LanguageCode:
                               ReferenceDataID: "FR"
-                            PreferredIndicator: True     
+                            PreferredIndicator: True
                         PersonContactInformation:
                             - Address:
-                                - AddressCityName: "Gatineau"  
+                                - AddressCityName: "Gatineau"
                                   AddressStreet:
                                     StreetNumberText: "22"
                                     StreetName: "Eddy"
@@ -299,7 +299,7 @@ paths:
                                   AddressProvince:
                                     ProvinceCode:
                                       ReferenceDataID: "QC"
-                                  AddressCountry: 
+                                  AddressCountry:
                                     CountryCode:
                                       ReferenceDataID: "CAN"
                                   AddressPostalCode: "J8N 5K9"
@@ -333,7 +333,7 @@ paths:
                               ReferenceDataID: "Email"
                         - ApplicationDetailID : "Already had a sin"
                           ApplicationDetailValue:
-                            ValueBoolean: false                                                                              
+                            ValueBoolean: false
                       Applicant:
                         Certificate:
                         - CertificateCategoryCode:
@@ -350,39 +350,39 @@ paths:
                             ReferenceDataID: "1"
                           ResourceReference: "Documents"
                           CertificateIdentification:
-                          - IdentificationID : "2"               
+                          - IdentificationID : "2"
                           Client:
                             PersonName:
                               - PersonGivenName:
                                 - Paul
                                 PersonSurName: "Atreides"
                             PersonBirthDate:
-                              date: "1999-05-12" # See what format is expected                       
+                              date: "1999-05-12" # See what format is expected
                         PersonName:
                           - PersonNameCategoryCode:
                               ReferenceDataName: "Legal"
                             PersonGivenName: "Paul"
-                            PersonSurName: "Atreides"                      
+                            PersonSurName: "Atreides"
                           - PersonNameCategoryCode:
                               ReferenceDataName: "at birth"
                             PersonSurName: "Atreides"
                         PersonBirthLocation:
                             LocationContactInformation:
                               - Address:
-                                - AddressCityName: "Gatineau"  
-                                  AddressCountry: 
+                                - AddressCityName: "Gatineau"
+                                  AddressCountry:
                                     CountryCode:
                                       ReferenceDataID: "CAN"
-                        PersonGenderCode: 
+                        PersonGenderCode:
                           ReferenceDataID: "1"
-                        PersonBirthDate: 
-                          date: "1999-05-11"                
+                        PersonBirthDate:
+                          date: "1999-05-11"
                         PersonLanguage:
                           - CommunicationCategoryCode:
                               ReferenceDataName: "Correspondence"
                             LanguageCode:
                               ReferenceDataID: "FR"
-                            PreferredIndicator: True      
+                            PreferredIndicator: True
                         PersonContactInformation:
                         - EmailAddress:
                           - EmailAddressID: paulSpiceLoverForever@gmail.com
@@ -400,7 +400,7 @@ paths:
                   SINApplication:
                     SINApplicationIdentification:
                       IdentificationID: "990124567"
-              
+
 components:
   schemas:
     SINApplicationResponse:
@@ -460,7 +460,7 @@ components:
           description: A name of a city or town.
           type: string
       x-comment: Extension
-      
+
     ApplicationDetailType:
       description: A data type for the detail about an application.
       type: object
@@ -531,7 +531,7 @@ components:
               $ref: '#/components/schemas/ClientIdentification'
           PersonBirthDate:
             $ref: '#/components/schemas/PersonBirthDate'
-          PersonBirthLocation:                                                   
+          PersonBirthLocation:
             $ref: '#/components/schemas/PersonBirthLocation'
           PersonGenderCode:
             $ref: '#/components/schemas/PersonGenderCode'
@@ -557,6 +557,9 @@ components:
               $ref: '#/components/schemas/CertificateCategoryCode'
             CertificateExpiryDate:
               $ref: '#/components/schemas/CertificateExpiryDate'
+            # ADDED BY SEBASTIEN COMEAU
+            CertificateEffectiveDate:
+              $ref: '#/components/schemas/CertificateEffectiveDate'
             CertificateIdentification:
               type: array
               items:
@@ -643,7 +646,7 @@ components:
         PreferredIndicator:
           $ref: '#/components/schemas/PreferredIndicator'
           x-comment: Extension
-      x-comment: Extension  
+      x-comment: Extension
 
     LegalStatusType:
       description: A data type for a condition where a person was or is lawfully in
@@ -794,6 +797,11 @@ components:
       $ref: '#/components/schemas/DateType'
       description: A date at which a certificate is expiring.
 
+    # ADDED BY SEBASTIEN COMEAU
+    CertificateEffectiveDate:
+      $ref: '#/components/schemas/DateType'
+      description: A date at which a certificate is effective.
+
     CertificateIssueDate:
       $ref: '#/components/schemas/DateType'
       description: "A date at which a certificate was issued and when appropriate,\
@@ -846,7 +854,7 @@ components:
     LocationContactInformation:
       $ref: '#/components/schemas/ContactInformationType'
       description: A set of contact information for a location.
-      
+
     PersonBirthDate:
       $ref: '#/components/schemas/DateType'
       description: A date a person was born.
@@ -894,7 +902,7 @@ components:
       $ref: '#/components/schemas/ReferenceDataCodeType'
       description: A code for a province of a country.
       x-comment: Extension
-      
+
     RelatedPerson:
       $ref: '#/components/schemas/RelatedPersonType'
       description: Information about a person related to a client.
@@ -907,7 +915,7 @@ components:
       $ref: '#/components/schemas/ApplicationDetailType'
       description: Application Details for a SIN Application. Usually used for information
         on forms that are not being stored as data concepts.
-        
+
     SINApplicationIdentification:
       $ref: '#/components/schemas/IdentificationType'
       description: An Identification for a SIN Application
@@ -922,7 +930,7 @@ components:
     AddressPostalCode:
       description: An identifier of a post office-assigned zone for an address.
       type: string
-      
+
     AddressRecipientName:
       description: "A name of a person, organization, or other recipient to whom physical\
         \ mail may be sent."
@@ -931,7 +939,7 @@ components:
     AddressSecondaryUnitText:
       description: A particular unit within a larger unit or grouping at a location.
       type: string
-      
+
     ApplicationDetailID:
       description: A unique ID for an application detail data element.
       type: string
@@ -939,7 +947,7 @@ components:
       description: An unique identifier for an email box.
       type: string
       x-comment: Extension
-      
+
     TelephoneNumberFullID:
       description: A complete telephone number.
       type: string
@@ -959,7 +967,7 @@ components:
     PersonSurName:
       description: A last name or family name of a person.
       type: string
-    
+
     PreferredIndicator:
       description: An indicator marking this class as preferred.
       type: boolean
@@ -975,7 +983,7 @@ components:
 
     ResourceReference:
       description: "Literal reference, Relative, internal or absolute URL."
-      type: string     
+      type: string
 
     StreetNumberText:
       description: A number that identifies a particular unit or location within a

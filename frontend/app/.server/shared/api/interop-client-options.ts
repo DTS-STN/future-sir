@@ -1,4 +1,6 @@
-import type { ClientOptions, Config } from '@hey-api/client-fetch';
+import { UNSAFE_invariant } from 'react-router';
+
+import type { ClientOptions } from 'openapi-fetch';
 import { ProxyAgent } from 'undici';
 
 import { serverEnvironment } from '~/.server/environment';
@@ -13,13 +15,11 @@ const log = LogFactory.getLogger(import.meta.url);
  * This function ensures that essential configurations like baseUrl and
  * authorization headers are included, using server environment variables.
  */
-export function createClientConfig<T extends ClientOptions>(
-  config?: Config<ClientOptions & T>,
-): Config<Required<ClientOptions> & T> {
+export function createClientOptions(clientOptions?: ClientOptions): ClientOptions {
   const authHeader = serverEnvironment.INTEROP_SIN_REG_API_AUTH_HEADER.value();
 
   return {
-    ...config,
+    ...clientOptions,
     baseUrl: serverEnvironment.INTEROP_SIN_REG_API_BASE_URL,
     fetch: getFetchFn(),
     headers: { ...parseAuthorizationHeader(authHeader) },
@@ -31,7 +31,7 @@ export function createClientConfig<T extends ClientOptions>(
  * environment variable is set. Otherwise, it returns undefined, indicating
  * that the default fetch function should be used.
  */
-function getFetchFn(): Config['fetch'] {
+function getFetchFn(): ClientOptions['fetch'] {
   if (serverEnvironment.INTEROP_PROXY_URL) {
     const dispatcher = new ProxyAgent({ uri: serverEnvironment.INTEROP_PROXY_URL, proxyTls: { timeout: 60_000 } });
     // @ts-expect-error node's globalThis.fetch() and undici.fetch() are functionally equivalent
@@ -57,6 +57,8 @@ function parseAuthorizationHeader(input: string): Record<string, string> {
 
   const [key, ...valueParts] = parts;
   const value = valueParts.join(' ');
+
+  UNSAFE_invariant(key, 'Expected key to be defined');
 
   return { [key]: value };
 }

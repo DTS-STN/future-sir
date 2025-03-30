@@ -9,7 +9,7 @@ import type {
 } from '~/.server/domain/sin-application/sin-application-models';
 import type { SinApplicationService } from '~/.server/domain/sin-application/sin-application-service';
 import { LogFactory } from '~/.server/logging';
-import { sinapplication } from '~/.server/shared/api/interop';
+import { interopClient } from '~/.server/shared/api/interop-client';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 
@@ -31,7 +31,7 @@ export function getDefaultSinApplicationService(): SinApplicationService {
         mapSubmitSinApplicationRequestToSinApplicationRequest(submitSinApplicationRequest, idToken),
       );
 
-      const { response, data, error } = await sinapplication({ body });
+      const { response, data, error } = await interopClient.POST('/SINApplication', { body });
 
       if (data === undefined) {
         const content = JSON.stringify(error);

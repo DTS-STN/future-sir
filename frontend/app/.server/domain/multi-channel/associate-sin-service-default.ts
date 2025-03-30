@@ -1,3 +1,5 @@
+import { UNSAFE_invariant } from 'react-router';
+
 import type { AssociateSinResponse } from '~/.server/domain/multi-channel/associate-sin-models';
 import type { AssociateSinService } from '~/.server/domain/multi-channel/associate-sin-service';
 import { serverEnvironment } from '~/.server/environment';
@@ -47,6 +49,8 @@ function parseAuthorizationHeader(input: string): Record<string, string> {
 
   const [key, ...valueParts] = parts;
   const value = valueParts.join(' ');
+
+  UNSAFE_invariant(key, 'Expected key to be defined');
 
   return { [key]: value };
 }

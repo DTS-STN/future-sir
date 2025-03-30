@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { mapSubmitSinApplicationRequestToSinApplicationRequest } from '~/.server/domain/sin-application/sin-application-mappers';
 import type { SubmitSinApplicationRequest } from '~/.server/domain/sin-application/sin-application-models';
-import type { SinApplicationRequest } from '~/.server/shared/api/interop';
+import type { components } from '~/.server/shared/api/fsir-openapi-schema';
 import type { Country, Province } from '~/.server/shared/models';
 import { getCountryById } from '~/.server/shared/services/country-service';
 import { getProvinceById } from '~/.server/shared/services/province-service';
@@ -93,7 +93,7 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
       secondaryDocument: { documentType: '564190000', expiryYear: '2025', expiryMonth: '12' },
     };
 
-    const expected: SinApplicationRequest = {
+    const expected: components['schemas']['SINApplicationRequest'] = {
       SINApplication: {
         Applicant: {
           Certificate: [
@@ -464,7 +464,7 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
       secondaryDocument: { documentType: '564190000', expiryYear: '2025', expiryMonth: '12' },
     };
 
-    const expected: SinApplicationRequest = {
+    const expected: components['schemas']['SINApplicationRequest'] = {
       SINApplication: {
         Applicant: {
           Certificate: [

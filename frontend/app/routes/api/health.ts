@@ -1,3 +1,5 @@
+import { UNSAFE_invariant } from 'react-router';
+
 import type { HealthCheckOptions } from '@dts-stn/health-checks';
 import { execute } from '@dts-stn/health-checks';
 
@@ -46,6 +48,8 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
 async function isAuthorized(request: Request): Promise<boolean> {
   const authorization = request.headers.get('authorization') ?? '';
   const [scheme, token] = authorization.split(' ');
+
+  UNSAFE_invariant(scheme, 'Expected scheme to be defined');
 
   if (scheme.toLowerCase() !== 'bearer' || !token) {
     log.info('No bearer token provided, authorization denied.');

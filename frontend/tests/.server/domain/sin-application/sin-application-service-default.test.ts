@@ -1,4 +1,5 @@
 import { faker } from '@faker-js/faker';
+import type { Client } from 'openapi-fetch';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { mock } from 'vitest-mock-extended';
 import type { MockProxy } from 'vitest-mock-extended';
@@ -12,8 +13,8 @@ import type {
   SubmitSinApplicationResponse,
 } from '~/.server/domain/sin-application/sin-application-models';
 import { getDefaultSinApplicationService } from '~/.server/domain/sin-application/sin-application-service-default';
-import { sinapplication } from '~/.server/shared/api/interop';
-import type { SinApplicationRequest, SinApplicationResponse } from '~/.server/shared/api/interop';
+import type { paths, components } from '~/.server/shared/api/fsir-openapi-schema';
+import { interopClient } from '~/.server/shared/api/interop-client';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 
@@ -22,7 +23,7 @@ import { ErrorCodes } from '~/errors/error-codes';
 // We then have to mock other things to ensure side effects in other files are handled.
 
 vi.mock('~/.server/shared/api/interop', () => ({
-  sinapplication: vi.fn(),
+  interopClient: mock<Client<paths>>(),
 }));
 
 vi.mock('~/.server/domain/sin-application/sin-application-mappers');
@@ -34,22 +35,22 @@ describe('getDefaultSinApplicationService', () => {
   describe('submitSinApplication', () => {
     let httpRequestMock: MockProxy<Request>;
     let submitSinApplicationRequestMock: MockProxy<SubmitSinApplicationRequest>;
-    let sinApplicationRequestMappedMock: MockProxy<SinApplicationRequest>;
-    let sinApplicationResponseMock: MockProxy<SinApplicationResponse>;
+    let sinApplicationRequestMappedMock: MockProxy<components['schemas']['SINApplicationRequest']>;
+    let sinApplicationResponseMock: MockProxy<components['schemas']['SINApplicationResponse']>;
     let submitSinApplicationResponseMock: MockProxy<SubmitSinApplicationResponse>;
 
     beforeEach(() => {
       httpRequestMock = mock<Request>();
       submitSinApplicationRequestMock = mock<SubmitSinApplicationRequest>();
-      sinApplicationRequestMappedMock = mock<SinApplicationRequest>();
-      sinApplicationResponseMock = mock<SinApplicationResponse>();
+      sinApplicationRequestMappedMock = mock<components['schemas']['SINApplicationRequest']>();
+      sinApplicationResponseMock = mock<components['schemas']['SINApplicationResponse']>();
       submitSinApplicationResponseMock = mock<SubmitSinApplicationResponse>({ identificationId: '123456789' });
     });
 
     it('should submit the SIN application and return the response data', async () => {
       const httpResponseMock = mock<Response>({ status: 200 });
 
-      vi.mocked(sinapplication).mockResolvedValue({
+      const interopClientPOST = vi.spyOn(interopClient, 'POST').mockResolvedValue({
         request: httpRequestMock,
         response: httpResponseMock,
         data: sinApplicationResponseMock,
@@ -61,7 +62,7 @@ describe('getDefaultSinApplicationService', () => {
       const result = await service.submitSinApplication(submitSinApplicationRequestMock, idTokenMock);
 
       expect(result).toEqual(submitSinApplicationResponseMock);
-      expect(sinapplication).toHaveBeenCalledWith({ body: sinApplicationRequestMappedMock });
+      expect(interopClientPOST).toHaveBeenCalledWith('/SINApplication', { body: sinApplicationRequestMappedMock });
       expect(mapSubmitSinApplicationRequestToSinApplicationRequest).toHaveBeenCalledWith(
         submitSinApplicationRequestMock,
         idTokenMock,
@@ -75,7 +76,7 @@ describe('getDefaultSinApplicationService', () => {
         text: vi.fn().mockResolvedValue('Error content'),
       });
 
-      vi.mocked(sinapplication).mockResolvedValue({
+      vi.spyOn(interopClient, 'POST').mockResolvedValue({
         request: httpRequestMock,
         response: httpResponseMock,
         data: undefined,
