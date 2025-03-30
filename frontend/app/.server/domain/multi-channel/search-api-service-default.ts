@@ -15,6 +15,9 @@ export function getDefaultSearchService(): SinSearchService {
     getSearchResults: async (caseId: string): Promise<SearchResponse> => {
       const fetchFn = getFetchFn();
 
+      log.debug('Fetching hitlist search results.');
+      log.trace('Fetching hitlist search results with caseId: %s', caseId);
+
       const authHeader = serverEnvironment.INTEROP_SIN_SEARCH_API_AUTH_HEADER.value();
       const response = await fetchFn(`${serverEnvironment.INTEROP_SIN_SEARCH_API_BASE_URL}/search`, {
         method: 'POST',
@@ -27,11 +30,20 @@ export function getDefaultSearchService(): SinSearchService {
           idToken: serverEnvironment.TMP_AWS_ID_TOKEN.value(),
         }),
       });
-      if (response.status === HttpStatusCodes.NOT_FOUND) return {};
+
+      if (response.status === HttpStatusCodes.NOT_FOUND) {
+        log.debug('No hitlist results found for caseId: %s', caseId);
+        return {};
+      }
+
       if (!response.ok) {
+        log.error('Failed to retrieve hitlist results for caseId: %s; status: %s', caseId, response.status);
         throw new AppError(`Search results for case ID '${caseId}' not found.`, ErrorCodes.SEARCH_RESULTS_NOT_FOUND);
       }
-      return response.json();
+
+      const hitlistResponse = await response.json();
+      log.debug('Successfully retrieved hitlist results for caseId: %s; response: %j', caseId, hitlistResponse);
+      return hitlistResponse;
     },
   };
 }
