@@ -16,7 +16,7 @@ exports[`AppBar > should correctly render an AppBar with a MenuItem when the fil
           aria-haspopup="menu"
           class="flex h-full flex-nowrap space-x-2 bg-slate-700 px-2 text-white hover:bg-slate-600 hover:underline focus:ring-2 focus:ring-black focus:ring-offset-2 focus:outline-hidden aria-expanded:bg-slate-900 aria-expanded:text-white sm:space-x-3 sm:px-4"
           data-state="closed"
-          id="radix-:r0:"
+          id="radix-«r0»"
           type="button"
         >
           <span
@@ -75,7 +75,7 @@ exports[`AppBar > should correctly render an AppBar with a MenuItem when the to 
           aria-haspopup="menu"
           class="flex h-full flex-nowrap space-x-2 bg-slate-700 px-2 text-white hover:bg-slate-600 hover:underline focus:ring-2 focus:ring-black focus:ring-offset-2 focus:outline-hidden aria-expanded:bg-slate-900 aria-expanded:text-white sm:space-x-3 sm:px-4"
           data-state="closed"
-          id="radix-:r2:"
+          id="radix-«r2»"
           type="button"
         >
           <span
@@ -134,7 +134,7 @@ exports[`AppBar > should render render an AppBar with a name provided > expected
           aria-haspopup="menu"
           class="flex h-full flex-nowrap space-x-2 bg-slate-700 px-2 text-white hover:bg-slate-600 hover:underline focus:ring-2 focus:ring-black focus:ring-offset-2 focus:outline-hidden aria-expanded:bg-slate-900 aria-expanded:text-white sm:space-x-3 sm:px-4"
           data-state="closed"
-          id="radix-:r4:"
+          id="radix-«r4»"
           type="button"
         >
           <span
@@ -168,7 +168,7 @@ exports[`AppBar > should render render an AppBar with a name provided > expected
           aria-haspopup="menu"
           class="flex h-full flex-nowrap space-x-2 bg-slate-600 px-2 text-sm text-white hover:bg-slate-500 hover:underline focus:ring-2 focus:ring-black focus:ring-offset-2 focus:outline-hidden aria-expanded:bg-slate-800 aria-expanded:text-white sm:space-x-4 sm:px-4"
           data-state="closed"
-          id="radix-:r6:"
+          id="radix-«r6»"
           type="button"
         >
           <div
@@ -246,7 +246,7 @@ exports[`AppBar > should render render an AppBar with a profile item provided > 
           aria-haspopup="menu"
           class="flex h-full flex-nowrap space-x-2 bg-slate-700 px-2 text-white hover:bg-slate-600 hover:underline focus:ring-2 focus:ring-black focus:ring-offset-2 focus:outline-hidden aria-expanded:bg-slate-900 aria-expanded:text-white sm:space-x-3 sm:px-4"
           data-state="closed"
-          id="radix-:r8:"
+          id="radix-«r8»"
           type="button"
         >
           <span
@@ -280,7 +280,7 @@ exports[`AppBar > should render render an AppBar with a profile item provided > 
           aria-haspopup="menu"
           class="flex h-full flex-nowrap space-x-2 bg-slate-600 px-2 text-sm text-white hover:bg-slate-500 hover:underline focus:ring-2 focus:ring-black focus:ring-offset-2 focus:outline-hidden aria-expanded:bg-slate-800 aria-expanded:text-white sm:space-x-4 sm:px-4"
           data-state="closed"
-          id="radix-:ra:"
+          id="radix-«ra»"
           type="button"
         >
           <div
