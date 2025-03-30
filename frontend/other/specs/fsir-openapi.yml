@@ -421,7 +421,10 @@ components:
       type: object
       properties:
           SINApplicationIdentification:
-            $ref: '#/components/schemas/SINApplicationIdentification'
+            # CHANGED TYPE TO ARRAY - SEBASTIEN COMEAU
+            type: array
+            items:
+              $ref: '#/components/schemas/SINApplicationIdentification'
     SINApplicationType:
       description: A data type for the SIN Application resource.
       type: object

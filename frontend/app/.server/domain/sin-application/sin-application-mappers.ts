@@ -554,13 +554,15 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
 export function mapSinApplicationResponseToSubmitSinApplicationResponse(
   sinApplicationResponse: components['schemas']['SINApplicationResponse'],
 ): SubmitSinApplicationResponse {
-  const identificationArray = sinApplicationResponse.SINApplication?.SINApplicationIdentification;
-  if (!identificationArray || !Array.isArray(identificationArray) || identificationArray[0]?.IdentificationID === undefined) {
+  const sinApplicationIdentification = sinApplicationResponse.SINApplication?.SINApplicationIdentification;
+  const identificationID = sinApplicationIdentification?.at(0)?.IdentificationID;
+
+  if (identificationID === undefined) {
     // TODO ::: GjB ::: it's not clear if this potentially undefined value is intentional; the OpenAPI spec allows for it, so we have to check for it
     throw new AppError('Failed to map SIN application response; IdentificationID is undefined');
   }
 
   return {
-    identificationId: identificationArray[0]?.IdentificationID,
+    identificationId: identificationID,
   };
 }

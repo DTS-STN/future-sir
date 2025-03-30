@@ -35,7 +35,7 @@ export interface components {
     };
     /** @description A data type for the SIN Application resource. */
     SINApplicationTypeResponse: {
-      SINApplicationIdentification?: components['schemas']['SINApplicationIdentification'];
+      SINApplicationIdentification?: components['schemas']['SINApplicationIdentification'][];
     };
     /** @description A data type for the SIN Application resource. */
     SINApplicationType: {
