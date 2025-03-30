@@ -153,7 +153,7 @@ export function BilingualErrorBoundary({ actionData, error, loaderData, params }
  * A bilingual 404 page that renders appropriate error messages in both languages.
  */
 export function BilingualNotFound({ actionData, error, loaderData, params }: Route.ErrorBoundaryProps) {
-  const { i18n, t } = useTranslation(['gcweb']);
+  const { i18n } = useTranslation(['gcweb']);
   const en = i18n.getFixedT('en');
   const fr = i18n.getFixedT('fr');
 
@@ -173,7 +173,7 @@ export function BilingualNotFound({ actionData, error, loaderData, params }: Rou
                 <img
                   className="h-8 w-auto"
                   src="https://www.canada.ca/etc/designs/canada/wet-boew/assets/sig-blk-en.svg"
-                  alt={t('gcweb:header.govt-of-canada.text')}
+                  alt={en('gcweb:header.govt-of-canada.text')}
                   width="300"
                   height="28"
                   decoding="async"
