@@ -26,8 +26,8 @@ import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import { getTabIdOrRedirect, loadMachineActorOrRedirect } from '~/routes/protected/person-case/route-helpers.server';
 import { getStateRoute } from '~/routes/protected/person-case/state-machine.server';
 import { birthDetailsSchema } from '~/routes/protected/person-case/validation.server';
-import { getSingleKey } from '~/utils/i18n-utils';
 import { trimToUndefined } from '~/utils/string-utils';
+import { extractValidationKey } from '~/utils/validation-utils';
 
 const REQUIRE_OPTIONS = { yes: 'Yes', no: 'No' } as const;
 
@@ -151,7 +151,7 @@ export default function BirthDetails({ actionData, loaderData, matches, params }
               <InputSelect
                 id="country-id"
                 name="country"
-                errorMessage={t(getSingleKey(errors?.country))}
+                errorMessage={t(extractValidationKey(errors?.country))}
                 defaultValue={loaderData.defaultFormValues?.country ?? ''}
                 required
                 options={countryOptions}
@@ -168,13 +168,13 @@ export default function BirthDetails({ actionData, loaderData, matches, params }
                       label={t('protected:birth-details.province.label')}
                       name="province"
                       options={provinceTerritoryStateOptions}
-                      errorMessage={t(getSingleKey(errors?.province))}
+                      errorMessage={t(extractValidationKey(errors?.province))}
                       defaultValue={loaderData.defaultFormValues?.province}
                       required
                     />
                   ) : (
                     <InputField
-                      errorMessage={t(getSingleKey(errors?.province))}
+                      errorMessage={t(extractValidationKey(errors?.province))}
                       label={t('protected:birth-details.province.label')}
                       name="province"
                       defaultValue={loaderData.defaultFormValues?.province}
@@ -184,7 +184,7 @@ export default function BirthDetails({ actionData, loaderData, matches, params }
                     />
                   )}
                   <InputField
-                    errorMessage={t(getSingleKey(errors?.city))}
+                    errorMessage={t(extractValidationKey(errors?.city))}
                     label={t('protected:birth-details.city.label')}
                     name="city"
                     defaultValue={loaderData.defaultFormValues?.city}
@@ -198,7 +198,7 @@ export default function BirthDetails({ actionData, loaderData, matches, params }
                     name="from-multiple"
                     options={fromMultipleBirthOptions}
                     required
-                    errorMessage={t(getSingleKey(errors?.fromMultipleBirth))}
+                    errorMessage={t(extractValidationKey(errors?.fromMultipleBirth))}
                   />
                 </>
               )}

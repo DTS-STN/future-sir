@@ -25,8 +25,8 @@ import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import { getTabIdOrRedirect, loadMachineActorOrRedirect } from '~/routes/protected/person-case/route-helpers.server';
 import { getStateRoute } from '~/routes/protected/person-case/state-machine.server';
 import { previousSinSchema } from '~/routes/protected/person-case/validation.server';
-import { getSingleKey } from '~/utils/i18n-utils';
 import { sinInputPatternFormat } from '~/utils/sin-utils';
+import { extractValidationKey } from '~/utils/validation-utils';
 
 export const handle = {
   i18nNamespace: [...parentHandle.i18nNamespace, 'protected'],
@@ -126,7 +126,7 @@ export default function PreviousSin({ loaderData, actionData, params }: Route.Co
                 name="hasPreviousSin"
                 options={hasPreviousSinOptions}
                 required
-                errorMessage={t(getSingleKey(errors?.hasPreviousSin))}
+                errorMessage={t(extractValidationKey(errors?.hasPreviousSin))}
               />
               {hasPreviousSin === globalThis.__appEnvironment.PP_HAS_HAD_PREVIOUS_SIN_CODE && (
                 <InputPatternField
@@ -136,7 +136,7 @@ export default function PreviousSin({ loaderData, actionData, params }: Route.Co
                   id="social-insurance-number"
                   name="socialInsuranceNumber"
                   label={t('protected:previous-sin.social-insurance-number-label')}
-                  errorMessage={t(getSingleKey(errors?.socialInsuranceNumber))}
+                  errorMessage={t(extractValidationKey(errors?.socialInsuranceNumber))}
                   required
                 />
               )}

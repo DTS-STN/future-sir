@@ -26,8 +26,8 @@ import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import { getTabIdOrRedirect, loadMachineActorOrRedirect } from '~/routes/protected/person-case/route-helpers.server';
 import { getStateRoute } from '~/routes/protected/person-case/state-machine.server';
 import { maxNumberOfParents, parentDetailsSchema } from '~/routes/protected/person-case/validation.server';
-import { getSingleKey } from '~/utils/i18n-utils';
 import { trimToUndefined } from '~/utils/string-utils';
+import { extractValidationKey } from '~/utils/validation-utils';
 
 export const handle = {
   i18nNamespace: [...parentHandle.i18nNamespace, 'protected'],
@@ -222,7 +222,7 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
         )}
       </div>
       <InputCheckbox
-        errorMessage={t(getSingleKey(errors?.[`${index}.unavailable`]))}
+        errorMessage={t(extractValidationKey(errors?.[`${index}.unavailable`]))}
         id={`${index}-unavailable-id`}
         name={`${index}-unavailable`}
         defaultChecked={unavailable ?? false}
@@ -234,7 +234,7 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
       {!unavailable && (
         <>
           <InputField
-            errorMessage={t(getSingleKey(errors?.[`${index}.givenName`]))}
+            errorMessage={t(extractValidationKey(errors?.[`${index}.givenName`]))}
             label={t('protected:parent-details.given-name')}
             name={`${index}-given-name`}
             defaultValue={defaultValues?.givenName ?? ''}
@@ -243,7 +243,7 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
             className="w-full"
           />
           <InputField
-            errorMessage={t(getSingleKey(errors?.[`${index}.lastName`]))}
+            errorMessage={t(extractValidationKey(errors?.[`${index}.lastName`]))}
             label={t('protected:parent-details.last-name')}
             name={`${index}-last-name`}
             defaultValue={defaultValues?.lastName ?? ''}
@@ -252,7 +252,7 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
             className="w-full"
           />
           <InputSelect
-            errorMessage={t(getSingleKey(errors?.[`${index}.birthLocation.country`]))}
+            errorMessage={t(extractValidationKey(errors?.[`${index}.birthLocation.country`]))}
             className="w-full sm:w-1/2"
             id={`${index}-country-id`}
             name={`${index}-country`}
@@ -263,7 +263,7 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
           />
           {country === globalThis.__appEnvironment.PP_CANADA_COUNTRY_CODE ? (
             <InputSelect
-              errorMessage={t(getSingleKey(errors?.[`${index}.birthLocation.province`]))}
+              errorMessage={t(extractValidationKey(errors?.[`${index}.birthLocation.province`]))}
               className="w-full sm:w-1/2"
               id={`${index}-province-id`}
               name={`${index}-province`}
@@ -273,7 +273,7 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
             />
           ) : (
             <InputField
-              errorMessage={t(getSingleKey(errors?.[`${index}.birthLocation.province`]))}
+              errorMessage={t(extractValidationKey(errors?.[`${index}.birthLocation.province`]))}
               className="w-full"
               label={t('protected:parent-details.province')}
               name={`${index}-province`}
@@ -282,7 +282,7 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
             />
           )}
           <InputField
-            errorMessage={t(getSingleKey(errors?.[`${index}.birthLocation.city`]))}
+            errorMessage={t(extractValidationKey(errors?.[`${index}.birthLocation.city`]))}
             className="w-full"
             label={t('protected:parent-details.city')}
             name={`${index}-city`}

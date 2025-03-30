@@ -22,7 +22,7 @@ import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import { getTabIdOrRedirect, loadMachineActorOrRedirect } from '~/routes/protected/person-case/route-helpers.server';
 import { createMachineActor, getStateRoute } from '~/routes/protected/person-case/state-machine.server';
 import { privacyStatementSchema } from '~/routes/protected/person-case/validation.server';
-import { getSingleKey } from '~/utils/i18n-utils';
+import { extractValidationKey } from '~/utils/validation-utils';
 
 export const handle = {
   i18nNamespace: [...parentHandle.i18nNamespace, 'protected'],
@@ -112,7 +112,7 @@ export default function PrivacyStatement({ loaderData, params }: Route.Component
               <InputCheckbox
                 id="agreed-to-terms"
                 name="agreedToTerms"
-                errorMessage={t(getSingleKey(errors?.agreedToTerms))}
+                errorMessage={t(extractValidationKey(errors?.agreedToTerms))}
                 required
               >
                 {t('protected:privacy-statement.confirm-privacy-notice-checkbox.title')}

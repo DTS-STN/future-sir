@@ -27,7 +27,7 @@ import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import { getTabIdOrRedirect, loadMachineActorOrRedirect } from '~/routes/protected/person-case/route-helpers.server';
 import { getStateRoute } from '~/routes/protected/person-case/state-machine.server';
 import { contactInformationSchema } from '~/routes/protected/person-case/validation.server';
-import { getSingleKey } from '~/utils/i18n-utils';
+import { extractValidationKey } from '~/utils/validation-utils';
 
 export const handle = {
   i18nNamespace: [...parentHandle.i18nNamespace, 'protected'],
@@ -148,7 +148,7 @@ export default function ContactInformation({ loaderData, actionData, params }: R
                 legend={t('protected:contact-information.preferred-language-label')}
                 name="preferredLanguage"
                 options={languageOptions}
-                errorMessage={t(getSingleKey(errors?.preferredLanguage))}
+                errorMessage={t(extractValidationKey(errors?.preferredLanguage))}
                 required
               />
               <InputPhoneField
@@ -157,7 +157,7 @@ export default function ContactInformation({ loaderData, actionData, params }: R
                 name="primaryPhoneNumber"
                 type="tel"
                 inputMode="tel"
-                errorMessage={t(getSingleKey(errors?.primaryPhoneNumber))}
+                errorMessage={t(extractValidationKey(errors?.primaryPhoneNumber))}
                 defaultValue={loaderData.defaultFormValues?.primaryPhoneNumber}
                 required
               />
@@ -167,7 +167,7 @@ export default function ContactInformation({ loaderData, actionData, params }: R
                 name="secondaryPhoneNumber"
                 type="tel"
                 inputMode="tel"
-                errorMessage={t(getSingleKey(errors?.secondaryPhoneNumber))}
+                errorMessage={t(extractValidationKey(errors?.secondaryPhoneNumber))}
                 defaultValue={loaderData.defaultFormValues?.secondaryPhoneNumber}
               />
               <div className="max-w-prose">
@@ -178,7 +178,7 @@ export default function ContactInformation({ loaderData, actionData, params }: R
                   label={t('protected:contact-information.email-label')}
                   name="emailAddress"
                   className="w-full"
-                  errorMessage={t(getSingleKey(errors?.emailAddress))}
+                  errorMessage={t(extractValidationKey(errors?.emailAddress))}
                   defaultValue={loaderData.defaultFormValues?.emailAddress}
                 />
               </div>
@@ -189,7 +189,7 @@ export default function ContactInformation({ loaderData, actionData, params }: R
                 name="country"
                 label={t('protected:contact-information.country-select-label')}
                 options={countryOptions}
-                errorMessage={t(getSingleKey(errors?.country))}
+                errorMessage={t(extractValidationKey(errors?.country))}
                 value={country}
                 onChange={({ target }) => setCountry(target.value)}
                 required
@@ -202,7 +202,7 @@ export default function ContactInformation({ loaderData, actionData, params }: R
                     helpMessagePrimary={t('protected:contact-information.address-help-message')}
                     name="address"
                     className="w-full"
-                    errorMessage={t(getSingleKey(errors?.address))}
+                    errorMessage={t(extractValidationKey(errors?.address))}
                     defaultValue={loaderData.defaultFormValues?.address}
                     required
                   />
@@ -211,7 +211,7 @@ export default function ContactInformation({ loaderData, actionData, params }: R
                     label={t('protected:contact-information.city-label')}
                     name="city"
                     className="w-full"
-                    errorMessage={t(getSingleKey(errors?.city))}
+                    errorMessage={t(extractValidationKey(errors?.city))}
                     defaultValue={loaderData.defaultFormValues?.city}
                     required
                   />
@@ -222,7 +222,7 @@ export default function ContactInformation({ loaderData, actionData, params }: R
                       label={t('protected:contact-information.canada-province-label')}
                       name="province"
                       options={provinceTerritoryStateOptions}
-                      errorMessage={t(getSingleKey(errors?.province))}
+                      errorMessage={t(extractValidationKey(errors?.province))}
                       defaultValue={loaderData.defaultFormValues?.province}
                       required
                     />
@@ -232,7 +232,7 @@ export default function ContactInformation({ loaderData, actionData, params }: R
                       label={t('protected:contact-information.other-country-province-label')}
                       name="province"
                       className="w-full"
-                      errorMessage={t(getSingleKey(errors?.province))}
+                      errorMessage={t(extractValidationKey(errors?.province))}
                       defaultValue={loaderData.defaultFormValues?.province}
                       required
                     />
@@ -241,7 +241,7 @@ export default function ContactInformation({ loaderData, actionData, params }: R
                     id="postal-code"
                     label={t('protected:contact-information.postal-code-label')}
                     name="postalCode"
-                    errorMessage={t(getSingleKey(errors?.postalCode))}
+                    errorMessage={t(extractValidationKey(errors?.postalCode))}
                     defaultValue={loaderData.defaultFormValues?.postalCode}
                     required
                     className="w-full sm:w-1/2"
