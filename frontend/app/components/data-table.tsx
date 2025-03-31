@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react';
 
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '~/components/table';
+
 type Row = (string | number | ReactNode)[];
 
 interface DataTableProps {
@@ -22,29 +24,27 @@ interface DataTableProps {
 
 export function DataTable({ headers, rows, striped = true }: DataTableProps) {
   return (
-    <div className="overflow-x-auto rounded-lg shadow">
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-slate-600">
-          <tr>
-            {headers.map((header, index) => (
-              <th key={index} scope="col" className="px-6 py-3 text-left text-xs font-medium tracking-wider text-white">
-                {header}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-gray-200 bg-white">
-          {rows.map((row, rowIndex) => (
-            <tr key={rowIndex} className={striped && rowIndex % 2 === 1 ? 'bg-gray-50' : 'bg-white'}>
-              {row.map((cell, cellIndex) => (
-                <td key={cellIndex} className="px-6 py-4 text-sm whitespace-nowrap text-gray-900">
-                  {cell}
-                </td>
-              ))}
-            </tr>
+    <Table>
+      <TableHeader>
+        <TableRow>
+          {headers.map((header, index) => (
+            <TableHead key={index} scope="col">
+              {header}
+            </TableHead>
           ))}
-        </tbody>
-      </table>
-    </div>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {rows.map((row, rowIndex) => (
+          <TableRow key={rowIndex}>
+            {row.map((cell, cellIndex) => (
+              <TableCell className="text-nowrap" key={cellIndex}>
+                {cell}
+              </TableCell>
+            ))}
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
   );
 }
