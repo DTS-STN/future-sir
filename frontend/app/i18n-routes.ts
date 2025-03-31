@@ -24,12 +24,26 @@ type I18nPaths = Record<Language, string>;
 type ExtractI18nRouteFile<T> = T extends I18nPageRoute ? T['file'] : never;
 
 /**
+ * A utility typpe that extracts the id from an I18nPageRoute type.
+ * @template T - The type to extract the id from.
+ */
+type ExtractI18nRouteId<T> = T extends I18nPageRoute ? T['id'] : never;
+
+/**
  * A utility type that recursively extracts all file paths from an array of I18nRoute objects.
  * @template T - The type of the I18nRoute array.
  */
 type ExtractI18nRouteFiles<T> = T extends I18nLayoutRoute
-  ? ExtractI18nRouteFiles<T['children'][number]>
+  ? ExtractI18nRouteFiles<T['children'][number]> //
   : ExtractI18nRouteFile<T>;
+
+/**
+ * A utility type that recursively extracts all ids from an array of I18nRoute objects.
+ * @template T - The type of the I18nRoute array.
+ */
+type ExtractI18nRouteIds<T> = T extends I18nLayoutRoute
+  ? ExtractI18nRouteIds<T['children'][number]> //
+  : ExtractI18nRouteId<T>;
 
 /**
  * Represents a route that can be either a layout route or a page route.
@@ -55,6 +69,11 @@ export type I18nPageRoute = { id: string; file: string; paths: I18nPaths };
  * Represents all file paths used in the i18n routes.
  */
 export type I18nRouteFile = ExtractI18nRouteFiles<(typeof i18nRoutes)[number]>;
+
+/**
+ * Represents all ids used in the i18n routes.
+ */
+export type I18nRouteId = ExtractI18nRouteIds<(typeof i18nRoutes)[number]>;
 
 /**
  * Type guard to determine if a route is an I18nLayoutRoute.
