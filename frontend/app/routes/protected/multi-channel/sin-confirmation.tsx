@@ -23,6 +23,7 @@ import { HttpStatusCodes } from '~/errors/http-status-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/layout';
 import { dateToLocalizedText } from '~/utils/date-utils';
+import { cn } from '~/utils/tailwind-utils';
 
 export const handle = {
   i18nNamespace: [...parentHandle.i18nNamespace, 'protected'],
@@ -48,8 +49,8 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
       middleNames: [personSinCase.currentNameInfo.middleName],
       familyNames: [
         personSinCase.currentNameInfo.lastName,
-        personSinCase.personalInformation.lastNamePreviouslyUsed,
         personSinCase.primaryDocuments.lastName,
+        ...(personSinCase.personalInformation.lastNamePreviouslyUsed ?? []),
       ].filter((name) => name !== undefined),
       address: personSinCase.contactInformation.address,
       city: personSinCase.contactInformation.city,
@@ -161,24 +162,24 @@ export default function SinConfirmation({ loaderData, actionData, params }: Rout
             <BilingualText resourceKey="protected:sin-confirmation.names-on-record" />
           </h3>
           <dl className="mt-5 grid items-center gap-5">
-            <ConfirmationDetail resourceKey="protected:sin-confirmation.first-name">
+            <ConfirmationDetail upperCase resourceKey="protected:sin-confirmation.first-name">
               {recordDetails.firstName}
             </ConfirmationDetail>
-            <ConfirmationDetail resourceKey="protected:sin-confirmation.middle-name">
+            <ConfirmationDetail upperCase resourceKey="protected:sin-confirmation.middle-name">
               {recordDetails.middleNames.map((name, i) => (
                 <span key={`${name}-${i}`} className="block">
                   {name}
                 </span>
               ))}
             </ConfirmationDetail>
-            <ConfirmationDetail resourceKey="protected:sin-confirmation.family-name">
+            <ConfirmationDetail upperCase resourceKey="protected:sin-confirmation.family-name">
               {recordDetails.familyNames.map((name, i) => (
                 <span key={`${name}-${i}`} className="block">
                   {name}
                 </span>
               ))}
             </ConfirmationDetail>
-            <ConfirmationDetail resourceKey="protected:sin-confirmation.address">
+            <ConfirmationDetail upperCase resourceKey="protected:sin-confirmation.address">
               <span className="block">{recordDetails.address}</span>
               <span className="block">
                 {recordDetails.city && <span className="mr-[0.5ch]">{recordDetails.city}</span>}
@@ -246,16 +247,17 @@ function BilingualText({ resourceKey }: BilingualTextProps) {
 interface ConfirmationDetailProps {
   resourceKey: ResourceKey;
   children: ReactNode;
+  upperCase?: boolean;
 }
 
-function ConfirmationDetail({ resourceKey, children }: ConfirmationDetailProps) {
+function ConfirmationDetail({ resourceKey, children, upperCase = false }: ConfirmationDetailProps) {
   return (
     <div className="grid sm:grid-cols-2 sm:gap-[2.5ch] print:grid-cols-2 print:gap-[2.5ch]">
       <dt className="mt-0 mb-auto flex items-center">
         <BilingualText resourceKey={resourceKey} />:
       </dt>
       <dd className="font-semibold">
-        <span className="block">{children}</span>
+        <span className={cn('block', upperCase && 'uppercase')}>{children}</span>
       </dd>
     </div>
   );
