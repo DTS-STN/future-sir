@@ -10,6 +10,8 @@ const log = LogFactory.getLogger(import.meta.url);
 export function getDefaultAssociateSinService(): AssociateSinService {
   return {
     getAssociatedSin: async (caseId: string): Promise<AssociateSinResponse> => {
+      log.trace('Fetching associated SIN with caseId: %s', caseId);
+
       const authHeader = serverEnvironment.INTEROP_ASSOCIATE_SIN_API_AUTH_HEADER.value();
       const response = await fetch(`${serverEnvironment.INTEROP_ASSOCIATE_SIN_API_BASE_URL}/associate-sin`, {
         method: 'POST',
@@ -22,9 +24,15 @@ export function getDefaultAssociateSinService(): AssociateSinService {
           idToken: serverEnvironment.TMP_AWS_ID_TOKEN.value(),
         }),
       });
-      if (!response.ok)
+
+      if (!response.ok) {
+        log.error('Failed to retrieve associated SIN for caseId: %s; status: %s', caseId, response.status);
         throw new AppError(`Associate SIN operation failed for case ID '${caseId}'.`, ErrorCodes.ASSOCIATE_SIN_REQUEST_FAILED);
-      return response.json();
+      }
+
+      const associatedSinResponse = await response.json();
+      log.debug('Successfully retrieved associated SIN for caseId: %s; response: %j', caseId, associatedSinResponse);
+      return associatedSinResponse;
     },
   };
 }

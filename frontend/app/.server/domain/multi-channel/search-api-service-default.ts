@@ -15,7 +15,6 @@ export function getDefaultSearchService(): SinSearchService {
     getSearchResults: async (caseId: string): Promise<SearchResponse> => {
       const fetchFn = getFetchFn();
 
-      log.debug('Fetching hitlist search results.');
       log.trace('Fetching hitlist search results with caseId: %s', caseId);
 
       const authHeader = serverEnvironment.INTEROP_SIN_SEARCH_API_AUTH_HEADER.value();
