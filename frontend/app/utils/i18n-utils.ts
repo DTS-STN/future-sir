@@ -37,20 +37,8 @@ export function getLanguage(resource: Request | URL | string): Language | undefi
  * Returns the alternate language for the given input language.
  * (ie: 'en' → 'fr'; 'fr' → 'en')
  */
-export function getAltLanguage(language: string): Language | undefined {
-  switch (language) {
-    case 'en': {
-      return 'fr';
-    }
-
-    case 'fr': {
-      return 'en';
-    }
-
-    default: {
-      return undefined;
-    }
-  }
+export function getAltLanguage(language: Language): Language {
+  return language === 'fr' ? 'en' : 'fr';
 }
 
 function getLanguageFromPath(pathname: string): Language | undefined {
