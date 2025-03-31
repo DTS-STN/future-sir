@@ -1,8 +1,9 @@
-import { useId } from 'react';
+import { useId, useMemo } from 'react';
 
 import type { RouteHandle } from 'react-router';
 import { useFetcher } from 'react-router';
 
+import type { ColumnDef } from '@tanstack/react-table';
 import { useTranslation } from 'react-i18next';
 
 import type { Info, Route } from './+types/search-sin';
@@ -15,11 +16,13 @@ import { Button } from '~/components/button';
 import { DataTable } from '~/components/data-table';
 import { FetcherErrorSummary } from '~/components/error-summary';
 import { PageTitle } from '~/components/page-title';
+import { SPECIAL_CHARACTERS } from '~/domain/constants';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { HttpStatusCodes } from '~/errors/http-status-codes';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/layout';
+import { padWithZero } from '~/utils/string-utils';
 
 export const handle = {
   i18nNamespace: [...parentHandle.i18nNamespace, 'protected'],
@@ -64,7 +67,6 @@ export async function action({ context, params, request }: Route.ActionArgs) {
       status: HttpStatusCodes.NOT_FOUND,
     });
   }
-  const { lang } = await getTranslation(request, handle.i18nNamespace);
 
   const formData = await request.formData();
   const action = formData.get('action');
@@ -87,17 +89,18 @@ export async function action({ context, params, request }: Route.ActionArgs) {
           .sort((a, b) => b.score - a.score) ?? [];
 
       return {
-        tableData: {
-          rows: searchResults.map(
-            ({ firstName, lastName, yearOfBirth, monthOfBirth, dateOfBirth, parentSurname, partialSIN, score }) => [
-              `${firstName} ${lastName}`,
-              `${yearOfBirth}-${monthOfBirth}-${dateOfBirth}`.replace(/\d?\d/g, (s) => s.padStart(2, '0')),
-              parentSurname,
-              `*** *** ${partialSIN}`,
-              `${new Intl.NumberFormat(`${lang}-CA`, { style: 'percent', maximumFractionDigits: 2 }).format(score / 10)}`, //score is out of 10 (i.e. 2 corresponds to 2/10 or 20%)
-            ],
-          ),
-        },
+        tableData: searchResults.map(
+          ({ dateOfBirth, firstName, lastName, monthOfBirth, parentSurname, partialSIN, score, yearOfBirth }) => ({
+            dateOfBirth: [padWithZero(yearOfBirth, 4), padWithZero(monthOfBirth, 2), padWithZero(dateOfBirth, 2)].join(
+              SPECIAL_CHARACTERS.nonBreakingHyphen,
+            ),
+            firstName,
+            lastName,
+            parentSurname,
+            partialSIN: ['***', '***', partialSIN].join(SPECIAL_CHARACTERS.nonBreakingSpace),
+            score,
+          }),
+        ),
       };
     }
 
@@ -108,10 +111,48 @@ export async function action({ context, params, request }: Route.ActionArgs) {
 }
 
 export default function SearchSin({ loaderData, actionData, params }: Route.ComponentProps) {
-  const { t } = useTranslation(handle.i18nNamespace);
+  const { t, i18n } = useTranslation(handle.i18nNamespace);
   const fetcherKey = useId();
   const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
   const isSubmitting = fetcher.state !== 'idle';
+
+  type TableRowData = NonNullable<typeof actionData>['tableData'][number];
+
+  const columns = useMemo<ColumnDef<TableRowData>[]>(() => {
+    const percentFormatter = new Intl.NumberFormat(`${i18n.language}-CA`, { style: 'percent', maximumFractionDigits: 2 });
+    return [
+      {
+        header: t('protected:search-sin.table.headers.full-name'),
+        cell: ({ row }) => `${row.original.firstName} ${row.original.lastName}`.trim(),
+      },
+      {
+        header: t('protected:search-sin.table.headers.date-of-birth'),
+        accessorKey: 'dateOfBirth',
+        meta: {
+          cellClassName: 'text-nowrap',
+        },
+      },
+      {
+        accessorKey: 'parentSurname',
+        header: t('protected:search-sin.table.headers.parent-surname'),
+      },
+      {
+        header: t('protected:search-sin.table.headers.sin'),
+        accessorKey: 'partialSIN',
+        meta: {
+          cellClassName: 'text-nowrap',
+        },
+      },
+      {
+        header: t('protected:search-sin.table.headers.match'),
+        cell: (props) => percentFormatter.format(props.row.original.score / 10),
+        meta: {
+          cellClassName: 'text-right text-nowrap',
+          headerClassName: 'text-right',
+        },
+      },
+    ];
+  }, [i18n.language, t]);
 
   return (
     <>
@@ -149,16 +190,7 @@ export default function SearchSin({ loaderData, actionData, params }: Route.Comp
             {fetcher.data?.tableData && (
               <>
                 <h3 className="font-lato mb-4 text-xl font-semibold">{t('protected:search-sin.matches')}</h3>
-                <DataTable
-                  headers={[
-                    t('protected:search-sin.table.headers.full-name'),
-                    t('protected:search-sin.table.headers.date-of-birth'),
-                    t('protected:search-sin.table.headers.parent-surname'),
-                    t('protected:search-sin.table.headers.sin'),
-                    t('protected:search-sin.table.headers.match'),
-                  ]}
-                  rows={fetcher.data.tableData.rows}
-                />
+                <DataTable columns={columns} data={fetcher.data.tableData} />
               </>
             )}
           </div>
