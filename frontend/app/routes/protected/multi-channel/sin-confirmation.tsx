@@ -46,12 +46,8 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
     recordDetails: {
       date: dateToLocalizedText(serverEnvironment.BASE_TIMEZONE),
       firstName: personSinCase.currentNameInfo.firstName ?? personSinCase.primaryDocuments.givenName,
-      middleNames: [personSinCase.currentNameInfo.middleName],
-      familyNames: [
-        personSinCase.currentNameInfo.lastName,
-        personSinCase.primaryDocuments.lastName,
-        ...(personSinCase.personalInformation.lastNamePreviouslyUsed ?? []),
-      ].filter((name) => name !== undefined),
+      middleNames: personSinCase.currentNameInfo.middleName,
+      lastName: personSinCase.currentNameInfo.lastName ?? personSinCase.primaryDocuments.lastName,
       address: personSinCase.contactInformation.address,
       city: personSinCase.contactInformation.city,
       province: personSinCase.contactInformation.province,
@@ -166,18 +162,10 @@ export default function SinConfirmation({ loaderData, actionData, params }: Rout
               {recordDetails.firstName}
             </ConfirmationDetail>
             <ConfirmationDetail upperCase resourceKey="protected:sin-confirmation.middle-name">
-              {recordDetails.middleNames.map((name, i) => (
-                <span key={`${name}-${i}`} className="block">
-                  {name}
-                </span>
-              ))}
+              {recordDetails.middleNames}
             </ConfirmationDetail>
             <ConfirmationDetail upperCase resourceKey="protected:sin-confirmation.family-name">
-              {recordDetails.familyNames.map((name, i) => (
-                <span key={`${name}-${i}`} className="block">
-                  {name}
-                </span>
-              ))}
+              {recordDetails.lastName}
             </ConfirmationDetail>
             <ConfirmationDetail upperCase resourceKey="protected:sin-confirmation.address">
               <span className="block">{recordDetails.address}</span>
