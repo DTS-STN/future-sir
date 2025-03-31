@@ -11,3 +11,8 @@ export const APPLICANT_PRIMARY_DOCUMENT_CHOICE = {
   birthCertificatesAndCertificatesOfIndianStatus: '9800000016',
   certificatesOfCanadianCitizenshipAndCertificatesOfIndianStatus: '9800000017',
 } as const;
+
+export const SPECIAL_CHARACTERS = {
+  nonBreakingSpace: '\u00A0', // Non-Breaking Space (NBSP)
+  nonBreakingHyphen: '\u2011', // Non-Breaking Hyphen
+};
