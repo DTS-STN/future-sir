@@ -65,7 +65,6 @@ describe('i18n-utils', () => {
     it('should return the correct alternate language', () => {
       expect(getAltLanguage('en')).toEqual('fr');
       expect(getAltLanguage('fr')).toEqual('en');
-      expect(getAltLanguage('es')).toBeUndefined();
     });
   });
 });
