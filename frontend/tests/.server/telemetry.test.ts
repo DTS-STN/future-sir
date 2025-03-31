@@ -8,7 +8,7 @@ import { AggregationTemporality, PeriodicExportingMetricReader } from '@opentele
 import { NodeSDK } from '@opentelemetry/sdk-node';
 import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';
 import { ATTR_DEPLOYMENT_ENVIRONMENT_NAME } from '@opentelemetry/semantic-conventions/incubating';
-import { describe, expect, it, vi } from 'vitest';
+import { assert, describe, expect, it, vi } from 'vitest';
 import { mock } from 'vitest-mock-extended';
 
 vi.mock('@opentelemetry/resources');
@@ -94,8 +94,8 @@ describe('NodeSDK', () => {
 
   it('should start the NodeSDK', async () => {
     await import('~/.server/telemetry');
-
-    const instance = vi.mocked(NodeSDK).mock.instances[0];
+    const instance = vi.mocked(NodeSDK).mock.instances.at(0);
+    assert(instance !== undefined, 'Expected instance to be defined');
     expect(instance.start).toHaveBeenCalled();
   });
 });

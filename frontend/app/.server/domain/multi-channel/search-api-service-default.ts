@@ -1,3 +1,5 @@
+import { UNSAFE_invariant } from 'react-router';
+
 import { ProxyAgent } from 'undici';
 
 import type { SearchResponse } from '~/.server/domain/multi-channel/search-api-models';
@@ -82,6 +84,8 @@ function parseAuthorizationHeader(input: string): Record<string, string> {
 
   const [key, ...valueParts] = parts;
   const value = valueParts.join(' ');
+
+  UNSAFE_invariant(key, 'Expected key to be defined');
 
   return { [key]: value };
 }

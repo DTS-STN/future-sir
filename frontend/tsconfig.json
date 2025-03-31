@@ -29,6 +29,7 @@
     "esModuleInterop": true,
     "erasableSyntaxOnly": true,
     "forceConsistentCasingInFileNames": true,
+    "noUncheckedIndexedAccess": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],

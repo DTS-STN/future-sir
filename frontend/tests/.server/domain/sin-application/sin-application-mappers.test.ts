@@ -1,9 +1,15 @@
 import { faker } from '@faker-js/faker';
 import { describe, expect, it, vi } from 'vitest';
 
-import { mapSubmitSinApplicationRequestToSinApplicationRequest } from '~/.server/domain/sin-application/sin-application-mappers';
-import type { SubmitSinApplicationRequest } from '~/.server/domain/sin-application/sin-application-models';
-import type { SinApplicationRequest } from '~/.server/shared/api/interop';
+import {
+  mapSinApplicationResponseToSubmitSinApplicationResponse,
+  mapSubmitSinApplicationRequestToSinApplicationRequest,
+} from '~/.server/domain/sin-application/sin-application-mappers';
+import type {
+  SubmitSinApplicationRequest,
+  SubmitSinApplicationResponse,
+} from '~/.server/domain/sin-application/sin-application-models';
+import type { components } from '~/.server/shared/api/fsir-openapi-schema';
 import type { Country, Province } from '~/.server/shared/models';
 import { getCountryById } from '~/.server/shared/services/country-service';
 import { getProvinceById } from '~/.server/shared/services/province-service';
@@ -93,7 +99,7 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
       secondaryDocument: { documentType: '564190000', expiryYear: '2025', expiryMonth: '12' },
     };
 
-    const expected: SinApplicationRequest = {
+    const expected: components['schemas']['SINApplicationRequest'] = {
       SINApplication: {
         Applicant: {
           Certificate: [
@@ -464,7 +470,7 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
       secondaryDocument: { documentType: '564190000', expiryYear: '2025', expiryMonth: '12' },
     };
 
-    const expected: SinApplicationRequest = {
+    const expected: components['schemas']['SINApplicationRequest'] = {
       SINApplication: {
         Applicant: {
           Certificate: [
@@ -753,15 +759,15 @@ describe('mapSubmitSinApplicationRequestToSinApplicationRequest', () => {
   });
 });
 
-/*
-//TODO: update it later
 describe('mapSinApplicationResponseToSubmitSinApplicationResponse', () => {
   it('should map SinApplicationResponse to SubmitSinApplicationResponse correctly', () => {
-    const sinApplicationResponse: SinApplicationResponse = {
+    const sinApplicationResponse: components['schemas']['SINApplicationResponse'] = {
       SINApplication: {
-        SINApplicationIdentification: {
-          IdentificationID: '123456789',
-        },
+        SINApplicationIdentification: [
+          {
+            IdentificationID: '123456789',
+          },
+        ],
       },
     };
 
@@ -772,5 +778,21 @@ describe('mapSinApplicationResponseToSubmitSinApplicationResponse', () => {
     const result = mapSinApplicationResponseToSubmitSinApplicationResponse(sinApplicationResponse);
     expect(result).toEqual(expected);
   });
+
+  it('should throw when IdentificationID is not defined in SINApplicationResponse', () => {
+    const sinApplicationResponse: components['schemas']['SINApplicationResponse'] = {
+      SINApplication: {
+        SINApplicationIdentification: [],
+      },
+    };
+
+    expect(() => mapSinApplicationResponseToSubmitSinApplicationResponse(sinApplicationResponse)).toThrow(
+      expect.objectContaining({
+        errorCode: 'UNC-0000',
+        httpStatusCode: 500,
+        msg: 'Failed to map SIN application response; IdentificationID is undefined',
+        name: 'AppError',
+      }),
+    );
+  });
 });
-*/

@@ -3,25 +3,7 @@ import type {
   SubmitSinApplicationResponse,
 } from '~/.server/domain/sin-application/sin-application-models';
 import { serverEnvironment } from '~/.server/environment';
-import type {
-  CertificateType,
-  CountryType,
-  EmailAddressType,
-  LegalStatusType,
-  PersonBirthDate,
-  PersonBirthLocation,
-  PersonContactInformation,
-  PersonGenderCode,
-  PersonLanguage,
-  PersonNameType,
-  ProvinceType,
-  RelatedPerson,
-  SinApplicationCategoryCode,
-  SinApplicationDetail,
-  SinApplicationRequest,
-  SinApplicationResponse,
-  TelephoneNumberType,
-} from '~/.server/shared/api/interop';
+import type { components } from '~/.server/shared/api/fsir-openapi-schema';
 import { getCountryById } from '~/.server/shared/services/country-service';
 import { getProvinceById } from '~/.server/shared/services/province-service';
 import { AppError } from '~/errors/app-error';
@@ -36,7 +18,7 @@ import { AppError } from '~/errors/app-error';
 export function mapSubmitSinApplicationRequestToSinApplicationRequest(
   submitSinApplicationRequest: SubmitSinApplicationRequest,
   idToken: string,
-): SinApplicationRequest {
+): components['schemas']['SINApplicationRequest'] {
   const helpers = createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(submitSinApplicationRequest);
 
   return {
@@ -104,7 +86,7 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
     return undefined;
   }
 
-  function getCountryType(country: string): CountryType | undefined {
+  function getCountryType(country: string): components['schemas']['CountryType'] | undefined {
     const alphaCode = getCountryAlphaCode(country);
 
     if (!alphaCode) {
@@ -118,7 +100,7 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
     };
   }
 
-  function getProvinceType(country: string, province: string | undefined): ProvinceType | undefined {
+  function getProvinceType(country: string, province: string | undefined): components['schemas']['ProvinceType'] | undefined {
     if (!province) {
       return undefined;
     }
@@ -142,7 +124,7 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
     };
   }
 
-  function mapApplicantClientLegalStatus(): LegalStatusType {
+  function mapApplicantClientLegalStatus(): components['schemas']['LegalStatusType'] {
     return {
       Certificate: [
         {
@@ -154,8 +136,8 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
     };
   }
 
-  function mapApplicantPersonName(): PersonNameType[] {
-    const applicantPersonName: PersonNameType[] = [];
+  function mapApplicantPersonName(): components['schemas']['PersonNameType'][] {
+    const applicantPersonName: components['schemas']['PersonNameType'][] = [];
 
     applicantPersonName.push({
       PersonNameCategoryCode: {
@@ -224,7 +206,7 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
     return applicantPersonName;
   }
 
-  function mapApplicantCertificatePID(): CertificateType {
+  function mapApplicantCertificatePID(): components['schemas']['CertificateType'] {
     return {
       CertificateCategoryCode: {
         // TODO: Fix later, should use primaryDocuments.documentType
@@ -280,7 +262,7 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
     };
   }
 
-  function mapApplicantCertificateSID(): CertificateType {
+  function mapApplicantCertificateSID(): components['schemas']['CertificateType'] {
     return {
       CertificateCategoryCode: {
         ReferenceDataID: secondaryDocument.documentType,
@@ -293,7 +275,7 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
     };
   }
 
-  function mapApplicantRelatedPerson(): RelatedPerson[] {
+  function mapApplicantRelatedPerson(): components['schemas']['RelatedPerson'][] {
     const availableParents = parentDetails.filter((parent) => parent.unavailable === false);
 
     if (availableParents.length === 0) {
@@ -313,8 +295,8 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
       ];
     }
 
-    return availableParents.map<RelatedPerson>((parent, index) => {
-      const relatedPerson: RelatedPerson = {
+    return availableParents.map<components['schemas']['RelatedPerson']>((parent, index) => {
+      const relatedPerson: components['schemas']['RelatedPerson'] = {
         PersonRelationshipCode: {
           ReferenceDataName: `Parent ${(index + 1).toString()}`,
         },
@@ -355,7 +337,7 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
     });
   }
 
-  function mapApplicantPersonContactInformation(): PersonContactInformation[] {
+  function mapApplicantPersonContactInformation(): components['schemas']['PersonContactInformation'][] {
     return [
       {
         Address: [
@@ -378,7 +360,7 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
     ];
   }
 
-  function mapApplicantPersonContactInformationEmailAddress(): EmailAddressType[] {
+  function mapApplicantPersonContactInformationEmailAddress(): components['schemas']['EmailAddressType'][] {
     return [
       {
         EmailAddressID: contactInformation.emailAddress ?? '',
@@ -386,8 +368,8 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
     ];
   }
 
-  function mapApplicantPersonContactInformationTelephoneNumber(): TelephoneNumberType[] {
-    const telephoneNumber: TelephoneNumberType[] = [];
+  function mapApplicantPersonContactInformationTelephoneNumber(): components['schemas']['TelephoneNumberType'][] {
+    const telephoneNumber: components['schemas']['TelephoneNumberType'][] = [];
 
     telephoneNumber.push({
       TelephoneNumberCategoryCode: {
@@ -412,7 +394,7 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
     return telephoneNumber;
   }
 
-  function mapApplicantPersonPersonLanguage(): PersonLanguage[] {
+  function mapApplicantPersonPersonLanguage(): components['schemas']['PersonLanguage'][] {
     return [
       {
         CommunicationCategoryCode: {
@@ -429,7 +411,7 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
     ];
   }
 
-  function mapApplicantPersonPersonBirthLocation(): PersonBirthLocation {
+  function mapApplicantPersonPersonBirthLocation(): components['schemas']['PersonBirthLocation'] {
     const addressCityName = birthDetails.city;
     const addressProvince = getProvinceType(birthDetails.country, birthDetails.province);
     const addressCountry = getCountryType(birthDetails.country);
@@ -456,26 +438,26 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
     };
   }
 
-  function mapApplicantPersonGenderCode(): PersonGenderCode {
+  function mapApplicantPersonGenderCode(): components['schemas']['PersonGenderCode'] {
     return {
       ReferenceDataID: primaryDocuments.gender,
     };
   }
 
-  function mapApplicantPersonBirthDate(): PersonBirthDate {
+  function mapApplicantPersonBirthDate(): components['schemas']['PersonBirthDate'] {
     return {
       date: primaryDocuments.dateOfBirth,
     };
   }
 
-  function mapSINApplicationCategoryCode(): SinApplicationCategoryCode {
+  function mapSINApplicationCategoryCode(): components['schemas']['SINApplicationCategoryCode'] {
     return {
       ReferenceDataID: requestDetails.type,
     };
   }
 
-  function mapSINApplicationDetail(): SinApplicationDetail[] {
-    const sinApplicationDetail: SinApplicationDetail[] = [];
+  function mapSINApplicationDetail(): components['schemas']['SINApplicationDetail'][] {
+    const sinApplicationDetail: components['schemas']['SINApplicationDetail'][] = [];
 
     sinApplicationDetail.push({
       ApplicationDetailID: 'SIN Application Submission Scenario',
@@ -570,15 +552,17 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
  * @returns The mapped submit SIN application response.
  */
 export function mapSinApplicationResponseToSubmitSinApplicationResponse(
-  sinApplicationResponse: SinApplicationResponse,
+  sinApplicationResponse: components['schemas']['SINApplicationResponse'],
 ): SubmitSinApplicationResponse {
-  const identificationArray = sinApplicationResponse.SINApplication?.SINApplicationIdentification;
-  if (!identificationArray || !Array.isArray(identificationArray) || identificationArray[0]?.IdentificationID === undefined) {
+  const sinApplicationIdentification = sinApplicationResponse.SINApplication?.SINApplicationIdentification;
+  const identificationID = sinApplicationIdentification?.at(0)?.IdentificationID;
+
+  if (identificationID === undefined) {
     // TODO ::: GjB ::: it's not clear if this potentially undefined value is intentional; the OpenAPI spec allows for it, so we have to check for it
     throw new AppError('Failed to map SIN application response; IdentificationID is undefined');
   }
 
   return {
-    identificationId: identificationArray[0]?.IdentificationID,
+    identificationId: identificationID,
   };
 }
