@@ -48,7 +48,7 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
     firstNamesPreviouslyUsed: personSinCase.personalInformation.firstNamePreviouslyUsed?.join(', '),
     dob: personSinCase.primaryDocuments.dateOfBirth,
     parents: personSinCase.parentDetails.filter((p) => !p.unavailable).map((p) => `${p.givenName} ${p.lastName}`),
-    otherLastNames: personSinCase.personalInformation.lastNamePreviouslyUsed?.join(','),
+    otherLastNames: personSinCase.personalInformation.lastNamePreviouslyUsed?.join(', '),
   };
 }
 
