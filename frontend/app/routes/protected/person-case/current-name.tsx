@@ -20,6 +20,7 @@ import { PageTitle } from '~/components/page-title';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { HttpStatusCodes } from '~/errors/http-status-codes';
+import { useFetcherState } from '~/hooks/use-fetcher-state';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import { getTabIdOrRedirect, loadMachineActorOrRedirect } from '~/routes/protected/person-case/route-helpers.server';
@@ -129,8 +130,7 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
 
   const fetcherKey = useId();
   const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
-
-  const isSubmitting = fetcher.state !== 'idle';
+  const fetcherState = useFetcherState(fetcher);
 
   const formValues = fetcher.data?.formValues ?? loaderData.formValues;
   const formErrors = fetcher.data?.formErrors ?? loaderData.formErrors;
@@ -259,10 +259,10 @@ export default function CurrentName({ loaderData, actionData, params }: Route.Co
               )}
             </div>
             <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
-              <Button name="action" value="next" variant="primary" id="continue-button" disabled={isSubmitting}>
+              <Button name="action" value="next" variant="primary" id="continue-button" disabled={fetcherState.submitting}>
                 {t('protected:person-case.next')}
               </Button>
-              <Button name="action" value="back" id="back-button" disabled={isSubmitting}>
+              <Button name="action" value="back" id="back-button" disabled={fetcherState.submitting}>
                 {t('protected:person-case.previous')}
               </Button>
             </div>

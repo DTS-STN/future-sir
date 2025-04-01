@@ -20,6 +20,7 @@ import { PageTitle } from '~/components/page-title';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { HttpStatusCodes } from '~/errors/http-status-codes';
+import { useFetcherState } from '~/hooks/use-fetcher-state';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/layout';
 import { dateToLocalizedText } from '~/utils/date-utils';
@@ -100,7 +101,7 @@ export default function SinConfirmation({ loaderData, actionData, params }: Rout
   const { t } = useTranslation(handle.i18nNamespace);
   const fetcherKey = useId();
   const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
-  const isSubmitting = fetcher.state !== 'idle';
+  const fetcherState = useFetcherState(fetcher);
   const recordDetails = loaderData.recordDetails;
   const { dateEn, dateFr } = recordDetails.date;
 
@@ -197,10 +198,10 @@ export default function SinConfirmation({ loaderData, actionData, params }: Rout
         </section>
       </div>
       <fetcher.Form method="post" noValidate className="mt-12 space-x-3 print:hidden">
-        <Button id="print-button" type="button" variant="primary" disabled={isSubmitting} onClick={handlePrint}>
+        <Button id="print-button" type="button" variant="primary" disabled={fetcherState.submitting} onClick={handlePrint}>
           {t('protected:sin-confirmation.print')}
         </Button>
-        <Button name="action" value="finish" id="finish-button" disabled={isSubmitting}>
+        <Button name="action" value="finish" id="finish-button" disabled={fetcherState.submitting}>
           {t('protected:sin-confirmation.finish')}
         </Button>
       </fetcher.Form>

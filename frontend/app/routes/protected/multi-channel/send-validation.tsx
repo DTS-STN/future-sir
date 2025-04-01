@@ -27,6 +27,7 @@ import { PageTitle } from '~/components/page-title';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import { HttpStatusCodes } from '~/errors/http-status-codes';
+import { useFetcherState } from '~/hooks/use-fetcher-state';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import { ReviewBirthDetails } from '~/routes/protected/sin-application/review-birth-details';
@@ -174,8 +175,8 @@ export default function SendValidation({ loaderData, actionData, params }: Route
 
   const fetcherKey = useId();
   const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
+  const fetcherState = useFetcherState(fetcher);
 
-  const isSubmitting = fetcher.state !== 'idle';
   const { inPersonSINCase, caseId } = loaderData;
   const {
     birthDetails,
@@ -284,7 +285,7 @@ export default function SendValidation({ loaderData, actionData, params }: Route
       </div>
       <fetcher.Form className="max-w-prose" method="post" noValidate>
         <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
-          <Button name="action" value="send" variant="primary" id="send-for-validation" disabled={isSubmitting}>
+          <Button name="action" value="send" variant="primary" id="send-for-validation" disabled={fetcherState.submitting}>
             {t('protected:send-validation.send-for-validation')}
           </Button>
         </div>
