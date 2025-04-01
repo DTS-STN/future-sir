@@ -35,28 +35,28 @@ export class Redacted<T> {
    * This ensures the value appears redacted when using Node.js debugging tools.
    * @see https://nodejs.org/api/util.html#utilinspectcustom
    *
-   * @returns The value `'<redacted>'`
+   * @returns The value `'<redacted>'` if an initial value was provided, otherwise `undefined`.
    */
-  public [Symbol.for('nodejs.util.inspect.custom')](): '<redacted>' {
+  public [Symbol.for('nodejs.util.inspect.custom')](): '<redacted>' | undefined {
     return this.toString();
   }
 
   /**
    * Controls how the object is serialized when JSON.stringify() is called.
    *
-   * @returns The value `'<redacted>'`
+   * @returns The value `'<redacted>'` if an initial value was provided, otherwise `undefined`.
    */
-  public toJSON(): '<redacted>' {
+  public toJSON(): '<redacted>' | undefined {
     return this.toString();
   }
 
   /**
    * Returns a redacted string representation that hides the actual value.
    *
-   * @returns The value `'<redacted>'`
+   * @returns The value `'<redacted>'` if an initial value was provided, otherwise `undefined`.
    */
-  public toString(): '<redacted>' {
-    return '<redacted>';
+  public toString(): '<redacted>' | undefined {
+    return this.val ? '<redacted>' : undefined;
   }
 
   /**
