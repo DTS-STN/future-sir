@@ -1,4 +1,4 @@
-import { SpanStatusCode, trace } from '@opentelemetry/api';
+import { SpanStatusCode } from '@opentelemetry/api';
 import * as jose from 'jose';
 import type { AuthorizationServer, Client, ClientAuth, IDToken } from 'oauth4webapi';
 import * as oauth from 'oauth4webapi';
@@ -98,7 +98,6 @@ export abstract class BaseAuthenticationStrategy implements AuthenticationStrate
   protected readonly clientAuth: ClientAuth;
 
   protected readonly log = LogFactory.getLogger(import.meta.url);
-  protected readonly tracer = trace.getTracer('future-sir');
 
   protected constructor(name: string, issuerUrl: URL, client: Client, clientAuth: ClientAuth, allowInsecure = false) {
     this.allowInsecure = allowInsecure;
