@@ -20,9 +20,9 @@ import { getLocalizedCountryById } from '~/.server/shared/services/country-servi
 import { getLocalizedProvinceById } from '~/.server/shared/services/province-service';
 import { requireAllRoles } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
-import { Button } from '~/components/button';
 import { ContextualAlert } from '~/components/contextual-alert';
 import { InlineLink } from '~/components/links';
+import { LoadingButton } from '~/components/loading-button';
 import { PageTitle } from '~/components/page-title';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
@@ -285,9 +285,16 @@ export default function SendValidation({ loaderData, actionData, params }: Route
       </div>
       <fetcher.Form className="max-w-prose" method="post" noValidate>
         <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
-          <Button name="action" value="send" variant="primary" id="send-for-validation" disabled={fetcherState.submitting}>
+          <LoadingButton
+            name="action"
+            value="send"
+            variant="primary"
+            id="send-for-validation"
+            disabled={fetcherState.submitting}
+            loading={fetcherState.submitting && fetcherState.action === 'send'}
+          >
             {t('protected:send-validation.send-for-validation')}
-          </Button>
+          </LoadingButton>
         </div>
       </fetcher.Form>
     </>

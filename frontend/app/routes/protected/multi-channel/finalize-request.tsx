@@ -20,6 +20,7 @@ import { FetcherErrorSummary } from '~/components/error-summary';
 import { InputCheckbox } from '~/components/input-checkbox';
 import { InputSelect } from '~/components/input-select';
 import { InlineLink } from '~/components/links';
+import { LoadingButton } from '~/components/loading-button';
 import { PageTitle } from '~/components/page-title';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
@@ -181,9 +182,16 @@ export default function PidVerification({ loaderData, actionData, params }: Rout
             </InputCheckbox>
           </div>
           <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
-            <Button name="action" value="next" variant="primary" id="continue-button" disabled={fetcherState.submitting}>
+            <LoadingButton
+              name="action"
+              value="next"
+              variant="primary"
+              id="continue-button"
+              disabled={fetcherState.submitting}
+              loading={fetcherState.submitting && fetcherState.action === 'next'}
+            >
               {t('protected:finalize-request.next')}
-            </Button>
+            </LoadingButton>
             <Button name="action" value="back" id="back-button" disabled={fetcherState.submitting}>
               {t('protected:finalize-request.previous')}
             </Button>

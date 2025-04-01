@@ -15,6 +15,7 @@ import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
 import { DataTable } from '~/components/data-table';
 import { FetcherErrorSummary } from '~/components/error-summary';
+import { LoadingButton } from '~/components/loading-button';
 import { PageTitle } from '~/components/page-title';
 import { SPECIAL_CHARACTERS } from '~/domain/constants';
 import { AppError } from '~/errors/app-error';
@@ -196,14 +197,28 @@ export default function SearchSin({ loaderData, actionData, params }: Route.Comp
             )}
           </div>
           <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
-            <Button name="action" value="search" variant="primary" id="search-button" disabled={fetcherState.submitting}>
+            <LoadingButton
+              name="action"
+              value="search"
+              variant="primary"
+              id="search-button"
+              disabled={fetcherState.submitting}
+              loading={fetcherState.submitting && fetcherState.action === 'search'}
+            >
               {t('protected:search-sin.search')}
-            </Button>
+            </LoadingButton>
           </div>
           <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
-            <Button name="action" value="next" variant="primary" id="continue-button" disabled={fetcherState.submitting}>
+            <LoadingButton
+              name="action"
+              value="next"
+              variant="primary"
+              id="continue-button"
+              disabled={fetcherState.submitting}
+              loading={fetcherState.submitting && fetcherState.action === 'next'}
+            >
               {t('protected:search-sin.next')}
-            </Button>
+            </LoadingButton>
             <Button name="action" value="back" id="back-button" disabled={fetcherState.submitting}>
               {t('protected:search-sin.previous')}
             </Button>

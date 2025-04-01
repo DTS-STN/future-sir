@@ -17,6 +17,7 @@ import { Button } from '~/components/button';
 import { FetcherErrorSummary } from '~/components/error-summary';
 import { InputField } from '~/components/input-field';
 import { InputRadios } from '~/components/input-radios';
+import { LoadingButton } from '~/components/loading-button';
 import { PageTitle } from '~/components/page-title';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
@@ -348,9 +349,16 @@ export default function PersonalInformation({ actionData, loaderData, params, ma
             </div>
 
             <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
-              <Button name="action" value="next" variant="primary" id="continue-button" disabled={fetcherState.submitting}>
+              <LoadingButton
+                name="action"
+                value="next"
+                variant="primary"
+                id="continue-button"
+                disabled={fetcherState.submitting}
+                loading={fetcherState.submitting && fetcherState.action === 'next'}
+              >
                 {t('protected:person-case.next')}
-              </Button>
+              </LoadingButton>
               <Button name="action" value="back" id="back-button" disabled={fetcherState.submitting}>
                 {t('protected:person-case.previous')}
               </Button>
