@@ -9,7 +9,7 @@ import { ButtonEndIcon, ButtonStartIcon } from '~/components/button-icons';
 type ButtonEndIconProps = ComponentProps<typeof ButtonEndIcon>;
 type ButtonStartIconProps = ComponentProps<typeof ButtonStartIcon>;
 
-export interface LoadingButtonProps extends ComponentProps<'button'> {
+export interface LoadingButtonProps extends ComponentProps<typeof Button> {
   endIcon?: ButtonEndIconProps['icon'];
   endIconProps?: OmitStrict<ButtonEndIconProps, 'icon'>;
   pill?: boolean;
@@ -20,6 +20,7 @@ export interface LoadingButtonProps extends ComponentProps<'button'> {
   loadingIconProps?: OmitStrict<FontAwesomeIconProps, 'icon'>;
   loadingPosition?: 'end' | 'start';
 }
+
 export function LoadingButton({
   children,
   endIcon,

@@ -22,9 +22,11 @@ import { requireAllRoles } from '~/.server/utils/auth-utils';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import { Button } from '~/components/button';
 import { InlineLink } from '~/components/links';
+import { LoadingButton } from '~/components/loading-button';
 import { PageTitle } from '~/components/page-title';
 import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
+import { useFetcherState } from '~/hooks/use-fetcher-state';
 import { getTranslation } from '~/i18n-config.server';
 import { handle as parentHandle } from '~/routes/protected/person-case/layout';
 import { getTabIdOrRedirect, loadMachineActorOrRedirect } from '~/routes/protected/person-case/route-helpers.server';
@@ -189,8 +191,8 @@ export default function Review({ loaderData, actionData, params }: Route.Compone
 
   const fetcherKey = useId();
   const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
+  const fetcherState = useFetcherState(fetcher);
 
-  const isSubmitting = fetcher.state !== 'idle';
   const { inPersonSINCase, tabId } = loaderData;
   const {
     birthDetails,
@@ -300,10 +302,17 @@ export default function Review({ loaderData, actionData, params }: Route.Compone
             </ReviewContactInformation>
           </div>
           <div className="mt-8 flex flex-row-reverse flex-wrap items-center justify-end gap-3">
-            <Button name="action" value="next" variant="primary" id="continue-button" disabled={isSubmitting}>
+            <LoadingButton
+              name="action"
+              value="next"
+              variant="primary"
+              id="continue-button"
+              disabled={fetcherState.submitting}
+              loading={fetcherState.submitting && fetcherState.action === 'next'}
+            >
               {t('protected:person-case.create-case-button')}
-            </Button>
-            <Button name="action" value="back" id="back-button" disabled={isSubmitting}>
+            </LoadingButton>
+            <Button name="action" value="back" id="back-button" disabled={fetcherState.submitting}>
               {t('protected:person-case.previous')}
             </Button>
           </div>
