@@ -235,6 +235,15 @@ export abstract class BaseAuthenticationStrategy implements AuthenticationStrate
       };
     });
 
+  /**
+   * Decodes and verifies a JWT access token.
+   *
+   * @param jwt - The JWT string.
+   * @param expectedAudience - The expected audience claim ('aud').
+   *   This *must* match the intended recipient identifier for the token
+   *   (e.g., the application's client ID or a resource uri).
+   * @returns A promise resolving to the decoded and verified JWT payload.
+   */
   public async decodeAndVerifyJwt(jwt: string, expectedAudience: string): Promise<jose.JWTPayload & { roles?: string[] }> {
     this.log.debug('Performing JWT verification');
     const authorizationServer = await this.authorizationServer;
