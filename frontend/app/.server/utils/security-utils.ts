@@ -18,7 +18,7 @@ export class Redacted<T> {
    * Static factory function to make it easier to instantiate in lambda functions.
    * @param value The value to wrap and redact
    */
-  public static make<T>(value: T) {
+  public static make<T>(value: T): Redacted<T> {
     return new Redacted(value);
   }
 
