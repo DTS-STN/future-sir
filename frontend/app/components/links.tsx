@@ -121,7 +121,7 @@ export function AppLink({
   const route = getRouteByFile(file, i18nRoutes);
   const pathname = generatePath(route.paths[targetLanguage], params);
 
-  const langProp = targetLanguage !== currentLanguage ? targetLanguage : undefined;
+  const langProp = targetLanguage === currentLanguage ? undefined : targetLanguage;
   const reloadDocumentProp = props.reloadDocument ?? lang !== undefined;
 
   return (
@@ -212,10 +212,8 @@ export function InlineLink({
 function scrollAndFocusFromAnchorLink(href: string): void {
   if (URL.canParse(href)) {
     const { hash } = new URL(href);
-
     if (hash) {
-      const targetElement = document.getElementById(hash.replace('#', ''));
-
+      const targetElement = document.querySelector<HTMLElement>(hash);
       if (targetElement) {
         targetElement.scrollIntoView({ behavior: 'smooth' });
         targetElement.focus();

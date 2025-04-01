@@ -7,7 +7,7 @@
  * environment variables. It also provides a factory for creating and retrieving logger
  * instances for different categories within the application.
  */
-import util from 'node:util';
+import { inspect } from 'node:util';
 import type { Logform, Logger } from 'winston';
 import winston, { format, transports } from 'winston';
 import { fullFormat } from 'winston-error-format';
@@ -81,7 +81,7 @@ function asFormattedInfo(transformableInfo: Logform.TransformableInfo): string {
   const { label, level, message, timestamp, ...rest } = transformableInfo;
   const formattedInfo = `${timestamp} ${level.toUpperCase().padStart(7)} --- [${formatLabel(`${label}`, 25)}]: ${message}`;
   const sanitizedRest = Object.fromEntries(Object.entries(rest).filter(([key]) => typeof key !== 'symbol'));
-  return isEmpty(sanitizedRest) ? formattedInfo : `${formattedInfo} --- ${util.inspect(sanitizedRest, false, null, true)}`;
+  return isEmpty(sanitizedRest) ? formattedInfo : `${formattedInfo} --- ${inspect(sanitizedRest, false, null, true)}`;
 }
 
 /**

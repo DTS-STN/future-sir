@@ -48,13 +48,12 @@ export function getLocalizedCountries(language: Language): readonly LocalizedCou
     name: language === 'fr' ? country.nameFr : country.nameEn,
   }));
 
-  return countries
-    .filter((country) => country.id === PP_CANADA_COUNTRY_CODE)
-    .concat(
-      countries
-        .filter((country) => country.id !== PP_CANADA_COUNTRY_CODE)
-        .sort((a, b) => a.name.localeCompare(b.name, language, { sensitivity: 'base' })),
-    );
+  return [
+    ...countries.filter((country) => country.id === PP_CANADA_COUNTRY_CODE),
+    ...countries
+      .filter((country) => country.id !== PP_CANADA_COUNTRY_CODE)
+      .sort((a, b) => a.name.localeCompare(b.name, language, { sensitivity: 'base' })),
+  ];
 }
 
 /**

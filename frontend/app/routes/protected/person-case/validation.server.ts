@@ -86,13 +86,13 @@ export const contactInformationSchema = v.intersect([
       v.string(),
       v.trim(),
       v.nonEmpty('protected:contact-information.error-messages.primary-phone-required'),
-      v.transform((val) => parsePhoneNumberWithError(val, 'CA').formatInternational().replace(/ /g, '')),
+      v.transform((val) => parsePhoneNumberWithError(val, 'CA').formatInternational().replaceAll(' ', '')),
     ),
     secondaryPhoneNumber: v.optional(
       v.pipe(
         v.string(),
         v.trim(),
-        v.transform((val) => parsePhoneNumberWithError(val, 'CA').formatInternational().replace(/ /g, '')),
+        v.transform((val) => parsePhoneNumberWithError(val, 'CA').formatInternational().replaceAll(' ', '')),
       ),
     ),
     emailAddress: v.optional(
@@ -485,7 +485,7 @@ export const secondaryDocumentSchema = v.pipe(
         const year = Number.parseInt(expiryYear);
         const month = Number.parseInt(expiryMonth);
 
-        if (isNaN(year) || isNaN(month)) {
+        if (Number.isNaN(year) || Number.isNaN(month)) {
           return false; // Handle invalid number formats, if necessary
         }
 

@@ -7,7 +7,7 @@ const log = LogFactory.getLogger(import.meta.url);
 
 export function getMockSinSearchService(): SinSearchService {
   return {
-    getSearchResults: async (caseId: string): Promise<SearchResponse> => {
+    getSearchResults: (caseId: string): Promise<SearchResponse> => {
       log.trace('Fetching hitlist search results with caseId: %s', caseId);
 
       const hitlistResponse = generateFakeHitListResults(20, 0);

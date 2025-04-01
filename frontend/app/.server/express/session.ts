@@ -48,14 +48,12 @@ export function createRedisStore(environment: ServerEnvironment): RedisStore {
 function purgeExpiredSessions(memoryStore: MemoryStore): void {
   log.trace('Purging expired sessions');
 
-  const isPast = (date: Date): boolean => date.getTime() < Date.now();
-
   memoryStore.all((error, sessions) => {
     if (sessions) {
       const sessionEntries = Object.entries(sessions);
       log.trace('%s sessions in session store', Object.keys(sessions).length);
 
-      sessionEntries.forEach(([sessionId, sessionData]) => {
+      for (const [sessionId, sessionData] of sessionEntries) {
         // express-session adds the cookie data to the session
         // so we can use this to check when the session is due to expire
         const expiresAt = sessionData.cookie.expires;
@@ -65,7 +63,11 @@ function purgeExpiredSessions(memoryStore: MemoryStore): void {
           log.trace('Purging expired session %s', sessionId);
           memoryStore.destroy(sessionId);
         }
-      });
+      }
     }
   });
+}
+
+function isPast(date: Date): boolean {
+  return date.getTime() < Date.now();
 }

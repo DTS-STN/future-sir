@@ -61,7 +61,7 @@ export function preserveImportMetaUrl(): Plugin {
     name: 'preserve-import-meta-url',
     transform(code, id) {
       const truncatedPath = id.includes('app/') ? id.slice(id.indexOf('app/')) : id;
-      return code.replace(/getLogger\(import\.meta\.url\)/g, `getLogger(${JSON.stringify(truncatedPath)})`);
+      return code.replaceAll(/getLogger\(import\.meta\.url\)/, `getLogger(${JSON.stringify(truncatedPath)})`);
     },
   };
 }

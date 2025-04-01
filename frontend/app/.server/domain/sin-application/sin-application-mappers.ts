@@ -75,55 +75,6 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
     return currentNameInfo.lastName;
   }
 
-  function getCountryAlphaCode(countryId: string): string | undefined {
-    const { alphaCode } = getCountryById(countryId);
-
-    // must use "CA" or "US" REGARDLESS for country
-    if (alphaCode === 'CA' || alphaCode === 'US') {
-      return alphaCode;
-    }
-
-    return undefined;
-  }
-
-  function getCountryType(country: string): components['schemas']['CountryType'] | undefined {
-    const alphaCode = getCountryAlphaCode(country);
-
-    if (!alphaCode) {
-      return undefined;
-    }
-
-    return {
-      CountryCode: {
-        ReferenceDataID: alphaCode,
-      },
-    };
-  }
-
-  function getProvinceType(country: string, province: string | undefined): components['schemas']['ProvinceType'] | undefined {
-    if (!province) {
-      return undefined;
-    }
-
-    const alphaCode = getCountryAlphaCode(country);
-
-    if (alphaCode === 'CA') {
-      const prov = getProvinceById(province);
-      return {
-        ProvinceCode: {
-          ReferenceDataID: prov.alphaCode,
-          ReferenceDataName: prov.nameEn,
-        },
-      };
-    }
-
-    return {
-      ProvinceCode: {
-        ReferenceDataName: province,
-      },
-    };
-  }
-
   function mapApplicantClientLegalStatus(): components['schemas']['LegalStatusType'] {
     return {
       Certificate: [
@@ -139,44 +90,45 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
   function mapApplicantPersonName(): components['schemas']['PersonNameType'][] {
     const applicantPersonName: components['schemas']['PersonNameType'][] = [];
 
-    applicantPersonName.push({
-      PersonNameCategoryCode: {
-        ReferenceDataName: 'Legal',
+    applicantPersonName.push(
+      {
+        PersonNameCategoryCode: {
+          ReferenceDataName: 'Legal',
+        },
+        PersonGivenName: getApplicantFirstName(),
+        PersonSurName: getApplicantLastName(),
       },
-      PersonGivenName: getApplicantFirstName(),
-      PersonSurName: getApplicantLastName(),
-    });
+      {
+        PersonNameCategoryCode: {
+          ReferenceDataName: 'at birth',
+        },
+        PersonSurName: personalInformation.lastNameAtBirth,
+      },
 
-    applicantPersonName.push({
-      PersonNameCategoryCode: {
-        ReferenceDataName: 'at birth',
+      // TODO: PersonFullName should always be send with ReferenceDataName: 'Native'
+      {
+        PersonFullName: getApplicantFirstName() + ' ' + getApplicantLastName(),
+        PersonNameCategoryCode: {
+          ReferenceDataName: 'Native',
+        },
       },
-      PersonSurName: personalInformation.lastNameAtBirth,
-    });
 
-    // TODO: PersonFullName should always be send with ReferenceDataName: 'Native'
-    applicantPersonName.push({
-      PersonFullName: getApplicantFirstName() + ' ' + getApplicantLastName(),
-      PersonNameCategoryCode: {
-        ReferenceDataName: 'Native',
+      // TODO: Remove it later
+      // FirstNamePReviouslyUsed and LastNamePreviouslyUsed must be send together with  ReferenceDataName: 'Alternate'
+      {
+        PersonGivenName:
+          personalInformation.firstNamePreviouslyUsed && personalInformation.firstNamePreviouslyUsed.length > 0
+            ? personalInformation.firstNamePreviouslyUsed.join(' ')
+            : '',
+        PersonNameCategoryCode: {
+          ReferenceDataName: 'Alternate',
+        },
+        PersonSurName:
+          personalInformation.lastNamePreviouslyUsed && personalInformation.lastNamePreviouslyUsed.length > 0
+            ? personalInformation.lastNamePreviouslyUsed.join(' ')
+            : '',
       },
-    });
-
-    // TODO: Remove it later
-    // FirstNamePReviouslyUsed and LastNamePreviouslyUsed must be send together with  ReferenceDataName: 'Alternate'
-    applicantPersonName.push({
-      PersonGivenName:
-        personalInformation.firstNamePreviouslyUsed && personalInformation.firstNamePreviouslyUsed.length > 0
-          ? personalInformation.firstNamePreviouslyUsed.join(' ')
-          : '',
-      PersonNameCategoryCode: {
-        ReferenceDataName: 'Alternate',
-      },
-      PersonSurName:
-        personalInformation.lastNamePreviouslyUsed && personalInformation.lastNamePreviouslyUsed.length > 0
-          ? personalInformation.lastNamePreviouslyUsed.join(' ')
-          : '',
-    });
+    );
 
     // TODO: Enable it later
     // FirstNamePReviouslyUsed and LastNamePreviouslyUsed must be send together with  ReferenceDataName: 'Alternate'
@@ -459,72 +411,66 @@ function createSubmitSinApplicationRequestToSinApplicationRequestMappingHelpers(
   function mapSINApplicationDetail(): components['schemas']['SINApplicationDetail'][] {
     const sinApplicationDetail: components['schemas']['SINApplicationDetail'][] = [];
 
-    sinApplicationDetail.push({
-      ApplicationDetailID: 'SIN Application Submission Scenario',
-      ApplicationDetailValue: {
-        ValueCode: {
-          ReferenceDataID: requestDetails.scenario,
+    sinApplicationDetail.push(
+      {
+        ApplicationDetailID: 'SIN Application Submission Scenario',
+        ApplicationDetailValue: {
+          ValueCode: {
+            ReferenceDataID: requestDetails.scenario,
+          },
         },
       },
-    });
-
-    sinApplicationDetail.push({
-      ApplicationDetailID: 'SIN Confirmation receiving method',
-      ApplicationDetailValue: {
-        ValueCode: {
-          ReferenceDataID: serverEnvironment.PP_SIN_CONFIRMATION_RECEIVING_METHOD_BY_MAIL_CODE,
+      {
+        ApplicationDetailID: 'SIN Confirmation receiving method',
+        ApplicationDetailValue: {
+          ValueCode: {
+            ReferenceDataID: serverEnvironment.PP_SIN_CONFIRMATION_RECEIVING_METHOD_BY_MAIL_CODE,
+          },
         },
       },
-    });
-
-    sinApplicationDetail.push({
-      ApplicationDetailID: 'Supporting document contains first name',
-      ApplicationDetailValue: {
-        ValueBoolean: currentNameInfo.firstName !== undefined && currentNameInfo.firstName.length > 0,
+      {
+        ApplicationDetailID: 'Supporting document contains first name',
+        ApplicationDetailValue: {
+          ValueBoolean: currentNameInfo.firstName !== undefined && currentNameInfo.firstName.length > 0,
+        },
       },
-    });
-
-    sinApplicationDetail.push({
-      ApplicationDetailID: 'Supporting document contains last name',
-      ApplicationDetailValue: {
-        ValueBoolean: currentNameInfo.lastName !== undefined && currentNameInfo.lastName.length > 0,
+      {
+        ApplicationDetailID: 'Supporting document contains last name',
+        ApplicationDetailValue: {
+          ValueBoolean: currentNameInfo.lastName !== undefined && currentNameInfo.lastName.length > 0,
+        },
       },
-    });
-
-    sinApplicationDetail.push({
-      ApplicationDetailID: 'is a part of multibirth',
-      ApplicationDetailValue: {
-        ValueBoolean: birthDetails.fromMultipleBirth,
+      {
+        ApplicationDetailID: 'is a part of multibirth',
+        ApplicationDetailValue: {
+          ValueBoolean: birthDetails.fromMultipleBirth,
+        },
       },
-    });
-
-    sinApplicationDetail.push({
-      ApplicationDetailID: 'Already had a sin',
-      ApplicationDetailValue: {
-        ValueBoolean: previousSin.hasPreviousSin === serverEnvironment.PP_HAS_HAD_PREVIOUS_SIN_CODE, //code for Yes value
+      {
+        ApplicationDetailID: 'Already had a sin',
+        ApplicationDetailValue: {
+          ValueBoolean: previousSin.hasPreviousSin === serverEnvironment.PP_HAS_HAD_PREVIOUS_SIN_CODE, //code for Yes value
+        },
       },
-    });
-
-    sinApplicationDetail.push({
-      ApplicationDetailID: 'Previous SIN Number',
-      ApplicationDetailValue: {
-        ValueString: previousSin.socialInsuranceNumber ?? '',
+      {
+        ApplicationDetailID: 'Previous SIN Number',
+        ApplicationDetailValue: {
+          ValueString: previousSin.socialInsuranceNumber ?? '',
+        },
       },
-    });
-
-    sinApplicationDetail.push({
-      ApplicationDetailID: 'is registered indian status',
-      ApplicationDetailValue: {
-        ValueBoolean: false,
+      {
+        ApplicationDetailID: 'is registered indian status',
+        ApplicationDetailValue: {
+          ValueBoolean: false,
+        },
       },
-    });
-
-    sinApplicationDetail.push({
-      ApplicationDetailID: 'Register indian status on record',
-      ApplicationDetailValue: {
-        ValueBoolean: false,
+      {
+        ApplicationDetailID: 'Register indian status on record',
+        ApplicationDetailValue: {
+          ValueBoolean: false,
+        },
       },
-    });
+    );
 
     return sinApplicationDetail;
   }
@@ -564,5 +510,54 @@ export function mapSinApplicationResponseToSubmitSinApplicationResponse(
 
   return {
     identificationId: identificationID,
+  };
+}
+
+function getCountryAlphaCode(countryId: string): string | undefined {
+  const { alphaCode } = getCountryById(countryId);
+
+  // must use "CA" or "US" REGARDLESS for country
+  if (alphaCode === 'CA' || alphaCode === 'US') {
+    return alphaCode;
+  }
+
+  return undefined;
+}
+
+function getCountryType(country: string): components['schemas']['CountryType'] | undefined {
+  const alphaCode = getCountryAlphaCode(country);
+
+  if (!alphaCode) {
+    return undefined;
+  }
+
+  return {
+    CountryCode: {
+      ReferenceDataID: alphaCode,
+    },
+  };
+}
+
+function getProvinceType(country: string, province: string | undefined): components['schemas']['ProvinceType'] | undefined {
+  if (!province) {
+    return undefined;
+  }
+
+  const alphaCode = getCountryAlphaCode(country);
+
+  if (alphaCode === 'CA') {
+    const prov = getProvinceById(province);
+    return {
+      ProvinceCode: {
+        ReferenceDataID: prov.alphaCode,
+        ReferenceDataName: prov.nameEn,
+      },
+    };
+  }
+
+  return {
+    ProvinceCode: {
+      ReferenceDataName: province,
+    },
   };
 }

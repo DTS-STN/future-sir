@@ -38,7 +38,7 @@ describe('Redis Client Initialization', () => {
         port: 6379,
         username: 'user',
         password: 'password',
-        commandTimeout: 10000,
+        commandTimeout: 10_000,
         retryStrategy: expect.any(Function),
       });
 
@@ -56,7 +56,7 @@ describe('Redis Client Initialization', () => {
         sentinels: [{ host: 'localhost', port: 6379 }],
         username: 'user',
         password: 'password',
-        commandTimeout: 10000,
+        commandTimeout: 10_000,
         retryStrategy: expect.any(Function),
       });
 

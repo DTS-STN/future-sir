@@ -8,7 +8,7 @@ import type { Namespace } from 'i18next';
  */
 export function getI18nNamespace(routes?: RouteModule[]): Namespace {
   const i18nNamespace = routes?.flatMap((route) => route.handle?.i18nNamespace ?? []);
-  return Array.from(new Set(i18nNamespace));
+  return [...new Set(i18nNamespace)];
 }
 
 /**

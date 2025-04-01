@@ -83,10 +83,8 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     case 'search': {
       const { caseId } = params;
       const sinSearchService = getSinSearchService();
-      const searchResults =
-        (await sinSearchService.getSearchResults(caseId)).results
-          ?.filter((result) => result.id)
-          .sort((a, b) => b.score - a.score) ?? [];
+      const { results } = await sinSearchService.getSearchResults(caseId);
+      const searchResults = results?.filter((result) => result.id).sort((a, b) => b.score - a.score) ?? [];
 
       return {
         tableData: searchResults.map(

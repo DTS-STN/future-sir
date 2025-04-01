@@ -36,15 +36,13 @@ export function LoadingButton({
   const resolvedLoadingIconProps = {
     icon: loadingIcon ?? faSpinner,
     spin: true,
-    ...(loadingIconProps ?? {}),
+    ...loadingIconProps,
   } satisfies FontAwesomeIconProps;
   const isLoadingAtStartPosition = loading === true && loadingPosition === 'start';
-  const resolvedStartIcon = isLoadingAtStartPosition
-    ? resolvedLoadingIconProps
-    : { icon: startIcon, ...(startIconProps ?? {}) };
+  const resolvedStartIcon = isLoadingAtStartPosition ? resolvedLoadingIconProps : { icon: startIcon, ...startIconProps };
 
   const isLoadingAtEndPosition = loading === true && loadingPosition === 'end';
-  const resolvedEndIcon = isLoadingAtEndPosition ? resolvedLoadingIconProps : { icon: endIcon, ...(endIconProps ?? {}) };
+  const resolvedEndIcon = isLoadingAtEndPosition ? resolvedLoadingIconProps : { icon: endIcon, ...endIconProps };
 
   return (
     <Button disabled={disabled || loading} {...props}>

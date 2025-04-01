@@ -241,7 +241,8 @@ export abstract class BaseAuthenticationStrategy implements AuthenticationStrate
     const authorizationServer = await this.authorizationServer;
     const getKey = jose.createRemoteJWKSet(new URL(authorizationServer.jwks_uri));
     const options = { audience: expectedAudience, issuer: authorizationServer.issuer };
-    return (await jose.jwtVerify<{ roles?: string[] }>(jwt, getKey, options)).payload;
+    const { payload } = await jose.jwtVerify<{ roles?: string[] }>(jwt, getKey, options);
+    return payload;
   }
 }
 

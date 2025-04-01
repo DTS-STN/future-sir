@@ -15,7 +15,7 @@ export function extractDateParts(date: string): { year?: string; month?: string;
   const month = Number(monthStr);
   const day = Number(dayStr);
 
-  if (isNaN(year) || isNaN(month) || isNaN(day)) return {};
+  if (Number.isNaN(year) || Number.isNaN(month) || Number.isNaN(day)) return {};
   if (!dateExists(year, month - 1, day)) return {};
 
   return {

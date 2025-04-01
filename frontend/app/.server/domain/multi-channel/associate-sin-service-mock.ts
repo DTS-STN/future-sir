@@ -7,7 +7,7 @@ const log = LogFactory.getLogger(import.meta.url);
 
 export function getMockAssociateSinService(): AssociateSinService {
   return {
-    getAssociatedSin: async (caseId: string): Promise<AssociateSinResponse> => {
+    getAssociatedSin: (caseId: string): Promise<AssociateSinResponse> => {
       log.trace('Fetching associated SIN with caseId: %s', caseId);
 
       const associatedSinResponse = generateFakeAssociateSinResponse();

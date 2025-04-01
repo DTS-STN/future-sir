@@ -151,11 +151,11 @@ export default function PersonalInformation({ actionData, loaderData, params, ma
 
     const result = v.safeParse(firstNameSchema, name);
 
-    if (!result.success) {
+    if (result.success) {
+      setFirstNameError(undefined);
+    } else {
       setFirstNameError(result.issues[0].message);
       return;
-    } else {
-      setFirstNameError(undefined);
     }
 
     if (name) {
@@ -196,11 +196,11 @@ export default function PersonalInformation({ actionData, loaderData, params, ma
 
     const result = v.safeParse(lastNameSchema, name);
 
-    if (!result.success) {
+    if (result.success) {
+      setLastNameError(undefined);
+    } else {
       setLastNameError(result.issues[0].message);
       return;
-    } else {
-      setLastNameError(undefined);
     }
 
     if (name) {

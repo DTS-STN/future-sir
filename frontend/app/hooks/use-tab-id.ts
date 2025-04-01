@@ -22,8 +22,8 @@ function generateRandomId(): string {
  * Ensures the tab id persists across page reloads within the same tab.
  */
 function getSnapshot(sessionStorageKey: string): string {
-  const id = window.sessionStorage.getItem(sessionStorageKey) ?? generateRandomId();
-  window.sessionStorage.setItem(sessionStorageKey, id); // store the id to persist it across reloads
+  const id = globalThis.sessionStorage.getItem(sessionStorageKey) ?? generateRandomId();
+  globalThis.sessionStorage.setItem(sessionStorageKey, id); // store the id to persist it across reloads
   return id;
 }
 
@@ -39,8 +39,8 @@ function subscribe(sessionStorageKey: string, callback: () => void): () => void 
     }
   };
 
-  window.addEventListener('storage', handler);
-  return () => window.removeEventListener('storage', handler);
+  globalThis.addEventListener('storage', handler);
+  return () => globalThis.removeEventListener('storage', handler);
 }
 
 type Options = {
@@ -99,16 +99,14 @@ export function useTabId(options?: Options): string | undefined {
   );
 
   useEffect(() => {
-    if (navigate) {
-      if (id !== undefined && id !== idSearchParam) {
-        // if the tab id in session storage doesn't match the URL, update the URL and optionally reload
-        const urlSearchParams = new URLSearchParams(search);
-        urlSearchParams.set(idSearchParamKey, id);
+    if (navigate && id !== undefined && id !== idSearchParam) {
+      // if the tab id in session storage doesn't match the URL, update the URL and optionally reload
+      const urlSearchParams = new URLSearchParams(search);
+      urlSearchParams.set(idSearchParamKey, id);
 
-        void Promise.resolve(navigateFn({ search: urlSearchParams.toString() }, { replace: true })).then(() => {
-          if (reloadDocument) window.location.reload();
-        });
-      }
+      void Promise.resolve(navigateFn({ search: urlSearchParams.toString() }, { replace: true })).then(() => {
+        if (reloadDocument) globalThis.location.reload();
+      });
     }
   }, [id, navigate, navigateFn, search]);
 

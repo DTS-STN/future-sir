@@ -6,6 +6,15 @@ import { serverEnvironment } from '~/.server/environment';
 import { getRedisClient } from '~/.server/redis';
 
 /**
+ * Calculates the number of seconds until the next Sunday
+ * @returns Number of seconds until next Sunday
+ */
+function secondsUntilNextSunday(): number {
+  const now = new Date();
+  return differenceInSeconds(nextSunday(now), now);
+}
+
+/**
  * Redis-based implementation of SinCasesStore with advanced key management and expiration.
  *
  * Key features:
@@ -42,16 +51,7 @@ export function getRedisSinCasesStore(): SinCasesStore {
    * @returns The original key without namespace
    */
   function extractKey(redisKey: string): string {
-    return redisKey.substring(NS.length + KEY_SEPARATOR.length);
-  }
-
-  /**
-   * Calculates the number of seconds until the next Sunday
-   * @returns Number of seconds until next Sunday
-   */
-  function secondsUntilNextSunday(): number {
-    const now = new Date();
-    return differenceInSeconds(nextSunday(now), now);
+    return redisKey.slice(Math.max(0, NS.length + KEY_SEPARATOR.length));
   }
 
   /**
@@ -87,10 +87,10 @@ export function getRedisSinCasesStore(): SinCasesStore {
     const ttlSeconds = secondsUntilNextSunday();
     const pipeline = _store.pipeline();
 
-    keys.forEach((key) => {
+    for (const key of keys) {
       const redisKey = buildRedisKey(key);
       pipeline.expire(redisKey, ttlSeconds);
-    });
+    }
 
     await pipeline.exec();
   }
@@ -103,10 +103,10 @@ export function getRedisSinCasesStore(): SinCasesStore {
   async function del(...keys: string[]): Promise<void> {
     const pipeline = _store.pipeline();
 
-    keys.forEach((key) => {
+    for (const key of keys) {
       const redisKey = buildRedisKey(key);
       pipeline.del(redisKey);
-    });
+    }
 
     await pipeline.exec();
   }
@@ -124,7 +124,7 @@ export function getRedisSinCasesStore(): SinCasesStore {
       const [newCursor, foundKeys] = await _store.scan(cursor, 'MATCH', SCAN_PATTERN, 'COUNT', 100);
 
       cursor = newCursor;
-      keys.push(...foundKeys.map(extractKey));
+      keys.push(...foundKeys.map((key) => extractKey(key)));
     } while (cursor !== '0');
 
     return keys;
@@ -136,7 +136,7 @@ export function getRedisSinCasesStore(): SinCasesStore {
    */
   async function listAll(): Promise<SinCaseDto[]> {
     const keys = await listAllKeys();
-    const redisKeys = keys.map(buildRedisKey);
+    const redisKeys = keys.map((key) => buildRedisKey(key));
 
     const sinCases: SinCaseDto[] = [];
     for (const sinCase of await _store.mget(...redisKeys)) {

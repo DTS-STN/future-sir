@@ -123,7 +123,7 @@ export function fakeSinCaseDto(): SinCaseDto {
   const citizenshipDate = fakeDateInfo(
     faker,
     Number.parseInt(birthDate.year),
-    Math.min(parseInt(birthDate.year) + 30, new Date().getFullYear() - 1),
+    Math.min(Number.parseInt(birthDate.year) + 30, new Date().getFullYear() - 1),
   );
 
   const firstName = faker.person.firstName();

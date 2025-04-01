@@ -1,10 +1,10 @@
 import checkbox from '@inquirer/checkbox';
 import chalk from 'chalk';
-import { spawn } from 'child_process';
-import fs from 'fs/promises';
+import { spawn } from 'node:child_process';
+import fs from 'node:fs/promises';
+import path from 'node:path';
 import ora from 'ora';
 import type { Ora } from 'ora';
-import path from 'path';
 
 // Types
 interface PackageJson {
@@ -96,6 +96,7 @@ class ScriptRunner {
       return JSON.parse(content);
     } catch (error) {
       if (error instanceof Error) {
+        // eslint-disable-next-line unicorn/prefer-type-error
         throw new Error(`❌ Failed to read package.json: ${error.message}`);
       }
       throw error;

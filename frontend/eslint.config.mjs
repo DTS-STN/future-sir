@@ -7,6 +7,7 @@ import jsxA11yPlugin from 'eslint-plugin-jsx-a11y';
 import reactPlugin from 'eslint-plugin-react';
 // @ts-ignore types package doesn't exist for eslint-plugin-react-hooks
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
+import eslintPluginUnicorn from 'eslint-plugin-unicorn';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
@@ -59,6 +60,7 @@ export default tseslint.config(
       eslint.configs.recommended,
       ...tseslint.configs.strict,
       ...tseslint.configs.stylisticTypeChecked,
+      eslintPluginUnicorn.configs.recommended,
       ...fixupConfigRules(compat.config(importPlugin.configs.recommended)),
     ],
     rules: {
@@ -87,6 +89,19 @@ export default tseslint.config(
               message: "Please use the SessionData import from 'express-session' instead.",
             },
           ],
+        },
+      ],
+      'unicorn/no-nested-ternary': 'off',
+      'unicorn/no-null': 'off',
+      'unicorn/no-process-exit': 'off',
+      'unicorn/no-useless-undefined': 'off',
+      'unicorn/prevent-abbreviations': [
+        'error',
+        {
+          checkDefaultAndNamespaceImports: true,
+          checkFilenames: false,
+          checkShorthandImports: true,
+          checkVariables: false,
         },
       ],
     },

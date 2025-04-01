@@ -80,6 +80,6 @@ function toArray(str?: string): string[] | undefined {
 }
 
 function toNumber(str?: string): number | undefined {
-  const num = parseInt(str ?? '');
-  return isNaN(num) ? undefined : num;
+  const num = Number.parseInt(str ?? '');
+  return Number.isNaN(num) ? undefined : num;
 }

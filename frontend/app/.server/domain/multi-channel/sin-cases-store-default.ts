@@ -33,10 +33,10 @@ export function getDefaultSinCasesStore(): SinCasesStore {
    * @returns Promise resolving when storage is complete
    */
   function set(...sinCases: SinCaseDto[]): Promise<void> {
-    sinCases.forEach((sinCase) => {
+    for (const sinCase of sinCases) {
       const key = sinCase.caseId;
       _store.set(key, sinCase);
-    });
+    }
     return Promise.resolve();
   }
 
@@ -46,9 +46,9 @@ export function getDefaultSinCasesStore(): SinCasesStore {
    * @returns Promise resolving when deletion is complete
    */
   function del(...keys: string[]): Promise<void> {
-    keys.forEach((key) => {
+    for (const key of keys) {
       _store.delete(key);
-    });
+    }
     return Promise.resolve();
   }
 
@@ -57,7 +57,7 @@ export function getDefaultSinCasesStore(): SinCasesStore {
    * @returns Promise resolving to an array of case keys
    */
   function listAllKeys(): Promise<string[]> {
-    return Promise.resolve(Array.from(_store.keys()));
+    return Promise.resolve([..._store.keys()]);
   }
 
   /**
@@ -65,7 +65,7 @@ export function getDefaultSinCasesStore(): SinCasesStore {
    * @returns Promise resolving to an array of Sin Cases
    */
   function listAll(): Promise<SinCaseDto[]> {
-    return Promise.resolve(Array.from(_store.values()));
+    return Promise.resolve([..._store.values()]);
   }
 
   /**

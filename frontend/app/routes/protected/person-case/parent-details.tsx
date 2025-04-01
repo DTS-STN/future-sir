@@ -1,4 +1,4 @@
-import { useId, useState } from 'react';
+import { useCallback, useId, useState } from 'react';
 
 import type { RouteHandle } from 'react-router';
 import { data, redirect, useFetcher } from 'react-router';
@@ -145,7 +145,7 @@ interface ParentInformationProps {
 
 function ParentInformation({ loaderData, errors }: ParentInformationProps) {
   const { t } = useTranslation(handle.i18nNamespace);
-  const { idList, addId, removeId } = useIdList(Math.max(loaderData.defaultFormValues.length, 1));
+  const { idList, addId, removeIdAt } = useIdList(Math.max(loaderData.defaultFormValues.length, 1));
 
   const canAddParent = idList.length < loaderData.maxParents;
 
@@ -156,7 +156,7 @@ function ParentInformation({ loaderData, errors }: ParentInformationProps) {
   function onRemoveParent(index: number) {
     // remove parent data from the form values
     loaderData.defaultFormValues.splice(index, 1);
-    removeId(index);
+    removeIdAt(index);
   }
 
   return (
@@ -301,40 +301,83 @@ function ParentForm({ index, loaderData, errors, onRemove }: ParentFormProps) {
  * Useful for dynamically adding/removing form elements or list items with stable identifiers.
  *
  * @param initialSize - The initial number of IDs to generate in the collection. Must be a non-negative integer.
- *
  * @returns An object containing:
  *   - idList: An array of unique numeric IDs
  *   - addId: Function that appends a new unique ID to the list
- *   - removeId: Function that removes an ID at the specified index
+ *   - removeIdAt: Function that removes the ID at the specified index
+ *   - removeId: Function that removes an ID by its value
+ *   - clear: Function that resets the ID list to empty
  */
-function useIdList(initialSize: number) {
-  const [idList, setIdList] = useState(Array.from({ length: initialSize }, (_, index) => index + 1));
+function useIdList(initialSize = 0) {
+  // Validate input
+  if (initialSize < 0 || !Number.isInteger(initialSize)) {
+    throw new Error('initialSize must be a non-negative integer');
+  }
+
+  const [idList, setIdList] = useState<number[]>(Array.from({ length: initialSize }, (_, index) => index + 1));
+
+  /**
+   * Adds a new unique ID to the list
+   * @returns The newly added ID
+   */
+  const addId = useCallback(() => {
+    let nextId = 0;
+
+    setIdList((prev) => {
+      nextId = prev.length > 0 ? Math.max(...prev) + 1 : 1;
+      return [...prev, nextId];
+    });
+
+    return nextId;
+  }, []);
+
+  /**
+   * Removes an ID at the specified index
+   * @param index - The index of the ID to remove
+   * @returns Boolean indicating whether removal was successful
+   */
+  const removeIdAt = useCallback(
+    (index: number): boolean => {
+      if (index < 0 || index >= idList.length) {
+        return false;
+      }
+
+      setIdList((prev) => prev.filter((_, i) => i !== index));
+      return true;
+    },
+    [idList.length],
+  );
+
+  /**
+   * Removes an ID by its value
+   * @param id - The ID value to remove
+   * @returns Boolean indicating whether removal was successful
+   */
+  const removeId = useCallback(
+    (id: number): boolean => {
+      const index = idList.indexOf(id);
+      if (index === -1) {
+        return false;
+      }
+
+      setIdList((prev) => prev.filter((currentId) => currentId !== id));
+      return true;
+    },
+    [idList],
+  );
+
+  /**
+   * Clears all IDs from the list
+   */
+  const clear = useCallback(() => {
+    setIdList([]);
+  }, []);
 
   return {
-    /**
-     * The list of current ids
-     */
-    idList: idList,
-
-    /**
-     * Adds a new id to the id list
-     */
-    addId: () => {
-      setIdList((prev) => {
-        const nextId = (prev[prev.length - 1] ?? 0) + 1;
-        return [...prev, nextId];
-      });
-    },
-
-    /**
-     * Removes an id at the specified index.
-     *
-     * @param index - The index of the id to remove.
-     */
-    removeId: (index: number) => {
-      if (index < idList.length) {
-        setIdList((prev) => prev.filter((_, i) => i !== index));
-      }
-    },
+    idList,
+    addId,
+    removeIdAt,
+    removeId,
+    clear,
   };
 }

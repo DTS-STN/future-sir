@@ -120,9 +120,9 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
         ...birthDetails,
         countryName: getLocalizedCountryById(birthDetails.country, lang).name,
         provinceName: birthDetails.province
-          ? birthDetails.country === serverEnvironment.PP_CANADA_COUNTRY_CODE
+          ? (birthDetails.country === serverEnvironment.PP_CANADA_COUNTRY_CODE
             ? getLocalizedProvinceById(birthDetails.province, lang).name
-            : birthDetails.province
+            : birthDetails.province)
           : undefined,
       },
       parentDetails: parentDetails.map((parentdetail) => ({
@@ -159,11 +159,11 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
         supportingDocuments: currentNameInfo.preferredSameAsDocumentName ? undefined : currentNameInfo.supportingDocuments,
         supportingDocumentsNames: currentNameInfo.preferredSameAsDocumentName
           ? undefined
-          : currentNameInfo.supportingDocuments.required
+          : (currentNameInfo.supportingDocuments.required
             ? currentNameInfo.supportingDocuments.documentTypes.map(
                 (doc) => getLocalizedApplicantSupportingDocumentTypeById(doc, lang).name,
               )
-            : undefined,
+            : undefined),
       },
     },
   };

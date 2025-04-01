@@ -52,9 +52,9 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
       city: personSinCase.contactInformation.city,
       province: personSinCase.contactInformation.province,
       provinceName: personSinCase.contactInformation.province
-        ? personSinCase.contactInformation.country === serverEnvironment.PP_CANADA_COUNTRY_CODE
+        ? (personSinCase.contactInformation.country === serverEnvironment.PP_CANADA_COUNTRY_CODE
           ? getLocalizedProvinceById(personSinCase.contactInformation.province, lang).name
-          : personSinCase.contactInformation.province
+          : personSinCase.contactInformation.province)
         : undefined,
       postalCode: personSinCase.contactInformation.postalCode,
     },
@@ -115,7 +115,7 @@ export default function SinConfirmation({ loaderData, actionData, params }: Rout
 
   useEffect(() => {
     if (sinNumber && isPrinting) {
-      window.print();
+      globalThis.print();
       setIsPrinting(false);
       setSinNumber(undefined);
     }

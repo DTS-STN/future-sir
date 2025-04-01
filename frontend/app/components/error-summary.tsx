@@ -165,7 +165,7 @@ function collectFormValidationErrors(container: HTMLElement): readonly ErrorSumm
  * Finds all input elements with aria-errormessage attributes in the container
  */
 function findInvalidInputs(container: HTMLElement): readonly Element[] {
-  return Array.from(container.querySelectorAll('[aria-errormessage]'));
+  return [...container.querySelectorAll('[aria-errormessage]')];
 }
 
 /**
@@ -186,7 +186,7 @@ function getErrorMessageIds(input: Element): readonly string[] {
  * @returns ErrorSummaryItem if valid error message is found, null otherwise
  */
 function createErrorItem(input: Element, errorMessageId: string): ErrorSummaryItem | null {
-  const errorMessageElement = document.getElementById(errorMessageId);
+  const errorMessageElement = document.querySelector('#' + errorMessageId);
   const errorMessageContent = errorMessageElement?.textContent?.trim();
 
   if (!errorMessageContent) {

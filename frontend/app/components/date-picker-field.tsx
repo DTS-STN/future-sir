@@ -108,7 +108,9 @@ export const DatePickerField = ({
     .join(' ');
 
   // Generate error messages for each date part
-  const ariaErrorMessage: AriaErrorMessage = currentDatePartOrder.reduce((acc, datePart) => {
+  let ariaErrorMessage: AriaErrorMessage = { year: undefined, month: undefined, day: undefined };
+
+  for (const datePart of currentDatePartOrder) {
     const errors = [
       errorMessages?.all ? ids.error.all : false, //
       errorMessages?.[datePart] ? ids.error[datePart] : false,
@@ -116,11 +118,14 @@ export const DatePickerField = ({
       .filter(Boolean)
       .join(' ');
 
-    return { ...acc, [datePart]: errors || undefined };
-  }, {} as AriaErrorMessage);
+    ariaErrorMessage = {
+      ...ariaErrorMessage,
+      [datePart]: errors || undefined,
+    };
+  }
 
   // Extract default date parts from the default value
-  const defaultValues = defaultValue !== undefined ? extractDatePickerDefaultValues(defaultValue) : undefined;
+  const defaultValues = defaultValue === undefined ? undefined : extractDatePickerDefaultValues(defaultValue);
 
   // Define date picker part fields
   const datePickerPartFields = {
@@ -181,7 +186,7 @@ export const DatePickerField = ({
         </InputLegend>
 
         {/* Error Messages */}
-        {errorMessages && Object.values(errorMessages).filter(Boolean).length > 0 && (
+        {errorMessages && Object.values(errorMessages).some(Boolean) && (
           <div className="space-y-2">
             {errorMessages.all && <InputError id={ids.error.all}>{errorMessages.all}</InputError>}
             {currentDatePartOrder
