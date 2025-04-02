@@ -52,18 +52,18 @@ spec:
           livenessProbe:
             exec:
               command: [/usr/local/bin/redis-cli, --pass, $(REDIS_PASSWORD), ping]
-            initialDelaySeconds: 10
+            timeoutSeconds: 5
           readinessProbe:
             exec:
               command: [/usr/local/bin/redis-cli, --pass, $(REDIS_PASSWORD), ping]
-            initialDelaySeconds: 10
+            timeoutSeconds: 5
           resources:
             requests:
-              cpu: 250m
-              memory: 256Mi
+              cpu: 50m
+              memory: 16Mi
             limits:
-              cpu: 500m
-              memory: 512Mi
+              cpu: 75m
+              memory: 32Mi
           securityContext:
             readOnlyRootFilesystem: true
             allowPrivilegeEscalation: false
@@ -78,6 +78,21 @@ spec:
           ports:
             - name: sentinel
               containerPort: 26379
+          livenessProbe:
+            exec:
+              command: [/usr/local/bin/redis-cli, --pass, $(REDIS_PASSWORD), ping]
+            timeoutSeconds: 5
+          readinessProbe:
+            exec:
+              command: [/usr/local/bin/redis-cli, --pass, $(REDIS_PASSWORD), ping]
+            timeoutSeconds: 5
+          resources:
+            requests:
+              cpu: 10m
+              memory: 8Mi
+            limits:
+              cpu: 15m
+              memory: 16Mi
           volumeMounts:
             - name: data
               mountPath: /data
@@ -93,4 +108,4 @@ spec:
           - ReadWriteOnce
         resources:
           requests:
-            storage: 2048Mi
+            storage: 256Mi
