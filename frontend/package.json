@@ -58,7 +58,7 @@
     "jose": "^6.0.10",
     "minimatch": "^10.0.1",
     "morgan": "^1.10.0",
-    "oauth4webapi": "^3.3.2",
+    "oauth4webapi": "^3.4.0",
     "openapi-fetch": "^0.13.5",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
