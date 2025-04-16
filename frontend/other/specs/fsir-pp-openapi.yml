@@ -1,0 +1,122 @@
+---
+openapi: 3.0.2
+info:
+  title: Hit List Search Power Platform Proxy
+  version: 1.0.0
+paths:
+  /search:
+    post:
+      operationId: 'hitlistsearch'
+      description: 'Search for existing SIN recipients that could match the individual associated with a given case.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/caseOperationRequest'
+        required: true
+      responses:
+        '200':
+          description: 'Search operation succeeded and returned a list of potential existing SIN recipients.'
+          content:
+            application/json:
+              schema:
+                description: 'A list of potential existing SIN recipients matching the individual associated with a given case.'
+                type: array
+                items:
+                  $ref: '#/components/schemas/hitListResult'
+              example:
+                - id: '9780441172719'
+                  firstName: 'Paul'
+                  middleName: null
+                  lastName: 'Atreides'
+                  yearOfBirth: 10219
+                  monthOfBirth: 1
+                  dayOfBirth: 1
+                  parentSurname: 'Atreides'
+                  partialSIN: 819
+                  score: 2
+                - id: '0441172717'
+                  firstName: 'Jessica'
+                  middleName: null
+                  lastName: 'Atreides'
+                  yearOfBirth: 10154
+                  monthOfBirth: 1
+                  dayOfBirth: 1
+                  parentSurname: 'Harkonnen'
+                  partialSIN: 918
+                  score: 10
+  /associate-sin:
+    post:
+      operationId: 'associatesin'
+      description: 'Associate a case with a new SIN.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/caseOperationRequest'
+        required: true
+      responses:
+        '200':
+          description: 'Associate SIN operation completed.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/associateSINResponse'
+              example:
+                code: 'SUCCESS'
+                SIN: '597245448'
+components:
+  schemas:
+    caseOperationRequest:
+      description: 'Request payload to perform an operation against an existing case.'
+      properties:
+        caseGuid:
+          description: 'The GUID associated with the target case.'
+          type: string
+          example: '7e8f3e87-3920-4858-8145-aa9f6bb491ef'
+        idToken:
+          description: 'A token to authenticate with the Power Platform system.'
+          type: string
+          example: 'thespicemustflow123'
+    hitListResult:
+      description: 'Represents a potential existing individual with a SIN, with an accuracy score.'
+      properties:
+        id:
+          description: 'An ID of representing the search result.'
+          type: string
+        firstName:
+          description: 'First name of the existing SIN recipient.'
+          type: string
+        middleName:
+          description: 'Middle name of the existing SIN recipient.'
+          type: string
+        lastName:
+          description: 'Last name of the existing SIN recipient.'
+          type: string
+        yearOfBirth:
+          description: 'Birth year of the existing SIN recipient.'
+          type: number
+        monthOfBirth:
+          description: 'Birth month of the existing SIN recipient.'
+          type: number
+        dayOfBirth:
+          description: 'Birth dat of the existing SIN recipient.'
+          type: number
+        parentSurname:
+          description: 'Parents last name of the existing SIN recipient.'
+          type: string
+        partialSIN:
+          description: 'First three digits of the SIN related to the existing SIN recipient.'
+          type: string
+        score:
+          description: 'Represents the chance that this result identifies an existing SIN recipient.'
+          type: number
+    associateSINResponse:
+      description: 'Represents the results of attempting to associate a case with a new SIN.'
+      properties:
+        code:
+          description: 'Status code of the associate SIN operation.'
+          type: string
+        SIN:
+          description: 'The new SIN associated with the case.'
+          type: string
