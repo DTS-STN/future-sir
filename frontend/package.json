@@ -62,7 +62,7 @@
     "openapi-fetch": "^0.13.5",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-i18next": "^15.4.1",
+    "react-i18next": "^15.5.1",
     "react-idle-timer": "^5.7.2",
     "react-number-format": "^5.4.4",
     "react-phone-number-input": "^3.4.12",
