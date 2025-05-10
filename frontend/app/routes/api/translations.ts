@@ -12,7 +12,6 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
 
   const language = url.searchParams.get('lng');
   const namespace = url.searchParams.get('ns');
-  const buildRevision = url.searchParams.get('v');
 
   if (!language || !namespace) {
     return Response.json(
@@ -31,8 +30,10 @@ export async function loader({ context, params, request }: Route.LoaderArgs) {
     );
   }
 
-  // cache if the build revision is anything other than the default value
-  const shouldCache = buildRevision !== serverDefaults.BUILD_REVISION;
+  // cache if the requested revision is anything other
+  // than the default build revision used during development
+  const revision = url.searchParams.get('v') ?? serverDefaults.BUILD_REVISION;
+  const shouldCache = revision !== serverDefaults.BUILD_REVISION;
 
   return Response.json(resourceBundle, {
     headers: shouldCache //
