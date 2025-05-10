@@ -16,8 +16,19 @@ export type ServerEnvironment = Server;
 const processed = preprocess(process.env);
 const isProduction = processed.NODE_ENV === 'production';
 
-export const clientEnvironment = v.parse(client, { ...processed, isProduction });
-export const serverEnvironment = v.parse(server, { ...processed, isProduction });
+const parsedClientEnvironment = v.parse(client, { ...processed, isProduction });
+const parsedServerEnvironment = v.parse(server, { ...processed, isProduction });
 
-export const clientEnvironmentRevision = createHash('md5').update(JSON.stringify(clientEnvironment)).digest('hex');
-export const serverEnvironmentRevision = createHash('md5').update(JSON.stringify(serverEnvironment)).digest('hex');
+export const clientEnvironment: ClientEnvironment & { revision: string } = {
+  ...parsedClientEnvironment,
+  revision: createHash('md5') //
+    .update(String(parsedClientEnvironment))
+    .digest('hex'),
+};
+
+export const serverEnvironment: ServerEnvironment & { revision: string } = {
+  ...parsedServerEnvironment,
+  revision: createHash('md5') //
+    .update(String(parsedServerEnvironment))
+    .digest('hex'),
+};

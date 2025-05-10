@@ -5,7 +5,7 @@ import { config as fontAwesomeConfig } from '@fortawesome/fontawesome-svg-core';
 
 import type { Route } from './+types/root';
 
-import { clientEnvironmentRevision } from '~/.server/environment';
+import { clientEnvironment } from '~/.server/environment';
 import {
   BilingualErrorBoundary,
   BilingualNotFound,
@@ -54,7 +54,7 @@ export function links(): Route.LinkDescriptors {
 export function loader({ context }: Route.LoaderArgs) {
   return {
     nonce: context.nonce,
-    clientEnvRevision: clientEnvironmentRevision,
+    clientEnvRevision: clientEnvironment.revision,
   };
 }
 

@@ -11,11 +11,11 @@ const CACHE_DURATION_SECS = 365 * 24 * 60 * 60;
  * handling caching headers based on the build revision.
  */
 export function loader({ context, params, request }: Route.LoaderArgs) {
-  const url = new URL(request.url);
-  const buildRevision = url.searchParams.get('v');
+  const revision = new URL(request.url).searchParams.get('v') ?? serverDefaults.BUILD_REVISION;
 
-  // cache if the build revision is anything other than the default value
-  const shouldCache = buildRevision !== serverDefaults.BUILD_REVISION;
+  // cache if the requested revision is anything other
+  // than the default build revision used during development
+  const shouldCache = revision !== serverDefaults.BUILD_REVISION;
 
   return new Response(`globalThis.__appEnvironment = ${JSON.stringify(clientEnvironment)}`, {
     headers: {
