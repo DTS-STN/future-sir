@@ -41,7 +41,7 @@
     "@radix-ui/react-progress": "^1.1.7",
     "@radix-ui/react-slot": "^1.1.2",
     "@react-router/express": "^7.6.0",
-    "@react-router/node": "^7.6.0",
+    "@react-router/node": "^7.6.2",
     "@react-router/serve": "^7.6.0",
     "@tanstack/react-table": "^8.21.3",
     "clsx": "^2.1.1",
