@@ -123,36 +123,49 @@ export const i18nRoutes = [
         paths: { en: '/en/protected/request', fr: '/fr/protege/requete' },
       },
       {
-        id: 'MCF-0001',
-        file: 'routes/protected/multi-channel/pid-verification.tsx',
-        paths: {
-          en: '/en/protected/cases/:caseId/multi-channel/pid-verification',
-          fr: '/fr/protege/cas/:caseId/multi-canal/pid-verification',
-        },
-      },
-      {
-        id: 'MCF-0002',
-        file: 'routes/protected/multi-channel/search-sin.tsx',
-        paths: {
-          en: '/en/protected/cases/:caseId/multi-channel/search-sin',
-          fr: '/fr/protege/cas/:caseId/multi-canal/search-sin',
-        },
-      },
-      {
-        id: 'MCF-0003',
-        file: 'routes/protected/multi-channel/finalize-request.tsx',
-        paths: {
-          en: '/en/protected/cases/:caseId/multi-channel/finalize-request',
-          fr: '/fr/protege/cas/:caseId/multi-canal/finalize-request',
-        },
-      },
-      {
-        id: 'MCF-0004',
-        file: 'routes/protected/multi-channel/send-validation.tsx',
-        paths: {
-          en: '/en/protected/cases/:caseId/multi-channel/send-validation',
-          fr: '/fr/protege/cas/:caseId/multi-canal/send-validation',
-        },
+        file: 'routes/protected/multi-channel/layout.tsx',
+        children: [
+          {
+            id: 'MCF-0001',
+            file: 'routes/protected/multi-channel/send-validation.tsx',
+            paths: {
+              en: '/en/protected/cases/:caseId/multi-channel/send-validation',
+              fr: '/fr/protege/cas/:caseId/multi-canal/send-validation',
+            },
+          },
+          {
+            id: 'MCF-0011',
+            file: 'routes/protected/multi-channel/edit-application/edit-primary-doc.tsx',
+            paths: {
+              en: '/en/protected/cases/:caseId/multi-channel/edit-primary-documents',
+              fr: '/fr/protege/cas/:caseId/multi-canal/editer-documents-primaires',
+            },
+          },
+          {
+            id: 'MCF-0002',
+            file: 'routes/protected/multi-channel/pid-verification.tsx',
+            paths: {
+              en: '/en/protected/cases/:caseId/multi-channel/pid-verification',
+              fr: '/fr/protege/cas/:caseId/multi-canal/pid-verification',
+            },
+          },
+          {
+            id: 'MCF-0003',
+            file: 'routes/protected/multi-channel/search-sin.tsx',
+            paths: {
+              en: '/en/protected/cases/:caseId/multi-channel/search-sin',
+              fr: '/fr/protege/cas/:caseId/multi-canal/search-sin',
+            },
+          },
+          {
+            id: 'MCF-0004',
+            file: 'routes/protected/multi-channel/finalize-request.tsx',
+            paths: {
+              en: '/en/protected/cases/:caseId/multi-channel/finalize-request',
+              fr: '/fr/protege/cas/:caseId/multi-canal/finalize-request',
+            },
+          },
+        ],
       },
       {
         file: 'routes/protected/person-case/layout.tsx',
