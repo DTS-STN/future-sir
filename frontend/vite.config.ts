@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
-import { coverageConfigDefaults } from 'vitest/config';
+import { configDefaults, coverageConfigDefaults } from 'vitest/config';
 
 // important: this must be a non-aliased (ie: not ~/) import
 import { preserveImportMetaUrl } from './vite.server.config';
@@ -49,6 +49,36 @@ export default defineConfig({
       // disable logging so we don't pollute the output
       LOG_LEVEL: 'none',
     },
+    projects: [
+      {
+        extends: true,
+        test: {
+          name: 'jsdom',
+          environment: 'jsdom',
+          include: [
+            '**/tests/components/**/*.test.(ts|tsx)',
+            '**/tests/hooks/**/*.test.(ts|tsx)',
+            '**/tests/routes/**/*.test.(ts|tsx)',
+          ],
+        },
+      },
+      {
+        extends: true,
+        test: {
+          name: 'node',
+          environment: 'node',
+          include: [
+            '**/tests/**/*.test.(ts|tsx)', //
+          ],
+          exclude: [
+            '**/tests/components/**', //
+            '**/tests/hooks/**',
+            '**/tests/routes/**',
+            ...configDefaults.exclude,
+          ],
+        },
+      },
+    ],
     setupFiles: ['./tests/setup.ts'],
   },
 });
