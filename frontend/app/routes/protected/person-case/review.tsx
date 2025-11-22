@@ -5,7 +5,7 @@ import { redirect, useFetcher } from 'react-router';
 
 import { useTranslation } from 'react-i18next';
 
-import type { Info, Route } from './+types/review';
+import type { Route } from './+types/review';
 
 import { getLocalizedApplicantGenderById } from '~/.server/domain/person-case/services/applicant-gender-service';
 import { getLocalizedApplicantPrimaryDocumentChoiceById } from '~/.server/domain/person-case/services/applicant-primary-document-service';
@@ -49,7 +49,8 @@ export function meta({ data }: Route.MetaArgs) {
   return [{ title: data.documentTitle }];
 }
 
-export async function action({ context, params, request }: Route.ActionArgs) {
+export async function action(actionArgs: Route.ActionArgs) {
+  const { context, request } = actionArgs;
   requireAllRoles(context.session, new URL(request.url), ['user']);
 
   const tabId = getTabIdOrRedirect(request);
@@ -91,7 +92,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     }
   }
 
-  throw redirect(getStateRoute(machineActor, { context, params, request }));
+  throw redirect(getStateRoute(machineActor, actionArgs));
 }
 
 export async function loader({ context, request }: Route.LoaderArgs) {
@@ -186,11 +187,11 @@ export async function loader({ context, request }: Route.LoaderArgs) {
   };
 }
 
-export default function Review({ loaderData, actionData, params }: Route.ComponentProps) {
+export default function Review({ actionData, loaderData, params }: Route.ComponentProps) {
   const { t } = useTranslation(handle.i18nNamespace);
 
   const fetcherKey = useId();
-  const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
+  const fetcher = useFetcher<typeof actionData>({ key: fetcherKey });
   const fetcherState = useFetcherState(fetcher);
 
   const { inPersonSINCase, tabId } = loaderData;

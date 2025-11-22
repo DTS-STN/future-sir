@@ -7,7 +7,7 @@ import { faPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import * as v from 'valibot';
 
-import type { Info, Route } from './+types/parent-details';
+import type { Route } from './+types/parent-details';
 
 import { getLocalizedCountries } from '~/.server/shared/services/country-service';
 import { getLocalizedProvinces } from '~/.server/shared/services/province-service';
@@ -39,7 +39,8 @@ export function meta({ data }: Route.MetaArgs) {
   return [{ title: data.documentTitle }];
 }
 
-export async function action({ context, params, request }: Route.ActionArgs) {
+export async function action(actionArgs: Route.ActionArgs) {
+  const { context, request } = actionArgs;
   requireAllRoles(context.session, new URL(request.url), ['user']);
 
   const tabId = getTabIdOrRedirect(request);
@@ -88,7 +89,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     }
   }
 
-  throw redirect(getStateRoute(machineActor, { context, params, request }));
+  throw redirect(getStateRoute(machineActor, actionArgs));
 }
 
 export async function loader({ context, request }: Route.LoaderArgs) {
@@ -113,7 +114,7 @@ export default function CreateRequest({ loaderData, actionData, params }: Route.
   const { t } = useTranslation(handle.i18nNamespace);
 
   const fetcherKey = useId();
-  const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
+  const fetcher = useFetcher<typeof actionData>({ key: fetcherKey });
   const fetcherState = useFetcherState(fetcher);
   const errors = fetcher.data?.errors;
 

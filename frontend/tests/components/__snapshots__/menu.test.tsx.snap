@@ -7,7 +7,7 @@ exports[`Menu > should correctly render a Menu with a MenuItem when the file pro
     aria-haspopup="menu"
     class="flex h-full flex-nowrap space-x-2 bg-slate-700 px-2 text-white hover:bg-slate-600 hover:underline focus:ring-2 focus:ring-black focus:ring-offset-2 focus:outline-hidden aria-expanded:bg-slate-900 aria-expanded:text-white sm:space-x-3 sm:px-4"
     data-state="closed"
-    id="radix-«r0»"
+    id="radix-_r_0_"
     type="button"
   >
     <span
@@ -21,13 +21,11 @@ exports[`Menu > should correctly render a Menu with a MenuItem when the file pro
       class="svg-inline--fa fa-chevron-down my-auto size-4"
       data-icon="chevron-down"
       data-prefix="fas"
-      focusable="false"
       role="img"
-      viewBox="0 0 512 512"
-      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 448 512"
     >
       <path
-        d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"
+        d="M201.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 338.7 54.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"
         fill="currentColor"
       />
     </svg>
@@ -42,7 +40,7 @@ exports[`Menu > should correctly render a Menu with a MenuItem when the to prope
     aria-haspopup="menu"
     class="flex h-full flex-nowrap space-x-2 bg-slate-700 px-2 text-white hover:bg-slate-600 hover:underline focus:ring-2 focus:ring-black focus:ring-offset-2 focus:outline-hidden aria-expanded:bg-slate-900 aria-expanded:text-white sm:space-x-3 sm:px-4"
     data-state="closed"
-    id="radix-«r2»"
+    id="radix-_r_4_"
     type="button"
   >
     <span
@@ -56,13 +54,11 @@ exports[`Menu > should correctly render a Menu with a MenuItem when the to prope
       class="svg-inline--fa fa-chevron-down my-auto size-4"
       data-icon="chevron-down"
       data-prefix="fas"
-      focusable="false"
       role="img"
-      viewBox="0 0 512 512"
-      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 448 512"
     >
       <path
-        d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"
+        d="M201.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 338.7 54.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"
         fill="currentColor"
       />
     </svg>

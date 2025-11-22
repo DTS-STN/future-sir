@@ -42,7 +42,6 @@ functionality.
 1. **Session storage and URL synchronization:**
    `useTabId()` leverages react's `useSyncExternalStore()` hook to maintain
    consistency of the tab id between two key locations:
-
    - **session storage:** the primary storage for the unique tab id, ensuring
      persistence across page navigations within the same tab (session storage is
      naturally isolated per browser tab).

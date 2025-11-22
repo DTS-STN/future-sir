@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { useId, useState, useEffect } from 'react';
+import { useEffect, useId, useState } from 'react';
 
 import type { RouteHandle } from 'react-router';
 import { useFetcher } from 'react-router';
@@ -7,7 +7,7 @@ import { useFetcher } from 'react-router';
 import type { ResourceKey } from 'i18next';
 import { useTranslation } from 'react-i18next';
 
-import type { Info, Route } from './+types/sin-confirmation';
+import type { Route } from './+types/sin-confirmation';
 
 import { getAssociateSinService } from '~/.server/domain/multi-channel/associate-sin-service';
 import { getSinCaseService } from '~/.server/domain/multi-channel/case-api-service';
@@ -100,7 +100,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
 export default function SinConfirmation({ loaderData, actionData, params }: Route.ComponentProps) {
   const { t } = useTranslation(handle.i18nNamespace);
   const fetcherKey = useId();
-  const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
+  const fetcher = useFetcher<typeof actionData>({ key: fetcherKey });
   const fetcherState = useFetcherState(fetcher);
   const recordDetails = loaderData.recordDetails;
   const { dateEn, dateFr } = recordDetails.date;

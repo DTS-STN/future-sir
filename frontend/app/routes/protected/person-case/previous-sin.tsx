@@ -7,7 +7,7 @@ import { data, redirect, useFetcher } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import * as v from 'valibot';
 
-import type { Info, Route } from './+types/previous-sin';
+import type { Route } from './+types/previous-sin';
 
 import { getLocalizedApplicantHadSinOptions } from '~/.server/domain/person-case/services/applicant-sin-service';
 import { serverEnvironment } from '~/.server/environment';
@@ -38,7 +38,8 @@ export function meta({ data }: Route.MetaArgs) {
   return [{ title: data.documentTitle }];
 }
 
-export async function action({ context, params, request }: Route.ActionArgs) {
+export async function action(actionArgs: Route.ActionArgs) {
+  const { context, request } = actionArgs;
   requireAllRoles(context.session, new URL(request.url), ['user']);
 
   const tabId = getTabIdOrRedirect(request);
@@ -78,7 +79,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     }
   }
 
-  throw redirect(getStateRoute(machineActor, { context, params, request }));
+  throw redirect(getStateRoute(machineActor, actionArgs));
 }
 
 export async function loader({ context, request }: Route.LoaderArgs) {
@@ -103,7 +104,7 @@ export default function PreviousSin({ loaderData, actionData, params }: Route.Co
   const [hasPreviousSin, setHasPreviousSin] = useState(loaderData.defaultFormValues?.hasPreviousSin);
 
   const fetcherKey = useId();
-  const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
+  const fetcher = useFetcher<typeof actionData>({ key: fetcherKey });
   const fetcherState = useFetcherState(fetcher);
   const errors = fetcher.data?.errors;
 

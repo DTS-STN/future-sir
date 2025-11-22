@@ -5,7 +5,7 @@ import { useFetcher } from 'react-router';
 
 import { useTranslation } from 'react-i18next';
 
-import type { Info, Route } from './+types/send-validation';
+import type { Route } from './+types/send-validation';
 
 import { getSinCaseService } from '~/.server/domain/multi-channel/case-api-service';
 import { getLocalizedApplicantGenderById } from '~/.server/domain/person-case/services/applicant-gender-service';
@@ -174,7 +174,7 @@ export default function SendValidation({ loaderData, actionData, params }: Route
   const { t } = useTranslation(handle.i18nNamespace);
 
   const fetcherKey = useId();
-  const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
+  const fetcher = useFetcher<typeof actionData>({ key: fetcherKey });
   const fetcherState = useFetcherState(fetcher);
 
   const { inPersonSINCase, caseId } = loaderData;

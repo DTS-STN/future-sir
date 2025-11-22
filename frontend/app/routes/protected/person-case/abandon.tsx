@@ -8,7 +8,8 @@ import { ErrorCodes } from '~/errors/error-codes';
 import { getTabIdOrRedirect, loadMachineActorOrRedirect } from '~/routes/protected/person-case/route-helpers.server';
 import { getStateRoute } from '~/routes/protected/person-case/state-machine.server';
 
-export async function action({ context, params, request }: Route.ActionArgs) {
+export async function action(actionArgs: Route.ActionArgs) {
+  const { context, request } = actionArgs;
   requireAllRoles(context.session, new URL(request.url), ['user']);
 
   const tabId = getTabIdOrRedirect(request);
@@ -28,5 +29,5 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     }
   }
 
-  throw redirect(getStateRoute(machineActor, { context, params, request }));
+  throw redirect(getStateRoute(machineActor, actionArgs));
 }

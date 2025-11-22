@@ -97,5 +97,5 @@ export const server = v.pipe(
  * Always returns true so it can be used in a zod refine() function.
  */
 function warn(check: boolean, message: string): true {
-  return check && log.warn(message), true;
+  return (check && log.warn(message), true);
 }

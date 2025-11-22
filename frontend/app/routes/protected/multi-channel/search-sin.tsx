@@ -6,7 +6,7 @@ import { useFetcher } from 'react-router';
 import type { ColumnDef } from '@tanstack/react-table';
 import { useTranslation } from 'react-i18next';
 
-import type { Info, Route } from './+types/search-sin';
+import type { Route } from './+types/search-sin';
 
 import { getSinCaseService } from '~/.server/domain/multi-channel/case-api-service';
 import { getSinSearchService } from '~/.server/domain/multi-channel/search-api-service';
@@ -115,7 +115,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
 export default function SearchSin({ loaderData, actionData, params }: Route.ComponentProps) {
   const { t, i18n } = useTranslation(handle.i18nNamespace);
   const fetcherKey = useId();
-  const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
+  const fetcher = useFetcher<typeof actionData>({ key: fetcherKey });
   const fetcherState = useFetcherState(fetcher);
 
   type TableRowData = NonNullable<typeof actionData>['tableData'][number];

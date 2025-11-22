@@ -13,8 +13,8 @@ export default function Logout() {
   return <></>;
 }
 
-export function loader({ context, params, request }: Route.LoaderArgs) {
-  return handleLogout({ context, params, request });
+export function loader(loaderArgs: Route.LoaderArgs) {
+  return handleLogout(loaderArgs);
 }
 
 function handleLogout({ context, params, request }: Route.LoaderArgs) {

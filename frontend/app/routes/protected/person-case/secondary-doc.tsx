@@ -6,7 +6,7 @@ import { data, redirect, useFetcher } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import * as v from 'valibot';
 
-import type { Info, Route } from './+types/secondary-doc';
+import type { Route } from './+types/secondary-doc';
 
 import { getLocalizedApplicantSecondaryDocumentChoices } from '~/.server/domain/person-case/services/applicant-secondary-document-service';
 import { requireAllRoles } from '~/.server/utils/auth-utils';
@@ -36,7 +36,8 @@ export function meta({ data }: Route.MetaArgs) {
   return [{ title: data.documentTitle }];
 }
 
-export async function action({ context, params, request }: Route.ActionArgs) {
+export async function action(actionArgs: Route.ActionArgs) {
+  const { context, request } = actionArgs;
   requireAllRoles(context.session, new URL(request.url), ['user']);
 
   const tabId = getTabIdOrRedirect(request);
@@ -85,7 +86,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     }
   }
 
-  throw redirect(getStateRoute(machineActor, { context, params, request }));
+  throw redirect(getStateRoute(machineActor, actionArgs));
 }
 
 export async function loader({ context, request }: Route.LoaderArgs) {
@@ -109,7 +110,7 @@ export default function SecondaryDoc({ actionData, loaderData, params }: Route.C
   const { t } = useTranslation(handle.i18nNamespace);
 
   const fetcherKey = useId();
-  const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
+  const fetcher = useFetcher<typeof actionData>({ key: fetcherKey });
   const fetcherState = useFetcherState(fetcher);
 
   const formValues = fetcher.data?.formValues ?? loaderData.formValues;

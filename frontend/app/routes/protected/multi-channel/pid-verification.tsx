@@ -7,7 +7,7 @@ import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useTranslation } from 'react-i18next';
 
-import type { Info, Route } from './+types/pid-verification';
+import type { Route } from './+types/pid-verification';
 
 import { getSinCaseService } from '~/.server/domain/multi-channel/case-api-service';
 import { requireAllRoles } from '~/.server/utils/auth-utils';
@@ -86,7 +86,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
 export default function PidVerification({ loaderData, actionData, params }: Route.ComponentProps) {
   const { t } = useTranslation(handle.i18nNamespace);
   const fetcherKey = useId();
-  const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
+  const fetcher = useFetcher<typeof actionData>({ key: fetcherKey });
   const fetcherState = useFetcherState(fetcher);
 
   return (

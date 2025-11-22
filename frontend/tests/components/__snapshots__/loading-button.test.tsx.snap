@@ -23,16 +23,14 @@ exports[`LoadingButton > renders the custom loading icon > expected html 1`] = `
     </span>
     <svg
       aria-hidden="true"
-      class="svg-inline--fa fa-check fa-spin fa-fw ms-1"
+      class="svg-inline--fa fa-check ms-1 fa-spin fa-fw"
       data-icon="check"
       data-prefix="fas"
-      focusable="false"
       role="img"
       viewBox="0 0 448 512"
-      xmlns="http://www.w3.org/2000/svg"
     >
       <path
-        d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"
+        d="M434.8 70.1c14.3 10.4 17.5 30.4 7.1 44.7l-256 352c-5.5 7.6-14 12.3-23.4 13.1s-18.5-2.7-25.1-9.3l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l101.5 101.5 234-321.7c10.4-14.3 30.4-17.5 44.7-7.1z"
         fill="currentColor"
       />
     </svg>
@@ -51,16 +49,14 @@ exports[`LoadingButton > renders the loading spinner at the end position > expec
     </span>
     <svg
       aria-hidden="true"
-      class="svg-inline--fa fa-spinner fa-spin fa-fw ms-1 animate-spin"
+      class="svg-inline--fa fa-spinner ms-1 animate-spin fa-spin fa-fw"
       data-icon="spinner"
       data-prefix="fas"
-      focusable="false"
       role="img"
       viewBox="0 0 512 512"
-      xmlns="http://www.w3.org/2000/svg"
     >
       <path
-        d="M304 48a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zm0 416a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zM48 304a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm464-48a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zM142.9 437A48 48 0 1 0 75 369.1 48 48 0 1 0 142.9 437zm0-294.2A48 48 0 1 0 75 75a48 48 0 1 0 67.9 67.9zM369.1 437A48 48 0 1 0 437 369.1 48 48 0 1 0 369.1 437z"
+        d="M208 48a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm0 416a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zM48 208a48 48 0 1 1 0 96 48 48 0 1 1 0-96zm368 48a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zM75 369.1A48 48 0 1 1 142.9 437 48 48 0 1 1 75 369.1zM75 75A48 48 0 1 1 142.9 142.9 48 48 0 1 1 75 75zM437 369.1A48 48 0 1 1 369.1 437 48 48 0 1 1 437 369.1z"
         fill="currentColor"
       />
     </svg>
@@ -76,16 +72,14 @@ exports[`LoadingButton > renders the loading spinner at the start position > exp
   >
     <svg
       aria-hidden="true"
-      class="svg-inline--fa fa-spinner fa-spin fa-fw me-1 animate-spin"
+      class="svg-inline--fa fa-spinner me-1 animate-spin fa-spin fa-fw"
       data-icon="spinner"
       data-prefix="fas"
-      focusable="false"
       role="img"
       viewBox="0 0 512 512"
-      xmlns="http://www.w3.org/2000/svg"
     >
       <path
-        d="M304 48a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zm0 416a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zM48 304a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm464-48a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zM142.9 437A48 48 0 1 0 75 369.1 48 48 0 1 0 142.9 437zm0-294.2A48 48 0 1 0 75 75a48 48 0 1 0 67.9 67.9zM369.1 437A48 48 0 1 0 437 369.1 48 48 0 1 0 369.1 437z"
+        d="M208 48a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm0 416a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zM48 208a48 48 0 1 1 0 96 48 48 0 1 1 0-96zm368 48a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zM75 369.1A48 48 0 1 1 142.9 437 48 48 0 1 1 75 369.1zM75 75A48 48 0 1 1 142.9 142.9 48 48 0 1 1 75 75zM437 369.1A48 48 0 1 1 369.1 437 48 48 0 1 1 437 369.1z"
         fill="currentColor"
       />
     </svg>

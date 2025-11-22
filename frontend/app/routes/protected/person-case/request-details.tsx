@@ -6,7 +6,7 @@ import { data, redirect, useFetcher } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import * as v from 'valibot';
 
-import type { Info, Route } from './+types/request-details';
+import type { Route } from './+types/request-details';
 
 import { getLocalizedApplicationSubmissionScenarios } from '~/.server/domain/person-case/services/application-submission-scenario';
 import { getLocalizedTypesOfApplicationToSubmit } from '~/.server/domain/person-case/services/application-type-service';
@@ -36,7 +36,8 @@ export function meta({ data }: Route.MetaArgs) {
   return [{ title: data.documentTitle }];
 }
 
-export async function action({ context, params, request }: Route.ActionArgs) {
+export async function action(actionArgs: Route.ActionArgs) {
+  const { context, request } = actionArgs;
   requireAllRoles(context.session, new URL(request.url), ['user']);
 
   const tabId = getTabIdOrRedirect(request);
@@ -89,7 +90,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
     }
   }
 
-  throw redirect(getStateRoute(machineActor, { context, params, request }));
+  throw redirect(getStateRoute(machineActor, actionArgs));
 }
 
 export async function loader({ context, request }: Route.LoaderArgs) {
@@ -114,7 +115,7 @@ export default function RequestDetails({ actionData, loaderData, params }: Route
   const { t } = useTranslation(handle.i18nNamespace);
 
   const fetcherKey = useId();
-  const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
+  const fetcher = useFetcher<typeof actionData>({ key: fetcherKey });
   const fetcherState = useFetcherState(fetcher);
 
   const formValues = fetcher.data?.formValues ?? loaderData.formValues;

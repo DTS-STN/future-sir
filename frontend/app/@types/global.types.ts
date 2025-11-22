@@ -5,8 +5,6 @@ import type { Request } from 'express';
 import type { ClientEnvironment } from '~/.server/environment';
 import type { InstanceName } from '~/.server/utils/instance-registry';
 
-/* eslint-disable no-var */
-
 declare global {
   /**
    * The application's session type.

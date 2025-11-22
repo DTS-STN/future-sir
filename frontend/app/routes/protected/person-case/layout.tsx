@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useTabId } from '@stn-dts/tab-id-hook';
 import { useTranslation } from 'react-i18next';
 
-import type { Info, Route } from './+types/layout';
+import type { Route } from './+types/layout';
 
 import { Button } from '~/components/button';
 import { i18nRoutes } from '~/i18n-routes';
@@ -23,7 +23,7 @@ export default function Layout({ actionData, loaderData, matches, params }: Rout
   const { i18n, t } = useTranslation(handle.i18nNamespace);
   const [searchParams] = useSearchParams();
 
-  const fetcher = useFetcher<Info['actionData']>({ key: useId() });
+  const fetcher = useFetcher<typeof actionData>({ key: useId() });
   const tabId = useTabId({ reloadDocument: true }); // ensure we always have a tabId generated
 
   const abandonRoute = getRouteByFile('routes/protected/person-case/abandon.tsx', i18nRoutes);

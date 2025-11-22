@@ -6,7 +6,7 @@ import { data, useFetcher } from 'react-router';
 import { Trans, useTranslation } from 'react-i18next';
 import * as v from 'valibot';
 
-import type { Info, Route } from './+types/finalize-request';
+import type { Route } from './+types/finalize-request';
 
 import { getSinCaseService } from '~/.server/domain/multi-channel/case-api-service';
 import { serverEnvironment } from '~/.server/environment';
@@ -125,7 +125,7 @@ export async function action({ context, params, request }: Route.ActionArgs) {
 export default function PidVerification({ loaderData, actionData, params }: Route.ComponentProps) {
   const { t } = useTranslation(handle.i18nNamespace);
   const fetcherKey = useId();
-  const fetcher = useFetcher<Info['actionData']>({ key: fetcherKey });
+  const fetcher = useFetcher<typeof actionData>({ key: fetcherKey });
   const fetcherState = useFetcherState(fetcher);
   const errors = fetcher.data?.errors;
 

@@ -1,5 +1,4 @@
 import eslint from '@eslint/js';
-// @ts-expect-error TS7016 -- types package does not exist for eslint-plugin-import
 import importPlugin from 'eslint-plugin-import';
 import jsxA11yPlugin from 'eslint-plugin-jsx-a11y';
 import reactPlugin from 'eslint-plugin-react';
@@ -105,12 +104,14 @@ const config = tseslint.config(
     files: ['**/*.tsx'],
     extends: [
       jsxA11yPlugin.flatConfigs['recommended'],
-      reactHooksPlugin.configs['recommended-latest'],
       // @ts-expect-error TS2322 -- see https://github.com/jsx-eslint/eslint-plugin-react/issues/3878
       reactPlugin.configs.flat['recommended'],
       // @ts-expect-error TS2322 -- see https://github.com/jsx-eslint/eslint-plugin-react/issues/3878
       reactPlugin.configs.flat['jsx-runtime'],
     ],
+    plugins: {
+      'react-hooks': reactHooksPlugin,
+    },
     rules: {
       'react/no-unknown-property': ['error', { ignore: ['property', 'resource', 'typeof', 'vocab'] }],
       'react/prop-types': 'off',
