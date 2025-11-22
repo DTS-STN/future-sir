@@ -5,12 +5,12 @@ import { Outlet, useFetcher, useSearchParams } from 'react-router';
 
 import { faSpinner, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useTabId } from '@stn-dts/tab-id-hook';
 import { useTranslation } from 'react-i18next';
 
 import type { Info, Route } from './+types/layout';
 
 import { Button } from '~/components/button';
-import { useTabId } from '~/hooks/use-tab-id';
 import { i18nRoutes } from '~/i18n-routes';
 import { handle as parentHandle } from '~/routes/protected/layout';
 import { getRouteByFile } from '~/utils/route-utils';

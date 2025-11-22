@@ -1,10 +1,11 @@
+import { getTabId } from '@stn-dts/tab-id-hook';
 import type { Actor } from 'xstate';
 
 import { LogFactory } from '~/.server/logging';
 import { i18nRedirect } from '~/.server/utils/route-utils';
 import type { I18nRouteFile } from '~/i18n-routes';
-import { loadMachineActor } from '~/routes/protected/person-case/state-machine.server';
 import type { Machine, StateName } from '~/routes/protected/person-case/state-machine.server';
+import { loadMachineActor } from '~/routes/protected/person-case/state-machine.server';
 
 const log = LogFactory.getLogger(import.meta.url);
 
@@ -23,8 +24,7 @@ export const DEFAULT_GET_TAB_ID_OR_REDIRECT_OPTIONS = {
 export function getTabIdOrRedirect(request: Request, options: GetTabIdOrRedirectOptions = {}): string {
   const { i18nRedirectRouteFile = DEFAULT_GET_TAB_ID_OR_REDIRECT_OPTIONS.i18nRedirectRouteFile } = options;
 
-  // Extract tab ID from URL search parameters (identifies the current user's browser tab/session context)
-  const tabId = new URL(request.url).searchParams.get('tid');
+  const tabId = getTabId(request);
 
   if (!tabId) {
     log.debug('Could not find tab ID in request url [%s]; redirecting to %s', request.url, i18nRedirectRouteFile);

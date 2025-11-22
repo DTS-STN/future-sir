@@ -43,6 +43,7 @@
     "@react-router/express": "^7.6.0",
     "@react-router/node": "^7.6.0",
     "@react-router/serve": "^7.6.0",
+    "@stn-dts/tab-id-hook": "^1.1.0",
     "@tanstack/react-table": "^8.21.3",
     "clsx": "^2.1.1",
     "compression": "^1.8.0",
