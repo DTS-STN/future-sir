@@ -2,7 +2,7 @@
 # This overlay file is intended for deployment of shared resources across all non-production environments.
 # Resources defined here will be available in all pseudo-environments (e.g., dev, staging, etc.) within the non-production namespace.
 #
-apiVersion: kustomize.config.k8s.io/v1beta1
+apiVersion: kustomize.config.k8s.io/v1
 kind: Kustomization
 namespace: future-social-insurance-registry
 nameSuffix: -shared
