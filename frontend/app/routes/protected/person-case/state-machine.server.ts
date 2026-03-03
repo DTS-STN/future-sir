@@ -9,12 +9,11 @@ import { AppError } from '~/errors/app-error';
 import { ErrorCodes } from '~/errors/error-codes';
 import type { I18nRouteFile } from '~/i18n-routes';
 import { i18nRoutes } from '~/i18n-routes';
+import type { FormData, InPersonSinApplication } from '~/routes/protected/person-case/state-machine-models';
 import type {
   BirthDetailsData,
   ContactInformationData,
   CurrentNameData,
-  FormData,
-  InPersonSinApplication,
   ParentDetailsData,
   PersonalInfoData,
   PreviousSinData,
@@ -22,7 +21,7 @@ import type {
   PrivacyStatementData,
   RequestDetailsData,
   SecondaryDocumentData,
-} from '~/routes/protected/person-case/state-machine-models';
+} from '~/routes/protected/sin-application/form-models';
 import { getLanguage } from '~/utils/i18n-utils';
 import { getRouteByFile } from '~/utils/route-utils';
 

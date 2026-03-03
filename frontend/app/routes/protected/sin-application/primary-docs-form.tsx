@@ -14,7 +14,7 @@ import { InputFile } from '~/components/input-file';
 import { InputRadios } from '~/components/input-radios';
 import { InputSelect } from '~/components/input-select';
 import { APPLICANT_PRIMARY_DOCUMENT_CHOICE, APPLICANT_STATUS_IN_CANADA } from '~/domain/constants';
-import type { Errors, PrimaryDocumentData } from '~/routes/protected/person-case/state-machine-models';
+import type { Errors, PrimaryDocumentData } from '~/routes/protected/sin-application/form-models';
 import { extractValidationKey } from '~/utils/validation-utils';
 
 interface PrimaryDocsFormProps {
