@@ -1,0 +1,129 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`formatAddress > should format a standard address with all fields > expected html 1`] = `
+<div>
+  <address
+    class="whitespace-pre-wrap not-italic"
+    data-testid="address-id"
+  >
+    Apt 4B 123 Main St
+Anytown ON  A1A 1A1
+Canada
+  </address>
+</div>
+`;
+
+exports[`formatAddress > should format a standard address with all fields, simple addressLine2 > expected html 1`] = `
+<div>
+  <address
+    class="whitespace-pre-wrap not-italic"
+    data-testid="address-id"
+  >
+    4B-123 Main St
+Anytown ON  A1A 1A1
+Canada
+  </address>
+</div>
+`;
+
+exports[`formatAddress > should format a standard address with complex suite name > expected html 1`] = `
+<div>
+  <address
+    class="whitespace-pre-wrap not-italic"
+    data-testid="address-id"
+  >
+    123 Main St Suite 4B
+Anytown ON  A1A 1A1
+Canada
+  </address>
+</div>
+`;
+
+exports[`formatAddress > should format a standard address without addressLine2 > expected html 1`] = `
+<div>
+  <address
+    class="whitespace-pre-wrap not-italic"
+    data-testid="address-id"
+  >
+    123 Main St
+Anytown ON  A1A 1A1
+Canada
+  </address>
+</div>
+`;
+
+exports[`formatAddress > should format a standard address without provinceState and postalZipCode > expected html 1`] = `
+<div>
+  <address
+    class="whitespace-pre-wrap not-italic"
+    data-testid="address-id"
+  >
+    789 Pine Ln
+London
+UK
+  </address>
+</div>
+`;
+
+exports[`formatAddress > should format an alternative address with all fields > expected html 1`] = `
+<div>
+  <address
+    class="whitespace-pre-wrap not-italic"
+    data-testid="address-id"
+  >
+    123 Main St Apt 4B
+Anytown, ON
+A1A 1A1
+Canada
+  </address>
+</div>
+`;
+
+exports[`formatAddress > should format an alternative address without provinceState and postalZipCode > expected html 1`] = `
+<div>
+  <address
+    class="whitespace-pre-wrap not-italic"
+    data-testid="address-id"
+  >
+    789 Pine Ln
+London
+UK
+  </address>
+</div>
+`;
+
+exports[`formatAddress > should handle empty addressLine1 and addressLine2 > expected html 1`] = `
+<div>
+  <address
+    class="whitespace-pre-wrap not-italic"
+    data-testid="address-id"
+  >
+    London
+UK
+  </address>
+</div>
+`;
+
+exports[`formatAddress > should handle empty addressLine1, addressLine2, and city > expected html 1`] = `
+<div>
+  <address
+    class="whitespace-pre-wrap not-italic"
+    data-testid="address-id"
+  >
+    UK
+  </address>
+</div>
+`;
+
+exports[`formatAddress > should handle empty provinceState > expected html 1`] = `
+<div>
+  <address
+    class="whitespace-pre-wrap not-italic"
+    data-testid="address-id"
+  >
+    123 Main St
+Anytown  A1A 1A1
+Canada
+  </address>
+</div>
+`;
