@@ -50,7 +50,7 @@
     "connect-redis": "^8.1.0",
     "cross-env": "^10.1.0",
     "date-fns": "^4.1.0",
-    "express": "^5.1.0",
+    "express": "^5.2.1",
     "express-session": "^1.18.2",
     "i18next": "^25.6.3",
     "i18next-fetch-backend": "^7.0.0",
